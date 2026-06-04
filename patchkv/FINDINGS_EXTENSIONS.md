@@ -91,9 +91,28 @@ to beat — **hoist-to-end + prefix caching**.
 *oracle-copied* residual KV (unrealizable). When the residual is honestly
 *recomputed* against the stale base, a recency window **does not** recover an
 early-gated field — the recomputed recency tokens still attend to the stale early
-gating rule. Recovery then requires recomputing from the gating rule onward
-(safety_mode: 93 % recompute), i.e. ≈ full reprefill. So for early-gated fields,
-**hoist-to-end strictly dominates faithful PatchKV** on efficiency and correctness.
+gating rule. Refreshing the gating rule is therefore **necessary**.
+
+**Correction (how much else is needed is field-dependent — NOT "everything from the
+rule onward").** A follow-up that recomputes a SPARSE set (field + gate-span +
+last-K recent tokens, *skipping the neutral middle*) shows two regimes:
+
+| field (E1 breadth) | recency-only | sparse field+gate+recency | contiguous gate→end | all-after-field |
+|---|---|---|---|---|
+| safety_mode (moderate) | ✗ | **✔ at ~6 %** (gate+last-32) | ✔ 93 % | ✔ |
+| account_role (broad, highest E1 BR) | ✗ | ✗ even at 18 % | ✗ 93 % | ✔ ~96 % |
+
+So the sufficient refresh is governed by the field's **downstream conditioning
+breadth (≈ its E1 blast radius)**, modulated by placement — not by placement alone.
+For moderate fields a sparse ~6 % refresh recovers; only for broad fields
+(account_role: leaving even a ~10 % middle gap stale fails) does it approach full
+reprefill. The earlier "must redo everything from the rule onward / safety_mode
+93 %" statement was an over-generalization from a single contiguous test and is
+**superseded by this table** (see `esys/` sparse-refresh probe).
+
+Bottom line for early-gated fields: **hoist-to-end (3.5 %, correct) still dominates
+the broad-conditioning case; for moderate fields a sparse faithful refresh (~6 %) is
+competitive on recompute but not on the ~37 ms latency.**
 
 **Where PatchKV genuinely wins (late-placed field, τ-bench order status):** the
 gating rules precede the field (causally exact, reused free), so faithful
@@ -104,13 +123,17 @@ restructuring the prompt. (`plots/frontier_qwen7b.png`, `esys/verify_faithful.py
 ---
 
 ## Synthesis & recommendation
-The four phases converge on a single law:
+The four phases converge on a law with **two** factors (placement AND breadth):
 
-> **Leave-stale is cheap *and* correct exactly when a field sits after the rules that
-> condition on it** (so those rules are causally-exact and reused for free, and only
-> the short post-field span needs refresh). When a field precedes its gating rules,
-> faithful refresh must redo everything from the rule onward and there is no win over
-> full reprefill — and hoist-to-end is both cheaper and correct.
+> **The faithful refresh cost has a floor set by placement and a size set by the
+> field's conditioning breadth (≈ its E1 blast radius).** (i) The gating rule must be
+> refreshed; if it precedes the field it is causally-exact and free (τ-bench: 5 %
+> recompute). (ii) Given the rule is refreshed, how much of the rest is needed scales
+> with breadth: a *moderate* field recovers from a sparse field+gate+recency set
+> (~6 %); a *broad* field (account_role) needs nearly everything after it (~96 %). So
+> leave-stale is cheap-and-correct when the field is **either** placed after its rules
+> **or** narrow in conditioning breadth; it degrades to ≈ full reprefill only for
+> early-placed *broad* fields — where hoist-to-end is both cheaper and correct.
 
 Implications for the thesis:
 1. **Lead with characterization, not a systems speedup.** The contribution that
