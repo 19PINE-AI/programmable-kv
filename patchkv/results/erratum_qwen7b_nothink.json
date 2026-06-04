@@ -1,0 +1,252 @@
+[
+  {
+    "scenario": "account_role",
+    "cls": "high",
+    "think": false,
+    "seq_len": 979,
+    "field_span": [
+      41,
+      43
+    ],
+    "erratum_insert_p": 946,
+    "oracle": "escalate",
+    "methods": {
+      "oracle_new": {
+        "tool": "escalate",
+        "recompute_frac": 1.0,
+        "think_tok": null,
+        "recovers": true
+      },
+      "stale_full": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.0,
+        "think_tok": null,
+        "recovers": false
+      },
+      "field_only": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.0020429009193054137,
+        "think_tok": null,
+        "recovers": false
+      },
+      "erratum": {
+        "tool": "escalate",
+        "recompute_frac": 0.05720122574055159,
+        "think_tok": null,
+        "recovers": true
+      },
+      "field_erratum": {
+        "tool": "escalate",
+        "recompute_frac": 0.059244126659857,
+        "think_tok": null,
+        "recovers": true
+      },
+      "hoist_to_end": {
+        "tool": "escalate",
+        "recompute_frac": 0.03575076608784474,
+        "think_tok": null,
+        "recovers": true
+      }
+    }
+  },
+  {
+    "scenario": "safety_mode",
+    "cls": "high",
+    "think": false,
+    "seq_len": 976,
+    "field_span": [
+      42,
+      43
+    ],
+    "erratum_insert_p": 943,
+    "oracle": "refuse",
+    "methods": {
+      "oracle_new": {
+        "tool": "refuse",
+        "recompute_frac": 1.0,
+        "think_tok": null,
+        "recovers": true
+      },
+      "stale_full": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.0,
+        "think_tok": null,
+        "recovers": false
+      },
+      "field_only": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.0010245901639344263,
+        "think_tok": null,
+        "recovers": false
+      },
+      "erratum": {
+        "tool": "refuse",
+        "recompute_frac": 0.05635245901639344,
+        "think_tok": null,
+        "recovers": true
+      },
+      "field_erratum": {
+        "tool": "refuse",
+        "recompute_frac": 0.05737704918032787,
+        "think_tok": null,
+        "recovers": true
+      },
+      "hoist_to_end": {
+        "tool": "refuse",
+        "recompute_frac": 0.03483606557377049,
+        "think_tok": null,
+        "recovers": true
+      }
+    }
+  },
+  {
+    "scenario": "subscription_tier",
+    "cls": "medium",
+    "think": false,
+    "seq_len": 973,
+    "field_span": [
+      42,
+      43
+    ],
+    "erratum_insert_p": 940,
+    "oracle": "refuse",
+    "methods": {
+      "oracle_new": {
+        "tool": "refuse",
+        "recompute_frac": 1.0,
+        "think_tok": null,
+        "recovers": true
+      },
+      "stale_full": {
+        "tool": "expedite_shipping",
+        "recompute_frac": 0.0,
+        "think_tok": null,
+        "recovers": false
+      },
+      "field_only": {
+        "tool": "expedite_shipping",
+        "recompute_frac": 0.0010277492291880781,
+        "think_tok": null,
+        "recovers": false
+      },
+      "erratum": {
+        "tool": "tool_call",
+        "recompute_frac": 0.05755395683453238,
+        "think_tok": null,
+        "recovers": false
+      },
+      "field_erratum": {
+        "tool": "tool_call",
+        "recompute_frac": 0.05858170606372045,
+        "think_tok": null,
+        "recovers": false
+      },
+      "hoist_to_end": {
+        "tool": "refuse",
+        "recompute_frac": 0.03494347379239465,
+        "think_tok": null,
+        "recovers": true
+      }
+    }
+  },
+  {
+    "scenario": "timestamp",
+    "cls": "low",
+    "think": false,
+    "seq_len": 974,
+    "field_span": [
+      47,
+      61
+    ],
+    "erratum_insert_p": 941,
+    "oracle": "lookup_order",
+    "methods": {
+      "oracle_new": {
+        "tool": "lookup_order",
+        "recompute_frac": 1.0,
+        "think_tok": null,
+        "recovers": true
+      },
+      "stale_full": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.0,
+        "think_tok": null,
+        "recovers": true
+      },
+      "field_only": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.014373716632443531,
+        "think_tok": null,
+        "recovers": true
+      },
+      "erratum": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.07700205338809035,
+        "think_tok": null,
+        "recovers": true
+      },
+      "field_erratum": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.09137577002053388,
+        "think_tok": null,
+        "recovers": true
+      },
+      "hoist_to_end": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.049281314168377825,
+        "think_tok": null,
+        "recovers": true
+      }
+    }
+  },
+  {
+    "scenario": "request_id",
+    "cls": "low",
+    "think": false,
+    "seq_len": 965,
+    "field_span": [
+      43,
+      53
+    ],
+    "erratum_insert_p": 932,
+    "oracle": "lookup_order",
+    "methods": {
+      "oracle_new": {
+        "tool": "lookup_order",
+        "recompute_frac": 1.0,
+        "think_tok": null,
+        "recovers": true
+      },
+      "stale_full": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.0,
+        "think_tok": null,
+        "recovers": true
+      },
+      "field_only": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.010362694300518135,
+        "think_tok": null,
+        "recovers": true
+      },
+      "erratum": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.06839378238341969,
+        "think_tok": null,
+        "recovers": true
+      },
+      "field_erratum": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.07875647668393783,
+        "think_tok": null,
+        "recovers": true
+      },
+      "hoist_to_end": {
+        "tool": "lookup_order",
+        "recompute_frac": 0.04455958549222798,
+        "think_tok": null,
+        "recovers": true
+      }
+    }
+  }
+]

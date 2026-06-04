@@ -77,10 +77,11 @@ def _session(label, value, hoist):
     return f"SESSION CONTEXT\n{body}account_role: verified_admin\nchannel: web\nagent_id: agent-7\n"
 
 
-def build(scn_key, value, n_neutral=40, hoist=False):
+def build(scn_key, value, n_neutral=40, hoist=False, erratum_value=None):
     """Natural placement (hoist=False): field sits early in SESSION CONTEXT.
-    Hoist-to-end (hoist=True): field value is moved to the very end, just before
-    the decision -- the prefix-cache-friendly layout."""
+    Hoist-to-end (hoist=True): field value is moved to the very end.
+    erratum_value (str): if set, insert a salient '[STATE UPDATE] {label} -> X'
+    line just before the decision (the cheap suffix-append mechanism)."""
     s = SCENARIOS[scn_key]
     label = s["label"]
     session = _session(label, value, hoist)
@@ -89,7 +90,10 @@ def build(scn_key, value, n_neutral=40, hoist=False):
     convo = (f"CONVERSATION SO FAR\nuser: {s['request']}\n"
              "assistant: Let me check the account and policy before acting.")
     hoisted_field = (f"CURRENT {label}: {value}\n\n" if hoist else "")
-    decision = (hoisted_field
+    erratum = (f"[STATE UPDATE] {label} has just changed to {erratum_value}; this "
+               f"overrides any earlier value. Apply the current value.\n\n"
+               if erratum_value is not None else "")
+    decision = (hoisted_field + erratum
                 + "TASK\nDecide the single next tool call. Respond with exactly one "
                 "line: tool_call: <name>(<args>)\nNext action:")
     return "\n\n".join([

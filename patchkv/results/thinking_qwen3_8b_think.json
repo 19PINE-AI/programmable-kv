@@ -1,0 +1,150 @@
+[
+  {
+    "scenario": "account_role",
+    "cls": "high",
+    "seq_len": 958,
+    "field_span": [
+      20,
+      22
+    ],
+    "field_recompute_frac": 0.0020876826722338203,
+    "oracle_new": {
+      "tool": "escalate",
+      "think_tokens": 249,
+      "reached_answer": true,
+      "answer_head": "tool_call: escalate(queue=\"trust\", summary=\"Request to refund $40.00 for order A4471 due t"
+    },
+    "oracle_old": {
+      "tool": "lookup_order",
+      "think_tokens": 269,
+      "reached_answer": true,
+      "answer_head": "tool_call: lookup_order(order_id=\"A4471\")<|im_end|>"
+    },
+    "field_only": {
+      "tool": "escalate",
+      "think_tokens": 926,
+      "reached_answer": true,
+      "answer_head": "tool_call: escalate(queue=\"trust\", summary=\"Customer requested refund for order A4471, but"
+    },
+    "stale_full": {
+      "tool": "lookup_order",
+      "think_tokens": 269,
+      "reached_answer": true,
+      "answer_head": "tool_call: lookup_order(order_id=\"A4471\")<|im_end|>"
+    },
+    "decision_changed": true,
+    "field_only_recovers": true,
+    "stale_recovers": false
+  },
+  {
+    "scenario": "safety_mode",
+    "cls": "high",
+    "seq_len": 955,
+    "field_span": [
+      21,
+      22
+    ],
+    "field_recompute_frac": 0.0010471204188481676,
+    "oracle_new": {
+      "tool": "refuse",
+      "think_tokens": 1423,
+      "reached_answer": true,
+      "answer_head": "tool_call: refuse(reason=\"policy\")<|im_end|>"
+    },
+    "oracle_old": {
+      "tool": "share_payment_method",
+      "think_tokens": 726,
+      "reached_answer": true,
+      "answer_head": "tool_call: share_payment_method(order_id=\"A4471\")<|im_end|>"
+    },
+    "field_only": {
+      "tool": "refuse",
+      "think_tokens": 1094,
+      "reached_answer": true,
+      "answer_head": "tool_call: refuse(reason=\"policy R12\")<|im_end|>"
+    },
+    "stale_full": {
+      "tool": "share_payment_method",
+      "think_tokens": 726,
+      "reached_answer": true,
+      "answer_head": "tool_call: share_payment_method(order_id=\"A4471\")<|im_end|>"
+    },
+    "decision_changed": true,
+    "field_only_recovers": true,
+    "stale_recovers": false
+  },
+  {
+    "scenario": "subscription_tier",
+    "cls": "medium",
+    "seq_len": 952,
+    "field_span": [
+      21,
+      22
+    ],
+    "field_recompute_frac": 0.0010504201680672268,
+    "oracle_new": {
+      "tool": "refuse",
+      "think_tokens": 340,
+      "reached_answer": true,
+      "answer_head": "tool_call: refuse(reason=\"tier\")<|im_end|>"
+    },
+    "oracle_old": {
+      "tool": "expedite_shipping",
+      "think_tokens": 165,
+      "reached_answer": true,
+      "answer_head": "tool_call: expedite_shipping(order_id=\"A4471\")<|im_end|>"
+    },
+    "field_only": {
+      "tool": "refuse",
+      "think_tokens": 573,
+      "reached_answer": true,
+      "answer_head": "tool_call: refuse(reason=\"tier\")<|im_end|>"
+    },
+    "stale_full": {
+      "tool": "expedite_shipping",
+      "think_tokens": 165,
+      "reached_answer": true,
+      "answer_head": "tool_call: expedite_shipping(order_id=\"A4471\")<|im_end|>"
+    },
+    "decision_changed": true,
+    "field_only_recovers": true,
+    "stale_recovers": false
+  },
+  {
+    "scenario": "timestamp",
+    "cls": "low",
+    "seq_len": 953,
+    "field_span": [
+      26,
+      40
+    ],
+    "field_recompute_frac": 0.014690451206715634,
+    "oracle_new": {
+      "tool": "issue_refund",
+      "think_tokens": 1931,
+      "reached_answer": true,
+      "answer_head": "tool_call: issue_refund(order_id=\"A4471\", amount=40.00, reason_code=\"SHD\")<|im_end|>"
+    },
+    "oracle_old": {
+      "tool": "issue_refund",
+      "think_tokens": 694,
+      "reached_answer": true,
+      "answer_head": "tool_call: issue_refund(order_id=\"A4471\", amount=40.00, reason_code=\"SHIPPING_DELAY\")<|im_"
+    },
+    "field_only": {
+      "tool": "issue_refund",
+      "think_tokens": 640,
+      "reached_answer": true,
+      "answer_head": "tool_call: issue_refund(order_id=\"A4471\", amount=40.00, reason_code=\"SHIPPING_DELAY\")<|im_"
+    },
+    "stale_full": {
+      "tool": "issue_refund",
+      "think_tokens": 694,
+      "reached_answer": true,
+      "answer_head": "tool_call: issue_refund(order_id=\"A4471\", amount=40.00, reason_code=\"SHIPPING_DELAY\")<|im_"
+    },
+    "decision_changed": false,
+    "field_only_recovers": true,
+    "stale_recovers": true
+  }
+]
