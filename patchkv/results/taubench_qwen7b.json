@@ -1,0 +1,130 @@
+[
+  {
+    "scenario": "order_status_cancel",
+    "cls": "high",
+    "field": "order_status",
+    "seq_len": 1502,
+    "field_span": [
+      1424,
+      1426
+    ],
+    "downstream": 75,
+    "exact_region_dev_max": 0.0,
+    "blast_radius": {
+      "0.05": 0.0,
+      "0.1": 0.0,
+      "0.2": 0.0
+    },
+    "oracle_old": "tool_call cancel_pending_order(order_id=\"#W261134\", reason=\"ordered by mistake\")",
+    "oracle_new": "tool_call transfer_to_human_agents(\"Order status is not pending, cannot cancel.\")",
+    "decision_changed": true,
+    "min_recover_frac": 0.8533333333333334,
+    "recovery_sweep": [
+      {
+        "K": 0,
+        "frac": 0.0,
+        "tracks": false
+      },
+      {
+        "K": 8,
+        "frac": 0.10666666666666667,
+        "tracks": false
+      },
+      {
+        "K": 16,
+        "frac": 0.21333333333333335,
+        "tracks": false
+      },
+      {
+        "K": 32,
+        "frac": 0.4266666666666667,
+        "tracks": false
+      },
+      {
+        "K": 64,
+        "frac": 0.8533333333333334,
+        "tracks": true
+      },
+      {
+        "K": 128,
+        "frac": 1.0,
+        "tracks": true
+      },
+      {
+        "K": 256,
+        "frac": 1.0,
+        "tracks": true
+      },
+      {
+        "K": 512,
+        "frac": 1.0,
+        "tracks": true
+      }
+    ],
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "current_date",
+    "cls": "low",
+    "field": "current_time",
+    "seq_len": 1526,
+    "field_span": [
+      34,
+      44
+    ],
+    "downstream": 1481,
+    "exact_region_dev_max": 0.0,
+    "blast_radius": {
+      "0.05": 0.0,
+      "0.1": 0.0,
+      "0.2": 0.0
+    },
+    "oracle_old": "tool_call(terminate_pending_order(order_id=\"#W261134\", reason=\"ordered by mistake\"))",
+    "oracle_new": "tool_call(terminate_pending_order(order_id=\"#W261134\", reason=\"ordered by mistake\"))",
+    "decision_changed": false,
+    "min_recover_frac": 0.0,
+    "recovery_sweep": [
+      {
+        "K": 0,
+        "frac": 0.0,
+        "tracks": true
+      },
+      {
+        "K": 8,
+        "frac": 0.0054017555705604325,
+        "tracks": true
+      },
+      {
+        "K": 16,
+        "frac": 0.010803511141120865,
+        "tracks": true
+      },
+      {
+        "K": 32,
+        "frac": 0.02160702228224173,
+        "tracks": true
+      },
+      {
+        "K": 64,
+        "frac": 0.04321404456448346,
+        "tracks": true
+      },
+      {
+        "K": 128,
+        "frac": 0.08642808912896692,
+        "tracks": true
+      },
+      {
+        "K": 256,
+        "frac": 0.17285617825793384,
+        "tracks": true
+      },
+      {
+        "K": 512,
+        "frac": 0.3457123565158677,
+        "tracks": true
+      }
+    ],
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  }
+]

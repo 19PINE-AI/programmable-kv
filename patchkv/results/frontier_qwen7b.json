@@ -1,0 +1,287 @@
+[
+  {
+    "scenario": "account_role",
+    "cls": "high",
+    "seq_len": 979,
+    "field_span": [
+      41,
+      43
+    ],
+    "decision_changed": true,
+    "oracle": "tool_call escalate(queue=\"trust\", summary",
+    "old_decision": "tool_call lookup_order(A4471)",
+    "methods": {
+      "full_reprefill": {
+        "decision": "tool_call escalate(queue=\"trust\", summary",
+        "agree_oracle": true,
+        "recompute_tokens": 978,
+        "recompute_frac": 0.9989785495403473,
+        "latency_ms": 121.158
+      },
+      "stale_reuse": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": false,
+        "recompute_tokens": 0,
+        "recompute_frac": 0.0,
+        "latency_ms": 0.347
+      },
+      "patchkv_k0": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": false,
+        "recompute_tokens": 2,
+        "recompute_frac": 0.0020429009193054137,
+        "latency_ms": 23.818
+      },
+      "patchkv_k128": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": false,
+        "recompute_tokens": 130,
+        "recompute_frac": 0.13278855975485188,
+        "latency_ms": 68.012
+      },
+      "patchkv_k256": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": false,
+        "recompute_tokens": 258,
+        "recompute_frac": 0.2635342185903984,
+        "latency_ms": 67.852
+      },
+      "hoist_to_end": {
+        "decision": "tool_call escalate(queue=\"trust\", summary=\"Customer requests refund for order A4471 due to shipping delay.\")",
+        "agree_oracle": true,
+        "recompute_tokens": 35,
+        "recompute_frac": 0.03571428571428571,
+        "latency_ms": 36.726,
+        "note": "field physically moved to suffix"
+      }
+    }
+  },
+  {
+    "scenario": "safety_mode",
+    "cls": "high",
+    "seq_len": 976,
+    "field_span": [
+      42,
+      43
+    ],
+    "decision_changed": true,
+    "oracle": "tool_call refuse(reason=\"policy\")",
+    "old_decision": "tool_call lookup_order(A4471)",
+    "methods": {
+      "full_reprefill": {
+        "decision": "tool_call refuse(reason=\"policy\")",
+        "agree_oracle": true,
+        "recompute_tokens": 975,
+        "recompute_frac": 0.9989754098360656,
+        "latency_ms": 135.658
+      },
+      "stale_reuse": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": false,
+        "recompute_tokens": 0,
+        "recompute_frac": 0.0,
+        "latency_ms": 0.799
+      },
+      "patchkv_k0": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": false,
+        "recompute_tokens": 1,
+        "recompute_frac": 0.0010245901639344263,
+        "latency_ms": 25.338
+      },
+      "patchkv_k128": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": false,
+        "recompute_tokens": 129,
+        "recompute_frac": 0.13217213114754098,
+        "latency_ms": 69.285
+      },
+      "patchkv_k256": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": false,
+        "recompute_tokens": 257,
+        "recompute_frac": 0.26331967213114754,
+        "latency_ms": 69.195
+      },
+      "hoist_to_end": {
+        "decision": "tool_call refuse(reason=\"policy\")",
+        "agree_oracle": true,
+        "recompute_tokens": 34,
+        "recompute_frac": 0.03483606557377049,
+        "latency_ms": 41.06,
+        "note": "field physically moved to suffix"
+      }
+    }
+  },
+  {
+    "scenario": "subscription_tier",
+    "cls": "medium",
+    "seq_len": 973,
+    "field_span": [
+      42,
+      43
+    ],
+    "decision_changed": true,
+    "oracle": "tool_call refuse(reason=\"tier\")",
+    "old_decision": "tool_call expedite_shipping(order_id=\"A4471\")",
+    "methods": {
+      "full_reprefill": {
+        "decision": "tool_call refuse(reason=\"tier\")",
+        "agree_oracle": true,
+        "recompute_tokens": 972,
+        "recompute_frac": 0.998972250770812,
+        "latency_ms": 128.917
+      },
+      "stale_reuse": {
+        "decision": "tool_call expedite_shipping(order_id=\"A4471\")",
+        "agree_oracle": false,
+        "recompute_tokens": 0,
+        "recompute_frac": 0.0,
+        "latency_ms": 0.801
+      },
+      "patchkv_k0": {
+        "decision": "tool_call expedite_shipping(order_id=\"A4471\")",
+        "agree_oracle": false,
+        "recompute_tokens": 1,
+        "recompute_frac": 0.0010277492291880781,
+        "latency_ms": 25.187
+      },
+      "patchkv_k128": {
+        "decision": "tool_call expedite_shipping(order_id=\"A4471\")",
+        "agree_oracle": false,
+        "recompute_tokens": 129,
+        "recompute_frac": 0.13257965056526208,
+        "latency_ms": 68.473
+      },
+      "patchkv_k256": {
+        "decision": "tool_call expedite_shipping(order_id=\"A4471\")",
+        "agree_oracle": false,
+        "recompute_tokens": 257,
+        "recompute_frac": 0.2641315519013361,
+        "latency_ms": 65.663
+      },
+      "hoist_to_end": {
+        "decision": "tool_call refuse(reason=\"tier\")",
+        "agree_oracle": true,
+        "recompute_tokens": 34,
+        "recompute_frac": 0.03490759753593429,
+        "latency_ms": 36.441,
+        "note": "field physically moved to suffix"
+      }
+    }
+  },
+  {
+    "scenario": "timestamp",
+    "cls": "low",
+    "seq_len": 974,
+    "field_span": [
+      47,
+      61
+    ],
+    "decision_changed": false,
+    "oracle": "tool_call lookup_order(A4471)",
+    "old_decision": "tool_call lookup_order(A4471)",
+    "methods": {
+      "full_reprefill": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 973,
+        "recompute_frac": 0.9989733059548255,
+        "latency_ms": 131.133
+      },
+      "stale_reuse": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 0,
+        "recompute_frac": 0.0,
+        "latency_ms": 0.343
+      },
+      "patchkv_k0": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 14,
+        "recompute_frac": 0.014373716632443531,
+        "latency_ms": 24.311
+      },
+      "patchkv_k128": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 142,
+        "recompute_frac": 0.1457905544147844,
+        "latency_ms": 71.322
+      },
+      "patchkv_k256": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 270,
+        "recompute_frac": 0.27720739219712526,
+        "latency_ms": 71.005
+      },
+      "hoist_to_end": {
+        "decision": "tool_call lookup_order(\"A4471\")",
+        "agree_oracle": true,
+        "recompute_tokens": 48,
+        "recompute_frac": 0.04923076923076923,
+        "latency_ms": 36.636,
+        "note": "field physically moved to suffix"
+      }
+    }
+  },
+  {
+    "scenario": "request_id",
+    "cls": "low",
+    "seq_len": 965,
+    "field_span": [
+      43,
+      53
+    ],
+    "decision_changed": false,
+    "oracle": "tool_call lookup_order(A4471)",
+    "old_decision": "tool_call lookup_order(A4471)",
+    "methods": {
+      "full_reprefill": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 964,
+        "recompute_frac": 0.9989637305699481,
+        "latency_ms": 128.562
+      },
+      "stale_reuse": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 0,
+        "recompute_frac": 0.0,
+        "latency_ms": 0.344
+      },
+      "patchkv_k0": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 10,
+        "recompute_frac": 0.010362694300518135,
+        "latency_ms": 19.669
+      },
+      "patchkv_k128": {
+        "decision": "tool_call lookup_order(order_id=A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 138,
+        "recompute_frac": 0.14300518134715026,
+        "latency_ms": 71.186
+      },
+      "patchkv_k256": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 266,
+        "recompute_frac": 0.2756476683937824,
+        "latency_ms": 77.304
+      },
+      "hoist_to_end": {
+        "decision": "tool_call lookup_order(A4471)",
+        "agree_oracle": true,
+        "recompute_tokens": 43,
+        "recompute_frac": 0.044513457556935816,
+        "latency_ms": 36.498,
+        "note": "field physically moved to suffix"
+      }
+    }
+  }
+]

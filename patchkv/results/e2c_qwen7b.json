@@ -1,0 +1,147 @@
+[
+  {
+    "scenario": "account_role",
+    "cls": "high",
+    "seq_len": 979,
+    "field_span": [
+      41,
+      43
+    ],
+    "gate_span": [
+      66,
+      88
+    ],
+    "gate_found": true,
+    "lines": {
+      "oracle_new": "tool_call escalate(queue=\"trust\", summary",
+      "oracle_old": "tool_call lookup_order(A4471)",
+      "field_only": "tool_call lookup_order(A4471)",
+      "field_plus_gate": "tool_call lookup_order(A4471)",
+      "field_plus_window": "tool_call lookup_order(A4471)",
+      "stale_full": "tool_call lookup_order(A4471)"
+    },
+    "decision_changed": true,
+    "field_only_tracks": false,
+    "field_plus_gate_tracks": false,
+    "field_plus_window_tracks": false,
+    "residual_gate_frac_downstream": 0.023529411764705882,
+    "residual_window_frac_downstream": 0.040641711229946524,
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "safety_mode",
+    "cls": "high",
+    "seq_len": 976,
+    "field_span": [
+      42,
+      43
+    ],
+    "gate_span": [
+      72,
+      98
+    ],
+    "gate_found": true,
+    "lines": {
+      "oracle_new": "tool_call refuse(reason=\"policy\")",
+      "oracle_old": "tool_call lookup_order(A4471)",
+      "field_only": "tool_call lookup_order(A4471)",
+      "field_plus_gate": "tool_call lookup_order(A4471)",
+      "field_plus_window": "tool_call refuse(reason=\"policy\")",
+      "stale_full": "tool_call lookup_order(A4471)"
+    },
+    "decision_changed": true,
+    "field_only_tracks": false,
+    "field_plus_gate_tracks": false,
+    "field_plus_window_tracks": true,
+    "residual_gate_frac_downstream": 0.027896995708154508,
+    "residual_window_frac_downstream": 0.045064377682403435,
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "subscription_tier",
+    "cls": "medium",
+    "seq_len": 973,
+    "field_span": [
+      42,
+      43
+    ],
+    "gate_span": [
+      72,
+      96
+    ],
+    "gate_found": true,
+    "lines": {
+      "oracle_new": "tool_call refuse(reason=\"tier\")",
+      "oracle_old": "tool_call expedite_shipping(order_id=\"A4471\")",
+      "field_only": "tool_call expedite_shipping(order_id=\"A4471\")",
+      "field_plus_gate": "tool_call expedite_shipping(order_id=\"A4471\")",
+      "field_plus_window": "tool_call expedite_shipping(order_id=\"A4471\")",
+      "stale_full": "tool_call expedite_shipping(order_id=\"A4471\")"
+    },
+    "decision_changed": true,
+    "field_only_tracks": false,
+    "field_plus_gate_tracks": false,
+    "field_plus_window_tracks": false,
+    "residual_gate_frac_downstream": 0.02583423035522067,
+    "residual_window_frac_downstream": 0.04305705059203445,
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "timestamp",
+    "cls": "low",
+    "seq_len": 974,
+    "field_span": [
+      47,
+      61
+    ],
+    "gate_span": [
+      91,
+      108
+    ],
+    "gate_found": true,
+    "lines": {
+      "oracle_new": "tool_call lookup_order(A4471)",
+      "oracle_old": "tool_call lookup_order(A4471)",
+      "field_only": "tool_call lookup_order(A4471)",
+      "field_plus_gate": "tool_call lookup_order(A4471)",
+      "field_plus_window": "tool_call lookup_order(A4471)",
+      "stale_full": "tool_call lookup_order(A4471)"
+    },
+    "decision_changed": false,
+    "field_only_tracks": true,
+    "field_plus_gate_tracks": true,
+    "field_plus_window_tracks": true,
+    "residual_gate_frac_downstream": 0.01864035087719298,
+    "residual_window_frac_downstream": 0.03618421052631579,
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "request_id",
+    "cls": "low",
+    "seq_len": 965,
+    "field_span": [
+      43,
+      53
+    ],
+    "gate_span": [
+      82,
+      99
+    ],
+    "gate_found": true,
+    "lines": {
+      "oracle_new": "tool_call lookup_order(A4471)",
+      "oracle_old": "tool_call lookup_order(A4471)",
+      "field_only": "tool_call lookup_order(A4471)",
+      "field_plus_gate": "tool_call lookup_order(A4471)",
+      "field_plus_window": "tool_call lookup_order(A4471)",
+      "stale_full": "tool_call lookup_order(A4471)"
+    },
+    "decision_changed": false,
+    "field_only_tracks": true,
+    "field_plus_gate_tracks": true,
+    "field_plus_window_tracks": true,
+    "residual_gate_frac_downstream": 0.018660812294182216,
+    "residual_window_frac_downstream": 0.036223929747530186,
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  }
+]

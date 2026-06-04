@@ -1,0 +1,62 @@
+{
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "field": "timestamp",
+  "flip": "2026-06-04T10:15:00Z->2026-11-23T22:47:09Z",
+  "recent_refresh": 0,
+  "n_steps": 5,
+  "steps": [
+    {
+      "step": 0,
+      "agree": true,
+      "oracle_tool": "issue_refund",
+      "patched_tool": "issue_refund",
+      "old_oracle_tool": "issue_refund",
+      "oracle_line": "issue_refund('A4471', 44.0) tool_call: escalate('trust', 'Mention of potential fraud regarding order A",
+      "patched_line": "issue_refund('A4471', 44.0) tool_call: escalate('trust', 'Mention of delay and potential fraud')"
+    },
+    {
+      "step": 1,
+      "agree": true,
+      "oracle_tool": "cancel_order",
+      "patched_tool": "cancel_order",
+      "old_oracle_tool": "cancel_order",
+      "oracle_line": "cancel_order('A4480') tool_call escalate('trust', 'Mention of potential fraud regarding order",
+      "patched_line": "cancel_order('A4480') tool_call escalate('trust', 'Mention of mistake and potential fraud"
+    },
+    {
+      "step": 2,
+      "agree": true,
+      "oracle_tool": "export_history",
+      "patched_tool": "export_history",
+      "old_oracle_tool": "export_history",
+      "oracle_line": "export_history('CSV') tool_call escalate('trust', 'Mention of potential fraud regarding order",
+      "patched_line": "export_history('CSV') tool_call escalate('trust', 'Mention of order history export and potential fraud"
+    },
+    {
+      "step": 3,
+      "agree": true,
+      "oracle_tool": "reset_password",
+      "patched_tool": "reset_password",
+      "old_oracle_tool": "reset_password",
+      "oracle_line": "reset_password() tool_call escalate('trust', 'Mention of potential fraud regarding order",
+      "patched_line": "reset_password() tool_call escalate('trust', 'Mention of password reset and potential fraud"
+    },
+    {
+      "step": 4,
+      "agree": true,
+      "oracle_tool": "merge_account",
+      "patched_tool": "merge_account",
+      "old_oracle_tool": "merge_account",
+      "oracle_line": "merge_account('B-2231') tool_call escalate('trust', 'Mention of potential fraud regarding order",
+      "patched_line": "merge_account('B-2231') tool_call escalate('trust', 'Mention of account merging and potential fraud"
+    }
+  ],
+  "agreement_rate": 1.0,
+  "oracle_changed_per_step": [
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

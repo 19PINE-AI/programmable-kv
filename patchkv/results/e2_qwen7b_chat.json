@@ -1,0 +1,312 @@
+[
+  {
+    "field": "timestamp",
+    "cls": "low",
+    "magnitude": "semantic",
+    "n_cond_rules": 0,
+    "seq_len": 1168,
+    "field_span": [
+      47,
+      61
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "request_id",
+    "cls": "low",
+    "magnitude": "semantic",
+    "n_cond_rules": 0,
+    "seq_len": 1159,
+    "field_span": [
+      43,
+      53
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "session_counter",
+    "cls": "low",
+    "magnitude": "semantic",
+    "n_cond_rules": 0,
+    "seq_len": 1151,
+    "field_span": [
+      43,
+      45
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "nonce",
+    "cls": "low",
+    "magnitude": "semantic",
+    "n_cond_rules": 0,
+    "seq_len": 1160,
+    "field_span": [
+      41,
+      54
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "locale",
+    "cls": "medium",
+    "magnitude": "semantic",
+    "n_cond_rules": 3,
+    "seq_len": 1191,
+    "field_span": [
+      40,
+      43
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "subscription_tier",
+    "cls": "medium",
+    "magnitude": "semantic",
+    "n_cond_rules": 3,
+    "seq_len": 1194,
+    "field_span": [
+      42,
+      43
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "region",
+    "cls": "medium",
+    "magnitude": "semantic",
+    "n_cond_rules": 3,
+    "seq_len": 1191,
+    "field_span": [
+      41,
+      45
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "account_role",
+    "cls": "high",
+    "magnitude": "semantic",
+    "n_cond_rules": 10,
+    "seq_len": 1313,
+    "field_span": [
+      41,
+      43
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "safety_mode",
+    "cls": "high",
+    "magnitude": "semantic",
+    "n_cond_rules": 8,
+    "seq_len": 1271,
+    "field_span": [
+      42,
+      43
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=\"A4471\", address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  },
+  {
+    "field": "persona",
+    "cls": "high",
+    "magnitude": "semantic",
+    "n_cond_rules": 5,
+    "seq_len": 1228,
+    "field_span": [
+      41,
+      48
+    ],
+    "lines": {
+      "oracle_new": "tool_call modify_address(order_id=A4471, address=\"88 New Ave\")",
+      "oracle_old": "tool_call modify_address(order_id=A4471, address=\"88 New Ave\")",
+      "patched": "tool_call modify_address(order_id=A4471, address=\"88 New Ave\")",
+      "stale_full": "tool_call modify_address(order_id=A4471, address=\"88 New Ave\")"
+    },
+    "first_tok": {
+      "oracle_new": 14172,
+      "oracle_old": 14172,
+      "patched": 14172,
+      "stale_full": 14172
+    },
+    "patched_eq_oracle_new": true,
+    "patched_firsttok_eq_oracle_new": true,
+    "patched_toptok_agree_oracle_new": 1.0,
+    "stale_eq_oracle_new": true,
+    "decision_changed": false,
+    "patched_tracks_change": false,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b_chat"
+  }
+]

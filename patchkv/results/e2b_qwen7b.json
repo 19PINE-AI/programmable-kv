@@ -1,0 +1,127 @@
+[
+  {
+    "scenario": "account_role",
+    "cls": "high",
+    "field_span": [
+      41,
+      43
+    ],
+    "seq_len": 979,
+    "v_old": "verified_admin",
+    "v_new": "suspended_user",
+    "exp_old": "issue_refund",
+    "exp_new": "escalate",
+    "lines": {
+      "oracle_new": "tool_call escalate(queue=\"trust\", summary",
+      "oracle_old": "tool_call lookup_order(A4471)",
+      "patched": "tool_call lookup_order(A4471)",
+      "stale_full": "tool_call lookup_order(A4471)"
+    },
+    "decision_changed": true,
+    "patched_tracks": false,
+    "stale_tracks": false,
+    "patched_eq_stale": true,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b"
+  },
+  {
+    "scenario": "safety_mode",
+    "cls": "high",
+    "field_span": [
+      42,
+      43
+    ],
+    "seq_len": 976,
+    "v_old": "standard",
+    "v_new": "restricted",
+    "exp_old": "share_payment_method",
+    "exp_new": "refuse",
+    "lines": {
+      "oracle_new": "tool_call refuse(reason=\"policy\")",
+      "oracle_old": "tool_call lookup_order(A4471)",
+      "patched": "tool_call lookup_order(A4471)",
+      "stale_full": "tool_call lookup_order(A4471)"
+    },
+    "decision_changed": true,
+    "patched_tracks": false,
+    "stale_tracks": false,
+    "patched_eq_stale": true,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b"
+  },
+  {
+    "scenario": "subscription_tier",
+    "cls": "medium",
+    "field_span": [
+      42,
+      43
+    ],
+    "seq_len": 973,
+    "v_old": "enterprise",
+    "v_new": "standard",
+    "exp_old": "expedite_shipping",
+    "exp_new": "refuse",
+    "lines": {
+      "oracle_new": "tool_call refuse(reason=\"tier\")",
+      "oracle_old": "tool_call expedite_shipping(order_id=\"A4471\")",
+      "patched": "tool_call expedite_shipping(order_id=\"A4471\")",
+      "stale_full": "tool_call expedite_shipping(order_id=\"A4471\")"
+    },
+    "decision_changed": true,
+    "patched_tracks": false,
+    "stale_tracks": false,
+    "patched_eq_stale": true,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b"
+  },
+  {
+    "scenario": "timestamp",
+    "cls": "low",
+    "field_span": [
+      47,
+      61
+    ],
+    "seq_len": 974,
+    "v_old": "2026-06-04T10:15:00Z",
+    "v_new": "2026-11-23T22:47:09Z",
+    "exp_old": "issue_refund",
+    "exp_new": "issue_refund",
+    "lines": {
+      "oracle_new": "tool_call lookup_order(A4471)",
+      "oracle_old": "tool_call lookup_order(A4471)",
+      "patched": "tool_call lookup_order(A4471)",
+      "stale_full": "tool_call lookup_order(A4471)"
+    },
+    "decision_changed": false,
+    "patched_tracks": true,
+    "stale_tracks": true,
+    "patched_eq_stale": true,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b"
+  },
+  {
+    "scenario": "request_id",
+    "cls": "low",
+    "field_span": [
+      43,
+      53
+    ],
+    "seq_len": 965,
+    "v_old": "req_8f2a1c4d9e",
+    "v_new": "req_3b7e0a96f1",
+    "exp_old": "issue_refund",
+    "exp_new": "issue_refund",
+    "lines": {
+      "oracle_new": "tool_call lookup_order(A4471)",
+      "oracle_old": "tool_call lookup_order(A4471)",
+      "patched": "tool_call lookup_order(A4471)",
+      "stale_full": "tool_call lookup_order(A4471)"
+    },
+    "decision_changed": false,
+    "patched_tracks": true,
+    "stale_tracks": true,
+    "patched_eq_stale": true,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "tag": "qwen7b"
+  }
+]

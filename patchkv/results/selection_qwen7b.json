@@ -1,0 +1,962 @@
+[
+  {
+    "scenario": "account_role",
+    "cls": "high",
+    "seq_len": 979,
+    "downstream": 935,
+    "field_span": [
+      41,
+      43
+    ],
+    "oracle_old": "tool_call lookup_order(A4471)",
+    "oracle_new": "tool_call escalate(queue=\"trust\", summary",
+    "decision_changed": true,
+    "min_recover": {
+      "deviation": 0.3,
+      "recency": 0.5,
+      "random": 0.5
+    },
+    "sweep": {
+      "deviation": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": false
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": false
+        },
+        {
+          "frac": 0.05,
+          "k": 47,
+          "tracks": false
+        },
+        {
+          "frac": 0.1,
+          "k": 94,
+          "tracks": false
+        },
+        {
+          "frac": 0.15,
+          "k": 140,
+          "tracks": false
+        },
+        {
+          "frac": 0.2,
+          "k": 187,
+          "tracks": false
+        },
+        {
+          "frac": 0.3,
+          "k": 280,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 468,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 701,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 935,
+          "tracks": true
+        }
+      ],
+      "recency": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": false
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": false
+        },
+        {
+          "frac": 0.05,
+          "k": 47,
+          "tracks": false
+        },
+        {
+          "frac": 0.1,
+          "k": 94,
+          "tracks": false
+        },
+        {
+          "frac": 0.15,
+          "k": 140,
+          "tracks": false
+        },
+        {
+          "frac": 0.2,
+          "k": 187,
+          "tracks": false
+        },
+        {
+          "frac": 0.3,
+          "k": 280,
+          "tracks": false
+        },
+        {
+          "frac": 0.5,
+          "k": 468,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 701,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 935,
+          "tracks": true
+        }
+      ],
+      "random": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": false
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": false
+        },
+        {
+          "frac": 0.05,
+          "k": 47,
+          "tracks": false
+        },
+        {
+          "frac": 0.1,
+          "k": 94,
+          "tracks": false
+        },
+        {
+          "frac": 0.15,
+          "k": 140,
+          "tracks": false
+        },
+        {
+          "frac": 0.2,
+          "k": 187,
+          "tracks": false
+        },
+        {
+          "frac": 0.3,
+          "k": 280,
+          "tracks": false
+        },
+        {
+          "frac": 0.5,
+          "k": 468,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 701,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 935,
+          "tracks": true
+        }
+      ]
+    },
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "safety_mode",
+    "cls": "high",
+    "seq_len": 976,
+    "downstream": 932,
+    "field_span": [
+      42,
+      43
+    ],
+    "oracle_old": "tool_call lookup_order(A4471)",
+    "oracle_new": "tool_call refuse(reason=\"policy\")",
+    "decision_changed": true,
+    "min_recover": {
+      "deviation": 0.05,
+      "recency": 0.01,
+      "random": 1.0
+    },
+    "sweep": {
+      "deviation": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": false
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": false
+        },
+        {
+          "frac": 0.05,
+          "k": 47,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 93,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 140,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 186,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 280,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 466,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 699,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 932,
+          "tracks": true
+        }
+      ],
+      "recency": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": true
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": true
+        },
+        {
+          "frac": 0.05,
+          "k": 47,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 93,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 140,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 186,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 280,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 466,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 699,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 932,
+          "tracks": true
+        }
+      ],
+      "random": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": false
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": false
+        },
+        {
+          "frac": 0.05,
+          "k": 47,
+          "tracks": false
+        },
+        {
+          "frac": 0.1,
+          "k": 93,
+          "tracks": false
+        },
+        {
+          "frac": 0.15,
+          "k": 140,
+          "tracks": false
+        },
+        {
+          "frac": 0.2,
+          "k": 186,
+          "tracks": false
+        },
+        {
+          "frac": 0.3,
+          "k": 280,
+          "tracks": false
+        },
+        {
+          "frac": 0.5,
+          "k": 466,
+          "tracks": false
+        },
+        {
+          "frac": 0.75,
+          "k": 699,
+          "tracks": false
+        },
+        {
+          "frac": 1.0,
+          "k": 932,
+          "tracks": true
+        }
+      ]
+    },
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "subscription_tier",
+    "cls": "medium",
+    "seq_len": 973,
+    "downstream": 929,
+    "field_span": [
+      42,
+      43
+    ],
+    "oracle_old": "tool_call expedite_shipping(order_id=\"A4471\")",
+    "oracle_new": "tool_call refuse(reason=\"tier\")",
+    "decision_changed": true,
+    "min_recover": {
+      "deviation": 0.05,
+      "recency": 0.05,
+      "random": 1.0
+    },
+    "sweep": {
+      "deviation": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": false
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": false
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 93,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 139,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 186,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 279,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 464,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 697,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 929,
+          "tracks": true
+        }
+      ],
+      "recency": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": false
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": false
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 93,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 139,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 186,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 279,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 464,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 697,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 929,
+          "tracks": true
+        }
+      ],
+      "random": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": false
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": false
+        },
+        {
+          "frac": 0.02,
+          "k": 19,
+          "tracks": false
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": false
+        },
+        {
+          "frac": 0.1,
+          "k": 93,
+          "tracks": false
+        },
+        {
+          "frac": 0.15,
+          "k": 139,
+          "tracks": false
+        },
+        {
+          "frac": 0.2,
+          "k": 186,
+          "tracks": false
+        },
+        {
+          "frac": 0.3,
+          "k": 279,
+          "tracks": false
+        },
+        {
+          "frac": 0.5,
+          "k": 464,
+          "tracks": false
+        },
+        {
+          "frac": 0.75,
+          "k": 697,
+          "tracks": false
+        },
+        {
+          "frac": 1.0,
+          "k": 929,
+          "tracks": true
+        }
+      ]
+    },
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "timestamp",
+    "cls": "low",
+    "seq_len": 974,
+    "downstream": 912,
+    "field_span": [
+      47,
+      61
+    ],
+    "oracle_old": "tool_call lookup_order(A4471)",
+    "oracle_new": "tool_call lookup_order(A4471)",
+    "decision_changed": false,
+    "min_recover": {
+      "deviation": 0.0,
+      "recency": 0.0,
+      "random": 0.0
+    },
+    "sweep": {
+      "deviation": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": true
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": true
+        },
+        {
+          "frac": 0.02,
+          "k": 18,
+          "tracks": true
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 91,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 137,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 182,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 274,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 456,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 684,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 912,
+          "tracks": true
+        }
+      ],
+      "recency": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": true
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": true
+        },
+        {
+          "frac": 0.02,
+          "k": 18,
+          "tracks": true
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 91,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 137,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 182,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 274,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 456,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 684,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 912,
+          "tracks": true
+        }
+      ],
+      "random": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": true
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": true
+        },
+        {
+          "frac": 0.02,
+          "k": 18,
+          "tracks": true
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 91,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 137,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 182,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 274,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 456,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 684,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 912,
+          "tracks": true
+        }
+      ]
+    },
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  {
+    "scenario": "request_id",
+    "cls": "low",
+    "seq_len": 965,
+    "downstream": 911,
+    "field_span": [
+      43,
+      53
+    ],
+    "oracle_old": "tool_call lookup_order(A4471)",
+    "oracle_new": "tool_call lookup_order(A4471)",
+    "decision_changed": false,
+    "min_recover": {
+      "deviation": 0.0,
+      "recency": 0.0,
+      "random": 0.0
+    },
+    "sweep": {
+      "deviation": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": true
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": true
+        },
+        {
+          "frac": 0.02,
+          "k": 18,
+          "tracks": true
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 91,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 137,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 182,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 273,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 456,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 683,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 911,
+          "tracks": true
+        }
+      ],
+      "recency": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": true
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": true
+        },
+        {
+          "frac": 0.02,
+          "k": 18,
+          "tracks": true
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 91,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 137,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 182,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 273,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 456,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 683,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 911,
+          "tracks": true
+        }
+      ],
+      "random": [
+        {
+          "frac": 0.0,
+          "k": 0,
+          "tracks": true
+        },
+        {
+          "frac": 0.01,
+          "k": 9,
+          "tracks": true
+        },
+        {
+          "frac": 0.02,
+          "k": 18,
+          "tracks": true
+        },
+        {
+          "frac": 0.05,
+          "k": 46,
+          "tracks": true
+        },
+        {
+          "frac": 0.1,
+          "k": 91,
+          "tracks": true
+        },
+        {
+          "frac": 0.15,
+          "k": 137,
+          "tracks": true
+        },
+        {
+          "frac": 0.2,
+          "k": 182,
+          "tracks": true
+        },
+        {
+          "frac": 0.3,
+          "k": 273,
+          "tracks": true
+        },
+        {
+          "frac": 0.5,
+          "k": 456,
+          "tracks": true
+        },
+        {
+          "frac": 0.75,
+          "k": 683,
+          "tracks": true
+        },
+        {
+          "frac": 1.0,
+          "k": 911,
+          "tracks": true
+        }
+      ]
+    },
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  }
+]

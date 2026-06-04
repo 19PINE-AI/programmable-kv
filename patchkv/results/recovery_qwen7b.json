@@ -1,0 +1,362 @@
+[
+  {
+    "scenario": "account_role",
+    "cls": "high",
+    "seq_len": 979,
+    "downstream": 935,
+    "oracle_old": "tool_call lookup_order(A4471)",
+    "oracle_new": "tool_call escalate(queue=\"trust\", summary",
+    "decision_changed": true,
+    "min_recover_frac": 0.2737967914438503,
+    "sweep": [
+      {
+        "K": 0,
+        "frac_down": 0.0,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 8,
+        "frac_down": 0.008556149732620321,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 16,
+        "frac_down": 0.017112299465240642,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 32,
+        "frac_down": 0.034224598930481284,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 64,
+        "frac_down": 0.06844919786096257,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 128,
+        "frac_down": 0.13689839572192514,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 192,
+        "frac_down": 0.2053475935828877,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 256,
+        "frac_down": 0.2737967914438503,
+        "tracks": true,
+        "line": "tool_call escalate(queue=\"trust\", summary"
+      },
+      {
+        "K": 384,
+        "frac_down": 0.4106951871657754,
+        "tracks": true,
+        "line": "tool_call escalate(queue=\"trust\", summary"
+      },
+      {
+        "K": 512,
+        "frac_down": 0.5475935828877005,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      }
+    ]
+  },
+  {
+    "scenario": "safety_mode",
+    "cls": "high",
+    "seq_len": 976,
+    "downstream": 932,
+    "oracle_old": "tool_call lookup_order(A4471)",
+    "oracle_new": "tool_call refuse(reason=\"policy\")",
+    "decision_changed": true,
+    "min_recover_frac": 0.008583690987124463,
+    "sweep": [
+      {
+        "K": 0,
+        "frac_down": 0.0,
+        "tracks": false,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 8,
+        "frac_down": 0.008583690987124463,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      },
+      {
+        "K": 16,
+        "frac_down": 0.017167381974248927,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      },
+      {
+        "K": 32,
+        "frac_down": 0.034334763948497854,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      },
+      {
+        "K": 64,
+        "frac_down": 0.06866952789699571,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      },
+      {
+        "K": 128,
+        "frac_down": 0.13733905579399142,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      },
+      {
+        "K": 192,
+        "frac_down": 0.20600858369098712,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      },
+      {
+        "K": 256,
+        "frac_down": 0.27467811158798283,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      },
+      {
+        "K": 384,
+        "frac_down": 0.41201716738197425,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      },
+      {
+        "K": 512,
+        "frac_down": 0.5493562231759657,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"policy\")"
+      }
+    ]
+  },
+  {
+    "scenario": "subscription_tier",
+    "cls": "medium",
+    "seq_len": 973,
+    "downstream": 929,
+    "oracle_old": "tool_call expedite_shipping(order_id=\"A4471\")",
+    "oracle_new": "tool_call refuse(reason=\"tier\")",
+    "decision_changed": true,
+    "min_recover_frac": 0.0688912809472551,
+    "sweep": [
+      {
+        "K": 0,
+        "frac_down": 0.0,
+        "tracks": false,
+        "line": "tool_call expedite_shipping(order_id=\"A4471\")"
+      },
+      {
+        "K": 8,
+        "frac_down": 0.008611410118406888,
+        "tracks": false,
+        "line": "tool_call expedite_shipping(order_id=\"A4471\")"
+      },
+      {
+        "K": 16,
+        "frac_down": 0.017222820236813777,
+        "tracks": false,
+        "line": "tool_call expedite_shipping(order_id=\"A4471\")"
+      },
+      {
+        "K": 32,
+        "frac_down": 0.03444564047362755,
+        "tracks": false,
+        "line": "tool_call expedite_shipping(order_id=\"A4471\")"
+      },
+      {
+        "K": 64,
+        "frac_down": 0.0688912809472551,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"tier\")"
+      },
+      {
+        "K": 128,
+        "frac_down": 0.1377825618945102,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"tier\")"
+      },
+      {
+        "K": 192,
+        "frac_down": 0.20667384284176535,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"tier\")"
+      },
+      {
+        "K": 256,
+        "frac_down": 0.2755651237890204,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"tier\")"
+      },
+      {
+        "K": 384,
+        "frac_down": 0.4133476856835307,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"tier\")"
+      },
+      {
+        "K": 512,
+        "frac_down": 0.5511302475780409,
+        "tracks": true,
+        "line": "tool_call refuse(reason=\"tier\")"
+      }
+    ]
+  },
+  {
+    "scenario": "timestamp",
+    "cls": "low",
+    "seq_len": 974,
+    "downstream": 912,
+    "oracle_old": "tool_call lookup_order(A4471)",
+    "oracle_new": "tool_call lookup_order(A4471)",
+    "decision_changed": false,
+    "min_recover_frac": 0.0,
+    "sweep": [
+      {
+        "K": 0,
+        "frac_down": 0.0,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 8,
+        "frac_down": 0.008771929824561403,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 16,
+        "frac_down": 0.017543859649122806,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 32,
+        "frac_down": 0.03508771929824561,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 64,
+        "frac_down": 0.07017543859649122,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 128,
+        "frac_down": 0.14035087719298245,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 192,
+        "frac_down": 0.21052631578947367,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 256,
+        "frac_down": 0.2807017543859649,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 384,
+        "frac_down": 0.42105263157894735,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 512,
+        "frac_down": 0.5614035087719298,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      }
+    ]
+  },
+  {
+    "scenario": "request_id",
+    "cls": "low",
+    "seq_len": 965,
+    "downstream": 911,
+    "oracle_old": "tool_call lookup_order(A4471)",
+    "oracle_new": "tool_call lookup_order(A4471)",
+    "decision_changed": false,
+    "min_recover_frac": 0.0,
+    "sweep": [
+      {
+        "K": 0,
+        "frac_down": 0.0,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 8,
+        "frac_down": 0.008781558726673985,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 16,
+        "frac_down": 0.01756311745334797,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 32,
+        "frac_down": 0.03512623490669594,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 64,
+        "frac_down": 0.07025246981339188,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 128,
+        "frac_down": 0.14050493962678376,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 192,
+        "frac_down": 0.21075740944017562,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 256,
+        "frac_down": 0.2810098792535675,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 384,
+        "frac_down": 0.42151481888035125,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      },
+      {
+        "K": 512,
+        "frac_down": 0.562019758507135,
+        "tracks": true,
+        "line": "tool_call lookup_order(A4471)"
+      }
+    ]
+  }
+]
