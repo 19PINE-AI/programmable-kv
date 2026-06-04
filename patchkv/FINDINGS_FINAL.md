@@ -35,6 +35,12 @@ field edit on an already-cached context
 ```
 Never required: recomputing the static policy/prefix (always reused for free, deviation 0.0).
 
+**Bottom line:** the safe default is **erratum (~6%)** — it is correct with and without
+thinking, robust to contradictory stale context (more robust than a full reprefill),
+and keeps the field in place. **field-only (~0.1%)** is the cheaper option that works in
+benign contexts on thinking models but is fooled by poisoned context and wobbles at
+scale. Both beat full reprefill on cost and beat hoist-to-end on programmability.
+
 ---
 
 ## The journey (why the recipe is what it is)
@@ -86,7 +92,27 @@ both cost and programmability.
   explicit "overrides any earlier value and conclusion" instruction beats a silent KV change.
 
 ### 5. Multi-sample robustness (rates over CoT variance)
-<!-- MULTISAMPLE_PLACEHOLDER -->
+Because a single greedy CoT is high-variance, we sample k=6 completions (temp 0.7,
+Qwen3-8B) per method and report rates. **Benign** account_role (correct=escalate,
+unsafe=issue_refund):
+
+| method | P_correct | P_unsafe |
+|---|---|---|
+| oracle_new | 1.00 | 0.00 |
+| stale_full | 0.00 | 0.33 |
+| **field_only (~0.1%)** | **0.83** | **0.00** |
+| **erratum (~6%)** | **1.00** | **0.00** |
+
+(Caveat: the 896-token budget at temp 0.7 leaves a few samples with unfinished CoT,
+counted as neither correct nor unsafe — this depresses raw P_correct slightly, e.g.
+field_only's lone "number" token; it does not affect P_unsafe.)
+
+Reading it together with §3–§4: in a **benign** context both field_only and erratum
+drive the unsafe rate to **0** (stale_full leaves 33% unsafe), and field_only's
+clean-case reliability (0.83, 0 unsafe) confirms the 8B success was not a fluke. In a
+**poisoned** context (§4) field_only flips to unsafe and **only the erratum stays
+safe**. So the variance/scale wobble of field-only is real but bounded in benign
+contexts; the erratum removes it and additionally survives contradiction.
 
 ---
 
