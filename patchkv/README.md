@@ -1,3 +1,13 @@
+# PatchKV — editable KV cache
+
+> **Start here: [`FINDINGS_FINAL.md`](FINDINGS_FINAL.md)** — the consolidated result.
+> **Editable KV works:** keep the field in place → inject a cheap salient suffix *erratum*
+> (~6%, recompute only that span; robust even to contradictory stale context) → leave the
+> static bulk stale. On thinking models in benign contexts, a ~0.1% field-token refresh
+> suffices (CoT re-reads the field). Both beat full reprefill on cost and hoist-to-end on
+> programmability. Detailed phase docs: `FINDINGS_E1_E2.md`, `FINDINGS_EXTENSIONS.md`,
+> `FINDINGS_MAKING_IT_WORK.md`.
+
 # PatchKV — E1/E2 go/no-go harness
 
 Autonomous implementation of the decisive first experiments from
