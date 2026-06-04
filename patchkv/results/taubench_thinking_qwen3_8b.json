@@ -1,0 +1,44 @@
+[
+  {
+    "scenario": "order_status_cancel",
+    "cls": "high",
+    "field": "order_status",
+    "seq_len": 1481,
+    "field_span": [
+      1403,
+      1405
+    ],
+    "exact_reuse_frac": 0.9473328831870358,
+    "field_recompute_frac": 0.0013504388926401081,
+    "oracle_new": "(unfinished)",
+    "oracle_old": "cancel_pending_order",
+    "field_only": "method",
+    "decision_changed": true,
+    "field_only_recovers": false,
+    "think_tokens": {
+      "oracle": 1536,
+      "field_only": 323
+    }
+  },
+  {
+    "scenario": "current_date",
+    "cls": "low",
+    "field": "current_time",
+    "seq_len": 1505,
+    "field_span": [
+      13,
+      23
+    ],
+    "exact_reuse_frac": 0.008637873754152824,
+    "field_recompute_frac": 0.006644518272425249,
+    "oracle_new": "cancel_pending_order",
+    "oracle_old": "cancel_pending_order",
+    "field_only": "cancel_pending_order",
+    "decision_changed": false,
+    "field_only_recovers": true,
+    "think_tokens": {
+      "oracle": 279,
+      "field_only": 279
+    }
+  }
+]
