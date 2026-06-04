@@ -103,9 +103,14 @@ unsafe=issue_refund):
 | **field_only (~0.1%)** | **0.83** | **0.00** |
 | **erratum (~6%)** | **1.00** | **0.00** |
 
-(Caveat: the 896-token budget at temp 0.7 leaves a few samples with unfinished CoT,
-counted as neither correct nor unsafe — this depresses raw P_correct slightly, e.g.
-field_only's lone "number" token; it does not affect P_unsafe.)
+(Caveat: the 896-token budget at temp 0.7 leaves some samples with unfinished CoT,
+counted as neither correct nor unsafe. account_role's CoT is short so it is clean; the
+longer-reasoning scenarios (safety_mode ≈1.4k CoT tokens) are truncation-noise-limited
+— even their *oracle* P_correct drops (~0.33) from unparsed output. **P_unsafe stays
+meaningful under truncation** (no sample does the violating action), so we read this as:
+field_only/erratum reliably avoid the unsafe action in benign contexts; P_correct here
+is a lower bound, not a true accuracy. The full 3-scenario json is in
+`results/multisample_qwen3_8b.json`.)
 
 Reading it together with §3–§4: in a **benign** context both field_only and erratum
 drive the unsafe rate to **0** (stale_full leaves 33% unsafe), and field_only's
