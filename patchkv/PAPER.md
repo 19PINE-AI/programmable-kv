@@ -146,6 +146,19 @@ raise the margin to eliminate over-correction (P=1.0 at margin 0.5). The diagnos
 conservative heuristic, not a perfect oracle — distinguishing the two classes *cheaply* is
 inherently approximate (a faithful reference is what is expensive).
 
+## 5d. Robustness: multi-field edits and multi-edit accumulation
+- **Multi-field (interference).** A decision gated by *two* fields (account_role AND order_status).
+  Flipping one, the other, or both, the erratum recovers the correct *joint* decision **4/4** in
+  every case (stale **0/4**), and a no-op arm stays correct **4/4** — editing one field does not
+  corrupt the other's contribution, and there is no over-correction. (`esys/robustness_multi.py`.)
+- **Multi-edit (accumulation).** A field evolving through a *sequence* of values. Monotonic chains
+  work: stacked sequential erratums track the latest value **4/4** (= a direct reprefill to the
+  final value). **Honest failure mode:** a *non-monotonic* chain (pending→processed→cancelled→
+  pending) breaks the stacked form **0/4** — once a salient terminal state ("cancelled") enters the
+  stack, the model ignores a later "pending" erratum (a direct reprefill to the current value is
+  4/4). **Guidance:** for repeated edits to one field, collapse to a *single* current-value erratum
+  rather than stacking the history; the library applies one erratum per current value by default.
+
 ## 6. Generalization
 
 - **8 diverse domains** (retail, airline, devops, banking-numeric, access-control, clinical
@@ -249,10 +262,13 @@ decision swing restored. Qwen3-8B, n=12 aligned flip instances:
 - **Distributed but identifiable, not holographic:** ~16 well-chosen positions recover 94%;
   the strongest single sites split across the policy-rule, reasoning, and decision regions.
   **Layer band:** mid/late layers carry it (early ≈0).
-- **Generalizes across scale and family** (field-only recovery, full-downstream=1.0, suffix-
-  concentrated everywhere): Qwen3-4B 0.025 / 8B 0.009 / 14B 0.008, Gemma-2-9B 0.001, Mistral-7B
-  0.004 (and 32B / Gemma-2-27B / DeepSeek-V2-Lite-MLA reported in `results/d1_scale_mla.json`).
-  The causal account is not Qwen3-8B-specific. (`esys/mech_causal_patch.py`.)
+- **Generalizes across scale and family** (field-only recovery near 0, full-downstream=1.0,
+  suffix-concentrated everywhere): Qwen3-4B 0.025 / 8B 0.009 / 14B 0.008 / **32B 0.023**,
+  Gemma-2-9B 0.001, Mistral-7B 0.004. The causal account is not Qwen3-8B-specific and holds up to
+  32B. (MLA backbones — DeepSeek-V2-Lite — could not be patched here: the HF custom modeling is
+  incompatible with transformers 4.57 and vLLM's flashinfer MLA kernels do not compile for this
+  Blackwell `sm_120` GPU; the erratum is architecture-agnostic by construction, but an MLA-aware
+  *in_place* edit of the compressed latent KV is genuine future work.) (`esys/mech_causal_patch.py`.)
 
 ### 7.2 Linear probing (independent of patching) (D3)
 A cross-domain linear probe for the gated *conclusion* (8 diverse domains, leave-one-domain-
@@ -351,8 +367,28 @@ the field span's KV in place is **0.16 ms** (no clone/realloc) — the measured 
 partial-prefill recompute and decode, not the edit. `torch.compile` gives only a **modest ~1.2×**
 on the partial prefill and ~1.26× on decode *with StaticCache* (and *hurts* decode with
 `DynamicCache`, which graph-breaks). So the win is algorithmic (recompute a few tokens, not the
-whole context), not a compile flag; a genuine fused "in-place-edit + selective-recompute +
-paged-attention" operator is a serving-engine (vLLM/SGLang) integration — future work.
+whole context), not a compile flag.
+
+### 8c. Closed integration on a real PagedAttention engine (vLLM)
+The erratum is **append-only**, so it composes directly with a production paged-attention engine's
+content-addressed automatic prefix caching (APC): the long policy prefix stays cached and only the
+short erratum suffix is computed. The naive alternative — putting the new field value into the
+context — *mutates a token inside the cached prefix*, changing that block's content hash and
+**invalidating every downstream block**, so the engine recomputes from the field position onward.
+We demonstrate this on **vLLM 0.19** (prefix caching ON), with the mutable field placed early
+(before the long policy), 48 requests, Qwen3-8B:
+
+| arm | throughput | latency |
+|---|---|---|
+| baseline (new field in prefix → downstream invalidated) | 8.2 req/s | 121 ms/req |
+| **erratum (append-only → prefix is an APC hit)** | **134.8 req/s** | **7.4 ms/req** |
+
+**16.4× throughput** on a real engine — the production realization of the erratum design. (This
+also clarifies why the erratum, not the in_place edit, is the serving-friendly mode: an in-prefix
+field edit is exactly what breaks content-addressed prefix caching.) Implementation note: this
+machine's NVML userspace lib (595.71) mismatches its kernel driver (595.58), breaking vLLM's
+NVML-based platform detection (torch.cuda is unaffected); we force the CUDA platform plugin and a
+single-process engine to work around it. (`esys/vllm_editkv_serving.py`.)
 
 ## 9. Limitations
 - Behavioral scenarios are mostly single gated decisions; we *do* now close part of this gap with
@@ -377,9 +413,15 @@ paged-attention" operator is a serving-engine (vLLM/SGLang) integration — futu
   here. The *scale reversal* of CoT helpfulness is characterized (§7.3/7.5) — the CoT-re-read
   circuit explains *why* reasoning helps and why it can backfire — but a full per-scale circuit
   account is open.
-- Serving numbers (§8b) are HF-level (CUDA events); a paged-attention engine integration would
-  only widen the gap but is not yet built. The 32K×large-batch points OOM a single 96 GB GPU in
+- Serving numbers (§8b) are HF-level (CUDA events); the §8c vLLM integration confirms the win on a
+  real paged-attention engine (16.4×). The 32K×large-batch HF points OOM a single 96 GB GPU in
   bf16 (measured to 32K at bs=1, 16K at bs=8).
+- **MLA backbones are untested here** due to environment toolchain blocks (DeepSeek custom modeling
+  vs transformers 4.57; flashinfer MLA kernels vs Blackwell `sm_120`), not anything intrinsic to
+  editkv. The erratum (append-only) is architecture-agnostic; the open question is an MLA-aware
+  in_place edit of the shared compressed latent KV. **Multi-edit** of one field is robust only when
+  collapsed to the current value — stacking a non-monotonic history can let a salient intermediate
+  state dominate (§5d).
 
 ## 10. Conclusion
 Editable KV is viable, but the naive cheap edit is *not* a free lunch: the decision reads the

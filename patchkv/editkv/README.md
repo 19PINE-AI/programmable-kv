@@ -65,9 +65,13 @@ one-forward pre-filter.
   otherwise it raises `LengthChangeError` — use `ERRATUM` (length-agnostic). `AUTO`/`ERRATUM`
   handle length changes transparently.
 - Built on HF `DynamicCache`; the per-edit cache is cloned for safety. For production
-  throughput, integrate the edit (in-place KV overwrite is ~0.16 ms) + suffix-recompute into a
-  paged-attention serving engine (vLLM/SGLang) — the edit itself is trivially cheap; the cost
-  is the partial recompute, which is a few percent vs a full reprefill.
+  throughput, the `ERRATUM` mode is *append-only*, so it composes directly with a paged-attention
+  engine's prefix caching (vLLM automatic prefix caching gives **16.4× throughput** vs putting the
+  new value back in the prefix — see `esys/vllm_editkv_serving.py`). A naive in-prefix field edit
+  invalidates downstream cache blocks, which is exactly why the erratum is the serving-friendly mode.
+- **Repeated edits to one field:** apply a *single* erratum for the **current** value rather than
+  stacking the edit history — a non-monotonic history (e.g. `A→B→A`) can let a salient intermediate
+  state dominate. Multi-*field* edits (different fields) compose without interference.
 - `trigger_template` is configurable on `EditableContext`.
 
 Run the demo: `python -m editkv.example Qwen/Qwen3-8B`
