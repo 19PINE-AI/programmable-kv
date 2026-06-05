@@ -179,6 +179,14 @@ small (~27–94 ms)**, so the saving grows with length — at 10K context **~42�
 TTFT reduction *with* correctness (→oracle, §5) *and* natural placement, and uniquely retains
 correctness under contradictory context. (field+erratum ~67–83 ms; still ≪ full at large T.)
 
+**On kernels / `torch.compile`.** The *edit itself* is trivial: with a `StaticCache`, overwriting
+the field span's KV in place is **0.16 ms** (no clone/realloc) — the measured cost is the
+partial-prefill recompute and decode, not the edit. `torch.compile` gives only a **modest ~1.2×**
+on the partial prefill and ~1.26× on decode *with StaticCache* (and *hurts* decode with
+`DynamicCache`, which graph-breaks). So the win is algorithmic (recompute a few tokens, not the
+whole context), not a compile flag; a genuine fused "in-place-edit + selective-recompute +
+paged-attention" operator is a serving-engine (vLLM/SGLang) integration — future work.
+
 ## 9. Limitations
 - Synthetic + τ-bench scenarios; single gated decisions, not full multi-turn task success.
 - Decision proxy = tool/answer argmax; CoT truncation censors some fidelity numbers (safety
