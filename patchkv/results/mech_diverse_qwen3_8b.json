@@ -1,0 +1,258 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "tasks": [
+    "retail_refund",
+    "airline_cancel",
+    "deploy_guard",
+    "bank_withdraw",
+    "doc_access",
+    "rx_safety",
+    "customs_route",
+    "oncall_route"
+  ],
+  "by_mode": {
+    "nonreasoning": {
+      "summary": {
+        "oracle": {
+          "P_correct": 1.0,
+          "ci": [
+            0.68,
+            1
+          ],
+          "P_stale": 0.0,
+          "n": 8
+        },
+        "field_only": {
+          "P_correct": 0.0,
+          "ci": [
+            0,
+            0.32
+          ],
+          "P_stale": 1.0,
+          "n": 8
+        },
+        "erratum": {
+          "P_correct": 1.0,
+          "ci": [
+            0.68,
+            1
+          ],
+          "P_stale": 0.0,
+          "n": 8
+        }
+      },
+      "per_task": {
+        "retail_refund": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        },
+        "airline_cancel": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        },
+        "deploy_guard": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        },
+        "bank_withdraw": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        },
+        "doc_access": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        },
+        "rx_safety": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        },
+        "customs_route": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        },
+        "oncall_route": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        }
+      }
+    },
+    "reasoning": {
+      "summary": {
+        "oracle": {
+          "P_correct": 1.0,
+          "ci": [
+            0.93,
+            1.0
+          ],
+          "P_stale": 0.0,
+          "n": 48
+        },
+        "field_only": {
+          "P_correct": 1.0,
+          "ci": [
+            0.93,
+            1.0
+          ],
+          "P_stale": 0.0,
+          "n": 48
+        },
+        "erratum": {
+          "P_correct": 0.98,
+          "ci": [
+            0.89,
+            1.0
+          ],
+          "P_stale": 0.02,
+          "n": 48
+        }
+      },
+      "per_task": {
+        "retail_refund": {
+          "oracle": {
+            "correct": 6
+          },
+          "field_only": {
+            "correct": 6
+          },
+          "erratum": {
+            "correct": 6
+          }
+        },
+        "airline_cancel": {
+          "oracle": {
+            "correct": 6
+          },
+          "field_only": {
+            "correct": 6
+          },
+          "erratum": {
+            "correct": 6
+          }
+        },
+        "deploy_guard": {
+          "oracle": {
+            "correct": 6
+          },
+          "field_only": {
+            "correct": 6
+          },
+          "erratum": {
+            "correct": 6
+          }
+        },
+        "bank_withdraw": {
+          "oracle": {
+            "correct": 6
+          },
+          "field_only": {
+            "correct": 6
+          },
+          "erratum": {
+            "correct": 6
+          }
+        },
+        "doc_access": {
+          "oracle": {
+            "correct": 6
+          },
+          "field_only": {
+            "correct": 6
+          },
+          "erratum": {
+            "correct": 6
+          }
+        },
+        "rx_safety": {
+          "oracle": {
+            "correct": 6
+          },
+          "field_only": {
+            "correct": 6
+          },
+          "erratum": {
+            "correct": 6
+          }
+        },
+        "customs_route": {
+          "oracle": {
+            "correct": 6
+          },
+          "field_only": {
+            "correct": 6
+          },
+          "erratum": {
+            "correct": 5,
+            "stale": 1
+          }
+        },
+        "oncall_route": {
+          "oracle": {
+            "correct": 6
+          },
+          "field_only": {
+            "correct": 6
+          },
+          "erratum": {
+            "correct": 6
+          }
+        }
+      }
+    }
+  }
+}

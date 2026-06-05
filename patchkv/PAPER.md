@@ -117,8 +117,9 @@ including 14B where field-only is 29% unsafe.
 
 - **8 diverse domains** (retail, airline, devops, banking-numeric, access-control, clinical
   safety, customs routing, on-call severity; permission gates, numeric thresholds, safety
-  attributes, routing), Qwen3-8B non-reasoning, n=8: **field_only P(correct)=0.00 (always
-  stale), erratum=1.00 (full recovery)** — the identical pattern in every domain.
+  attributes, routing), Qwen3-8B: **non-reasoning** field_only=0.00 / erratum=1.00 (n=8);
+  **reasoning** field_only=1.00 / erratum=0.98 (n=48). The non-reasoning "always stale" and the
+  reasoning rescue both hold uniformly across every domain — not a customer-support artifact.
 - **Cross-family (3 families):** the pattern holds beyond Qwen.
   - *Mistral-7B-Instruct* (different arch, non-reasoning, n=8): field_only **0.00**, erratum 0.88.
   - *DeepSeek-R1-Distill-Llama-8B* (Llama arch, reasoning, n=32): oracle 0.97, field_only 0.81
