@@ -1,0 +1,22 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "non_reasoning": {
+    "n": 6,
+    "in_place_correct": 0.0,
+    "in_place_ci": [
+      0,
+      0.39
+    ],
+    "oracle_correct": 1.0,
+    "stale_correct": 0.0
+  },
+  "reasoning": {
+    "n": 18,
+    "in_place_correct": 0.944,
+    "in_place_ci": [
+      0.74,
+      0.99
+    ],
+    "oracle_correct": 1.0
+  }
+}

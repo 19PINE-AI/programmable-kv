@@ -159,6 +159,30 @@ inherently approximate (a faithful reference is what is expensive).
   4/4). **Guidance:** for repeated edits to one field, collapse to a *single* current-value erratum
   rather than stacking the history; the library applies one erratum per current value by default.
 
+## 5e. When the *surgical* edit alone suffices — no erratum (the cheap win)
+The erratum is the robust fallback (it works by construction). The sharper question is when you can
+skip it entirely and just **surgically overwrite the field's KV** (~0.1% recompute), leave the whole
+downstream stale, and still get the oracle decision. Measuring P(in_place decision == correct)
+with no erratum, reasoning vs non-reasoning (`esys/surgical_suffices.py`, in_place = refresh only the
+field-token KV; 3 scenarios × 2 surface variants; reasoning = 3 stochastic CoT samples each):
+
+| model | non-reasoning in_place | reasoning in_place | oracle |
+|---|---|---|---|
+| Qwen3-8B | 0.00 [0,.39] | **0.94 [.74,.99]** | 1.00 |
+| Qwen3-14B | 0.00 [0,.39] | 0.33 [.16,.56] | 1.00 |
+| Qwen3-32B | 0.00 [0,.39] | 0.50 [.29,.71] | 1.00 |
+
+**Two clean findings.** (i) **Without reasoning the surgical edit alone NEVER suffices** (0.00 at every
+scale — it reverts to the stale downstream, §7). (ii) **With reasoning it can** — at 8B the bare
+surgical edit recovers the oracle decision **0.94** of the time with *no erratum* (the CoT re-reads
+the refreshed field, §7.3) — but this is **scale-dependent**: 14B 0.33 / 32B 0.50, the same reasoning
+that re-derives correctly at 8B is less reliable at larger scale (consistent with the §7.3/§7.5
+scale-reversal — the CoT re-derivation can itself go wrong). So "just do the surgical edit" is a
+*real* cheap win for reasoning models (and strongest at the scale most used for agents), but it is
+not universal — which is exactly why the erratum exists as the robust default, and why the per-edit
+diagnostic (§5c) is useful to pick between them. (Oracle is 1.0 under reasoning at every scale, so
+these are not competence failures — they are staleness-recovery failures.)
+
 ## 6. Generalization
 
 - **8 diverse domains** (retail, airline, devops, banking-numeric, access-control, clinical
@@ -236,6 +260,30 @@ inherently approximate (a faithful reference is what is expensive).
   enforcement as reward, the cheap in_place edit fails **100%** of the time while editkv recovers
   full task correctness. This statistically (N=20, CIs) answers the "single gated-decision proxy"
   concern. (`esys/tau2_episode.py`, `results/tau2_episode_qwen3_8b.json`.)
+
+### 6b. Architecture coverage: where each edit applies (attention → MLA → hybrid → pure SSM)
+Different sequence-mixing architectures store history differently, which determines whether each
+editkv mechanism applies (`esys/arch_erratum.py`, behavioral cancel/deny check):
+
+| architecture (model) | history store | surgical `in_place` | erratum |
+|---|---|---|---|
+| full / GQA attention (Qwen3, Mistral, Gemma-2) | per-token KV | ✅ applies (§5e) | ✅ works |
+| **MLA** (DeepSeek-V2-Lite) | *compressed latent* KV | ⚠️ needs MLA-aware edit | ✅ works |
+| **hybrid attn+SSM** (Falcon-H1) | KV + recurrent state | ⚠️ attn layers only | ✅ **works** (PASS) |
+| **pure SSM / Mamba** (Falcon-Mamba) | recurrent state only — *no KV* | ❌ N/A (nothing to edit) | ❌ **fails** |
+
+Two findings. (i) **The surgical edit is fundamentally an attention-model capability**: it needs a
+per-token KV entry to overwrite. MLA compresses that (needs special handling); pure linear/SSM/RWKV
+keep history in a fixed-size *recurrent state* with no per-token KV, so there is nothing to surgically
+edit. (ii) **Even the erratum needs attention to be reliable.** It works on hybrid Falcon-H1 (clean
+PASS) because its attention layers can attend back to the appended override — but on **pure Mamba it
+fails**: the model *does* track the field (the oracle flips, stale→cancel / oracle→deny), yet the
+appended erratum cannot override the conclusion already committed to the recurrent state, because a
+pure SSM has no attention to "look back" at the recent authoritative mention. This is a direct
+prediction of the §7 mechanism (the erratum works *via attention to the override*) and sharpens the
+universality claim: **editkv is an attention-architecture method** — universal across full/GQA/MLA/
+sliding-window/hybrid, but not pure recurrent backbones (DeepSeek-V4 sparse-attention and Qwen3-Next
+keep attention sublayers, so they fall in the supported class, but exceed this 96 GB box to run).
 
 ## 7. Mechanism (explainability)
 
