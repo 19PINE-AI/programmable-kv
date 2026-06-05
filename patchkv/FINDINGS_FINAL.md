@@ -22,6 +22,42 @@ natural place.
 
 ---
 
+## Scope & framing: reasoning models are the target; instruction models are background
+
+There are two decoding regimes, and they behave differently here:
+
+- **Instruction-tuned (non-reasoning) models** answer in essentially a *single pass*:
+  prefill the prompt, then immediately emit the action. There is no decode-time
+  reasoning to re-read an edited value, so any correctness must already be present in
+  the cache. **Prior KV-reuse / cache-editing work (CacheBlend, Prompt Cache, selective
+  recompute, etc.) implicitly lives in this regime** — which is exactly why those methods
+  *recompute* the affected tokens: with no re-derivation at decode, a stale cache stays
+  wrong.
+- **Reasoning models** generate a chain-of-thought *first*, then act. The CoT re-reads
+  the edited field's current value and re-derives its consequences at decode time. This
+  is a second, cheaper place to restore correctness — **and it changes the story.**
+
+**Today's deployed tool-using agents are reasoning models, so they are our focus.** The
+central, regime-specific claim:
+
+> On **reasoning** models, a ~0.1% field-token KV edit (leave everything else stale)
+> recovers the correct action in benign contexts because the CoT re-derives it live. On
+> **instruction** models the *same* edit fails — there is no re-derivation — so you must
+> either recompute the dependent region or use the salience-based **erratum**. The
+> erratum works in **both** regimes; field-only is a reasoning-model-only shortcut.
+
+This is verified with a clean within-model ablation (same Qwen3-8B weights,
+`enable_thinking` on vs off — removing the model-family confound):
+
+<!-- ABLATION_PLACEHOLDER -->
+
+Instruction models are thus the *harder, background* case (where prior work sits and
+where the cheap edit does not transfer); reasoning models are where editable KV becomes
+cheap. The recipe below is written for the reasoning-model target, with the
+instruction-model fallback noted.
+
+---
+
 ## The recipe (decision tree)
 
 ```

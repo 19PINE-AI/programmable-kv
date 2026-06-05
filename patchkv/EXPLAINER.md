@@ -168,6 +168,27 @@ value change.
 
 ---
 
+## 6b. Two kinds of model — and why reasoning models are the point
+
+There are two kinds of model you might run an agent on:
+
+- **Instruction models** answer in one shot: they read the prompt and immediately say
+  what to do, with no visible reasoning.
+- **Reasoning models** (the kind powering most serious agents today) *think out loud
+  first* — a paragraph of step-by-step reasoning — and then act.
+
+This distinction is the crux. Earlier research on reusing/editing the model's notes was
+done mostly with **instruction** models, and there the cheap "just fix the one value"
+trick **doesn't work**: with no thinking step, nothing re-reads the corrected value, so
+the model rides on its stale notes and makes the old decision. That's why prior methods
+fall back to recomputing the affected notes.
+
+**Reasoning models change this.** Because they re-read the field while thinking, the
+cheap field-only fix suddenly works (in ordinary contexts). Since real agents are
+reasoning models, that's where we focus. Instruction models remain the harder case — and
+notably, the **sticky-note (erratum) trick works for both kinds**, because it puts the
+correction in plain sight rather than relying on the model to reason its way to it.
+
 ## 7. The recipe
 
 | Situation | Do this | Recompute cost |
