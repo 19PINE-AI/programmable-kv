@@ -1,6 +1,9 @@
 # PatchKV — editable KV cache
 
-> **Start here: [`FINDINGS_FINAL.md`](FINDINGS_FINAL.md)** — the consolidated result.
+> **New to this? Start with [`EXPLAINER.md`](EXPLAINER.md)** — the whole project explained
+> from scratch, no background assumed.
+>
+> **Technical summary: [`FINDINGS_FINAL.md`](FINDINGS_FINAL.md)** — the consolidated result.
 > **Editable KV works:** keep the field in place → inject a cheap salient suffix *erratum*
 > (~6%, recompute only that span; robust even to contradictory stale context) → leave the
 > static bulk stale. On thinking models in benign contexts, a ~0.1% field-token refresh
