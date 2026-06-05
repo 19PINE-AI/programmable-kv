@@ -298,6 +298,29 @@ small (~27–94 ms)**, so the saving grows with length — at 10K context **~42�
 TTFT reduction *with* correctness (→oracle, §5) *and* natural placement, and uniquely retains
 correctness under contradictory context. (field+erratum ~67–83 ms; still ≪ full at large T.)
 
+### 8b. Serving under load: batched TTFT and long context (up to 32K)
+The single-stream numbers above understate the serving win — under batching and at long context
+the gap widens sharply. TTFT (ms) to build a decode-ready cache after a field edit vs full
+reprefill, Qwen3-8B (CUDA events; in_place/erratum forward the field/short-suffix tokens over the
+*reused* length-T KV cache):
+
+| context T | batch | full reprefill | in_place | erratum | speedup (in_place / erratum) |
+|---|---|---|---|---|---|
+| 1024 | 1 | 129 ms | 27 ms | 24 ms | 4.8× / 5.5× |
+| 1024 | 8 | 782 ms | 35 ms | 41 ms | **22× / 19×** |
+| 4096 | 1 | 394 ms | 18 ms | 50 ms | 22× / 8× |
+| 4096 | 8 | 3590 ms | 53 ms | 91 ms | **67× / 40×** |
+| 16384 | 1 | 1956 ms | 40 ms | 107 ms | 49× / 18× |
+| 32768 | 1 | 4538 ms | 39 ms | 169 ms | **117× / 27×** |
+
+in_place TTFT is ~flat (~20–40 ms; it recomputes ~one token regardless of T); erratum grows
+gently (24→169 ms; the short suffix attends over T keys); full reprefill grows ~linearly in T and
+×batch. So the win compounds with **both** context length and batch size — at 32K context, building
+the edited cache is **117× (in_place) / 27× (erratum)** cheaper than re-prefilling, and batching
+alone takes the 4K win from 22×→67×. These are HF-level measurements; a paged-attention engine
+(vLLM/SGLang) that shares the reused prefix across the batch would widen the gap further, so they
+are conservative lower bounds. (`esys/serving_bench.py`, `results/serving_bench_*.json`.)
+
 **On kernels / `torch.compile`.** The *edit itself* is trivial: with a `StaticCache`, overwriting
 the field span's KV in place is **0.16 ms** (no clone/realloc) — the measured cost is the
 partial-prefill recompute and decode, not the edit. `torch.compile` gives only a **modest ~1.2×**
@@ -307,7 +330,11 @@ whole context), not a compile flag; a genuine fused "in-place-edit + selective-r
 paged-attention" operator is a serving-engine (vLLM/SGLang) integration — future work.
 
 ## 9. Limitations
-- Synthetic + τ-bench scenarios; single gated decisions, not full multi-turn task success.
+- Behavioral scenarios are mostly single gated decisions; we *do* now close part of this gap with
+  the τ²-bench end-to-end episode loop (§6: real env/tools/reward, N=20, both arms) and the causal
+  mechanism (§7), but a full 114-task user-simulator sweep with a stateful editkv-backed agent is
+  future work (the local open models that fit a single 96 GB GPU are weak τ²-bench agents for
+  reasons unrelated to editkv, which would confound a full-sweep reward).
 - Decision proxy = tool/answer argmax; CoT truncation censors some fidelity numbers (safety
   numbers are censoring-robust).
 - **Length-changing edits:** the *erratum* handles them by construction — it appends the new
@@ -319,8 +346,15 @@ paged-attention" operator is a serving-engine (vLLM/SGLang) integration — futu
   task-success, and a serving-engine fused operator are future work. Family coverage: Qwen,
   Gemma, Mistral, SmolLM, Llama (Phi blocked by an outdated custom-modeling/transformers
   mismatch); 70B+ would need 4-bit quantization (a confound) and exceeds this 96 GB GPU in bf16.
-- Mechanism evidence is correlational+causal-knockout on a subset; the *scale reversal* of
-  CoT helpfulness is an open question we characterize but do not yet fully explain.
+- Mechanism evidence now spans four causal/independent methods (§7: KV-patching, probing, the
+  reasoning-circuit knockout, dose-response); a **head-level circuit** localization (which
+  specific heads read the memoized suffix vs the erratum) is the natural next step, deferred
+  here. The *scale reversal* of CoT helpfulness is characterized (§7.3/7.5) — the CoT-re-read
+  circuit explains *why* reasoning helps and why it can backfire — but a full per-scale circuit
+  account is open.
+- Serving numbers (§8b) are HF-level (CUDA events); a paged-attention engine integration would
+  only widen the gap but is not yet built. The 32K×large-batch points OOM a single 96 GB GPU in
+  bf16 (measured to 32K at bs=1, 16K at bs=8).
 
 ## 10. Conclusion
 Editable KV is viable, but the naive cheap edit is *not* a free lunch: the decision reads the
