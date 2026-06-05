@@ -1,0 +1,277 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "n": 16,
+  "sweep": {
+    "0.0": {
+      "tp": 6,
+      "fp": 7,
+      "fn": 1,
+      "tn": 2,
+      "precision": 0.462,
+      "recall": 0.857,
+      "accuracy": 0.5
+    },
+    "0.1": {
+      "tp": 5,
+      "fp": 5,
+      "fn": 2,
+      "tn": 4,
+      "precision": 0.5,
+      "recall": 0.714,
+      "accuracy": 0.562
+    },
+    "0.2": {
+      "tp": 5,
+      "fp": 4,
+      "fn": 2,
+      "tn": 5,
+      "precision": 0.556,
+      "recall": 0.714,
+      "accuracy": 0.625
+    },
+    "0.3": {
+      "tp": 5,
+      "fp": 1,
+      "fn": 2,
+      "tn": 8,
+      "precision": 0.833,
+      "recall": 0.714,
+      "accuracy": 0.812
+    },
+    "0.5": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 2,
+      "tn": 9,
+      "precision": 1.0,
+      "recall": 0.714,
+      "accuracy": 0.875
+    }
+  },
+  "rows": [
+    {
+      "task": "retail_refund",
+      "class": "high",
+      "oracle": "correct",
+      "in_place": "correct",
+      "gt_needs": false,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": false,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "retail_refund",
+      "class": "low",
+      "oracle": "correct",
+      "in_place": "correct",
+      "gt_needs": false,
+      "preds": {
+        "0.0": true,
+        "0.1": false,
+        "0.2": false,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "airline_cancel",
+      "class": "high",
+      "oracle": "correct",
+      "in_place": "len-change",
+      "gt_needs": true,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": true,
+        "0.5": true
+      }
+    },
+    {
+      "task": "airline_cancel",
+      "class": "low",
+      "oracle": "correct",
+      "in_place": "correct",
+      "gt_needs": false,
+      "preds": {
+        "0.0": true,
+        "0.1": false,
+        "0.2": false,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "deploy_guard",
+      "class": "high",
+      "oracle": "stale",
+      "in_place": "stale",
+      "gt_needs": false,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": true,
+        "0.5": false
+      }
+    },
+    {
+      "task": "deploy_guard",
+      "class": "low",
+      "oracle": "stale",
+      "in_place": "stale",
+      "gt_needs": false,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "bank_withdraw",
+      "class": "high",
+      "oracle": "correct",
+      "in_place": "len-change",
+      "gt_needs": true,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": true,
+        "0.5": true
+      }
+    },
+    {
+      "task": "bank_withdraw",
+      "class": "low",
+      "oracle": "correct",
+      "in_place": "correct",
+      "gt_needs": false,
+      "preds": {
+        "0.0": false,
+        "0.1": false,
+        "0.2": false,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "doc_access",
+      "class": "high",
+      "oracle": "correct",
+      "in_place": "len-change",
+      "gt_needs": true,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": true,
+        "0.5": true
+      }
+    },
+    {
+      "task": "doc_access",
+      "class": "low",
+      "oracle": "correct",
+      "in_place": "stale",
+      "gt_needs": true,
+      "preds": {
+        "0.0": false,
+        "0.1": false,
+        "0.2": false,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "rx_safety",
+      "class": "high",
+      "oracle": "correct",
+      "in_place": "len-change",
+      "gt_needs": true,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": true,
+        "0.5": true
+      }
+    },
+    {
+      "task": "rx_safety",
+      "class": "low",
+      "oracle": "correct",
+      "in_place": "correct",
+      "gt_needs": false,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "customs_route",
+      "class": "high",
+      "oracle": "correct",
+      "in_place": "stale",
+      "gt_needs": true,
+      "preds": {
+        "0.0": true,
+        "0.1": false,
+        "0.2": false,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "customs_route",
+      "class": "low",
+      "oracle": "correct",
+      "in_place": "correct",
+      "gt_needs": false,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": false,
+        "0.5": false
+      }
+    },
+    {
+      "task": "oncall_route",
+      "class": "high",
+      "oracle": "correct",
+      "in_place": "stale",
+      "gt_needs": true,
+      "preds": {
+        "0.0": true,
+        "0.1": true,
+        "0.2": true,
+        "0.3": true,
+        "0.5": true
+      }
+    },
+    {
+      "task": "oncall_route",
+      "class": "low",
+      "oracle": "correct",
+      "in_place": "correct",
+      "gt_needs": false,
+      "preds": {
+        "0.0": false,
+        "0.1": false,
+        "0.2": false,
+        "0.3": false,
+        "0.5": false
+      }
+    }
+  ]
+}

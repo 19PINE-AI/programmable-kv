@@ -57,6 +57,22 @@ def _decode_short(ctx: EditableContext, cache, last, pos, max_new=24, probe: Opt
 
 
 @torch.no_grad()
+def _decision_logits(ctx: EditableContext, cache, last, pos, probe: Optional[str] = None):
+    """Deterministic decision-position logit vector (after the probe). Comparing the argmax of
+    this is far more robust than comparing a multi-token free decode, which accumulates noise."""
+    if probe:
+        pids = ctx.tok(probe, add_special_tokens=False)["input_ids"]
+        ids = torch.tensor([[int(last)] + pids], device=ctx.device)
+        out = ctx.model(input_ids=ids[:, :-1], past_key_values=cache,
+                        cache_position=torch.arange(pos, pos + ids.shape[1] - 1, device=ctx.device),
+                        use_cache=True)
+        cache = out.past_key_values; last = int(ids[0, -1]); pos = pos + ids.shape[1] - 1
+    o = ctx.model(input_ids=torch.tensor([[int(last)]], device=ctx.device), past_key_values=cache,
+                  cache_position=torch.tensor([pos], device=ctx.device), use_cache=True)
+    return o.logits[0, -1].float()
+
+
+@torch.no_grad()
 def _logit_at(ctx, cache, last, pos):
     o = ctx.model(input_ids=torch.tensor([[int(last)]], device=ctx.device), past_key_values=cache,
                   cache_position=torch.tensor([pos], device=ctx.device), use_cache=True)
@@ -65,7 +81,7 @@ def _logit_at(ctx, cache, last, pos):
 
 @torch.no_grad()
 def needs_erratum(ctx: EditableContext, field_name: str, new_value: str,
-                  probe: Optional[str] = None, max_new: int = 24) -> Diagnosis:
+                  probe: Optional[str] = None, max_new: int = 24, margin: float = 0.2) -> Diagnosis:
     f = ctx.fields[field_name]
     Lm1 = ctx._len - 1
     last_ctx = int(ctx._ids[0, Lm1])
@@ -86,11 +102,32 @@ def needs_erratum(ctx: EditableContext, field_name: str, new_value: str,
     erc, erlast, erpos = ctx.build_cache(field_name, new_value, Mode.FIELD_PLUS_ERRATUM)
     er_dec = _decode_short(ctx, ctx._clone(erc, erpos), erlast, erpos, max_new, probe)
 
-    agree = (ip_dec == er_dec) if in_place_available else False
-    needs = (not in_place_available) or (not agree)
-    note = ("in-place changes token length -> use field+erratum" if not in_place_available
-            else ("in-place matches field+erratum -> in-place sufficient" if agree
-                  else "in-place disagrees with field+erratum -> use field+erratum"))
+    # Decide agreement on the DETERMINISTIC first decision token (robust), not the multi-token
+    # free decode (which over-fires). Also require the edit to actually matter: if field+erratum
+    # yields the same decision token as the STALE cache, the edit is inconsequential and the
+    # cheap in_place is fine (prevents false positives on irrelevant/no-op edits).
+    if in_place_available:
+        ip_lg = _decision_logits(ctx, ctx._clone(ipc, ippos), iplast, ippos, probe)
+        er_lg = _decision_logits(ctx, ctx._clone(erc, erpos), erlast, erpos, probe)
+        stale_lg = _decision_logits(ctx, ctx._clone(ctx._cache, Lm1), last_ctx, Lm1, probe)
+        ip_tok, er_tok, stale_tok = int(ip_lg.argmax()), int(er_lg.argmax()), int(stale_lg.argmax())
+        er_p = torch.softmax(er_lg, -1)
+        # the edit "matters" only if field+erratum CONFIDENTLY moves the decision off the stale
+        # token (margin guard) — prevents an irrelevant erratum's tiny perturbation from firing.
+        edit_matters = (er_tok != stale_tok) and (float(er_p[er_tok] - er_p[stale_tok]) > margin)
+        agree = (ip_tok == er_tok)
+        needs = edit_matters and (not agree)
+    else:
+        agree = False
+        needs = True
+    if not in_place_available:
+        note = "in-place changes token length -> use field+erratum"
+    elif not edit_matters:
+        note = "edit does not change the decision (==stale) -> in-place sufficient (no-op edit)"
+    elif agree:
+        note = "in-place first-token matches field+erratum -> in-place sufficient"
+    else:
+        note = "in-place first-token disagrees with field+erratum -> use field+erratum"
     return Diagnosis(needs_erratum=needs, in_place_decision=ip_dec, erratum_decision=er_dec,
                      stale_decision=stale_dec, agree_in_place_erratum=agree,
                      in_place_available=in_place_available, logit_drift=drift, note=note)
