@@ -1,0 +1,50 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "by_pos": {
+    "0": {
+      "label": "early(before gate)",
+      "field_only_mean": -0.008,
+      "field_only_ci": [
+        -0.017,
+        0.009
+      ],
+      "suffix_frac_for_80pct_mean": 0.7
+    },
+    "1": {
+      "label": "after gate",
+      "field_only_mean": 0.01,
+      "field_only_ci": [
+        -0.005,
+        0.025
+      ],
+      "suffix_frac_for_80pct_mean": 0.7
+    },
+    "2": {
+      "label": "after filler",
+      "field_only_mean": 0.049,
+      "field_only_ci": [
+        0.012,
+        0.101
+      ],
+      "suffix_frac_for_80pct_mean": 0.833
+    },
+    "3": {
+      "label": "after convo",
+      "field_only_mean": 0.089,
+      "field_only_ci": [
+        0.057,
+        0.14
+      ],
+      "suffix_frac_for_80pct_mean": 1.0
+    },
+    "4": {
+      "label": "hoisted(before decision)",
+      "field_only_mean": 0.113,
+      "field_only_ci": [
+        0.088,
+        0.143
+      ],
+      "suffix_frac_for_80pct_mean": 1.0
+    }
+  }
+}
