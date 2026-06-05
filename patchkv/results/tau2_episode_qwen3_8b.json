@@ -1,0 +1,90 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "n_orders": 20,
+  "arms": {
+    "A": {
+      "full(oracle)": {
+        "P_correct": 1.0,
+        "ci": [
+          0.84,
+          1
+        ],
+        "tool_consistent": 1.0
+      },
+      "stale": {
+        "P_correct": 1.0,
+        "ci": [
+          0.84,
+          1
+        ],
+        "tool_consistent": 1.0
+      },
+      "in_place": {
+        "P_correct": 1.0,
+        "ci": [
+          0.84,
+          1
+        ],
+        "tool_consistent": 1.0
+      },
+      "erratum": {
+        "P_correct": 1.0,
+        "ci": [
+          0.84,
+          1
+        ],
+        "tool_consistent": 1.0
+      },
+      "field+erratum": {
+        "P_correct": 1.0,
+        "ci": [
+          0.84,
+          1
+        ],
+        "tool_consistent": 1.0
+      }
+    },
+    "B": {
+      "full(oracle)": {
+        "P_correct": 1.0,
+        "ci": [
+          0.84,
+          1
+        ],
+        "tool_consistent": 1.0
+      },
+      "stale": {
+        "P_correct": 0.0,
+        "ci": [
+          0,
+          0.16
+        ],
+        "tool_consistent": 0.0
+      },
+      "in_place": {
+        "P_correct": 0.0,
+        "ci": [
+          0,
+          0.16
+        ],
+        "tool_consistent": 0.0
+      },
+      "erratum": {
+        "P_correct": 1.0,
+        "ci": [
+          0.84,
+          1
+        ],
+        "tool_consistent": 1.0
+      },
+      "field+erratum": {
+        "P_correct": 1.0,
+        "ci": [
+          0.84,
+          1
+        ],
+        "tool_consistent": 1.0
+      }
+    }
+  }
+}
