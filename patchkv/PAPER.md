@@ -115,6 +115,16 @@ including 14B where field-only is 29% unsafe.
 
 **Negative control (erratum is causal, not an append artifact), Qwen3-8B, 8 tasks:** oracle 1.00, stale 0.00, **err_correct 1.00**, **err_wrong (restates the OLD value) 0.00**, **err_irrelevant (neutral notice) 0.00**. Only an erratum stating the *correct new value* recovers the decision; restating the old value or appending unrelated text stays stale — so the effect is content-specific, not 'any append resets the model.'
 
+## 5b. Erratum robustness (Qwen3-8B, 8 tasks)
+
+- **Phrasing:** robust in benign contexts — override-full / bare-value / minimal "field: value"
+  all recover 8/8; only a question framing dips to 7/8. (The explicit "overrides any earlier
+  conclusion" framing matters specifically under *poisoned* context, §4.)
+- **Over-correction:** an erratum for an *irrelevant* field flips the decision **0/8** — it does
+  not cause spurious behavior on the benign case.
+- **Multi-edit:** stacking an irrelevant erratum before the relevant one still yields the
+  correct decision **8/8** — no interference; the relevant trigger drives the decision.
+
 ## 6. Generalization
 
 - **8 diverse domains** (retail, airline, devops, banking-numeric, access-control, clinical

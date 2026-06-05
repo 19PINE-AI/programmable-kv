@@ -1,0 +1,41 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "phrasing": {
+    "override_full": {
+      "P_correct": 1.0,
+      "ci": [
+        0.68,
+        1
+      ]
+    },
+    "bare_value": {
+      "P_correct": 1.0,
+      "ci": [
+        0.68,
+        1
+      ]
+    },
+    "minimal": {
+      "P_correct": 1.0,
+      "ci": [
+        0.68,
+        1
+      ]
+    },
+    "question": {
+      "P_correct": 0.88,
+      "ci": [
+        0.53,
+        0.98
+      ]
+    }
+  },
+  "over_correction_flips": "0/8",
+  "multi_edit": {
+    "P_correct": 1.0,
+    "ci": [
+      0.68,
+      1
+    ]
+  }
+}
