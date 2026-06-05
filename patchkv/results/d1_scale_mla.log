@@ -1,0 +1,6 @@
+=== D1 on Qwen/Qwen3-32B (qwen3_32b) ===
+FIELD-ONLY recovery (= in_place): 0.023 CI(0.023, 0.023)  (small => why in_place fails)
+FULL-DOWNSTREAM recovery (sanity): 1.0 CI(1.0, 1.0)
+   suffix  0.1: 0.61 CI(0.614, 0.615)
+--- done qwen3_32b ---
+=== D1 on unsloth/gemma-2-27b-it (gemma2_27b) ===

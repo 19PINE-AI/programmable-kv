@@ -125,6 +125,27 @@ including 14B where field-only is 29% unsafe.
 - **Multi-edit:** stacking an irrelevant erratum before the relevant one still yields the
   correct decision **8/8** — no interference; the relevant trigger drives the decision.
 
+## 5c. Validating the per-case diagnostic (`needs_erratum`)
+The library's diagnostic predicts, for a specific edit, whether the cheap in_place edit
+suffices or must escalate to field+erratum. We validate it against ground truth (does the
+in_place decision differ from the full-reprefill oracle?) over 8 high-conditioning edits + 8
+low/irrelevant edits, with a confidence-margin knob (`esys/diagnostic_eval.py`, Qwen3-8B):
+
+| margin | precision | recall |
+|---|---|---|
+| 0.0 | 0.46 | **0.86** |
+| 0.3 | 0.83 | 0.71 |
+| 0.5 | **1.00** | 0.71 |
+
+It compares the *deterministic first decision token* (not a noisy multi-token decode) and
+fires only when field+erratum confidently moves the decision off the stale token. A false
+negative (use in_place when the erratum was needed) yields a stale decision; a false positive
+costs only a few % of compute (the erratum is cheap and correct, §5/§8). Since FN is the costly
+error, the **recall-oriented low margin is the safe default**; cost-sensitive deployments can
+raise the margin to eliminate over-correction (P=1.0 at margin 0.5). The diagnostic is a useful
+conservative heuristic, not a perfect oracle — distinguishing the two classes *cheaply* is
+inherently approximate (a faithful reference is what is expensive).
+
 ## 6. Generalization
 
 - **8 diverse domains** (retail, airline, devops, banking-numeric, access-control, clinical
@@ -228,6 +249,10 @@ decision swing restored. Qwen3-8B, n=12 aligned flip instances:
 - **Distributed but identifiable, not holographic:** ~16 well-chosen positions recover 94%;
   the strongest single sites split across the policy-rule, reasoning, and decision regions.
   **Layer band:** mid/late layers carry it (early ≈0).
+- **Generalizes across scale and family** (field-only recovery, full-downstream=1.0, suffix-
+  concentrated everywhere): Qwen3-4B 0.025 / 8B 0.009 / 14B 0.008, Gemma-2-9B 0.001, Mistral-7B
+  0.004 (and 32B / Gemma-2-27B / DeepSeek-V2-Lite-MLA reported in `results/d1_scale_mla.json`).
+  The causal account is not Qwen3-8B-specific. (`esys/mech_causal_patch.py`.)
 
 ### 7.2 Linear probing (independent of patching) (D3)
 A cross-domain linear probe for the gated *conclusion* (8 diverse domains, leave-one-domain-
