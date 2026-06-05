@@ -1,38 +1,38 @@
 {
   "model": "Qwen/Qwen3-8B",
-  "n_samples": 1,
+  "n_samples": 8,
   "inplace_base": {
     "P_correct": 1.0,
     "ci": [
-      0.21,
+      0.68,
       1
     ],
-    "n": 1
+    "n": 8
   },
   "block_cot_field": {
     "P_correct": 0.0,
     "ci": [
       0,
-      0.79
+      0.32
     ],
-    "n": 1
+    "n": 8
   },
   "block_dec_field": {
     "P_correct": 1.0,
     "ci": [
-      0.21,
+      0.68,
       1
     ],
-    "n": 1
+    "n": 8
   },
   "block_cot_gate": {
     "P_correct": 1.0,
     "ci": [
-      0.21,
+      0.68,
       1
     ],
-    "n": 1
+    "n": 8
   },
   "CoT_to_field_attn": 0.0011,
-  "CoT_to_gate_attn": 0.0005
+  "CoT_to_gate_attn": 0.0004
 }

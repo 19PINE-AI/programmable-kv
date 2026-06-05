@@ -1,3 +1,14 @@
 /home/ubuntu/.local/lib/python3.10/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
   raw_cnt = _raw_device_count_nvml()
 Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.94it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:01,  1.94it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:01<00:01,  1.97it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  2.07it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.74it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.35it/s]
+  [account_role/A4471] inplace_base=4/4 block_cot_field=0/4 block_dec_field=4/4 block_cot_gate=4/4 | CoT->field=0.001 CoT->gate=0.001
+  [safety_mode/A4471] inplace_base=4/4 block_cot_field=0/4 block_dec_field=4/4 block_cot_gate=4/4 | CoT->field=0.001 CoT->gate=0.000
+
+==== D4 REASONING RE-READ SUMMARY ====
+  inplace_base       P_correct=1.0 CI(0.68, 1) (n=8)
+  block_cot_field    P_correct=0.0 CI(0, 0.32) (n=8)
+  block_dec_field    P_correct=1.0 CI(0.68, 1) (n=8)
+  block_cot_gate     P_correct=1.0 CI(0.68, 1) (n=8)
+  CoT->field attn mass=0.0011  CoT->gate band=0.0004
+  HYPOTHESIS: block_cot_field collapses while block_dec_field & block_cot_gate hold
+D4_REASONING_REREAD_DONE

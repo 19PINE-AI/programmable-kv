@@ -246,11 +246,13 @@ by freshly generated CoT tokens that the decision then reads. Causal test on the
 (field NEW, downstream stale), reasoning ON: `inplace_base` (correct) vs `block_cot_field`
 (mask every CoT-generation query's attention to the field) vs `block_dec_field` (mask only the
 decision→field) vs `block_cot_gate` (same-width control band).
-- Result: **`block_cot_field` collapses the in_place benefit (decision reverts to OLD)** while
-  `block_dec_field` and `block_cot_gate` **hold (stay correct)** — the CoT re-read, not the
-  decision's direct field read, is the causal carrier of reasoning robustness. Strikingly,
-  per-token CoT→field attention is only ~0.1%, yet blocking it flips the outcome (attention
-  magnitude ≠ causal importance, echoing 7.1). [full n + CIs in `results/mech_reasoning_reread_*.json`]
+- Result (Qwen3-8B, n=8 = 2 scenarios × 4 CoT samples): **`block_cot_field` collapses the
+  in_place benefit — P(correct) = 0.0 [CI 0, .32], reverting to OLD on all 8 samples** — while
+  `inplace_base` 1.0 [.68, 1], `block_dec_field` 1.0 [.68, 1], and `block_cot_gate` 1.0 [.68, 1]
+  **hold** (non-overlapping CIs). The CoT re-read, not the decision's direct field read, is the
+  causal carrier of reasoning robustness. Strikingly, per-token CoT→field attention is only
+  ~0.1% (mass 0.0011), yet blocking it flips every sample (attention magnitude ≠ causal
+  importance, echoing 7.1). (`results/mech_reasoning_reread_qwen3_8b.json`.)
 - This explains the scale-dependence (§7.5): the CoT re-derivation can itself go wrong (14B
   amplifies), so "thinking rescues the cheap edit" is real but **not guaranteed** — whereas the
   erratum injects an explicit override independent of whether the CoT reasons correctly.
