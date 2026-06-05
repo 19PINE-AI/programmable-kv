@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "editkv"
+version = "0.1.0"
+description = "Editable KV cache for mutable fields in agentic contexts (in-place edit + erratum trigger, with a per-edit diagnostic)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [{ name = "editkv contributors" }]
+keywords = ["llm", "kv-cache", "inference", "agents", "prefix-caching", "serving"]
+dependencies = ["torch>=2.1", "transformers>=4.45"]
+
+[project.urls]
+Homepage = "https://github.com/bojieli/editable-kv"
+
+[tool.setuptools]
+py-modules = ["core", "diagnostics", "example", "test_editkv"]
