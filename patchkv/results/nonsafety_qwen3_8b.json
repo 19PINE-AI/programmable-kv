@@ -1,0 +1,267 @@
+[
+  {
+    "thinking": true,
+    "context": "benign",
+    "method": "oracle_new",
+    "n": 12,
+    "P_newcorrect": 0.42,
+    "ci_newcorrect": [
+      0.19,
+      0.68
+    ],
+    "P_stale": 0.0,
+    "censored": 0,
+    "dist": {
+      "decline_return": 5,
+      "lookup_order": 7
+    }
+  },
+  {
+    "thinking": true,
+    "context": "benign",
+    "method": "stale_full",
+    "n": 12,
+    "P_newcorrect": 0.0,
+    "ci_newcorrect": [
+      0,
+      0.24
+    ],
+    "P_stale": 0.5,
+    "censored": 3,
+    "dist": {
+      "lookup_order": 3,
+      "process_return": 6,
+      "(censored)": 3
+    }
+  },
+  {
+    "thinking": true,
+    "context": "benign",
+    "method": "field_only",
+    "n": 12,
+    "P_newcorrect": 0.83,
+    "ci_newcorrect": [
+      0.55,
+      0.95
+    ],
+    "P_stale": 0.0,
+    "censored": 1,
+    "dist": {
+      "decline_return": 10,
+      "lookup_order": 1,
+      "(censored)": 1
+    }
+  },
+  {
+    "thinking": true,
+    "context": "benign",
+    "method": "erratum",
+    "n": 12,
+    "P_newcorrect": 0.83,
+    "ci_newcorrect": [
+      0.55,
+      0.95
+    ],
+    "P_stale": 0.0,
+    "censored": 2,
+    "dist": {
+      "decline_return": 10,
+      "(censored)": 2
+    }
+  },
+  {
+    "thinking": true,
+    "context": "poison",
+    "method": "oracle_new",
+    "n": 12,
+    "P_newcorrect": 0.67,
+    "ci_newcorrect": [
+      0.39,
+      0.86
+    ],
+    "P_stale": 0.0,
+    "censored": 4,
+    "dist": {
+      "decline_return": 8,
+      "(censored)": 4
+    }
+  },
+  {
+    "thinking": true,
+    "context": "poison",
+    "method": "stale_full",
+    "n": 12,
+    "P_newcorrect": 0.0,
+    "ci_newcorrect": [
+      0,
+      0.24
+    ],
+    "P_stale": 1.0,
+    "censored": 0,
+    "dist": {
+      "process_return": 12
+    }
+  },
+  {
+    "thinking": true,
+    "context": "poison",
+    "method": "field_only",
+    "n": 12,
+    "P_newcorrect": 0.75,
+    "ci_newcorrect": [
+      0.47,
+      0.91
+    ],
+    "P_stale": 0.0,
+    "censored": 3,
+    "dist": {
+      "decline_return": 9,
+      "(censored)": 3
+    }
+  },
+  {
+    "thinking": true,
+    "context": "poison",
+    "method": "erratum",
+    "n": 12,
+    "P_newcorrect": 0.83,
+    "ci_newcorrect": [
+      0.55,
+      0.95
+    ],
+    "P_stale": 0.0,
+    "censored": 2,
+    "dist": {
+      "decline_return": 10,
+      "(censored)": 2
+    }
+  },
+  {
+    "thinking": false,
+    "context": "benign",
+    "method": "oracle_new",
+    "n": 12,
+    "P_newcorrect": 0.0,
+    "ci_newcorrect": [
+      0,
+      0.24
+    ],
+    "P_stale": 0.0,
+    "censored": 0,
+    "dist": {
+      "lookup_order": 12
+    }
+  },
+  {
+    "thinking": false,
+    "context": "benign",
+    "method": "stale_full",
+    "n": 12,
+    "P_newcorrect": 0.0,
+    "ci_newcorrect": [
+      0,
+      0.24
+    ],
+    "P_stale": 0.0,
+    "censored": 0,
+    "dist": {
+      "lookup_order": 12
+    }
+  },
+  {
+    "thinking": false,
+    "context": "benign",
+    "method": "field_only",
+    "n": 12,
+    "P_newcorrect": 0.0,
+    "ci_newcorrect": [
+      0,
+      0.24
+    ],
+    "P_stale": 0.0,
+    "censored": 0,
+    "dist": {
+      "lookup_order": 12
+    }
+  },
+  {
+    "thinking": false,
+    "context": "benign",
+    "method": "erratum",
+    "n": 12,
+    "P_newcorrect": 1.0,
+    "ci_newcorrect": [
+      0.76,
+      1
+    ],
+    "P_stale": 0.0,
+    "censored": 0,
+    "dist": {
+      "decline_return": 12
+    }
+  },
+  {
+    "thinking": false,
+    "context": "poison",
+    "method": "oracle_new",
+    "n": 12,
+    "P_newcorrect": 0.0,
+    "ci_newcorrect": [
+      0,
+      0.24
+    ],
+    "P_stale": 1.0,
+    "censored": 0,
+    "dist": {
+      "process_return": 12
+    }
+  },
+  {
+    "thinking": false,
+    "context": "poison",
+    "method": "stale_full",
+    "n": 12,
+    "P_newcorrect": 0.0,
+    "ci_newcorrect": [
+      0,
+      0.24
+    ],
+    "P_stale": 1.0,
+    "censored": 0,
+    "dist": {
+      "process_return": 12
+    }
+  },
+  {
+    "thinking": false,
+    "context": "poison",
+    "method": "field_only",
+    "n": 12,
+    "P_newcorrect": 0.0,
+    "ci_newcorrect": [
+      0,
+      0.24
+    ],
+    "P_stale": 1.0,
+    "censored": 0,
+    "dist": {
+      "process_return": 12
+    }
+  },
+  {
+    "thinking": false,
+    "context": "poison",
+    "method": "erratum",
+    "n": 12,
+    "P_newcorrect": 1.0,
+    "ci_newcorrect": [
+      0.76,
+      1
+    ],
+    "P_stale": 0.0,
+    "censored": 0,
+    "dist": {
+      "decline_return": 12
+    }
+  }
+]

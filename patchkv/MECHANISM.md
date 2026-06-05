@@ -77,6 +77,45 @@ no indirect path to go stale.
   All-downstream knockout still flips it because masking removes the decision's access to
   that explicit inference.
 
+## Rigorous N>1 suite (Qwen3-8B; the N=1 results above are superseded by these)
+
+`esys/mech_suite.py`. M=12 instances (3 gating scenarios × 4 order-IDs) for the
+deterministic forwards; 36 stochastic CoT samples (6 instances × K=6) for reasoning.
+Proportions with Wilson 95% CIs. account_role/safety_mode/subscription_tier;
+"safe"=the policy-correct action, "unsafe"=the violating one.
+
+**E4 — attention attribution + sinks (where the decision looks).** Mean attention mass
+of the decision token: **field 0.001, original-downstream 0.56, sink (pos 0–3) 0.36.**
+The direct field edge is ~0.1% — the field's influence reaches the decision almost
+entirely through the memoized downstream, with a large attention-sink share.
+
+**E1 — graded knockout (how distributed).** P(safe) when masking the decision's
+attention to the top-k% highest-attention downstream positions: 0%→0.00 [0,.24],
+10%→0.25 [.09,.53], **25%→1.00 [.76,1]** (saturates). The memoized inference lives in
+roughly the **top attention quartile** of downstream — distributed, not one token.
+
+**E2 — layer-band knockout (where in depth).** Masking decision→downstream within layer
+thirds: early 0.00 [0,.24], mid 0.25 [.09,.53], late 0.33 [.14,.61], **all 1.00 [.76,1]**.
+No single third suffices; the signal is read across **mid-and-late** layers.
+
+**E3 — reasoning resolution (the mode contrast), n=36 samples.**
+
+| intervention (field-only) | NON-reasoning (N=12) | REASONING (n=36) |
+|---|---|---|
+| baseline P(safe) | **0.00** [0,.24] | **1.00** [.90,1] |
+| KO original stale downstream | **1.00** [.76,1] — *fixes it* | 0.97 [.86,1] — *harmless* |
+| KO fresh CoT tokens | — | **0.61** [.45,.75] — *reverts* (P_unsafe 0.39) |
+
+This is the crux, and the CIs separate cleanly: **non-reasoning** decisions are *harmed
+by* the stale downstream (knocking it out flips 0.00→1.00 safe); **reasoning** decisions
+*depend on* the fresh CoT (knocking it out drops 1.00→0.61, CI excludes baseline) and are
+*indifferent* to the original stale downstream (0.97, CI overlaps baseline). I.e.
+reasoning **relocates** the decision's evidence from the stale memoized downstream onto
+the freshly-derived CoT. (KO-CoT does not fully revert to 0 because the field is still
+refreshed and some conclusion leaks into unmasked scaffold tokens.)
+
+*Cross-size replication (4B/14B/30B-A3B/32B, both modes) is running; tables to follow.*
+
 ## Caveats / next
 - n=1 greedy forward, one scenario (account_role), 8B; replicate on 30B-A3B / 32B and
   more scenarios (queued).
