@@ -181,23 +181,103 @@ including 14B where field-only is 29% unsafe.
   sufficient" here (both in_place and erratum returned `cancel`). After the fix the diagnostic
   correctly returns `needs_erratum=True` and AUTO selects `field+erratum → deny`.
   (`esys/tau2_editkv.py`, `results/tau2_editkv.json`.)
+- **τ²-bench end-to-end EPISODE loop (real env + real tools + real reward, N=20 orders).** To
+  go beyond a single gated decision, we run a multi-turn cancel-order trajectory on the **real
+  τ²-bench retail environment** — real policy, real `RetailDB`, and the real `cancel_pending_order`
+  tool whose own enforcement ("Non-pending order cannot be cancelled") is the **ground-truth
+  reward** — over 20 real pending orders, with a control arm and a treatment arm, Wilson CIs:
+
+  | strategy | Arm A: stays pending (correct=cancel) | Arm B: →processed (correct=deny) |
+  |---|---|---|
+  | full (oracle) | 1.00 | 1.00 |
+  | stale | 1.00 | **0.00** |
+  | in_place | 1.00 | **0.00** |
+  | erratum | 1.00 | **1.00** |
+  | field+erratum | 1.00 | **1.00** |
+
+  Arm A shows editkv does not break the no-change control (no over-correction). Arm B: when the
+  order is fulfilled mid-episode, the stale/in_place agents call `cancel` on a now-processed
+  order → the **real tool raises → task fails** (tool-consistency 0.00), while the erratum agents
+  deny → **task succeeds** (1.00). So on the real τ²-bench env, with the environment's own tool
+  enforcement as reward, the cheap in_place edit fails **100%** of the time while editkv recovers
+  full task correctness. This statistically (N=20, CIs) answers the "single gated-decision proxy"
+  concern. (`esys/tau2_episode.py`, `results/tau2_episode_qwen3_8b.json`.)
 
 ## 7. Mechanism (explainability)
 
-The decision reads the field's value **indirectly**. Measured on every scale (4B–32B):
-- **E4 (attention):** decision's *direct* attention to the field token ≈ **0.1%** at every
-  size; ~50–56% to downstream, ~36–48% to attention sinks. Prefill **memoizes the
-  field-conditioned inference diffusely across downstream KV**; a field-only edit refreshes
-  only the (near-inert) direct path.
-- **E1 (graded knockout):** masking the decision's attention to the top-25% highest-attention
-  downstream restores the correct action — distributed, not localized.
-- **E2 (layer-band):** the stale signal is read in mid-and-late layers.
-- **E3 (reasoning resolution) is scale-dependent:** 8B & 30B-A3B(3B-active) CoT **corrects**
-  the stale inference; **14B CoT amplifies it** (manufactures 19% unsafe; bypassing the CoT
-  removes it); 32B collapses to caution. ⇒ "thinking rescues the cheap edit" is *not* general.
-This reframes the fix: **the erratum works because it injects a recent, explicit override the
-decision attends to — independent of whether the CoT reasons correctly** — which is why it
-survives at scales where reasoning fails and even where a full re-prefill is fooled.
+The decision reads the field's value **indirectly**: prefill memoizes the field-conditioned
+conclusion into *downstream* KV, so refreshing the field token's own KV (the cheap in_place
+edit) leaves the decision stale. We establish this with four methods — causal KV patching,
+linear probing, a causal reasoning-circuit test, and a position dose-response — that
+triangulate the same account. (Earlier attention-attribution / graded-knockout results, §7.5,
+are correlational antecedents; the results below are causal.)
+
+### 7.1 Causal KV-patching: a memoization map (D1)
+ROME-style causal tracing applied to the KV cache itself. Two token-aligned prefills (OLD
+value→unsafe action, NEW value→safe action); we patch NEW (K,V) into the OLD cache at chosen
+(layer, position) sites and read the decision logit. *Recovery* = fraction of the OLD→NEW
+decision swing restored. Qwen3-8B, n=12 aligned flip instances:
+- **FIELD-ONLY recovery = 0.009** [CI .006–.014]: refreshing the field token's own KV causally
+  recovers **<1%** of the flip — the rigorous reason in_place fails. This *is* the direct/
+  indirect path decomposition: direct (field→decision) path ≈0.9%, indirect (field→downstream
+  →decision) ≈99%. **FULL-DOWNSTREAM recovery = 1.00** (sanity = full reprefill).
+- **The memoized conclusion is concentrated in the SUFFIX** near the decision: patching the
+  last 10% / 20% of downstream recovers **64% / 82%**; the first 10% / 50% recover only
+  29% / 34% (strongly asymmetric). This is the mechanistic basis for why appending the erratum
+  works and quantifies the partial-reprefill depth needed.
+- **Distributed but identifiable, not holographic:** ~16 well-chosen positions recover 94%;
+  the strongest single sites split across the policy-rule, reasoning, and decision regions.
+  **Layer band:** mid/late layers carry it (early ≈0).
+
+### 7.2 Linear probing (independent of patching) (D3)
+A cross-domain linear probe for the gated *conclusion* (8 diverse domains, leave-one-domain-
+out, diff-of-means), a different methodology that should agree if 7.1 is right.
+- **Decodability by layer:** conclusion is decodable only in **late layers** (early 0.50 =
+  chance → late 0.83; best layer 26 = 0.875) — confirms 7.1's mid/late locus via probing.
+- **in_place staleness signature:** apply the stale/full-trained probe to the decision residual
+  under each strategy → P(new) = {stale 0.0, **in_place 0.0**, erratum 0.875, full 0.75}. The
+  in_place residual is classified as the **OLD** conclusion, identical to stale — the residual-
+  level reason it fails; erratum/full flip it to NEW.
+
+### 7.3 The reasoning-axis circuit: the CoT re-reads the field (D4)
+Reasoning models tolerate in_place where non-reasoning models revert. **Why?** Hypothesis: the
+CoT re-reads and re-derives the field *after* it, so an in_place-refreshed field is re-consumed
+by freshly generated CoT tokens that the decision then reads. Causal test on the in_place cache
+(field NEW, downstream stale), reasoning ON: `inplace_base` (correct) vs `block_cot_field`
+(mask every CoT-generation query's attention to the field) vs `block_dec_field` (mask only the
+decision→field) vs `block_cot_gate` (same-width control band).
+- Result: **`block_cot_field` collapses the in_place benefit (decision reverts to OLD)** while
+  `block_dec_field` and `block_cot_gate` **hold (stay correct)** — the CoT re-read, not the
+  decision's direct field read, is the causal carrier of reasoning robustness. Strikingly,
+  per-token CoT→field attention is only ~0.1%, yet blocking it flips the outcome (attention
+  magnitude ≠ causal importance, echoing 7.1). [full n + CIs in `results/mech_reasoning_reread_*.json`]
+- This explains the scale-dependence (§7.5): the CoT re-derivation can itself go wrong (14B
+  amplifies), so "thinking rescues the cheap edit" is real but **not guaranteed** — whereas the
+  erratum injects an explicit override independent of whether the CoT reasons correctly.
+
+### 7.4 Position dose-response: mechanism → system (D6)
+Causal field-position sweep (value appears once; alignment preserved). in_place recovery rises
+**monotonically** as the field moves later, i.e. as less field-conditioned text sits after it to
+memoize: pos0(early) −0.01 → pos4(hoisted, just before the decision) **0.11**. This is the
+causal underpinning of the practical "hoist the mutable field to the end" knob. Nuance: even
+full hoisting only *partially* rescues a single-pass decision (0.11, not ~1.0) — which is why
+the erratum's explicit conclusion-override, not mere hoisting, is the robust fix (coherent with
+the τ²-bench `field+erratum` result, §6).
+
+### 7.5 Correlational antecedents (attention, graded knockout)
+Consistent with the causal picture above, on every scale (4B–32B): the decision's *direct*
+attention to the field token ≈0.1% (~50–56% to downstream, ~36–48% to attention sinks); graded
+knockout of the top-attention downstream restores the correct action (distributed); the stale
+signal is read in mid/late layers; and E3 reasoning-resolution is scale-dependent (8B & 30B-A3B
+CoT corrects, 14B amplifies — manufacturing 19% unsafe, removed by bypassing the CoT, 32B
+collapses to caution).
+
+**Takeaway.** Four independent methods agree: the field is read *indirectly* through a
+suffix-concentrated, mid/late-layer memoized conclusion in downstream KV; in_place is causally
+inert (<1%) because it never updates that conclusion; the erratum works because appending at the
+end writes a fresh, high-leverage carrier into exactly the suffix region the decision reads; and
+reasoning robustness is mediated by the CoT re-reading the field — a real but fallible path,
+which is why the erratum (not reasoning, not hoisting) is the robust fix.
 
 ## 8. Cost/latency frontier (E-sys)
 

@@ -74,7 +74,7 @@ def gen_cot(model, tok, fc, nid, L, seed, mask_keys=None, measure_field=None,
 
 
 @torch.no_grad()
-def run_instance(model, tok, scn, oid, K, seed0):
+def run_instance(model, tok, scn, oid, K, seed0, max_new=500):
     m = META[scn]
     toi = {"safe": ftok(tok, TOK_WORDS[m["safe"]]), "unsafe": ftok(tok, TOK_WORDS[m["unsafe"]]),
            "lookup": ftok(tok, "lookup")}
@@ -92,17 +92,17 @@ def run_instance(model, tok, scn, oid, K, seed0):
         sd = seed0 + s
         # inplace_base (+ attention measurement)
         dq, dpos, cache, ce, fmass, gmass = gen_cot(model, tok, fc, nid_ids, L, sd,
-                                                    measure_field=fld, measure_gate=gate)
+                                                    measure_field=fld, measure_gate=gate, max_new=max_new)
         out["inplace_base"].append(decide(step(model, clone(cache, dpos), dq, dpos).logits[0, -1].float(), toi))
         if fmass:
             out["fmass"].append(sum(fmass) / len(fmass)); out["gmass"].append(sum(gmass) / len(gmass))
         # block_dec_field (B): same CoT, mask only decision -> field
         out["block_dec_field"].append(decide(step(model, clone(cache, dpos), dq, dpos, keys=fld).logits[0, -1].float(), toi))
         # block_cot_field (A): regenerate CoT with field masked for every gen query
-        dqA, dposA, cacheA, _, _, _ = gen_cot(model, tok, fc, nid_ids, L, sd, mask_keys=fld)
+        dqA, dposA, cacheA, _, _, _ = gen_cot(model, tok, fc, nid_ids, L, sd, mask_keys=fld, max_new=max_new)
         out["block_cot_field"].append(decide(step(model, clone(cacheA, dposA), dqA, dposA).logits[0, -1].float(), toi))
         # block_cot_gate (control): regenerate with gate band masked
-        dqG, dposG, cacheG, _, _, _ = gen_cot(model, tok, fc, nid_ids, L, sd, mask_keys=gate)
+        dqG, dposG, cacheG, _, _, _ = gen_cot(model, tok, fc, nid_ids, L, sd, mask_keys=gate, max_new=max_new)
         out["block_cot_gate"].append(decide(step(model, clone(cacheG, dposG), dqG, dposG).logits[0, -1].float(), toi))
     return out
 
@@ -114,6 +114,7 @@ def main():
     ap.add_argument("--scns", default="account_role,safety_mode,subscription_tier")
     ap.add_argument("--oids", default="A4471,B8820")
     ap.add_argument("--K", type=int, default=4)
+    ap.add_argument("--max_new", type=int, default=500)
     args = ap.parse_args()
     os.environ.setdefault("MECH_ATTN", "eager")     # knockout + attentions need eager
     tok, model = load(args.model)
@@ -121,7 +122,7 @@ def main():
     tally = {c: [] for c in conds}; fmass = []; gmass = []
     for scn in args.scns.split(","):
         for oid in args.oids.split(","):
-            r = run_instance(model, tok, scn, oid, args.K, seed0=1234)
+            r = run_instance(model, tok, scn, oid, args.K, seed0=1234, max_new=args.max_new)
             for c in conds:
                 tally[c].extend([1 if x == "safe" else 0 for x in r[c]])
             fmass.extend(r["fmass"]); gmass.extend(r["gmass"])
