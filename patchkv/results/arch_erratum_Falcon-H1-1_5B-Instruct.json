@@ -1,0 +1,12 @@
+{
+  "model": "tiiuae/Falcon-H1-1.5B-Instruct",
+  "arch": "hybrid attention+Mamba2 (Falcon-H1)",
+  "results": {
+    "stale (pending)": "cancel",
+    "oracle (processed)": "deny",
+    "erratum (pending+update->processed)": "deny"
+  },
+  "discriminates": true,
+  "erratum_matches_oracle": true,
+  "clean_pass": true
+}

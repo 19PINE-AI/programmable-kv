@@ -1,0 +1,22 @@
+##### hybrid attention+Mamba2 (Falcon-H1) #####
+=== erratum on hybrid attention+Mamba2 (Falcon-H1): tiiuae/Falcon-H1-1.5B-Instruct ===
+  stale (pending)                        -> cancel  (raw: 'cancel')
+  oracle (processed)                     -> deny    (raw: 'deny')
+  erratum (pending+update->processed)    -> deny    (raw: 'deny')
+  oracle flips (stale!=oracle): True | erratum matches oracle: True | clean PASS: True
+ARCH_ERRATUM_DONE
+##### hybrid Mamba2+attention (Zamba2) #####
+=== erratum on hybrid Mamba2+attention (Zamba2): Zyphra/Zamba2-2.7B-instruct ===
+  stale (pending)                        -> deny    (raw: 'deny')
+  oracle (processed)                     -> deny    (raw: 'deny')
+  erratum (pending+update->processed)    -> deny    (raw: 'deny')
+  oracle flips (stale!=oracle): False | erratum matches oracle: True | clean PASS: False
+ARCH_ERRATUM_DONE
+##### pure Mamba / no KV cache (Falcon-Mamba) #####
+=== erratum on pure Mamba / no KV cache (Falcon-Mamba): tiiuae/falcon-mamba-7b-instruct ===
+  stale (pending)                        -> cancel  (raw: 'cancel')
+  oracle (processed)                     -> deny    (raw: 'deny')
+  erratum (pending+update->processed)    -> cancel  (raw: 'cancel')
+  oracle flips (stale!=oracle): True | erratum matches oracle: False | clean PASS: False
+ARCH_ERRATUM_DONE
+===ARCH_BATCH_DONE===
