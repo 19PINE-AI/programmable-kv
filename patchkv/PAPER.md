@@ -262,10 +262,11 @@ decision swing restored. Qwen3-8B, n=12 aligned flip instances:
 - **Distributed but identifiable, not holographic:** ~16 well-chosen positions recover 94%;
   the strongest single sites split across the policy-rule, reasoning, and decision regions.
   **Layer band:** mid/late layers carry it (early ≈0).
-- **Generalizes across scale and family** (field-only recovery near 0, full-downstream=1.0,
-  suffix-concentrated everywhere): Qwen3-4B 0.025 / 8B 0.009 / 14B 0.008 / **32B 0.023**,
-  Gemma-2-9B 0.001, Mistral-7B 0.004. The causal account is not Qwen3-8B-specific and holds up to
-  32B. (MLA backbones — DeepSeek-V2-Lite — could not be patched here: the HF custom modeling is
+- **Generalizes across scale and family** (in_place recovery ≪ full-downstream=1.0, suffix-
+  concentrated everywhere): Qwen3-4B 0.025 / 8B 0.009 / 14B 0.008 / **32B 0.023**, Gemma-2-9B
+  0.001 / **Gemma-2-27B 0.219**, Mistral-7B 0.004. The causal account is not Qwen3-8B-specific and
+  holds across 7 models up to 32B (Gemma-2-27B does somewhat more residual *direct* field reading —
+  0.22, still a minority of the 1.0 full-downstream effect — so in_place remains insufficient). (MLA backbones — DeepSeek-V2-Lite — could not be patched here: the HF custom modeling is
   incompatible with transformers 4.57 and vLLM's flashinfer MLA kernels do not compile for this
   Blackwell `sm_120` GPU; the erratum is architecture-agnostic by construction, but an MLA-aware
   *in_place* edit of the compressed latent KV is genuine future work.) (`esys/mech_causal_patch.py`.)
