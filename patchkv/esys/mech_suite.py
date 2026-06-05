@@ -53,11 +53,14 @@ def load(name):
     # MECH_ATTN=sdpa for non-knockout runs (oracle_control, diverse) -> 3-5x faster.
     # eager (default) is required for the attention-knockout experiments (install()).
     impl = os.environ.get("MECH_ATTN", "eager")
-    tok = AutoTokenizer.from_pretrained(name)
+    tok = AutoTokenizer.from_pretrained(name, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(name, dtype=torch.bfloat16, device_map="cuda",
-                                                 attn_implementation=impl).eval()
+                                                 attn_implementation=impl, trust_remote_code=True).eval()
     if impl == "eager":
-        install(model)
+        try:
+            install(model)                 # enables attention-knockout (mech experiments)
+        except Exception as e:
+            print(f"[load] knockout install skipped ({type(e).__name__}); running plain eager", flush=True)
     return tok, model
 
 

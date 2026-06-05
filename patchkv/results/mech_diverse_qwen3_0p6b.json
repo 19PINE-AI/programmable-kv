@@ -1,0 +1,136 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "tasks": [
+    "retail_refund",
+    "airline_cancel",
+    "deploy_guard",
+    "bank_withdraw",
+    "doc_access",
+    "rx_safety",
+    "customs_route",
+    "oncall_route"
+  ],
+  "by_mode": {
+    "nonreasoning": {
+      "summary": {
+        "oracle": {
+          "P_correct": 0.12,
+          "ci": [
+            0.02,
+            0.47
+          ],
+          "P_stale": 0.88,
+          "n": 8
+        },
+        "field_only": {
+          "P_correct": 0.25,
+          "ci": [
+            0.07,
+            0.59
+          ],
+          "P_stale": 0.75,
+          "n": 8
+        },
+        "erratum": {
+          "P_correct": 0.12,
+          "ci": [
+            0.02,
+            0.47
+          ],
+          "P_stale": 0.88,
+          "n": 8
+        }
+      },
+      "per_task": {
+        "retail_refund": {
+          "oracle": {
+            "stale": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "stale": 1
+          }
+        },
+        "airline_cancel": {
+          "oracle": {
+            "stale": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "stale": 1
+          }
+        },
+        "deploy_guard": {
+          "oracle": {
+            "correct": 1
+          },
+          "field_only": {
+            "correct": 1
+          },
+          "erratum": {
+            "correct": 1
+          }
+        },
+        "bank_withdraw": {
+          "oracle": {
+            "stale": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "stale": 1
+          }
+        },
+        "doc_access": {
+          "oracle": {
+            "stale": 1
+          },
+          "field_only": {
+            "correct": 1
+          },
+          "erratum": {
+            "stale": 1
+          }
+        },
+        "rx_safety": {
+          "oracle": {
+            "stale": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "stale": 1
+          }
+        },
+        "customs_route": {
+          "oracle": {
+            "stale": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "stale": 1
+          }
+        },
+        "oncall_route": {
+          "oracle": {
+            "stale": 1
+          },
+          "field_only": {
+            "stale": 1
+          },
+          "erratum": {
+            "stale": 1
+          }
+        }
+      }
+    }
+  }
+}

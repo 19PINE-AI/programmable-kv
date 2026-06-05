@@ -120,7 +120,22 @@ including 14B where field-only is 29% unsafe.
   attributes, routing), Qwen3-8B: **non-reasoning** field_only=0.00 / erratum=1.00 (n=8);
   **reasoning** field_only=1.00 / erratum=0.98 (n=48). The non-reasoning "always stale" and the
   reasoning rescue both hold uniformly across every domain — not a customer-support artifact.
-- **Cross-family (3 families):** the pattern holds beyond Qwen.
+- **Family × scale survey (5 families, 0.6B–32B; diverse tasks, non-reasoning, n=8).**
+  For every *competent* model (oracle P(correct) ≥ 0.75) the pattern holds: field-only fails,
+  erratum recovers to the oracle ceiling.
+
+  | model | family | oracle | field_only | erratum |
+  |---|---|---|---|---|
+  | Qwen3-1.7B / 4B / 8B | Qwen | 0.88 / 1.0 / 1.0 | 0.12 / 0.00 / 0.00 | 1.0 / 1.0 / 1.0 |
+  | SmolLM2-1.7B | HF/SmolLM | 0.75 | 0.25 | 0.62 |
+  | Gemma-2-2B / 2-9B / 3-4B | Google | 0.88 / 1.0 / 1.0 | 0.38 / 0.00 / 0.25 | 0.88 / 1.0 / 1.0 |
+  | Mistral-7B | Mistral | 1.0 | 0.00 | 0.88 |
+  | DeepSeek-R1-Distill-Llama-8B | Llama | 0.97 | 0.81 (reasoning) | 1.0 |
+
+  (Qwen3-0.6B oracle=0.12 — too small to do the task at all, uninformative. Phi-3.5's
+  outdated custom modeling code is incompatible with the installed transformers; dropped.)
+
+- **Reasoning detail (3 families):** the pattern holds beyond Qwen.
   - *Mistral-7B-Instruct* (different arch, non-reasoning, n=8): field_only **0.00**, erratum 0.88.
   - *DeepSeek-R1-Distill-Llama-8B* (Llama arch, reasoning, n=32): oracle 0.97, field_only 0.81
     (edit penalty ~0.16), **erratum 1.00** [.89,1].
