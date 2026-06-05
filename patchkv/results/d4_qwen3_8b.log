@@ -1,0 +1,3 @@
+/home/ubuntu/.local/lib/python3.10/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:01,  2.06it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:00<00:01,  2.00it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:01<00:00,  2.02it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  2.14it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.84it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.43it/s]

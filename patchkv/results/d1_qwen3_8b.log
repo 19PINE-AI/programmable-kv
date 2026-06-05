@@ -1,0 +1,56 @@
+/home/ubuntu/.local/lib/python3.10/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:01,  2.02it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:01,  1.97it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:01<00:01,  1.99it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  2.10it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.79it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.39it/s]
+/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py:1014: UserWarning: `output_attentions=True` is not supported with `attn_implementation` other than ['eager', 'eager_paged', 'flex_attention']. Please use `model.set_attn_implementation('eager')` to enable capturing attention outputs.
+  warnings.warn(
+`sdpa` attention does not support `output_attentions=True` or `head_mask`. Please set your attention to `eager` if you want any of these features.
+  [account_role/A4471] L=777 field_only=0.009 full_down=1.00 suffix@0.1=0.542 suffix@0.3=0.722 top_pos_region=gate->convo
+  [account_role/B8820] L=777 field_only=0.020 full_down=1.00 suffix@0.1=0.539 suffix@0.3=0.734 top_pos_region=gate->convo
+  [account_role/C1093] L=777 field_only=0.005 full_down=1.00 suffix@0.1=0.556 suffix@0.3=0.737 top_pos_region=gate->convo
+  [account_role/D5567] L=777 field_only=0.009 full_down=1.00 suffix@0.1=0.545 suffix@0.3=0.727 top_pos_region=gate->convo
+  [safety_mode/A4471] L=774 field_only=0.028 full_down=1.00 suffix@0.1=0.664 suffix@0.3=0.88 top_pos_region=convo->decision
+  [safety_mode/B8820] L=774 field_only=0.041 full_down=1.00 suffix@0.1=0.643 suffix@0.3=0.883 top_pos_region=convo->decision
+  [safety_mode/C1093] L=774 field_only=0.019 full_down=1.00 suffix@0.1=0.667 suffix@0.3=0.903 top_pos_region=convo->decision
+  [safety_mode/D5567] L=774 field_only=0.019 full_down=1.00 suffix@0.1=0.679 suffix@0.3=0.893 top_pos_region=convo->decision
+  [subscription_tier/A4471] L=771 field_only=-0.009 full_down=1.00 suffix@0.1=0.694 suffix@0.3=0.847 top_pos_region=decision
+  [subscription_tier/B8820] L=771 field_only=-0.009 full_down=1.00 suffix@0.1=0.7 suffix@0.3=0.864 top_pos_region=decision
+  [subscription_tier/C1093] L=771 field_only=-0.044 full_down=1.00 suffix@0.1=0.69 suffix@0.3=0.858 top_pos_region=decision
+  [subscription_tier/D5567] L=771 field_only=0.018 full_down=1.00 suffix@0.1=0.752 suffix@0.3=0.903 top_pos_region=decision
+
+==== D1 CAUSAL PATCHING SUMMARY ====
+n=12 instances
+FIELD-ONLY recovery (= in_place): 0.009 CI(0.006, 0.014)  (small => why in_place fails)
+FULL-DOWNSTREAM recovery (sanity): 1.0 CI(1.0, 1.0)
+REGION mean single-pos recovery: {'field': 0.009, 'field->gate': 0.003, 'gate->convo': 0.004, 'convo->decision': 0.022, 'decision': 0.015}
+strongest single-site region counts: {'gate->convo': 4, 'convo->decision': 4, 'decision': 4}
+LAYER-band recovery: {'early': 0.003, 'mid': 0.069, 'late': 0.056}
+CUMULATIVE SUFFIX recovery (patch last fraction of downstream -> recovery):
+   suffix 0.02: 0.42 CI(0.403, 0.441)
+   suffix 0.05: 0.47 CI(0.463, 0.482)
+   suffix  0.1: 0.64 CI(0.613, 0.661)
+   suffix  0.2: 0.82 CI(0.795, 0.838)
+   suffix  0.3: 0.83 CI(0.804, 0.843)
+   suffix  0.5: 0.87 CI(0.849, 0.885)
+   suffix  0.7: 0.88 CI(0.857, 0.893)
+   suffix  0.9: 0.89 CI(0.877, 0.901)
+   suffix  1.0: 1.00 CI(1.0, 1.0)
+CUMULATIVE PREFIX recovery (patch first fraction of downstream -> recovery):
+   prefix 0.02: 0.01 CI(0.008, 0.019)
+   prefix 0.05: 0.00 CI(-0.002, 0.016)
+   prefix  0.1: 0.29 CI(0.279, 0.299)
+   prefix  0.2: 0.31 CI(0.295, 0.324)
+   prefix  0.3: 0.32 CI(0.297, 0.334)
+   prefix  0.5: 0.34 CI(0.325, 0.353)
+   prefix  0.7: 0.40 CI(0.383, 0.432)
+   prefix  0.9: 0.64 CI(0.632, 0.653)
+   prefix  1.0: 1.00 CI(1.0, 1.0)
+LOCALITY top-k (non-additive ranking; weak by construction):
+   top-  1 pos -> 0.28 CI(0.259, 0.299)
+   top-  2 pos -> 0.43 CI(0.398, 0.445)
+   top-  4 pos -> 0.64 CI(0.59, 0.675)
+   top-  8 pos -> 0.82 CI(0.776, 0.845)
+   top- 16 pos -> 0.94 CI(0.903, 0.96)
+   top- 32 pos -> 0.97 CI(0.952, 0.989)
+   top- 64 pos -> 0.98 CI(0.966, 0.992)
+   top-128 pos -> 1.00 CI(0.985, 1.008)
+D1_CAUSAL_PATCH_DONE
