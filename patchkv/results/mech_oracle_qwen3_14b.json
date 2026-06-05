@@ -1,0 +1,42 @@
+{
+  "model": "Qwen/Qwen3-14B",
+  "n": 24,
+  "oracle": {
+    "P_safe": 0.96,
+    "ci_safe": [
+      0.8,
+      0.99
+    ],
+    "P_unsafe": 0.0,
+    "dist": {
+      "safe": 23,
+      "lookup": 1
+    }
+  },
+  "field_only": {
+    "P_safe": 0.29,
+    "ci_safe": [
+      0.15,
+      0.49
+    ],
+    "P_unsafe": 0.29,
+    "dist": {
+      "lookup": 10,
+      "unsafe": 7,
+      "safe": 7
+    }
+  },
+  "erratum": {
+    "P_safe": 1.0,
+    "ci_safe": [
+      0.86,
+      1
+    ],
+    "P_unsafe": 0.0,
+    "dist": {
+      "safe": 24
+    }
+  },
+  "edit_penalty_safe": 0.67,
+  "erratum_recovers": 0.71
+}

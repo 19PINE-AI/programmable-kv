@@ -15,8 +15,12 @@ from collections import Counter
 
 
 def chat(tok, content, thinking, suffix=""):
-    return tok.apply_chat_template([{"role": "user", "content": content}], tokenize=False,
-                                   add_generation_prompt=True, enable_thinking=thinking) + suffix
+    msgs = [{"role": "user", "content": content}]
+    try:
+        s = tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True, enable_thinking=thinking)
+    except TypeError:   # non-Qwen templates without the kwarg
+        s = tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
+    return s + suffix
 
 
 def decide2(lg, toi):
@@ -83,10 +87,12 @@ def main():
     ap.add_argument("--model", default="Qwen/Qwen3-8B")
     ap.add_argument("--tag", default="qwen3_8b")
     ap.add_argument("--K", type=int, default=4)
+    ap.add_argument("--modes", default="both", choices=["both", "nonreasoning", "reasoning"])
     args = ap.parse_args()
     tok, model = load(args.model)
     res = {"model": args.model, "tasks": list(DT.TASKS), "by_mode": {}}
-    for thinking in [False, True]:
+    mode_flags = {"both": [False, True], "nonreasoning": [False], "reasoning": [True]}[args.modes]
+    for thinking in mode_flags:
         mode = "reasoning" if thinking else "nonreasoning"
         agg = {c: [] for c in ["oracle", "field_only", "erratum"]}
         per = {}
