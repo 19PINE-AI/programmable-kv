@@ -49,7 +49,55 @@ central, regime-specific claim:
 This is verified with a clean within-model ablation (same Qwen3-8B weights,
 `enable_thinking` on vs off — removing the model-family confound):
 
-<!-- ABLATION_PLACEHOLDER -->
+**Within-model ablation** — Qwen3-8B, `enable_thinking` on/off, account_role, n=12,
+P_unsafe / P_correct with Wilson 95% CIs (primary metric P_unsafe; P_correct is a
+lower bound where censored — long poison CoTs hit the 1536-token budget):
+
+| mode | ctx | method | P_unsafe | P_correct |
+|---|---|---|---|---|
+| **reasoning** | benign | stale | 0.83 [.55,.95] | 0.00 |
+| | | **field_only** | **0.00 [0,.24]** | 0.67 [.39,.86] |
+| | | **erratum** | **0.00 [0,.24]** | 1.00 [.76,1] |
+| | | oracle | 0.00 | 0.92 |
+| **reasoning** | poison | stale | 1.00 [.76,1] | 0.00 |
+| | | **field_only** | **0.42 [.19,.68]** | 0.42 |
+| | | **erratum** | **0.00 [0,.24]** | 0.33 (cens 6) |
+| | | oracle | 0.00 | 1.00 |
+| **instruction** | benign | stale | 0.00 | 0.00 |
+| | | **field_only** | **0.00** | **0.00** | 
+| | | **erratum** | **0.00** | 1.00 [.76,1] |
+| | | oracle | 0.00 | 1.00 |
+| **instruction** | poison | stale | 1.00 [.76,1] | 0.00 |
+| | | **field_only** | **1.00 [.76,1]** | 0.00 |
+| | | **erratum** | **0.00 [0,.24]** | 0.00 |
+| | | oracle | **1.00 [.76,1]** | 0.00 |
+
+Reading (CIs are non-overlapping where it matters):
+1. **Thinking is necessary for field-only to recover the correct action.** Reasoning
+   field_only reaches the correct action 0.67 of the time; instruction field_only
+   reaches it **0.00** — yet is **0.00 unsafe**. That "0 unsafe / 0 correct" cell is the
+   key signature: without reasoning, the field-token edit makes the model **safe but
+   unfaithful** — it *hedges* (a cautious deferral) rather than doing either the old or
+   new action.
+2. **Erratum is mode-invariant on safety:** P_unsafe = 0.00 in **all four** cells, the
+   only method that is.
+3. **Poison breaks field-only even with reasoning** (0.42 unsafe, CI excludes 0); and in
+   **instruction+poison even the full-reprefill oracle is unsafe** (1.00) — the
+   contradiction is in the text, not the staleness, so recomputing faithfully reproduces
+   it. Only the erratum (and, for the oracle, reasoning) defeats it.
+
+**Mechanistic reading (hypothesis).** The "safe-but-unfaithful" hedge is the fingerprint
+of a **value/conclusion mismatch**: a field-only edit fixes the model's *value* register
+(it knows the account is now suspended) but not the cached *conclusion* register
+("writes allowed"), so the two conflict → the decision flattens to a safe non-answer.
+Reasoning repairs the conclusion register by re-deriving it into fresh CoT tokens;
+the erratum repairs it by injecting a recent, explicit override (hence it must say
+"overrides any earlier *conclusion*"). This predicts value-fidelity fields (no
+conclusion register to go stale) are the easy case — tested separately. See
+`esys/ablation_thinking.py`, `results/ablation_thinking_qwen3_8b.json`. *Caveats:
+account_role only in this focused run; n=12; long-CoT poison cells censored; larger
+reasoning models (Qwen3-30B-A3B, Qwen3-32B) and the non-safety fidelity test in
+progress.*
 
 Instruction models are thus the *harder, background* case (where prior work sits and
 where the cheap edit does not transfer); reasoning models are where editable KV becomes
