@@ -1,0 +1,45 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "multi_field": {
+    "flip_role": {
+      "stale": "0/4",
+      "erratum": "4/4",
+      "oracle": "4/4"
+    },
+    "flip_status": {
+      "stale": "0/4",
+      "erratum": "4/4",
+      "oracle": "4/4"
+    },
+    "flip_both": {
+      "stale": "0/4",
+      "erratum": "4/4",
+      "oracle": "4/4"
+    },
+    "flip_none": {
+      "stale": "4/4",
+      "erratum": "4/4",
+      "oracle": "4/4"
+    }
+  },
+  "multi_edit": {
+    "to_processed": {
+      "stacked_erratum": "4/4",
+      "direct_oracle": "4/4",
+      "correct": "deny",
+      "chain": "pending->processed"
+    },
+    "to_cancelled": {
+      "stacked_erratum": "4/4",
+      "direct_oracle": "4/4",
+      "correct": "deny",
+      "chain": "pending->processed->cancelled"
+    },
+    "back_to_pending": {
+      "stacked_erratum": "0/4",
+      "direct_oracle": "4/4",
+      "correct": "cancel",
+      "chain": "pending->processed->cancelled->pending"
+    }
+  }
+}

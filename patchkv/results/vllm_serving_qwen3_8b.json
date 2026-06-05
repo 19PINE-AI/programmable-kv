@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "baseline": {
+    "label": "baseline (new field in prefix)",
+    "n": 48,
+    "total_s": 5.828,
+    "req_per_s": 8.24,
+    "ms_per_req": 121.4
+  },
+  "erratum": {
+    "label": "erratum (append-only, prefix reused)",
+    "n": 48,
+    "total_s": 0.356,
+    "req_per_s": 134.81,
+    "ms_per_req": 7.4
+  },
+  "speedup": 16.41
+}

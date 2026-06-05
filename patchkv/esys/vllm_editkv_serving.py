@@ -17,6 +17,15 @@ We prime the cache with the shared prefix, then measure per-request latency, tot
 and vLLM's reported prefix-cache hit rate. Run: python esys/vllm_editkv_serving.py
 """
 import argparse, os, sys, time, json
+# This machine's NVML userspace lib (595.71) mismatches the kernel driver (595.58), so NVML
+# init fails and breaks vLLM's NVML-based platform detection (torch.cuda itself works fine).
+# Force the CUDA platform and run single-process so the patch applies to the engine too.
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
+os.environ.setdefault("VLLM_ENABLE_V1_MULTIPROCESSING", "0")
+import vllm.platforms as _P
+_P.builtin_platform_plugins["cuda"] = lambda: "vllm.platforms.cuda.CudaPlatform"
+_P._current_platform = None
+
 TAU2 = "/home/ubuntu/tau2-bench/data/tau2/domains/retail/policy.md"
 
 
@@ -31,19 +40,23 @@ def main():
 
     policy = open(TAU2).read() if os.path.exists(TAU2) else ("RETAIL POLICY. " * 400)
     OLD, NEWS = "pending", [f"processed_{i:03d}" for i in range(args.n)]  # distinct new values
-    head = policy + "\n\n# Session\nThe order #W2378156 current order_status is: "
-    tail = (".\n\n# Conversation\nuser: I'd like to cancel order #W2378156.\n"
+    # The mutable field is placed EARLY (system header), BEFORE the long policy, so editing it
+    # invalidates the entire downstream — the regime where editkv matters.
+    pre = "# Session header\norder_status: "          # field goes here, first
+    post = ("\n\n" + policy + "\n\n# Conversation\nuser: I'd like to cancel order #W2378156.\n"
             "assistant: Let me verify the order status against the policy.\n\n# TASK\n"
             "Decide one word: cancel or deny.\nDecision:")
     erratum = "\n[STATE UPDATE] order_status has changed to {v}; this overrides any earlier value AND conclusion.\n"
 
-    # BASELINE: new field value baked into the (early) prefix -> unique prefix, invalidated from field
-    baseline = [head + v + tail for v in NEWS]
-    # ERRATUM: shared OLD prefix (cache hit) + appended update suffix
-    erratum_prompts = [head + OLD + tail.replace("# TASK", erratum.format(v=v) + "# TASK") for v in NEWS]
+    # BASELINE (no editkv): new field value baked into the EARLY header -> everything after the
+    # field (the whole long policy) is invalidated and recomputed, every request.
+    baseline = [pre + v + post for v in NEWS]
+    # ERRATUM (editkv): the entire OLD prefix (header+policy+convo) is a cache hit; only the
+    # short appended update suffix is computed.
+    erratum_prompts = [pre + OLD + post.replace("# TASK", erratum.format(v=v) + "# TASK") for v in NEWS]
 
     llm = LLM(model=args.model, enable_prefix_caching=True, gpu_memory_utilization=args.gpu_mem,
-              max_model_len=8192, dtype="bfloat16", trust_remote_code=True, enforce_eager=False)
+              max_model_len=8192, dtype="bfloat16", trust_remote_code=True, enforce_eager=True)
     sp = SamplingParams(max_tokens=4, temperature=0.0)
 
     def run(prompts, label):

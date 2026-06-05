@@ -1,0 +1,14 @@
+=== batch done, running robustness ===
+=== (A) multi-field (account_role AND order_status gate the refund) ===
+  flip_role   correct=deny   | oracle=4/4 stale=0/4 erratum=4/4
+  flip_status correct=deny   | oracle=4/4 stale=0/4 erratum=4/4
+  flip_both   correct=deny   | oracle=4/4 stale=0/4 erratum=4/4
+  flip_none   correct=refund | oracle=4/4 stale=4/4 erratum=4/4
+=== (B) multi-edit accumulation (pending -> processed -> cancelled) ===
+  to_processed     latest correct=deny   | stacked_erratum=4/4 direct_oracle=4/4
+  to_cancelled     latest correct=deny   | stacked_erratum=4/4 direct_oracle=4/4
+  back_to_pending  latest correct=cancel | stacked_erratum=0/4 direct_oracle=4/4
+ROBUSTNESS_MULTI_DONE
+=== running vLLM serving ===
+RuntimeError: Device string must not be empty
+=== CHAIN2_DONE ===
