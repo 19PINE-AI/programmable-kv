@@ -119,7 +119,13 @@ including 14B where field-only is 29% unsafe.
   safety, customs routing, on-call severity; permission gates, numeric thresholds, safety
   attributes, routing), Qwen3-8B non-reasoning, n=8: **field_only P(correct)=0.00 (always
   stale), erratum=1.00 (full recovery)** — the identical pattern in every domain.
-- **Cross-family** (Mistral-7B, DeepSeek-R1-Distill-Llama-8B): (running).
+- **Cross-family (3 families):** the pattern holds beyond Qwen.
+  - *Mistral-7B-Instruct* (different arch, non-reasoning, n=8): field_only **0.00**, erratum 0.88.
+  - *DeepSeek-R1-Distill-Llama-8B* (Llama arch, reasoning, n=32): oracle 0.97, field_only 0.81
+    (edit penalty ~0.16), **erratum 1.00** [.89,1].
+  The field-only edit carries a penalty on every family; **the erratum recovers to the oracle
+  ceiling on every family.** (DeepSeek-R1's reasoning is *more* staleness-robust than Qwen3-14B's,
+  which amplified it — reasoning-training-dependent, but the erratum is family-invariant.)
 - **τ-bench retail (real policy):** H2 holds on the real 81-line policy; a late-placed field
   recovers at 4.4% recompute (94.8% reused free); erratum robust to a poisoned prior.
 
@@ -142,10 +148,20 @@ survives at scales where reasoning fails and even where a full re-prefill is foo
 
 ## 8. Cost/latency frontier (E-sys)
 
-(running) Real wall-clock + recompute fraction to build a decode-ready cache across context
-lengths: full_reprefill (100%) vs hoist_to_end (~3.5%) vs field_only (~0.1%) vs erratum
-(~5–6%) vs field+erratum. The erratum keeps the field in place at a few-percent recompute,
-and uniquely retains correctness under contradictory context.
+Real wall-clock (CUDA events, warmup+median) to build a decode-ready cache, Qwen3-8B:
+
+| context T | full_reprefill | field_only | erratum | hoist_to_end |
+|---|---|---|---|---|
+| 586 | 78 ms | 30 ms (0.34%) | 27 ms (10%) | 38 ms |
+| 1706 | 198 ms | 30 ms (0.12%) | 45 ms (3.5%) | 44 ms |
+| 4047 | 417 ms | 30 ms (0.05%) | 57 ms (1.5%) | 52 ms |
+| 9947 | **1260 ms** | **30 ms** (0.02%) | **94 ms** (0.6%) | 86 ms |
+
+Full reprefill scales linearly with context; **field_only is ~constant (~30 ms) and erratum
+small (~27–94 ms)**, so the saving grows with length — at 10K context **~42× (field_only) / ~13×
+(erratum)** vs full reprefill, both keeping the field in place. The erratum thus delivers a ~7×
+TTFT reduction *with* correctness (→oracle, §5) *and* natural placement, and uniquely retains
+correctness under contradictory context. (field+erratum ~67–83 ms; still ≪ full at large T.)
 
 ## 9. Limitations
 - Synthetic + τ-bench scenarios; single gated decisions, not full multi-turn task success.

@@ -1,0 +1,129 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "sweep": [
+    {
+      "n_neutral": 20,
+      "T": 586,
+      "methods": {
+        "full_reprefill": {
+          "latency_ms": 78.33,
+          "recompute_tokens": 586,
+          "recompute_frac": 1.0
+        },
+        "hoist_to_end": {
+          "latency_ms": 38.19,
+          "recompute_tokens": 39,
+          "recompute_frac": 0.0666
+        },
+        "field_only": {
+          "latency_ms": 29.95,
+          "recompute_tokens": 2,
+          "recompute_frac": 0.0034
+        },
+        "erratum": {
+          "latency_ms": 27.09,
+          "recompute_tokens": 60,
+          "recompute_frac": 0.1024
+        },
+        "field_erratum": {
+          "latency_ms": 68.99,
+          "recompute_tokens": 62,
+          "recompute_frac": 0.1058
+        }
+      }
+    },
+    {
+      "n_neutral": 80,
+      "T": 1706,
+      "methods": {
+        "full_reprefill": {
+          "latency_ms": 197.53,
+          "recompute_tokens": 1706,
+          "recompute_frac": 1.0
+        },
+        "hoist_to_end": {
+          "latency_ms": 43.85,
+          "recompute_tokens": 39,
+          "recompute_frac": 0.0229
+        },
+        "field_only": {
+          "latency_ms": 29.8,
+          "recompute_tokens": 2,
+          "recompute_frac": 0.0012
+        },
+        "erratum": {
+          "latency_ms": 44.46,
+          "recompute_tokens": 60,
+          "recompute_frac": 0.0352
+        },
+        "field_erratum": {
+          "latency_ms": 67.33,
+          "recompute_tokens": 62,
+          "recompute_frac": 0.0363
+        }
+      }
+    },
+    {
+      "n_neutral": 200,
+      "T": 4047,
+      "methods": {
+        "full_reprefill": {
+          "latency_ms": 416.74,
+          "recompute_tokens": 4047,
+          "recompute_frac": 1.0
+        },
+        "hoist_to_end": {
+          "latency_ms": 51.75,
+          "recompute_tokens": 39,
+          "recompute_frac": 0.0096
+        },
+        "field_only": {
+          "latency_ms": 30.02,
+          "recompute_tokens": 2,
+          "recompute_frac": 0.0005
+        },
+        "erratum": {
+          "latency_ms": 56.86,
+          "recompute_tokens": 60,
+          "recompute_frac": 0.0148
+        },
+        "field_erratum": {
+          "latency_ms": 82.74,
+          "recompute_tokens": 62,
+          "recompute_frac": 0.0153
+        }
+      }
+    },
+    {
+      "n_neutral": 500,
+      "T": 9947,
+      "methods": {
+        "full_reprefill": {
+          "latency_ms": 1259.97,
+          "recompute_tokens": 9947,
+          "recompute_frac": 1.0
+        },
+        "hoist_to_end": {
+          "latency_ms": 85.98,
+          "recompute_tokens": 39,
+          "recompute_frac": 0.0039
+        },
+        "field_only": {
+          "latency_ms": 29.94,
+          "recompute_tokens": 2,
+          "recompute_frac": 0.0002
+        },
+        "erratum": {
+          "latency_ms": 94.31,
+          "recompute_tokens": 60,
+          "recompute_frac": 0.006
+        },
+        "field_erratum": {
+          "latency_ms": 120.15,
+          "recompute_tokens": 62,
+          "recompute_frac": 0.0062
+        }
+      }
+    }
+  ]
+}
