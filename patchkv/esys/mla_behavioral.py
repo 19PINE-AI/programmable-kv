@@ -17,40 +17,40 @@ _P.builtin_platform_plugins["cuda"] = lambda: "vllm.platforms.cuda.CudaPlatform"
 _P._current_platform = None
 from vllm import LLM, SamplingParams
 
-POLICY = ("You are a retail support agent. POLICY (binding): an order can be cancelled ONLY IF its "
-          "order_status is 'pending'; if it is 'processed' or 'delivered' it CANNOT be cancelled and "
-          "you must deny.\n\n")
-ERR = "[STATE UPDATE] order_status has changed to processed; this overrides any earlier value AND conclusion.\n"
-TASK = ("\nuser: Please cancel my order, ordered by mistake.\nassistant: Let me check the policy and the "
-        "current order status.\nDecide one word — cancel or deny.\nDecision:")
+POLICY = ("You are a retail support agent. Binding policy: an order may be CANCELLED only if its "
+          "order_status is exactly 'pending'. If the status is 'processed' or 'delivered', the order "
+          "CANNOT be cancelled and you must DENY the request.")
+ERR = ("\n\n[STATE UPDATE] The order_status has just changed to 'processed'. This overrides any earlier "
+       "value AND any earlier conclusion. Apply the current value.")
 
 
-def prompt(status, erratum=False):
-    s = POLICY + f"# Session\norder_status: {status}\n"
-    if erratum:
-        s += ERR
-    return s + TASK
+def user_msg(status, erratum=False):
+    s = (f"{POLICY}\n\nThe order #W123 current order_status is: {status}." +
+         (ERR if erratum else "") +
+         "\n\nThe customer asks to cancel order #W123. Per the policy and the order's CURRENT status, "
+         "answer with exactly one word — 'cancel' or 'deny'.")
+    return s
 
 
 def first_word(t):
     t = t.strip().lower()
-    return "cancel" if "cancel" in t[:12] else ("deny" if ("deny" in t[:12] or "cannot" in t[:12]) else t.split()[:1])
+    return "cancel" if "cancel" in t[:20] else ("deny" if ("deny" in t[:20] or "cannot" in t[:20]) else t.split()[:1])
 
 
 def main():
     model = sys.argv[1] if len(sys.argv) > 1 else "deepseek-ai/DeepSeek-V2-Lite-Chat"
-    llm = LLM(model=model, gpu_memory_utilization=0.55, max_model_len=4096, dtype="bfloat16",
+    llm = LLM(model=model, gpu_memory_utilization=0.42, max_model_len=4096, dtype="bfloat16",
               trust_remote_code=True, enforce_eager=True)
-    sp = SamplingParams(max_tokens=6, temperature=0.0)
-    prompts = {"stale (pending)": prompt("pending"), "oracle (processed)": prompt("processed"),
-               "erratum (pending + update->processed)": prompt("pending", erratum=True)}
-    outs = llm.generate(list(prompts.values()), sp, use_tqdm=False)
+    sp = SamplingParams(max_tokens=8, temperature=0.0)
+    cases = {"stale (pending)": user_msg("pending"), "oracle (processed)": user_msg("processed"),
+             "erratum (pending + update->processed)": user_msg("pending", erratum=True)}
+    outs = llm.chat([[{"role": "user", "content": c}] for c in cases.values()], sp, use_tqdm=False)
     res = {}
-    print(f"=== MLA behavioral erratum check on {model} (via vLLM native MLA) ===")
-    for (label, _), o in zip(prompts.items(), outs):
+    print(f"=== MLA behavioral erratum check on {model} (via vLLM native MLA, chat template) ===")
+    for (label, _), o in zip(cases.items(), outs):
         d = first_word(o.outputs[0].text)
         res[label] = d
-        print(f"  {label:42s} -> {d}")
+        print(f"  {label:42s} -> {d}  (raw: {o.outputs[0].text.strip()[:30]!r})")
     ok = (res["oracle (processed)"] == "deny" and res["stale (pending)"] == "cancel"
           and res["erratum (pending + update->processed)"] == res["oracle (processed)"])
     print(f"  erratum matches oracle (MLA): {ok}")

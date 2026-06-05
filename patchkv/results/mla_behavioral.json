@@ -1,0 +1,9 @@
+{
+  "model": "deepseek-ai/DeepSeek-V2-Lite-Chat",
+  "results": {
+    "stale (pending)": "cancel",
+    "oracle (processed)": "deny",
+    "erratum (pending + update->processed)": "deny"
+  },
+  "erratum_recovers": true
+}

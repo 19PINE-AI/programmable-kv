@@ -266,10 +266,15 @@ decision swing restored. Qwen3-8B, n=12 aligned flip instances:
   concentrated everywhere): Qwen3-4B 0.025 / 8B 0.009 / 14B 0.008 / **32B 0.023**, Gemma-2-9B
   0.001 / **Gemma-2-27B 0.219**, Mistral-7B 0.004. The causal account is not Qwen3-8B-specific and
   holds across 7 models up to 32B (Gemma-2-27B does somewhat more residual *direct* field reading —
-  0.22, still a minority of the 1.0 full-downstream effect — so in_place remains insufficient). (MLA backbones — DeepSeek-V2-Lite — could not be patched here: the HF custom modeling is
-  incompatible with transformers 4.57 and vLLM's flashinfer MLA kernels do not compile for this
-  Blackwell `sm_120` GPU; the erratum is architecture-agnostic by construction, but an MLA-aware
-  *in_place* edit of the compressed latent KV is genuine future work.) (`esys/mech_causal_patch.py`.)
+  0.22, still a minority of the 1.0 full-downstream effect — so in_place remains insufficient).
+  (`esys/mech_causal_patch.py`.)
+- **MLA backbone (DeepSeek-V2-Lite-Chat).** The erratum works on a Multi-head Latent Attention
+  model: via vLLM's native MLA, stale(pending)→cancel, oracle(processed)→deny, and
+  **erratum(pending+update)→deny matches the oracle** — the append-only erratum is architecture-
+  agnostic, as expected (`esys/mla_behavioral.py`). The one open piece is *causal KV-patching* (D1)
+  on MLA: MLA stores a shared *compressed latent* KV, so an MLA-aware in_place edit / position-
+  resolved patch needs special handling — architecture-specific future work, not a method
+  limitation. (Reaching this required two environment fixes — see §10.1.)
 
 ### 7.2 Linear probing (independent of patching) (D3)
 A cross-domain linear probe for the gated *conclusion* (8 diverse domains, leave-one-domain-
@@ -417,12 +422,21 @@ single-process engine to work around it. (`esys/vllm_editkv_serving.py`.)
 - Serving numbers (§8b) are HF-level (CUDA events); the §8c vLLM integration confirms the win on a
   real paged-attention engine (16.4×). The 32K×large-batch HF points OOM a single 96 GB GPU in
   bf16 (measured to 32K at bs=1, 16K at bs=8).
-- **MLA backbones are untested here** due to environment toolchain blocks (DeepSeek custom modeling
-  vs transformers 4.57; flashinfer MLA kernels vs Blackwell `sm_120`), not anything intrinsic to
-  editkv. The erratum (append-only) is architecture-agnostic; the open question is an MLA-aware
-  in_place edit of the shared compressed latent KV. **Multi-edit** of one field is robust only when
-  collapsed to the current value — stacking a non-monotonic history can let a salient intermediate
-  state dominate (§5d).
+- **MLA backbones:** the erratum is now *verified* on DeepSeek-V2-Lite (MLA) via vLLM (§6). The
+  remaining open piece is an MLA-aware causal in_place edit/patch of the shared compressed latent
+  KV. **Multi-edit** of one field is robust only when collapsed to the current value — stacking a
+  non-monotonic history can let a salient intermediate state dominate (§5d).
+
+### 10.1 Reproducibility / environment fixes
+Two environment issues on the Blackwell (RTX PRO 6000, `sm_120`) box had to be fixed and are worth
+recording: (1) **NVML driver/library mismatch** — a security update bumped the userspace NVML to
+595.71 while the loaded kernel module stayed 595.58 (a GPU training job blocked a module reload),
+breaking `nvidia-smi` and vLLM's NVML-based platform detection (torch.cuda was unaffected). Fix:
+install the matching `libnvidia-ml.so.595.58.03` and repoint the SONAME — non-disruptive to the
+running job. (2) **Stale `nvcc`** — `/usr/bin/nvcc` was CUDA 11.5 (max `compute_87`), so flashinfer's
+JIT MLA kernels failed to build for `sm_120`; pointing `CUDA_HOME` at the present **CUDA 12.8**
+toolkit (`compute_120`) fixed it and unblocked MLA on vLLM. With both fixed, the vLLM integration
+needs no NVML workaround and MLA runs natively.
 
 ## 10. Conclusion
 Editable KV is viable, but the naive cheap edit is *not* a free lunch: the decision reads the
