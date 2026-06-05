@@ -114,7 +114,37 @@ reasoning **relocates** the decision's evidence from the stale memoized downstre
 the freshly-derived CoT. (KO-CoT does not fully revert to 0 because the field is still
 refreshed and some conclusion leaks into unmasked scaffold tokens.)
 
-*Cross-size replication (4B/14B/30B-A3B/32B, both modes) is running; tables to follow.*
+## Cross-size ladder (4B, 8B, 14B, 30B-A3B MoE, 32B; both modes)
+
+**Scale-INVARIANT (the structural backbone), all 5 sizes:**
+- **E4:** the decision's *direct* attention to the field token is **~0.1% at every size**
+  (field mass 0.0009–0.0017; downstream ~0.5; sink ~0.36–0.48). The field's influence on
+  the decision is overwhelmingly *indirect* (via the memoized downstream) regardless of scale.
+- **E1/E2 (non-reasoning):** field-only baseline P(safe)=0.00 at every size; knocking out the
+  decision's attention to the stale downstream restores it. Universal.
+
+**Reasoning-rescue is NOT scale-monotone and is model-dependent** (field-only, reasoning):
+
+| model (active) | base safe / unsafe / hedge | KO-CoT safe / unsafe |
+|---|---|---|
+| 4B  | 0.31 / **0.36** / 0.33 | — |
+| 8B  | **1.00** / 0.00 / 0.00 | 0.61 / 0.39 (CoT corrective) |
+| 14B | 0.44 / **0.19** / 0.36 | 0.94 / 0.00 (CoT harmful) |
+| 30B-A3B (3B act.) | **1.00** / 0.00 / 0.00 | 0.50 / 0.50 (corrective) |
+| 32B | 0.12 / 0.00 / **0.88** | 0.06 / 0.19 (over-cautious) |
+
+There is **no clean trend**: 8B and 30B-A3B rescue field-only cleanly; 4B (anchors→unsafe),
+14B (CoT manufactures unsafe), and 32B (collapses to caution) do not. ⇒ **"thinking rescues
+the cheap field-only edit" is NOT a general property** — it holds for some models and fails,
+in distinct ways, for others.
+
+**CONFOUND (important):** `base_safe` conflates the model's *general competence* at the task
+with the *cache-edit penalty*. A weak (4B) or cautious (32B) model may give a low safe-rate
+even with a full re-prefill. To isolate the edit penalty we need the oracle reasoning
+baseline per model (penalty = oracle_safe − fieldonly_safe). That oracle-controlled +
+erratum-at-scale study is the next run; until it lands, treat the per-model reasoning
+*rescue* numbers as competence-confounded — only the **structural** findings (E4 field≈0.1%;
+non-reasoning baseline 0; knockout fixes) are clean cross-scale claims.
 
 ## Caveats / next
 - n=1 greedy forward, one scenario (account_role), 8B; replicate on 30B-A3B / 32B and
