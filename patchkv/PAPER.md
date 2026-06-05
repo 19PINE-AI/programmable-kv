@@ -156,6 +156,31 @@ including 14B where field-only is 29% unsafe.
   which amplified it — reasoning-training-dependent, but the erratum is family-invariant.)
 - **τ-bench retail (real policy):** H2 holds on the real 81-line policy; a late-placed field
   recovers at 4.4% recompute (94.8% reused free); erratum robust to a poisoned prior.
+- **τ²-bench retail, end-to-end multi-turn (the production-relevant stress test).** We run the
+  full editkv library on the **real τ²-bench retail policy** (6699 chars; sierra-research/tau2)
+  with a multi-turn cancel-order trajectory. The gating field is `order_status`, buried early
+  (token span 1429/~1700) in the long policy; per the documented rule "*an order can only be
+  cancelled if its status is 'pending'*", it changes `pending → processed` mid-conversation, so
+  the correct next action flips **cancel → deny**. Decisions on Qwen3-8B:
+
+  | strategy | decision | vs oracle |
+  |---|---|---|
+  | oracle (full reprefill, processed) | deny | — |
+  | stale (still pending) | cancel | ✗ |
+  | in_place → processed | cancel | ✗ |
+  | **erratum alone** → processed | **cancel** | **✗** |
+  | **field+erratum** → processed | **deny** | ✓ |
+
+  **New finding from going end-to-end:** in a *long real policy with the field buried early*,
+  the **erratum alone misses** — the stale early field token still competes with the appended
+  override — and only **field+erratum** (refresh the token *and* append the override) recovers
+  to the oracle. This is invisible in the short synthetic tasks (where erratum alone suffices)
+  and motivated two library changes: (i) **`FIELD_PLUS_ERRATUM` is now the robust default /
+  AUTO escalation** (not erratum alone); (ii) the **diagnostic references `field+erratum`**, not
+  erratum, as ground truth — referencing erratum would have falsely reported "in-place
+  sufficient" here (both in_place and erratum returned `cancel`). After the fix the diagnostic
+  correctly returns `needs_erratum=True` and AUTO selects `field+erratum → deny`.
+  (`esys/tau2_editkv.py`, `results/tau2_editkv.json`.)
 
 ## 7. Mechanism (explainability)
 

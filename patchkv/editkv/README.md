@@ -23,7 +23,7 @@ ctx.generate("account_role", "suspended_user", Mode.ERRATUM, decision_prompt="\n
 # -> "escalate"   (correct; an in-place-only edit would have stayed "refund")
 
 needs_erratum(ctx, "account_role", "suspended_user").needs_erratum  # -> True
-ctx.generate("account_role", "suspended_user", Mode.AUTO, decision_prompt="\nDecision:")  # picks erratum
+ctx.generate("account_role", "suspended_user", Mode.AUTO, decision_prompt="\nDecision:")  # picks field+erratum
 ```
 
 ## The two incarnations
@@ -31,9 +31,9 @@ ctx.generate("account_role", "suspended_user", Mode.AUTO, decision_prompt="\nDec
 | mode | what it does | cost | when it's enough |
 |---|---|---|---|
 | `Mode.IN_PLACE` | recompute only the changed field's KV (exact — it attends only to the unchanged prefix) and overwrite it; leave the rest stale | ~field tokens (~0.1%) | low-conditioning fields (time/ids/counters); reasoning models in benign contexts |
-| `Mode.ERRATUM` | leave the cache stale; append a salient trigger (`[STATE UPDATE] <field> → <new>; overrides any earlier value and conclusion`); recompute only that span | ~tens of tokens (few %) | **robust** — every model family/scale and even under contradictory context; length-agnostic |
-| `Mode.FIELD_PLUS_ERRATUM` | both | ~field + trigger | belt-and-suspenders |
-| `Mode.AUTO` | run the diagnostic, pick in_place or erratum per-edit | +1 short probe | when you want the cheapest *correct* option automatically |
+| `Mode.ERRATUM` | leave the cache stale; append a salient trigger (`[STATE UPDATE] <field> → <new>; overrides any earlier value and conclusion`); recompute only that span | ~tens of tokens (few %) | robust for short/medium contexts and length-changing edits; **can miss when the field is buried early in a long policy** (the stale field token still competes) |
+| `Mode.FIELD_PLUS_ERRATUM` | both — refresh the field token *and* append the override | ~field + trigger | **the robust default**: recovers even in long real-policy contexts where erratum alone reverts (see the tau2-bench result in `../PAPER.md` §6) |
+| `Mode.AUTO` | run the diagnostic, pick `in_place` or `field+erratum` per-edit | +1 short probe | when you want the cheapest *correct* option automatically |
 | `Mode.STALE` / `Mode.FULL_REPREFILL` | baselines (floor / ceiling) | 0 / 100% | evaluation |
 
 **Why in-place alone often fails:** the decision token attends only ~0.1% to the field
@@ -52,10 +52,13 @@ d.logit_drift              # cheap pre-filter: cosine drift stale->in_place at t
 d.in_place_available       # False for length-changing edits (use erratum)
 ```
 
-It decodes the next decision under the in-place edit and under the erratum; if they
-disagree, the field conditions the decision through the stale downstream and you need the
-erratum. Both caches are cheap, so it's a ~2-short-decode runtime check. `blast_radius()`
-is an even cheaper one-forward pre-filter.
+It decodes the next decision under the in-place edit and under the robust reference
+(`field+erratum`); if they disagree, the field conditions the decision through the stale
+downstream and the cheap in-place edit is insufficient — escalate to `field+erratum`. (We
+reference `field+erratum`, not erratum alone, because on long real policies erratum alone
+can itself revert — so it is not a safe ground truth; see `../PAPER.md` §6.) Both caches are
+cheap, so it's a ~2-short-decode runtime check. `blast_radius()` is an even cheaper
+one-forward pre-filter.
 
 ## Notes / limitations
 - `IN_PLACE` requires the new value to tokenize to the field's length (length-preserving);

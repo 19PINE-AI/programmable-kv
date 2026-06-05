@@ -81,15 +81,16 @@ def needs_erratum(ctx: EditableContext, field_name: str, new_value: str,
         drift = float(1 - torch.nn.functional.cosine_similarity(stale_lg, ip_lg, dim=0))
     except LengthChangeError:
         in_place_available = False
-    # erratum (robust reference)
-    erc, erlast, erpos = ctx.build_cache(field_name, new_value, Mode.ERRATUM)
+    # robust reference = FIELD+ERRATUM (refresh the token AND append the override).
+    # (Erratum alone can miss in long real-policy contexts, so it is NOT a safe reference.)
+    erc, erlast, erpos = ctx.build_cache(field_name, new_value, Mode.FIELD_PLUS_ERRATUM)
     er_dec = _decode_short(ctx, ctx._clone(erc, erpos), erlast, erpos, max_new, probe)
 
     agree = (ip_dec == er_dec) if in_place_available else False
     needs = (not in_place_available) or (not agree)
-    note = ("in-place changes token length -> erratum required" if not in_place_available
-            else ("in-place matches erratum -> in-place sufficient" if agree
-                  else "in-place disagrees with erratum -> erratum needed"))
+    note = ("in-place changes token length -> use field+erratum" if not in_place_available
+            else ("in-place matches field+erratum -> in-place sufficient" if agree
+                  else "in-place disagrees with field+erratum -> use field+erratum"))
     return Diagnosis(needs_erratum=needs, in_place_decision=ip_dec, erratum_decision=er_dec,
                      stale_decision=stale_dec, agree_in_place_erratum=agree,
                      in_place_available=in_place_available, logit_drift=drift, note=note)

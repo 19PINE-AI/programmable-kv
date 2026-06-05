@@ -1,0 +1,12 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "results": {
+    "oracle(full_reprefill, status=processed)": "deny",
+    "stale (status still pending)": "cancel",
+    "in_place -> processed": "cancel",
+    "erratum -> processed": "cancel",
+    "field+erratum -> processed": "deny"
+  },
+  "oracle": "deny",
+  "needs_erratum": true
+}

@@ -141,8 +141,11 @@ class EditableContext:
         next-token logits. Recompute cost = (field tokens if in_place) + (trigger+prompt)."""
         f = self.fields[field_name]
         if mode == Mode.AUTO:
+            # Diagnostic decides between the cheap in_place and the robust FIELD_PLUS_ERRATUM.
+            # field+erratum (refresh the token AND append the override) is the robust escalation:
+            # erratum alone can miss when the field is buried early in a long policy context.
             from .diagnostics import needs_erratum
-            mode = Mode.ERRATUM if needs_erratum(self, field_name, new_value,
+            mode = Mode.FIELD_PLUS_ERRATUM if needs_erratum(self, field_name, new_value,
                                                   probe=decision_prompt).needs_erratum else Mode.IN_PLACE
         # build the suffix to append (trigger + decision prompt)
         suffix = ""
