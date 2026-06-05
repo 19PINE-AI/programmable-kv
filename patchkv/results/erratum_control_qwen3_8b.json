@@ -1,0 +1,53 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "oracle": {
+    "P_correct": 1.0,
+    "ci": [
+      0.68,
+      1
+    ],
+    "dist": {
+      "correct": 8
+    }
+  },
+  "stale": {
+    "P_correct": 0.0,
+    "ci": [
+      0,
+      0.32
+    ],
+    "dist": {
+      "stale": 8
+    }
+  },
+  "err_correct": {
+    "P_correct": 1.0,
+    "ci": [
+      0.68,
+      1
+    ],
+    "dist": {
+      "correct": 8
+    }
+  },
+  "err_wrong": {
+    "P_correct": 0.0,
+    "ci": [
+      0,
+      0.32
+    ],
+    "dist": {
+      "stale": 8
+    }
+  },
+  "err_irrelevant": {
+    "P_correct": 0.0,
+    "ci": [
+      0,
+      0.32
+    ],
+    "dist": {
+      "stale": 8
+    }
+  }
+}

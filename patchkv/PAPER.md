@@ -113,6 +113,8 @@ The field-only edit has a **real penalty** (the model would be correct with a fu
 re-prefill); the **erratum recovers to the oracle ceiling (≈1.0, 0% unsafe) at every size**,
 including 14B where field-only is 29% unsafe.
 
+**Negative control (erratum is causal, not an append artifact), Qwen3-8B, 8 tasks:** oracle 1.00, stale 0.00, **err_correct 1.00**, **err_wrong (restates the OLD value) 0.00**, **err_irrelevant (neutral notice) 0.00**. Only an erratum stating the *correct new value* recovers the decision; restating the old value or appending unrelated text stays stale — so the effect is content-specific, not 'any append resets the model.'
+
 ## 6. Generalization
 
 - **8 diverse domains** (retail, airline, devops, banking-numeric, access-control, clinical
