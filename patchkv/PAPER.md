@@ -191,8 +191,15 @@ paged-attention" operator is a serving-engine (vLLM/SGLang) integration — futu
 - Synthetic + τ-bench scenarios; single gated decisions, not full multi-turn task success.
 - Decision proxy = tool/answer argmax; CoT truncation censors some fidelity numbers (safety
   numbers are censoring-robust).
-- Model families beyond Qwen3 still replicating; MLA/sparse-attention backbones untested;
-  length-changing edits (RoPE re-rotation) and multi-field edits are future work.
+- **Length-changing edits:** the *erratum* handles them by construction — it appends the new
+  value and never shifts positions, so it is length-agnostic (already demonstrated on tasks
+  with length-changing field values, e.g. "8200 USD"→"30 USD"). Only *field_only* needs
+  length-preservation (we pad) or RoPE re-rotation of the suffix for a genuine length change —
+  a known asymmetry that *favors* the erratum.
+- MLA/sparse-attention backbones untested; multi-field simultaneous edits, full multi-turn
+  task-success, and a serving-engine fused operator are future work. Family coverage: Qwen,
+  Gemma, Mistral, SmolLM, Llama (Phi blocked by an outdated custom-modeling/transformers
+  mismatch); 70B+ would need 4-bit quantization (a confound) and exceeds this 96 GB GPU in bf16.
 - Mechanism evidence is correlational+causal-knockout on a subset; the *scale reversal* of
   CoT helpfulness is an open question we characterize but do not yet fully explain.
 
