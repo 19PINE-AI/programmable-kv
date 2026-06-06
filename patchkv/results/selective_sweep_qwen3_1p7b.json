@@ -1,0 +1,38 @@
+{
+  "model": "Qwen/Qwen3-1.7B",
+  "n_tasks": 6,
+  "methods": {
+    "stale": {
+      "P_correct": 0.167,
+      "mean_recovery": 0.0
+    },
+    "full": {
+      "P_correct": 1.0,
+      "mean_recovery": 1.0
+    },
+    "erratum": {
+      "P_correct": 1.0,
+      "mean_recovery": 1.401
+    },
+    "selective@4": {
+      "P_correct": 0.167,
+      "mean_recovery": 0.025
+    },
+    "selective@8": {
+      "P_correct": 0.5,
+      "mean_recovery": 0.52
+    },
+    "selective@16": {
+      "P_correct": 0.5,
+      "mean_recovery": 0.674
+    },
+    "selective@32": {
+      "P_correct": 0.833,
+      "mean_recovery": 0.875
+    },
+    "selective@64": {
+      "P_correct": 1.0,
+      "mean_recovery": 0.962
+    }
+  }
+}

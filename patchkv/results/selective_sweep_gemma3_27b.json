@@ -1,0 +1,38 @@
+{
+  "model": "unsloth/gemma-3-27b-it",
+  "n_tasks": 4,
+  "methods": {
+    "stale": {
+      "P_correct": 1.0,
+      "mean_recovery": 0.0
+    },
+    "full": {
+      "P_correct": 1.0,
+      "mean_recovery": 1.0
+    },
+    "erratum": {
+      "P_correct": 1.0,
+      "mean_recovery": -6.708
+    },
+    "selective@4": {
+      "P_correct": 1.0,
+      "mean_recovery": -0.375
+    },
+    "selective@8": {
+      "P_correct": 1.0,
+      "mean_recovery": 0.167
+    },
+    "selective@16": {
+      "P_correct": 1.0,
+      "mean_recovery": 0.5
+    },
+    "selective@32": {
+      "P_correct": 1.0,
+      "mean_recovery": 0.625
+    },
+    "selective@64": {
+      "P_correct": 1.0,
+      "mean_recovery": 1.042
+    }
+  }
+}

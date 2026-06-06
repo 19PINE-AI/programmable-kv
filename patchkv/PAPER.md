@@ -265,7 +265,22 @@ new value (held-out value: **0.91 @ k=32**, identical to that value's own set) �
 "profile the affected set once, reuse in production." So selective recompute is a viable erratum-free
 mode (recompute a fixed ~12% by decision-attention, no prompt change) — comparable in cost to the
 erratum (~5–15%) and useful where appending text is undesirable; the erratum remains simpler
-(append-only, no profiling, composes with prefix caching, slightly higher recovery).
+(append-only, no profiling, composes with prefix caching, slightly higher recovery). Across 7 models
+× 8 benchmarks, selective@64 (decision-attention) reaches the golden erratum (P(correct)=1.0 on every
+model; the erratum hits 1.0 with only ~30 appended tokens).
+
+**What tokens carry the conclusion (`esys/selective_tokens.py`).** Decoding the causally-important
+downstream tokens (ranked by per-position recovery) gives a concrete, interpretable picture of *where*
+the memoized conclusion lives: it is stored in **the gating rule's conclusion tokens** — the literal
+action word (e.g. the token `' escalate'` inside "...do not refund; escalate.") and the punctuation
+ending the rule's clauses (`'.'`, `';'`, `','`) — **and in an aggregator token just before the
+decision** (the `'\n'` preceding "Decision:", which for some tasks alone carries up to 0.81 of the
+flip). Notably the three signals diverge: decision-*attention* over-weights structural scaffolding
+near the decision (`'\n\n'`, `'</think>'`, `':'`, `'Decision'`) — high attention, low individual
+recovery — so it needs k≈32–64 to include the rule-conclusion tokens; KV-*change* is largest at the
+rule region and the field-copies (largest representation change) but most of those are not
+decision-relevant (the CacheBlend failure mode); only causal *recovery* isolates the rule-conclusion +
+pre-decision aggregator tokens. This is the token-level face of the §5 memoization account.
 
 ## 7. Generalization across architectures (Fig. `fig_architecture`)
 

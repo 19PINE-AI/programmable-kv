@@ -1,0 +1,38 @@
+{
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "n_tasks": 8,
+  "methods": {
+    "stale": {
+      "P_correct": 0.0,
+      "mean_recovery": 0.0
+    },
+    "full": {
+      "P_correct": 1.0,
+      "mean_recovery": 1.0
+    },
+    "erratum": {
+      "P_correct": 0.875,
+      "mean_recovery": 0.909
+    },
+    "selective@4": {
+      "P_correct": 0.5,
+      "mean_recovery": 0.44
+    },
+    "selective@8": {
+      "P_correct": 0.625,
+      "mean_recovery": 0.5
+    },
+    "selective@16": {
+      "P_correct": 0.75,
+      "mean_recovery": 0.611
+    },
+    "selective@32": {
+      "P_correct": 0.875,
+      "mean_recovery": 0.764
+    },
+    "selective@64": {
+      "P_correct": 1.0,
+      "mean_recovery": 0.98
+    }
+  }
+}
