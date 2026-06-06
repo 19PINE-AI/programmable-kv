@@ -126,8 +126,13 @@ def make_instances():
 
 def build(tok, scn, oid, value, thinking, force_suffix):
     body = S.build(scn, value, 30).replace("A4471", oid)
-    t = tok.apply_chat_template([{"role": "user", "content": body}], tokenize=False,
-                                add_generation_prompt=True, enable_thinking=thinking)
+    try:
+        t = tok.apply_chat_template([{"role": "user", "content": body}], tokenize=False,
+                                    add_generation_prompt=True, enable_thinking=thinking)
+    except TypeError:
+        # non-Qwen families (e.g. DeepSeek-R1-Distill) don't take enable_thinking; they emit <think> by default
+        t = tok.apply_chat_template([{"role": "user", "content": body}], tokenize=False,
+                                    add_generation_prompt=True)
     return t + ("tool_call:" if force_suffix else "")
 
 

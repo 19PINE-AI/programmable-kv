@@ -1,0 +1,113 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "by_L": {
+    "256": {
+      "full_ms": 48.04,
+      "erratum_ms": 47.17,
+      "erratum_speedup": 1.0,
+      "selective": {
+        "4": {
+          "ms": 48.43,
+          "speedup": 1.0
+        },
+        "8": {
+          "ms": 48.15,
+          "speedup": 1.0
+        },
+        "16": {
+          "ms": 46.56,
+          "speedup": 1.0
+        },
+        "32": {
+          "ms": 42.91,
+          "speedup": 1.1
+        },
+        "64": {
+          "ms": 43.65,
+          "speedup": 1.1
+        }
+      }
+    },
+    "2048": {
+      "full_ms": 305.39,
+      "erratum_ms": 51.37,
+      "erratum_speedup": 5.9,
+      "selective": {
+        "4": {
+          "ms": 49.78,
+          "speedup": 6.1
+        },
+        "8": {
+          "ms": 48.98,
+          "speedup": 6.2
+        },
+        "16": {
+          "ms": 50.57,
+          "speedup": 6.0
+        },
+        "32": {
+          "ms": 53.81,
+          "speedup": 5.7
+        },
+        "64": {
+          "ms": 53.59,
+          "speedup": 5.7
+        }
+      }
+    },
+    "8192": {
+      "full_ms": 1333.62,
+      "erratum_ms": 87.33,
+      "erratum_speedup": 15.3,
+      "selective": {
+        "4": {
+          "ms": 84.67,
+          "speedup": 15.7
+        },
+        "8": {
+          "ms": 86.96,
+          "speedup": 15.3
+        },
+        "16": {
+          "ms": 79.54,
+          "speedup": 16.8
+        },
+        "32": {
+          "ms": 109.72,
+          "speedup": 12.2
+        },
+        "64": {
+          "ms": 116.75,
+          "speedup": 11.4
+        }
+      }
+    },
+    "32768": {
+      "full_ms": 9637.21,
+      "erratum_ms": 305.98,
+      "erratum_speedup": 31.5,
+      "selective": {
+        "4": {
+          "ms": 293.31,
+          "speedup": 32.9
+        },
+        "8": {
+          "ms": 291.81,
+          "speedup": 33.0
+        },
+        "16": {
+          "ms": 293.93,
+          "speedup": 32.8
+        },
+        "32": {
+          "ms": 303.34,
+          "speedup": 31.8
+        },
+        "64": {
+          "ms": 313.42,
+          "speedup": 30.7
+        }
+      }
+    }
+  }
+}

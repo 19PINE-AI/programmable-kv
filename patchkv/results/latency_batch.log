@@ -1,0 +1,15 @@
+##### Qwen/Qwen3-1.7B #####
+==== LATENCY (median ms, Qwen/Qwen3-1.7B) ====
+  L=   256: full=   23.8ms | erratum(35tok)=  18.3ms(1x) | K4=17.6ms(1x) K8=17.0ms(1x) K16=28.4ms(1x) K32=34.3ms(1x) K64=34.3ms(1x)
+  L=  2048: full=   68.2ms | erratum(35tok)=  34.0ms(2x) | K4=19.8ms(3x) K8=23.0ms(3x) K16=35.4ms(2x) K32=33.6ms(2x) K64=21.7ms(3x)
+  L=  8192: full=  270.7ms | erratum(35tok)=  35.6ms(8x) | K4=35.9ms(8x) K8=35.5ms(8x) K16=41.9ms(6x) K32=35.9ms(8x) K64=41.7ms(6x)
+  L= 32768: full= 1720.8ms | erratum(35tok)= 125.4ms(14x) | K4=120.0ms(14x) K8=127.4ms(14x) K16=123.9ms(14x) K32=123.3ms(14x) K64=133.0ms(13x)
+LATENCY_DONE
+##### Qwen/Qwen3-8B #####
+==== LATENCY (median ms, Qwen/Qwen3-8B) ====
+  L=   256: full=   48.0ms | erratum(35tok)=  47.2ms(1x) | K4=48.4ms(1x) K8=48.2ms(1x) K16=46.6ms(1x) K32=42.9ms(1x) K64=43.6ms(1x)
+  L=  2048: full=  305.4ms | erratum(35tok)=  51.4ms(6x) | K4=49.8ms(6x) K8=49.0ms(6x) K16=50.6ms(6x) K32=53.8ms(6x) K64=53.6ms(6x)
+  L=  8192: full= 1333.6ms | erratum(35tok)=  87.3ms(15x) | K4=84.7ms(16x) K8=87.0ms(15x) K16=79.5ms(17x) K32=109.7ms(12x) K64=116.7ms(11x)
+  L= 32768: full= 9637.2ms | erratum(35tok)= 306.0ms(31x) | K4=293.3ms(33x) K8=291.8ms(33x) K16=293.9ms(33x) K32=303.3ms(32x) K64=313.4ms(31x)
+LATENCY_DONE
+===LATENCY_BATCH_DONE===
