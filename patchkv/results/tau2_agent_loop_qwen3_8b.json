@@ -1,0 +1,31 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "n": 30,
+  "strategies": {
+    "full_reprefill": {
+      "task_success": 1.0,
+      "recompute_tokens": 11550,
+      "recompute_vs_full": 1.0,
+      "actions": {
+        "deny": 30
+      }
+    },
+    "erratum": {
+      "task_success": 0.7,
+      "recompute_tokens": 6330,
+      "recompute_vs_full": 0.548,
+      "actions": {
+        "cancel_pending_order": 9,
+        "deny": 21
+      }
+    },
+    "stale": {
+      "task_success": 0.0,
+      "recompute_tokens": 5640,
+      "recompute_vs_full": 0.488,
+      "actions": {
+        "cancel_pending_order": 30
+      }
+    }
+  }
+}

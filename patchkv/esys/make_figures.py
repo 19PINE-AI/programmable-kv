@@ -157,7 +157,7 @@ def fig_baseline_frontier():
         ax.scatter(x, y, s=60)
         ax.annotate(m, (x, y), fontsize=8, xytext=(4, 4), textcoords="offset points")
     ax.set_xlabel("recompute (% of tokens)"); ax.set_ylabel("P(correct decision)")
-    ax.set_title("Correctness vs cost frontier (n=8 tasks, non-reasoning)\nerratum: oracle correctness at a few % cost")
+    ax.set_title("Correctness vs cost (n=8, NON-reasoning)\nhoist & field+erratum reach 1.0 cheaply; in_place needs reasoning (§5e)")
     ax.set_xscale("symlog", linthresh=1); ax.set_ylim(-0.05, 1.08)
     fig.tight_layout(); fig.savefig(os.path.join(F, "fig_baseline_frontier.png")); plt.close(fig)
 

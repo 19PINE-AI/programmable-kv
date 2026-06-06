@@ -14,3 +14,4 @@ ARCH_ERRATUM_V2_DONE
   [reasoning    ] oracle_new=1.0 stale_old=1.0 | discriminating=32/32 | ERRATUM_RECOVERY=0.781 CI[0.625, 0.906]
 ARCH_ERRATUM_V2_DONE
 === ARCH done; bootstrapped surgical 8B ===
+===ARCH_V2_BOOT_DONE===

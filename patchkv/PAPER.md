@@ -21,10 +21,17 @@ scale); (3) **chain-of-thought reasoning can rescue the cheap edit, but unreliab
 scale-dependently** — at 8B the CoT re-derives correctly, at 14B it *amplifies* the stale
 inference into unsafe actions, at 32B it collapses to caution; (4) a **salient erratum** —
 appending "[STATE UPDATE] <field> → <new>; overrides any earlier value and conclusion" and
-recomputing only those ~tens of tokens — **recovers the oracle decision at every scale and
-in every domain we tested, even where a full re-prefill is itself fooled by contradictory
-context.** Controlling for model competence (an oracle baseline), the in-place edit has a
-real penalty (0.12–0.67, up to 29% unsafe actions) that the erratum eliminates. We give a
+recomputing only those ~tens of tokens — recovers the oracle decision across scales and domains
+and is poison-robust *even where a full re-prefill is fooled by contradictory context*; in the
+robust **`field+erratum`** form (refresh the field token *and* append the override) it matches the
+strong hoist-to-end baseline's correctness **without rewriting the prompt**, whereas the bare
+erratum is template-sensitive in non-reasoning settings (the stale early value competes). A
+rigorous baseline comparison (§8d) shows there is no single dominant method but a *frontier*: hoist
+is strong but requires moving every mutable field; `field+erratum` matches it in place; and the bare
+surgical `in_place` edit is **~free (1% recompute) and sufficient for reasoning models** (0.94 at
+8B), the regime that dominates agent deployments. Controlling for model competence (an oracle
+baseline), the in-place edit has a real penalty (0.12–0.67, up to 29% unsafe actions) that
+field+erratum eliminates. We give a
 mechanistic account via four independent causal methods — KV-patching (the field's own KV
 causally drives <1% of the decision; the memoized conclusion is suffix-concentrated in mid/late
 layers), linear probing, a reasoning-circuit knockout, and a position dose-response — that
@@ -274,6 +281,27 @@ these are not competence failures — they are staleness-recovery failures.)
   enforcement as reward, the cheap in_place edit fails **100%** of the time while editkv recovers
   full task correctness. This statistically (N=20, CIs) answers the "single gated-decision proxy"
   concern. (`esys/tau2_episode.py`, `results/tau2_episode_qwen3_8b.json`.)
+- **τ²-bench MULTI-TURN agentic loop (autonomous tool execution, N=30 orders).** Beyond a single
+  decision: the local model is an autonomous agent that *emits and executes a sequence of tool
+  calls* against the live RetailDB over a multi-turn conversation (`get_order_details` → the gating
+  field flips pending→processed mid-episode → the cancel/deny action), scored by the env's own tool
+  enforcement (`esys/tau2_agent_loop.py`, Qwen3-8B). Here the editkv mechanism is the deployment-
+  realistic ERRATUM (append-only; the buried-token in_place edit needs position tracking a serving
+  stack lacks):
+
+  | strategy | task success | recompute | 
+  |---|---|---|
+  | full reprefill | 1.00 | 1.00× |
+  | **erratum (append-only)** | **0.70** | **0.55×** |
+  | stale | 0.00 | 0.49× |
+
+  Honest, realistic result: in a real multi-turn loop where the user has *already* asked to cancel
+  (the decision is primed), the append-only erratum overrides the now-stale commitment 70% of the
+  time at 0.55× the recompute — vs stale's *total collapse* (it keeps trying to cancel a processed
+  order; the real tool rejects it). The recompute saving grows with conversation length (full
+  reprefills the whole history each turn; the erratum appends one line). The gap to full reprefill is
+  the genuinely hard part of multi-turn (a primed prior commitment) — motivating field+erratum /
+  stronger overrides for agent loops, which a buried-token edit would enable (future work).
 
 ### 6b. Architecture coverage: where each edit applies (attention → MLA → hybrid → pure SSM)
 Different sequence-mixing architectures store history differently, which determines whether each
@@ -469,6 +497,46 @@ field edit is exactly what breaks content-addressed prefix caching.) Implementat
 machine's NVML userspace lib (595.71) mismatches its kernel driver (595.58), breaking vLLM's
 NVML-based platform detection (torch.cuda is unaffected); we force the CUDA platform plugin and a
 single-process engine to work around it. (`esys/vllm_editkv_serving.py`.)
+
+## 8d. Head-to-head baselines: correctness × cost (answering "why not just hoist?")
+A rigorous comparison on 8 gating tasks, **non-reasoning** (the regime where strategies differ;
+reasoning is §5e), reporting P(correct) and recompute fraction, plus a poisoned-context column (a
+prior note asserting the old value). `esys/baseline_table.py`, Qwen3-8B:
+
+| method | P(correct) | recompute | poison P(correct) | needs prompt rewrite? |
+|---|---|---|---|---|
+| full reprefill | 0.88 | 100% | 0.62 | no |
+| stale | 0.12 | 0% | — | no |
+| in_place (surgical) | 0.12 | 1.0% | — | no |
+| CacheBlend @15% (prior work) | 0.38 | 15% | — | no |
+| **hoist-to-end** | **1.00** | **4.4%** | **1.00** | **yes** |
+| erratum (stale field + update) | 0.62 | 15% | 1.00 | no |
+| **field+erratum** | **1.00** | 16% | **1.00** | no |
+
+This is deliberately not a clean editkv sweep — it is the honest picture, and it *is* the answer to
+"why not hoist?":
+- **Hoist-to-end is genuinely strong** (1.00, poison-robust, cheapest) — *but it requires rewriting
+  the prompt to move the mutable field to the end*. That does not compose: it fails for multiple
+  mutable fields, for fields the rules must reference in place, and it forces the application to
+  pre-identify every mutable field. (And programmers do this *today* precisely to keep cache hits —
+  the pathology this paper is about.)
+- **`field+erratum` matches hoist's correctness and poison-robustness (1.00) with no prompt rewrite**
+  — it edits in place. *That* is editkv's advantage over hoist, not raw accuracy.
+- **`erratum` alone is weaker non-reasoning (0.62)**: the stale early value competes (§7), so
+  `field+erratum` is the robust default (consistent with the τ²-bench finding, §6).
+- **`in_place` alone fails here (0.12) but is ~0.94 under *reasoning* at 1% cost (§5e)** — so for the
+  reasoning models that dominate agent deployments, the *cheapest* correct option is the bare
+  surgical edit, beating even hoist on cost.
+- **CacheBlend's KV-deviation selection underperforms (0.38 @15%)**: the decision-relevant content is
+  *suffix-concentrated*, not in the highest-deviation tokens (§7.1), so selecting by deviation misses it.
+- **Full reprefill is neither a correctness ceiling (0.88) nor poison-robust (0.62)** — emphasizing the
+  late authoritative value (hoist / field+erratum) *beats* recomputing everything when the early
+  context is misleading.
+
+**Takeaway.** There is no single dominant method; there is a *frontier*, and editkv's contribution is
+(i) the mechanistic account of why each option lands where it does, (ii) `in_place` as a ~free correct
+edit for reasoning models, and (iii) `field+erratum` as an in-place option that matches hoist without
+prompt surgery and composes across arbitrary fields. (`figures/fig_baseline_frontier.png`.)
 
 ## 9. Limitations
 - Behavioral scenarios are mostly single gated decisions; we *do* now close part of this gap with

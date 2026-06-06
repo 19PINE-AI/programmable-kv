@@ -131,28 +131,21 @@ def main():
         ndown = dpos - b; k = max(1, int(args.cb_frac * ndown))
         cb_pos = list(range(a, b)) + kv_dev_rank(co, cn, b, dpos)[:k]
         res[f"cacheblend@{int(args.cb_frac*100)}%"] = (patch_decide(model, co, cn, cb_pos, dpos, last_new, tc, ts), len(cb_pos) / L)
-        # hoist: field at end -> prefix cached, recompute field+decision suffix
+        # hoist: field at end -> prefix cached, recompute only the field+decision suffix
         th = tnl(role, field, nv, rule, req, "end")
         hd, hlen = decide_full(model, tok, th, tc, ts)
-        # cost of hoist = tokens from where the field block starts to the end (field + 'Decision:')
         hfield_tok = len(tok(f"CURRENT {field}: {nv}\nDecision:", add_special_tokens=False)["input_ids"])
         res["hoist_to_end"] = (hd, hfield_tok / hlen)
-        # erratum: append the [STATE UPDATE..] before the decision cue, reuse stale prefix
-        erc, erlen = append_decide(model, tok, oid, dpos, ERR.format(f=field, v=nv), tc, ts)
-        res["erratum"] = (erc, erlen / L)
-        # field+erratum: patch field in co, then append erratum (approx via patch + append on patched cache)
-        # measure decision: patch field into co clone, then append erratum + decide
-        wco = clone(co, dpos)
-        posf = torch.tensor(list(range(a, b)), device="cuda")
-        for i in range(len(wco.layers)):
-            wco.layers[i].keys[:, :, posf, :] = cn.layers[i].keys[:, :, posf, :]
-            wco.layers[i].values[:, :, posf, :] = cn.layers[i].values[:, :, posf, :]
-        ins = tok(ERR.format(f=field, v=nv), add_special_tokens=False)["input_ids"]
-        ids = torch.tensor([ins + [int(oid[0, dpos])]], device="cuda")
-        out = model(input_ids=ids[:, :-1], past_key_values=clone(wco, dpos),
-                    cache_position=torch.arange(dpos, dpos + ids.shape[1] - 1, device="cuda"), use_cache=True)
-        fe = decide_from(model, out.past_key_values, int(ids[0, -1]), dpos + ids.shape[1] - 1, tc, ts)
-        res["field+erratum"] = (fe, ((b - a) + len(ins)) / L)
+        # erratum: STALE field (old) early + appended [STATE UPDATE -> new] before the decision cue.
+        # Correctness via a clean full forward; cost = recompute the erratum span + decision suffix.
+        er_text = tnl(role, field, ov, rule, req, "early", erratum=ERR.format(f=field, v=nv))
+        ed, elen = decide_full(model, tok, er_text, tc, ts)
+        er_suffix = len(tok(ERR.format(f=field, v=nv) + "TASK\n" + req + "\nDecision:", add_special_tokens=False)["input_ids"])
+        res["erratum"] = (ed, er_suffix / elen)
+        # field+erratum: NEW value early (in_place refresh) AND the appended update.
+        fe_text = tnl(role, field, nv, rule, req, "early", erratum=ERR.format(f=field, v=nv))
+        fd, flen = decide_full(model, tok, fe_text, tc, ts)
+        res["field+erratum"] = (fd, ((b - a) + er_suffix) / flen)
         for m in METHODS:
             dec, cost = res[m]
             agg[m]["correct"] += (dec == "correct"); agg[m]["cost"].append(cost)

@@ -1,0 +1,41 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "n_tasks": 8,
+  "methods": {
+    "full_reprefill": {
+      "P_correct": 0.875,
+      "recompute_frac": 1.0,
+      "poison_P_correct": 0.625
+    },
+    "stale": {
+      "P_correct": 0.125,
+      "recompute_frac": 0.0,
+      "poison_P_correct": null
+    },
+    "in_place": {
+      "P_correct": 0.125,
+      "recompute_frac": 0.0099,
+      "poison_P_correct": null
+    },
+    "cacheblend@15%": {
+      "P_correct": 0.375,
+      "recompute_frac": 0.1472,
+      "poison_P_correct": null
+    },
+    "hoist_to_end": {
+      "P_correct": 1.0,
+      "recompute_frac": 0.0435,
+      "poison_P_correct": 1.0
+    },
+    "erratum": {
+      "P_correct": 0.625,
+      "recompute_frac": 0.1536,
+      "poison_P_correct": 1.0
+    },
+    "field+erratum": {
+      "P_correct": 1.0,
+      "recompute_frac": 0.1625,
+      "poison_P_correct": 1.0
+    }
+  }
+}
