@@ -322,6 +322,11 @@ edit when the field-conditioned conclusion is not sticky (small K suffices), but
 it can exceed 64 on models where the CoT defers to the memoized stale conclusion. The erratum needs no
 such per-model K because it injects a fresh, emphatic statement rather than dislodging the stale
 conclusion token-by-token — which is why it remains the robust, scale- and mode-universal default.
+**Non-Qwen generalization (DeepSeek-R1-Distill-Llama-8B):** the gap is starkest off the Qwen3 family —
+`field+selective@K` recovers **0.00–0.07 at every K (0–64)** while the erratum recovers **0.98** (full
+0.89). DeepSeek-R1's reasoning is the *stickiest* we measured (field-only 0.06): selective recompute
+fails entirely, the erratum still works — definitively establishing the erratum as the cross-family
+robust method and `field+selective@K` as unreliable.
 
 **What tokens carry the conclusion (`esys/selective_tokens.py`).** Decoding the causally-important
 downstream tokens (ranked by per-position recovery) gives a concrete, interpretable picture of *where*

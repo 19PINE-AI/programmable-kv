@@ -365,11 +365,93 @@ def run_multiskill(model, tok):
     return out
 
 
+@torch.no_grad()
+def run_seam(model, tok):
+    """SEAM-REPAIR (#48): recompute the first K tokens of a transplanted skill WITH the real prefix
+    (they attend to it), keep the rest from isolation. Logit cos to full vs K -> repairs the start-seam."""
+    KS = [0, 2, 4, 8, 16, 32]
+    agg = {k: [] for k in KS}
+    for sk in SKILLS:
+        ids, a, b = chat_parts(tok, sk["sys"], sk["skill"], sk["task"])
+        L = ids.shape[1]; nb = b - a
+        fl = model(input_ids=ids.to("cuda")).logits[0, -1].float()
+        alone = precompute_chunk(model, ids[:, a:b])
+        for K in KS:
+            sysc = prefill(model, ids[:, :a])
+            if K > 0:                                  # recompute first K skill tokens with real prefix
+                sysc = forward_suffix(model, sysc, ids[:, a:a + K], a).past_key_values
+            if K < nb:                                 # rest from isolation, repositioned to a+K
+                tail = DynamicCache()
+                cs, ss = cos_sin(model, list(range(K, nb))); ct, st = cos_sin(model, list(range(a + K, a + nb)))
+                for i, l in enumerate(alone.layers):
+                    kk = l.keys[:, :, K:nb, :].float()
+                    raw = kk * cs - rotate_half(kk) * ss
+                    tail.update((raw * ct + rotate_half(raw) * st).to(l.keys.dtype), l.values[:, :, K:nb, :], i)
+                cache = cache_concat(cache_slice(sysc, 0, a + K), tail)
+            else:
+                cache = cache_slice(sysc, 0, a + nb)
+            out = forward_suffix(model, cache, ids[:, b:L], b)
+            sl = out.logits[0, -1].float()
+            agg[K].append(torch.cosine_similarity(fl, sl, 0).item())
+    print(f"  seam-repair: logit cos to full vs #recomputed-start-tokens K")
+    for K in KS:
+        print(f"    K={K:>3}: cos={sum(agg[K])/len(agg[K]):.4f}", flush=True)
+    return {K: round(sum(agg[K]) / len(agg[K]), 4) for K in KS}
+
+
+@torch.no_grad()
+def run_reason(model, tok, Ksamp=4, max_new=300):
+    """C3: correctness under REASONING. Generate a CoT from full vs precompiled cache, read the decision."""
+    import torch as T
+    corr = {"full": 0, "precompiled": 0, "agree": 0, "n": 0}
+    for sk in SKILLS:
+        ids, a, b = chat_parts(tok, sk["sys"], sk["skill"], sk["task"])
+        L = ids.shape[1]; nb = b - a
+        full_cache = prefill(model, ids[:, :L])
+        alone = precompute_chunk(model, ids[:, a:b])
+        pre = cache_concat(prefill(model, ids[:, :a]), repositioned_chunk_cache(model, alone, nb, a))
+        pre = forward_suffix(model, pre, ids[:, b:L], b).past_key_values
+        for s in range(Ksamp):
+            for name, cache in [("full", cache_slice(full_cache, 0, L)), ("precompiled", cache_slice(pre, 0, L))]:
+                g = T.Generator(device="cuda"); g.manual_seed(s + 1)
+                cur = int(ids[0, L - 1]); pos = L; gen = []
+                cache2 = cache_slice(cache, 0, L - 1)
+                cur = int(ids[0, L - 1]); pos = L - 1
+                eos = tok.eos_token_id
+                for _ in range(max_new):
+                    o = model(input_ids=T.tensor([[cur]], device="cuda"), past_key_values=cache2,
+                              cache_position=T.tensor([pos], device="cuda"), use_cache=True); pos += 1
+                    p = T.softmax(o.logits[0, -1].float() / 0.7, -1); cur = int(T.multinomial(p, 1, generator=g)); gen.append(cur)
+                    if cur == eos or "</think>" in tok.decode(gen[-12:]):
+                        break
+                ans = []
+                for _ in range(16):
+                    o = model(input_ids=T.tensor([[cur]], device="cuda"), past_key_values=cache2,
+                              cache_position=T.tensor([pos], device="cuda"), use_cache=True); pos += 1
+                    cur = int(o.logits[0, -1].argmax()); ans.append(cur)
+                    if cur == eos:
+                        break
+                txt = tok.decode(ans).lower()
+                ci = txt.find(sk["correct"]); wi = txt.find(sk["wrong"])
+                dec = "correct" if (ci >= 0 and (wi < 0 or ci < wi)) else ("wrong" if wi >= 0 else "other")
+                if name == "full":
+                    fdec = dec; corr["full"] += (dec == "correct")
+                else:
+                    corr["precompiled"] += (dec == "correct"); corr["agree"] += (dec == fdec)
+            corr["n"] += 1
+        print(f"  {sk['name']}: done", flush=True)
+    print(f"  [reasoning] full_correct={corr['full']}/{corr['n']} precompiled_correct={corr['precompiled']}/{corr['n']} "
+          f"agree={corr['agree']}/{corr['n']}")
+    return corr
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="Qwen/Qwen3-1.7B")
     ap.add_argument("--sanity", action="store_true")
     ap.add_argument("--experiment", action="store_true")
+    ap.add_argument("--seam", action="store_true")
+    ap.add_argument("--reason", action="store_true")
     ap.add_argument("--multi", action="store_true")
     ap.add_argument("--scaling", action="store_true")
     ap.add_argument("--staleness", action="store_true")
@@ -391,6 +473,16 @@ def main():
         json.dump({"model": args.model, "self_contained": {k: sc[k] for k in ("full","precompiled","agree","n","mean_cos")},
                    "context_coupled": {k: cp[k] for k in ("full","precompiled","agree","n","mean_cos")}},
                   open(os.path.join(os.path.dirname(__file__), "..", "results", f"composable_staleness_{args.tag or 'm'}.json"), "w"), indent=2)
+    if args.seam:
+        print(f"=== SEAM-REPAIR ({args.model}) ===")
+        sr = run_seam(model, tok)
+        json.dump({"model": args.model, "seam_repair": sr},
+                  open(os.path.join(os.path.dirname(__file__), "..", "results", f"composable_seam_{args.tag or 'm'}.json"), "w"), indent=2)
+    if args.reason:
+        print(f"=== REASONING CORRECTNESS ({args.model}) ===")
+        rc = run_reason(model, tok)
+        json.dump({"model": args.model, "reason": rc},
+                  open(os.path.join(os.path.dirname(__file__), "..", "results", f"composable_reason_{args.tag or 'm'}.json"), "w"), indent=2)
     if args.multi:
         print(f"=== MULTI-SKILL LIBRARY composition ({args.model}) ===")
         ms = run_multiskill(model, tok)

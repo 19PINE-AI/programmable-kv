@@ -1,0 +1,41 @@
+{
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "multiskill": {
+    "1": {
+      "full": "grant",
+      "composed": "grant",
+      "agree": true,
+      "cos": 0.935,
+      "full_ms": 67.7,
+      "comp_ms": 53.1,
+      "speedup": 1.27
+    },
+    "2": {
+      "full": "grant",
+      "composed": "grant",
+      "agree": true,
+      "cos": 0.905,
+      "full_ms": 113.5,
+      "comp_ms": 67.1,
+      "speedup": 1.69
+    },
+    "3": {
+      "full": "grant",
+      "composed": "grant",
+      "agree": true,
+      "cos": 0.913,
+      "full_ms": 168.4,
+      "comp_ms": 65.2,
+      "speedup": 2.58
+    },
+    "4": {
+      "full": "grant",
+      "composed": "grant",
+      "agree": true,
+      "cos": 0.875,
+      "full_ms": 247.2,
+      "comp_ms": 94.1,
+      "speedup": 2.63
+    }
+  }
+}
