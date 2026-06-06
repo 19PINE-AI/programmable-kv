@@ -1,0 +1,41 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "multiskill": {
+    "1": {
+      "full": "grant",
+      "composed": "grant",
+      "agree": true,
+      "cos": 0.993,
+      "full_ms": 27.2,
+      "comp_ms": 26.6,
+      "speedup": 1.02
+    },
+    "2": {
+      "full": "grant",
+      "composed": "grant",
+      "agree": true,
+      "cos": 0.985,
+      "full_ms": 11.9,
+      "comp_ms": 28.6,
+      "speedup": 0.41
+    },
+    "3": {
+      "full": "grant",
+      "composed": "grant",
+      "agree": true,
+      "cos": 0.976,
+      "full_ms": 14.8,
+      "comp_ms": 31.3,
+      "speedup": 0.47
+    },
+    "4": {
+      "full": "grant",
+      "composed": "grant",
+      "agree": true,
+      "cos": 0.966,
+      "full_ms": 19.4,
+      "comp_ms": 34.3,
+      "speedup": 0.57
+    }
+  }
+}

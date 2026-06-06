@@ -476,8 +476,10 @@ vs *recomputed* skill):
 recomputed** for every method. Editing transplanted KV behaves identically to editing recomputed KV:
 **edit and compose are two operations on one substrate**, which is the unifying thesis. The keystone
 **generalizes across families** — composed ≈ recomputed also holds on Qwen3-4B and **DeepSeek-R1-Llama-8B**
-(e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). (Recovery-ratio metric, n=4; absolute
-decision margins do not always cross zero on non-reasoning.)
+(e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). On **Mistral-7B the decisions cleanly
+flip (4/4)**, giving the sharpest read — in_place 0.04/0.03, sel@8 0.62/0.49, sel@32 0.72/0.56,
+erratum 0.98/0.93 (recomputed/composed): in_place fails, selective recovers, erratum is near-perfect,
+and composed tracks recomputed throughout.
 
 **10.7 Unified system: one cache, both operations (`esys/editkv_unified.py`).** A capstone agent turn:
 a system prompt + a **library of 3 precompiled skills** (composed by KV splice, no reprefill) + a

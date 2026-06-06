@@ -1,2 +1,19 @@
 Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█▎        | 1/8 [00:00<00:05,  1.23it/s]Loading checkpoint shards:  25%|██▌       | 2/8 [00:01<00:04,  1.29it/s]Loading checkpoint shards:  38%|███▊      | 3/8 [00:02<00:03,  1.43it/s]Loading checkpoint shards:  50%|█████     | 4/8 [00:02<00:02,  1.34it/s]Loading checkpoint shards:  62%|██████▎   | 5/8 [00:03<00:02,  1.20it/s]Loading checkpoint shards:  75%|███████▌  | 6/8 [00:04<00:01,  1.30it/s]Loading checkpoint shards:  88%|████████▊ | 7/8 [00:05<00:00,  1.45it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:05<00:00,  1.83it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:05<00:00,  1.48it/s]
   retail_refund done (4)
+  airline_cancel done (8)
+  deploy_guard done (12)
+  bank_withdraw done (16)
+  doc_access done (20)
+  rx_safety done (24)
+  customs_route done (28)
+  oncall_route done (32)
+
+==== DIVERSE K-SWEEP (field+selective under REASONING) — Qwen/Qwen3-14B (n=32) ====
+  field+sel@0   P_correct=0.66 CI(0.48, 0.8)
+  field+sel@4   P_correct=0.81 CI(0.65, 0.91)
+  field+sel@8   P_correct=0.84 CI(0.68, 0.93)
+  field+sel@16  P_correct=0.88 CI(0.72, 0.95)
+  field+sel@32  P_correct=0.88 CI(0.72, 0.95)
+  field+sel@64  P_correct=0.88 CI(0.72, 0.95)
+  full=1.00  stale=0.00  => K* (>=full) = None
+DIVERSE_KSWEEP_DONE

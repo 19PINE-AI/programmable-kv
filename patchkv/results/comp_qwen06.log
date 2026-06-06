@@ -1,0 +1,15 @@
+=== SKILL feasibility (Qwen/Qwen3-0.6B) ===
+  --- self-contained skills ---
+  refund     skill_tok= 616 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
+  access     skill_tok= 617 | full=wrong   reposition=wrong  (cos0.99) naive=wrong  (cos0.99) | agree=True
+  deploy     skill_tok= 607 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
+  rx         skill_tok= 614 | full=wrong   reposition=wrong  (cos0.99) naive=wrong  (cos0.99) | agree=True
+  [self-contained] full_correct=2/4 precompiled_correct=2/4 | reposition==full: 4/4 (cos0.992) | naive==full: 4/4 (cos0.991)
+  TTFT: full median=12.1ms  precompiled median=26.5ms
+=== MULTI-SKILL LIBRARY composition (Qwen/Qwen3-0.6B) ===
+  #skills     full  composed  agree  full_ms  comp_ms  speedup
+        1    grant     grant   True     27.2     26.6    1.02x
+        2    grant     grant   True     11.9     28.6    0.41x
+        3    grant     grant   True     14.8     31.3    0.47x
+        4    grant     grant   True     19.4     34.3    0.57x
+COMPOSABLE_KV_DONE
