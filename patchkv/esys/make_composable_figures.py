@@ -25,7 +25,7 @@ def fig_scaling():
 
 def fig_keystone():
     order = [("qwen3_1p7b", "1.7B"), ("qwen3_4b", "4B"), ("qwen3_8b", "8B"), ("qwen3_14b", "14B"),
-             ("dsr1_llama8b", "DeepSeek-8B"), ("mistral7b", "Mistral-7B")]
+             ("dsr1_llama8b", "DeepSeek-8B"), ("mistral7b", "Mistral-7B"), ("llama31_8b", "Llama-3.1-8B")]
     labels, rec_e, com_e, rec_s, com_s = [], [], [], [], []
     for tag, nm in order:
         p = os.path.join(R, f"compose_edit_{tag}.json")

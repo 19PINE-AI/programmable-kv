@@ -1,0 +1,41 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "multiskill": {
+    "1": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.846,
+      "full_ms": 39.2,
+      "comp_ms": 34.2,
+      "speedup": 1.14
+    },
+    "2": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.952,
+      "full_ms": 59.4,
+      "comp_ms": 38.4,
+      "speedup": 1.55
+    },
+    "3": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.688,
+      "full_ms": 90.3,
+      "comp_ms": 42.5,
+      "speedup": 2.12
+    },
+    "4": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.598,
+      "full_ms": 115.0,
+      "comp_ms": 47.0,
+      "speedup": 2.45
+    }
+  }
+}

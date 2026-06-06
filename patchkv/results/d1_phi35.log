@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/home/ubuntu/editable-kv/patchkv/esys/mech_causal_patch.py", line 283, in <module>
+    main()
+  File "/home/ubuntu/editable-kv/patchkv/esys/mech_causal_patch.py", line 205, in main
+    tok, model = load(args.model)
+  File "/home/ubuntu/editable-kv/patchkv/esys/mech_suite.py", line 73, in load
+    model = AutoModelForCausalLM.from_pretrained(name, **kw).eval()
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 597, in from_pretrained
+    return model_class.from_pretrained(
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 277, in _wrapper
+    return func(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4971, in from_pretrained
+    model = cls(config, *model_args, **model_kwargs)
+  File "/home/ubuntu/.cache/huggingface/modules/transformers_modules/microsoft/Phi_hyphen_3_dot_5_hyphen_mini_hyphen_instruct/2fe192450127e6a83f7441aef6e3ca586c338b77/modeling_phi3.py", line 1162, in __init__
+    super().__init__(config)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 2076, in __init__
+    self.config._attn_implementation_internal = self._check_and_adjust_attn_implementation(
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 2686, in _check_and_adjust_attn_implementation
+    applicable_attn_implementation = self.get_correct_attn_implementation(
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 2725, in get_correct_attn_implementation
+    raise e
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 2722, in get_correct_attn_implementation
+    self._sdpa_can_dispatch(is_init_check)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 2574, in _sdpa_can_dispatch
+    raise ValueError(
+ValueError: Phi3ForCausalLM does not support an attention implementation through torch.nn.functional.scaled_dot_product_attention yet. Please request the support for this architecture: https://github.com/huggingface/transformers/issues/28005. If you believe this error is a bug, please open an issue in Transformers GitHub repository and load your model with the argument `attn_implementation="eager"` meanwhile. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="eager")`

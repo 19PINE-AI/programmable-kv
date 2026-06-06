@@ -45,7 +45,7 @@ prefix caching for **16×** higher throughput).
 *transplantation* possible. We precompile a SKILL (a long, reusable policy/tool spec) once, then
 RoPE-reposition and splice its KV into a new context with **no recompute**. (7) The transplanted skill
 is behaviorally **indistinguishable from full recompute** — 100% decision agreement and logit
-cosine-similarity **0.96–0.999 across six models** (Qwen3-1.7/4/8/14B, Gemma-2-9B, Mistral-7B); on the
+cosine-similarity **0.96–0.999 across seven models** (Qwen3-1.7/4/8/14B, Gemma-2-9B, Mistral-7B, Llama-3.1-8B; the keystone also holds on DeepSeek-R1-Llama-8B and Qwen3-32B-FP8); on the
 competent models it *preserves correctness* (4/4, cos 0.999). (8) It is **context-robust**: a skill
 precompiled in isolation matches one that attended to the real context, because the decision re-derives
 from context it can still see; the only residual error is a **seam at the chunk's start**, which
@@ -150,7 +150,7 @@ NEW (K,V) into the OLD cache at chosen (layer, position) sites and read the deci
 split: direct ≈0.9%, indirect ≈99%); full-downstream = 1.00. The memoized conclusion is **suffix-
 concentrated**: patching the last 10%/20% of downstream recovers **64%/82%**, the first 10%/50% only
 29%/34%. Mid/late layers carry it; ~16 well-chosen positions recover 94% (distributed but
-identifiable). **Generalizes across 8 models** (field-only recovery ≪ full=1.0): Qwen3-4B/8B/14B/32B
+identifiable). **Generalizes across 9 models** (field-only recovery ≪ full=1.0): **Llama-3.1-8B −0.028**, Qwen3-4B/8B/14B/32B
 0.025/0.009/0.008/0.023, Gemma-2-9B/27B 0.001/0.219, **Gemma-3-27B −0.003**, Mistral-7B 0.004
 (Fig. `fig_d1_generalization`; Gemma-3 loaded text-only — `Gemma3ForCausalLM`, vision tower stripped —
 in bf16, full-downstream=1.0, suffix@10%=0.85).
@@ -476,7 +476,7 @@ vs *recomputed* skill):
 recomputed** for every method. Editing transplanted KV behaves identically to editing recomputed KV:
 **edit and compose are two operations on one substrate**, which is the unifying thesis. The keystone
 **generalizes across families** — composed ≈ recomputed also holds on Qwen3-4B and **DeepSeek-R1-Llama-8B**
-(e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). On **Mistral-7B the decisions cleanly
+(e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). Llama-3.1-8B also confirms it (clean flips 3/4: in_place 0.05/0.04, sel@32 0.83/0.86, erratum 1.11/1.13). On **Mistral-7B the decisions cleanly
 flip (4/4)**, giving the sharpest read — in_place 0.04/0.03, sel@8 0.62/0.49, sel@32 0.72/0.56,
 erratum 0.98/0.93 (recomputed/composed): in_place fails, selective recovers, erratum is near-perfect,
 and composed tracks recomputed throughout.

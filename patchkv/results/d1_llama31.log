@@ -1,0 +1,46 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  1.63it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.60it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.58it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  2.26it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.96it/s]
+/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py:1014: UserWarning: `output_attentions=True` is not supported with `attn_implementation` other than ['eager', 'eager_paged', 'flex_attention']. Please use `model.set_attn_implementation('eager')` to enable capturing attention outputs.
+  warnings.warn(
+`sdpa` attention does not support `output_attentions=True` or `head_mask`. Please set your attention to `eager` if you want any of these features.
+  [account_role/A4471] L=776 field_only=0.000 full_down=1.00 suffix@0.1=0.854 suffix@0.3=0.905 top_pos_region=decision
+  [account_role/B8820] L=776 field_only=-0.012 full_down=1.00 suffix@0.1=0.853 suffix@0.3=0.89 top_pos_region=decision
+  [safety_mode/A4471] L=775 field_only=-0.069 full_down=1.00 suffix@0.1=0.784 suffix@0.3=0.863 top_pos_region=decision
+  [safety_mode/B8820] L=775 field_only=-0.031 full_down=1.00 suffix@0.1=0.776 suffix@0.3=0.857 top_pos_region=decision
+
+==== D1 CAUSAL PATCHING SUMMARY ====
+n=4 instances
+FIELD-ONLY recovery (= in_place): -0.028 CI(-0.028, -0.028)  (small => why in_place fails)
+FULL-DOWNSTREAM recovery (sanity): 1.0 CI(1.0, 1.0)
+REGION mean single-pos recovery: {'field': -0.037, 'field->gate': -0.003, 'gate->convo': -0.003, 'convo->decision': -0.001, 'decision': 0.01}
+strongest single-site region counts: {'decision': 4}
+LAYER-band recovery: {'early': -0.003, 'mid': 0.047, 'late': 0.055}
+CUMULATIVE SUFFIX recovery (patch last fraction of downstream -> recovery):
+   suffix 0.02: 0.64 CI(0.638, 0.638)
+   suffix 0.05: 0.75 CI(0.752, 0.753)
+   suffix  0.1: 0.82 CI(0.817, 0.817)
+   suffix  0.2: 0.87 CI(0.872, 0.872)
+   suffix  0.3: 0.88 CI(0.879, 0.879)
+   suffix  0.5: 0.87 CI(0.874, 0.874)
+   suffix  0.7: 0.88 CI(0.875, 0.876)
+   suffix  0.9: 0.89 CI(0.892, 0.892)
+   suffix  1.0: 1.00 CI(1.0, 1.0)
+CUMULATIVE PREFIX recovery (patch first fraction of downstream -> recovery):
+   prefix 0.02: -0.04 CI(-0.035, -0.035)
+   prefix 0.05: -0.03 CI(-0.028, -0.028)
+   prefix  0.1: 0.17 CI(0.166, 0.166)
+   prefix  0.2: 0.17 CI(0.174, 0.174)
+   prefix  0.3: 0.17 CI(0.173, 0.173)
+   prefix  0.5: 0.18 CI(0.176, 0.176)
+   prefix  0.7: 0.18 CI(0.18, 0.18)
+   prefix  0.9: 0.28 CI(0.281, 0.281)
+   prefix  1.0: 1.00 CI(1.0, 1.0)
+LOCALITY top-k (non-additive ranking; weak by construction):
+   top-  1 pos -> 0.13 CI(0.13, 0.13)
+   top-  2 pos -> 0.18 CI(0.182, 0.182)
+   top-  4 pos -> 0.22 CI(0.221, 0.222)
+   top-  8 pos -> 0.27 CI(0.27, 0.27)
+   top- 16 pos -> 0.29 CI(0.292, 0.293)
+   top- 32 pos -> 0.30 CI(0.303, 0.303)
+   top- 64 pos -> 0.32 CI(0.317, 0.317)
+   top-128 pos -> 0.34 CI(0.342, 0.342)
+D1_CAUSAL_PATCH_DONE
