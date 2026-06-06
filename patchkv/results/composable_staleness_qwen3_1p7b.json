@@ -1,0 +1,17 @@
+{
+  "model": "Qwen/Qwen3-1.7B",
+  "self_contained": {
+    "full": 2,
+    "precompiled": 2,
+    "agree": 4,
+    "n": 4,
+    "mean_cos": 0.988
+  },
+  "context_coupled": {
+    "full": 2,
+    "precompiled": 2,
+    "agree": 2,
+    "n": 2,
+    "mean_cos": 0.99
+  }
+}

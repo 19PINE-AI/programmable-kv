@@ -174,6 +174,32 @@ SKILLS = [
 ]
 
 
+# Coupled skills: the governing threshold lives in the SYS/context, and the skill REFERS to it.
+# A precompiled-in-isolation skill never saw the threshold -> should degrade (tests self-containedness).
+COUPLED = [
+ dict(name="access_cpl",
+      sys="You are a data-access assistant. SYSTEM CONFIG: the minimum clearance for CONFIDENTIAL "
+          "records is set to \"L4\" for this deployment.",
+      skill=("# SKILL: DATA_ACCESS_CONTROL\n"
+             "RULE A1: Grant access to a CONFIDENTIAL record ONLY if the requester clearance meets or "
+             "exceeds the minimum clearance specified in the SYSTEM CONFIG above. Otherwise deny.\n"
+             f"{FILLER_RULES}\nEnd of skill."),
+      task="A requester with clearance = \"L2\" asks to read a CONFIDENTIAL record. "
+           "Respond with exactly one word — grant or deny.\nDecision:",
+      correct="deny", wrong="grant"),
+ dict(name="refund_cpl",
+      sys="You are a support agent. SYSTEM CONFIG: refunds are allowed ONLY for order_status equal to "
+          "the value \"delivered\" in this deployment.",
+      skill=("# SKILL: REFUND_POLICY\n"
+             "RULE R1: Issue a refund ONLY if the order_status equals the refund-eligible status named "
+             "in the SYSTEM CONFIG above; for any other status refuse and escalate.\n"
+             f"{FILLER_RULES}\nEnd of skill."),
+      task="Order #7731 has order_status = \"pending\". The customer requests a refund. "
+           "Respond with exactly one word — refund or escalate.\nDecision:",
+      correct="escalate", wrong="refund"),
+]
+
+
 def chat_parts(tok, sys_txt, skill_txt, task_txt):
     """Return token ids for [chat-prefix+sys+skill], split so the skill is an isolatable middle chunk.
     We assemble the whole user message then locate the skill span by string offsets."""
@@ -195,10 +221,12 @@ def decision(model, logits, tok, correct, wrong):
 
 
 @torch.no_grad()
-def run_experiment(model, tok, trials=5):
-    res = {"full": 0, "precompiled": 0, "n": 0}
+def run_experiment(model, tok, skills=None, label="self-contained"):
+    skills = skills or SKILLS
+    res = {"full": 0, "precompiled": 0, "agree": 0, "n": 0, "cos": []}
     tfull, tpre = [], []
-    for sk in SKILLS:
+    print(f"  --- {label} skills ---")
+    for sk in skills:
         ids, a, b = chat_parts(tok, sk["sys"], sk["skill"], sk["task"])
         L = ids.shape[1]; tc = tok(sk["correct"], add_special_tokens=False)["input_ids"][0]
         tw = tok(sk["wrong"], add_special_tokens=False)["input_ids"][0]
@@ -221,11 +249,17 @@ def run_experiment(model, tok, trials=5):
         pl = model(input_ids=ids[:, L - 1:L].to("cuda"), past_key_values=cache_slice(out.past_key_values, 0, L - 1),
                    cache_position=torch.tensor([L - 1], device="cuda")).logits[0, -1].float()
         pd = "correct" if pl[tc] >= pl[tw] else "wrong"
-        res["full"] += (fd == "correct"); res["precompiled"] += (pd == "correct"); res["n"] += 1
-        print(f"  {sk['name']:8s} skill_tok={nb:4d} | full={fd:7s} precompiled={pd:7s} | "
-              f"logit-cos={torch.cosine_similarity(fl, pl, 0).item():.3f}", flush=True)
-    print(f"\n  FULL correct: {res['full']}/{res['n']} | PRECOMPILED correct: {res['precompiled']}/{res['n']}")
-    print(f"  TTFT: full median={sorted(tfull)[len(tfull)//2]:.1f}ms  precompiled median={sorted(tpre)[len(tpre)//2]:.1f}ms")
+        cosv = torch.cosine_similarity(fl, pl, 0).item()
+        res["full"] += (fd == "correct"); res["precompiled"] += (pd == "correct")
+        res["agree"] += (fd == pd); res["cos"].append(cosv); res["n"] += 1
+        print(f"  {sk['name']:10s} skill_tok={nb:4d} | full={fd:7s} precompiled={pd:7s} | "
+              f"agree={fd==pd} logit-cos={cosv:.3f}", flush=True)
+    mc = sum(res["cos"]) / len(res["cos"])
+    print(f"  [{label}] full_correct={res['full']}/{res['n']} precompiled_correct={res['precompiled']}/{res['n']} "
+          f"| precompiled==full: {res['agree']}/{res['n']} | mean logit-cos={mc:.3f}")
+    if tfull:
+        print(f"  TTFT: full median={sorted(tfull)[len(tfull)//2]:.1f}ms  precompiled median={sorted(tpre)[len(tpre)//2]:.1f}ms")
+    res["mean_cos"] = round(mc, 3)
     return res
 
 
@@ -266,6 +300,7 @@ def main():
     ap.add_argument("--sanity", action="store_true")
     ap.add_argument("--experiment", action="store_true")
     ap.add_argument("--scaling", action="store_true")
+    ap.add_argument("--staleness", action="store_true")
     ap.add_argument("--tag", default=None)
     args = ap.parse_args()
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
@@ -277,6 +312,13 @@ def main():
     if args.experiment:
         print(f"=== SKILL feasibility ({args.model}) ===")
         run_experiment(model, tok)
+    if args.staleness:
+        print(f"=== CONTEXT-STALENESS ({args.model}): self-contained vs context-coupled skills ===")
+        sc = run_experiment(model, tok, SKILLS, "self-contained")
+        cp = run_experiment(model, tok, COUPLED, "context-coupled")
+        json.dump({"model": args.model, "self_contained": {k: sc[k] for k in ("full","precompiled","agree","n","mean_cos")},
+                   "context_coupled": {k: cp[k] for k in ("full","precompiled","agree","n","mean_cos")}},
+                  open(os.path.join(os.path.dirname(__file__), "..", "results", f"composable_staleness_{args.tag or 'm'}.json"), "w"), indent=2)
     if args.scaling:
         print(f"=== TTFT scaling: full vs precompiled ({args.model}) ===")
         sc = run_scaling(model, tok)
