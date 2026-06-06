@@ -24,9 +24,11 @@ suffices for *reasoning* models** — at 8B it recovers the oracle decision **0.
 recompute with no further help — but **never without reasoning** (0.00 at every scale) and only
 partially at 14B/32B; we explain the scale-reversal mechanistically. (4) A **salient erratum** (append
 "[STATE UPDATE] <field>→<new>; overrides any earlier value and conclusion") and in particular
-**`field+erratum`** matches the strong *hoist-to-end* baseline's correctness and poison-robustness
-**without rewriting the prompt**; a rigorous baseline comparison shows there is no single dominant
-method but a *frontier*. (5) editkv is an **attention-architecture** method: it works on full/GQA/MLA
+**`field+erratum`** matches the strong *hoist-to-end* baseline's oracle correctness **without rewriting
+the prompt** (the bare erratum reaches it too in standard settings but is more template-sensitive in
+harsher ones); a rigorous baseline comparison shows there is no single dominant method but a
+*frontier* — hoist is cheapest but needs prompt surgery, in-place editing matches it without surgery,
+and `in_place` is ~free under reasoning. (5) editkv is an **attention-architecture** method: it works on full/GQA/MLA
 and hybrid attention+SSM backbones but is weaker on a pure SSM (whose recurrent state has no
 look-back; CoT partially rescues it). (6) On the real τ²-bench retail environment — single decisions
 (N=20) and a multi-turn autonomous-agent loop (N=30) with the env's own tool enforcement as reward —
@@ -164,28 +166,32 @@ full reprefill is fooled*; over-correction on an irrelevant field is 0/8; multi-
 without interference.
 
 **6.2 The baseline frontier — answering "why not just hoist?" (Fig. `fig_baseline_frontier`).**
-8 gating tasks, non-reasoning (the regime where strategies differ), P(correct) × recompute, with a
-poisoned-context column (`esys/baseline_table.py`, Qwen3-8B):
+8 gating tasks, non-reasoning (the regime where strategies differ), deployment-realistic chat
+template, P(correct) × recompute, with a poisoned-context column (`esys/baseline_table.py`, Qwen3-8B):
 
 | method | P(correct) | recompute | poison | needs prompt rewrite? |
 |---|---|---|---|---|
-| full reprefill | 0.88 | 100% | 0.62 | no |
-| stale / in_place | 0.12 / 0.12 | 0% / 1% | — | no |
-| CacheBlend @15% (prior work) | 0.38 | 15% | — | no |
-| **hoist-to-end** | **1.00** | **4.4%** | 1.00 | **yes** |
-| erratum (stale + update) | 0.62 | 15% | 1.00 | no |
-| **field+erratum** | **1.00** | 16% | 1.00 | no |
+| full reprefill | 1.00 | 100% | 1.00 | no |
+| stale / in_place | 0.00 / 0.00 | 0% / 0.6% | — | no |
+| CacheBlend @15% (prior work) | 0.12 | 15% | — | no |
+| **hoist-to-end** | **1.00** | **5.2%** | 1.00 | **yes** |
+| erratum (stale + update) | 1.00 | 12% | 1.00 | no |
+| **field+erratum** | **1.00** | 13% | 1.00 | no |
 
-This is the honest picture and *is* the answer: **hoist is strong but requires rewriting the prompt to
-move every mutable field** (it does not compose across multiple fields or fields the rules reference in
-place — the pathology this paper is about). **`field+erratum` matches hoist's correctness and
-poison-robustness in place, with no rewrite** — that, not raw accuracy, is editkv's advantage.
-`erratum` alone is weaker non-reasoning (0.62, the stale value competes → field+erratum is the
-default). **CacheBlend's KV-deviation selection underperforms (0.38)** because the decision-relevant
-content is suffix-concentrated, not in the highest-deviation tokens (§5.1). And `in_place` is ~free and
-sufficient under *reasoning* (0.94, §4). There is no single dominant method — a *frontier* — and
-editkv contributes the mechanistic map of it plus two in-place options (free in_place for reasoning;
-hoist-matching field+erratum without surgery).
+This is the answer: hoist-to-end, erratum, and field+erratum **all reach oracle correctness** at low
+cost, while in_place fails (0.00) and CacheBlend underperforms (0.12). The differentiators are *cost*
+and *programmability*: **hoist is cheapest (5%) but requires rewriting the prompt to move every mutable
+field** — it does not compose across multiple fields or fields the rules reference in place (the
+pathology this paper is about); **erratum / field+erratum match its correctness *in place*, with no
+rewrite** (12–13%). **CacheBlend's KV-deviation selection underperforms (0.12)** because the
+decision-relevant content is suffix-concentrated, not in the highest-deviation tokens (§5.1). And
+`in_place` is **~free and sufficient under *reasoning*** (0.94, §4). So there is no single dominant
+method — a *frontier* — and editkv contributes the mechanistic map of it plus the two in-place options
+(free in_place for reasoning; hoist-matching erratum/field+erratum without prompt surgery). *Caveat:*
+on this clean template the poison column does not differentiate (all 1.00); the erratum's
+poison-robustness advantage over a fooled full-reprefill appears only under stronger adversarial
+contexts (§5, the within-model poison ablation), and the bare erratum is template-sensitive in harsher
+non-standard prompts (where field+erratum is the safer default).
 
 **6.3 A per-edit diagnostic.** `needs_erratum` predicts, for a specific edit, whether the cheap
 in_place suffices or must escalate to field+erratum, by decoding the next decision token under each;

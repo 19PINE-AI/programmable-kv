@@ -1,3 +1,10 @@
+# [DETAILED SUPPLEMENT — PAPER.md is authoritative]
+
+*This is the pre-restructure detailed/lab-notebook version, kept for the full per-experiment record.
+The tight conference draft is `PAPER.md`; where numbers differ (notably the §8d baseline table, which
+was re-measured under the deployment-realistic chat template during the consistency audit), `PAPER.md`
+is authoritative.*
+
 # Editable KV Cache for Mutable Fields in Agentic Contexts: When the Cheap Edit Works, Why It Fails, and a Robust Fix
 
 *Working draft. Consolidates the experimental program; numbers are from local runs on
@@ -507,27 +514,31 @@ A rigorous comparison on 8 gating tasks, **non-reasoning** (the regime where str
 reasoning is §5e), reporting P(correct) and recompute fraction, plus a poisoned-context column (a
 prior note asserting the old value). `esys/baseline_table.py`, Qwen3-8B:
 
+**[UPDATED after the consistency audit — deployment-realistic chat template + the standard
+diverse-tasks structure; the earlier 0.62/0.88 numbers were an artifact of a non-standard harder
+template + raw-text completion and are superseded. PAPER.md §6.2 is authoritative.]**
+
 | method | P(correct) | recompute | poison P(correct) | needs prompt rewrite? |
 |---|---|---|---|---|
-| full reprefill | 0.88 | 100% | 0.62 | no |
-| stale | 0.12 | 0% | — | no |
-| in_place (surgical) | 0.12 | 1.0% | — | no |
-| CacheBlend @15% (prior work) | 0.38 | 15% | — | no |
-| **hoist-to-end** | **1.00** | **4.4%** | **1.00** | **yes** |
-| erratum (stale field + update) | 0.62 | 15% | 1.00 | no |
-| **field+erratum** | **1.00** | 16% | **1.00** | no |
+| full reprefill | 1.00 | 100% | 1.00 | no |
+| stale | 0.00 | 0% | — | no |
+| in_place (surgical) | 0.00 | 0.6% | — | no |
+| CacheBlend @15% (prior work) | 0.12 | 15% | — | no |
+| **hoist-to-end** | **1.00** | **5.2%** | **1.00** | **yes** |
+| erratum (stale field + update) | 1.00 | 12% | 1.00 | no |
+| **field+erratum** | **1.00** | 13% | **1.00** | no |
 
-This is deliberately not a clean editkv sweep — it is the honest picture, and it *is* the answer to
-"why not hoist?":
-- **Hoist-to-end is genuinely strong** (1.00, poison-robust, cheapest) — *but it requires rewriting
-  the prompt to move the mutable field to the end*. That does not compose: it fails for multiple
-  mutable fields, for fields the rules must reference in place, and it forces the application to
-  pre-identify every mutable field. (And programmers do this *today* precisely to keep cache hits —
-  the pathology this paper is about.)
-- **`field+erratum` matches hoist's correctness and poison-robustness (1.00) with no prompt rewrite**
-  — it edits in place. *That* is editkv's advantage over hoist, not raw accuracy.
-- **`erratum` alone is weaker non-reasoning (0.62)**: the stale early value competes (§7), so
-  `field+erratum` is the robust default (consistent with the τ²-bench finding, §6).
+The answer to "why not hoist?":
+- **Hoist-to-end, erratum, and field+erratum all reach oracle correctness (1.00)** at low cost; the
+  differentiators are *cost* and *programmability*. Hoist is cheapest (5%) — *but requires rewriting
+  the prompt to move every mutable field to the end*, which does not compose (multiple fields, fields
+  the rules reference in place, pre-identifying all mutable fields). That is the pathology this paper
+  is about; programmers do this *today* precisely to keep cache hits.
+- **erratum / field+erratum match hoist's correctness *in place*, with no rewrite** (12–13%). *That* is
+  editkv's advantage over hoist, not raw accuracy. (The bare erratum is template-sensitive in harsher
+  non-standard prompts — 0.62 with raw text + a messier template — where field+erratum is safer.)
+- **Poison no longer differentiates on this clean template (all 1.00)**; the erratum's
+  poison-robustness over a fooled full-reprefill appears under stronger adversarial contexts (§5).
 - **`in_place` alone fails here (0.12) but is ~0.94 under *reasoning* at 1% cost (§5e)** — so for the
   reasoning models that dominate agent deployments, the *cheapest* correct option is the bare
   surgical edit, beating even hoist on cost.
