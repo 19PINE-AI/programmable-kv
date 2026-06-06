@@ -1,0 +1,38 @@
+{
+  "model": "Qwen/Qwen3-14B",
+  "n_samples": 18,
+  "inplace_base": {
+    "P_correct": 0.111,
+    "ci": [
+      0.03,
+      0.33
+    ],
+    "n": 18
+  },
+  "block_cot_field": {
+    "P_correct": 0.0,
+    "ci": [
+      0,
+      0.18
+    ],
+    "n": 18
+  },
+  "block_dec_field": {
+    "P_correct": 0.111,
+    "ci": [
+      0.03,
+      0.33
+    ],
+    "n": 18
+  },
+  "block_cot_gate": {
+    "P_correct": 0.222,
+    "ci": [
+      0.09,
+      0.45
+    ],
+    "n": 18
+  },
+  "CoT_to_field_attn": 0.0006,
+  "CoT_to_gate_attn": 0.0002
+}

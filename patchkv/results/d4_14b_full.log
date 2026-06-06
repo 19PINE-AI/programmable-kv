@@ -1,1 +1,16 @@
 Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█▎        | 1/8 [00:00<00:06,  1.11it/s]Loading checkpoint shards:  25%|██▌       | 2/8 [00:01<00:04,  1.41it/s]Loading checkpoint shards:  38%|███▊      | 3/8 [00:02<00:03,  1.54it/s]Loading checkpoint shards:  50%|█████     | 4/8 [00:02<00:02,  1.63it/s]Loading checkpoint shards:  62%|██████▎   | 5/8 [00:03<00:01,  1.71it/s]Loading checkpoint shards:  75%|███████▌  | 6/8 [00:03<00:01,  1.75it/s]Loading checkpoint shards:  88%|████████▊ | 7/8 [00:04<00:00,  1.75it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:04<00:00,  2.14it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:04<00:00,  1.77it/s]
+  [account_role/A4471] inplace_base=0/3 block_cot_field=0/3 block_dec_field=0/3 block_cot_gate=0/3 | CoT->field=0.001 CoT->gate=0.000
+  [account_role/B8820] inplace_base=0/3 block_cot_field=0/3 block_dec_field=0/3 block_cot_gate=0/3 | CoT->field=0.001 CoT->gate=0.000
+  [safety_mode/A4471] inplace_base=0/3 block_cot_field=0/3 block_dec_field=0/3 block_cot_gate=2/3 | CoT->field=0.001 CoT->gate=0.000
+  [safety_mode/B8820] inplace_base=0/3 block_cot_field=0/3 block_dec_field=0/3 block_cot_gate=1/3 | CoT->field=0.001 CoT->gate=0.000
+  [subscription_tier/A4471] inplace_base=2/3 block_cot_field=0/3 block_dec_field=2/3 block_cot_gate=0/3 | CoT->field=0.001 CoT->gate=0.000
+  [subscription_tier/B8820] inplace_base=0/3 block_cot_field=0/3 block_dec_field=0/3 block_cot_gate=1/3 | CoT->field=0.000 CoT->gate=0.000
+
+==== D4 REASONING RE-READ SUMMARY ====
+  inplace_base       P_correct=0.111 CI(0.03, 0.33) (n=18)
+  block_cot_field    P_correct=0.0 CI(0, 0.18) (n=18)
+  block_dec_field    P_correct=0.111 CI(0.03, 0.33) (n=18)
+  block_cot_gate     P_correct=0.222 CI(0.09, 0.45) (n=18)
+  CoT->field attn mass=0.0006  CoT->gate band=0.0002
+  HYPOTHESIS: block_cot_field collapses while block_dec_field & block_cot_gate hold
+D4_REASONING_REREAD_DONE

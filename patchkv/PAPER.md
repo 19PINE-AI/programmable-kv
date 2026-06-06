@@ -134,10 +134,12 @@ in_place fails.
 reasoning ON: blocking the CoT's attention to the field collapses the in_place benefit (8B: 1.0→0.0,
 n=8, non-overlapping CIs) while blocking the *decision's* direct field read does not — **the CoT
 re-read, not the decision's direct read, is the causal carrier** of reasoning robustness (per-token
-CoT→field attention is only ~0.1%, yet causally decisive). **This also explains the scale-reversal**:
-at 14B `inplace_base` is already ~0 (the CoT does *not* recover), and masking the stale gate/downstream
-region *improves* it — i.e. the larger CoT **defers to the stickier memoized stale conclusion** rather
-than re-deriving from the refreshed field. (n small; see §10.)
+CoT→field attention is only ~0.1%, yet causally decisive). **This also explains the scale-reversal** (14B,
+n=18): `inplace_base` recovers only **0.11** [.03,.33] (vs 8B's 1.0) — the CoT barely re-derives; the
+14B CoT attends *less* to the field than 8B (0.0006 vs 0.0011); and masking the stale gate/downstream
+region roughly **doubles** recovery (0.11→0.22) — i.e. the larger CoT **defers to the stickier memoized
+stale conclusion** in the downstream rather than re-deriving from the refreshed field. (Directional:
+the gate-masking CIs overlap; see §10.)
 
 **5.4 Position dose-response (D6).** Sweeping the field's position (value appears once), in_place
 recovery rises **monotonically** as the field moves later — pos0 −0.01 → hoisted 0.11 — the causal
