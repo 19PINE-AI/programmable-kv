@@ -54,8 +54,17 @@ def load(name):
     # eager (default) is required for the attention-knockout experiments (install()).
     impl = os.environ.get("MECH_ATTN", "eager")
     tok = AutoTokenizer.from_pretrained(name, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(name, dtype=torch.bfloat16, device_map="cuda",
-                                                 attn_implementation=impl, trust_remote_code=True).eval()
+    # For officially-quantized checkpoints (FP8/compressed-tensors) do NOT force a dtype — let the
+    # quantization config keep weights quantized (forcing bf16 would dequantize -> OOM).
+    quantized = any(q in name.upper() for q in ("FP8", "-INT8", "GPTQ", "AWQ"))
+    kw = dict(device_map="cuda", attn_implementation=impl, trust_remote_code=True)
+    if os.environ.get("BNB_8BIT"):
+        # on-the-fly bitsandbytes int8 (8-bit) quantization of a full-precision checkpoint
+        from transformers import BitsAndBytesConfig
+        kw["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
+    elif not quantized:
+        kw["dtype"] = torch.bfloat16
+    model = AutoModelForCausalLM.from_pretrained(name, **kw).eval()
     if impl == "eager":
         try:
             install(model)                 # enables attention-knockout (mech experiments)

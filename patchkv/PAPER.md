@@ -147,8 +147,12 @@ n=18): `inplace_base` recovers only **0.11** [.03,.33] (vs 8B's 1.0) — the CoT
 region roughly **doubles** recovery (0.11→0.22) — i.e. the larger CoT **defers to the stickier memoized
 stale conclusion** in the downstream rather than re-deriving from the refreshed field. (Directional:
 the gate-masking CIs overlap; see §10.) The scale curve is non-monotonic — in_place-under-reasoning
-recovery is 1.0 (8B) → 0.11–0.33 (14B) → 0.50 (32B, from `surgical_suffices`; the 32B *knockout*
-circuit OOMs alongside the shared training job) — i.e. the reversal is sharpest at 14B.
+recovery is 1.0 (8B) → 0.11–0.33 (14B) → 0.50 (32B) — sharpest reversal at 14B. The 32B *knockout*
+circuit (run on the official FP8 8-bit checkpoint to fit alongside the shared training job; n=4)
+confirms the mechanism is the same at scale: `inplace_base`=0.5 [.15,.85] and **`block_cot_field`
+collapses it to 0** — i.e. *when* the larger CoT recovers it is still the CoT re-read that carries it;
+the larger model simply defers to the stickier memoized stale conclusion more often (CoT→field
+attention 0.0007 vs 8B's 0.0011).
 
 **5.4 Position dose-response (D6).** Sweeping the field's position (value appears once), in_place
 recovery rises **monotonically** as the field moves later — pos0 −0.01 → hoisted 0.11 — the causal
