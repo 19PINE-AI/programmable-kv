@@ -1,1 +1,16 @@
 ########## attention-GQA (Qwen3-8B) ##########
+=== attention-GQA (Qwen3-8B): Qwen/Qwen3-8B (K=8 samples/scenario) ===
+  [non_reasoning] oracle_new=0.0 stale_old=0.0 | discriminating=0/32 | ERRATUM_RECOVERY=None CINone
+  [reasoning    ] oracle_new=1.0 stale_old=1.0 | discriminating=32/32 | ERRATUM_RECOVERY=0.969 CI[0.906, 1.0]
+ARCH_ERRATUM_V2_DONE
+########## hybrid attn+Mamba2 (Falcon-H1) ##########
+=== hybrid attn+Mamba2 (Falcon-H1): tiiuae/Falcon-H1-1.5B-Instruct (K=8 samples/scenario) ===
+  [non_reasoning] oracle_new=1.0 stale_old=1.0 | discriminating=32/32 | ERRATUM_RECOVERY=1.0 CI[1.0, 1.0]
+  [reasoning    ] oracle_new=1.0 stale_old=1.0 | discriminating=32/32 | ERRATUM_RECOVERY=0.969 CI[0.906, 1.0]
+ARCH_ERRATUM_V2_DONE
+########## pure Mamba / no KV (Falcon-Mamba) ##########
+=== pure Mamba / no KV (Falcon-Mamba): tiiuae/falcon-mamba-7b-instruct (K=8 samples/scenario) ===
+  [non_reasoning] oracle_new=1.0 stale_old=0.938 | discriminating=30/32 | ERRATUM_RECOVERY=0.367 CI[0.2, 0.533]
+  [reasoning    ] oracle_new=1.0 stale_old=1.0 | discriminating=32/32 | ERRATUM_RECOVERY=0.781 CI[0.625, 0.906]
+ARCH_ERRATUM_V2_DONE
+=== ARCH done; bootstrapped surgical 8B ===

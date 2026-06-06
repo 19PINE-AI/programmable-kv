@@ -8,7 +8,8 @@
     "stale_picks_old": 0.0,
     "discriminating_trials": 0,
     "erratum_recovery": null,
-    "erratum_recovery_ci": null
+    "erratum_recovery_ci": null,
+    "recov_raw": []
   },
   "reasoning": {
     "n_trials": 32,
@@ -17,8 +18,42 @@
     "discriminating_trials": 32,
     "erratum_recovery": 0.969,
     "erratum_recovery_ci": [
-      0.75,
+      0.906,
       1.0
+    ],
+    "recov_raw": [
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ]
   }
 }
