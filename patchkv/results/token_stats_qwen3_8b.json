@@ -1,0 +1,63 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "n_tasks": 8,
+  "region_recovery_mass": {
+    "field": {
+      "mean": 0.003,
+      "ci": [
+        0.001,
+        0.006
+      ]
+    },
+    "session": {
+      "mean": 0.023,
+      "ci": [
+        0.014,
+        0.033
+      ]
+    },
+    "rule": {
+      "mean": 0.085,
+      "ci": [
+        0.062,
+        0.109
+      ]
+    },
+    "filler": {
+      "mean": 0.513,
+      "ci": [
+        0.334,
+        0.656
+      ]
+    },
+    "decision": {
+      "mean": 0.375,
+      "ci": [
+        0.219,
+        0.57
+      ]
+    }
+  },
+  "delimiter_vs_content": {
+    "delimiter": {
+      "mean": 0.368,
+      "ci": [
+        0.332,
+        0.402
+      ]
+    },
+    "content": {
+      "mean": 0.632,
+      "ci": [
+        0.598,
+        0.668
+      ]
+    }
+  },
+  "top_token_category_counts": {
+    "decision/delim": 3,
+    "filler/content": 1,
+    "decision/content": 3,
+    "rule/content": 1
+  }
+}

@@ -14,7 +14,7 @@ from mech_suite import (load, clone, prefill, ftok, wilson, META, TOK_WORDS, bui
 from align import align_pair
 import scenarios as S
 
-KS = [16, 32, 64]
+KS = [32]
 
 
 @torch.no_grad()
@@ -43,7 +43,7 @@ def main():
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok, model = load(args.model)
-    methods = ["full", "erratum"] + [f"selective@{k}" for k in KS]
+    methods = ["full", "erratum", "in_place(field)"] + [f"selective@{k}(no field)" for k in KS] + [f"field+selective@{k}" for k in KS]
     corr = {m: 0 for m in methods}; ntot = 0
     for scn in args.scns.split(","):
         m = META[scn]
@@ -72,11 +72,19 @@ def main():
                 # erratum + CoT (golden)
                 dq, dpos, cache, _ = gen_cot_sample(model, tok, ce, eid, Le, 200 + s, max_new=args.max_new)
                 corr["erratum"] += (decide(step(model, clone(cache, dpos), dq, dpos).logits[0, -1].float(), toi) == "safe")
-                # selective@k + CoT
+                # in_place (FIELD only) + CoT  -- the field is what the CoT re-reads
+                pc = patched_cache(co, cn, list(range(a, b)), L)
+                dq, dpos, cache, _ = gen_cot_sample(model, tok, pc, nid_ids, L, 250 + s, max_new=args.max_new)
+                corr["in_place(field)"] += (decide(step(model, clone(cache, dpos), dq, dpos).logits[0, -1].float(), toi) == "safe")
                 for k in KS:
+                    # selective@k WITHOUT the field (the original, broken-for-CoT test)
                     pc = patched_cache(co, cn, order[:k], L)
                     dq, dpos, cache, _ = gen_cot_sample(model, tok, pc, nid_ids, L, 300 + s + k, max_new=args.max_new)
-                    corr[f"selective@{k}"] += (decide(step(model, clone(cache, dpos), dq, dpos).logits[0, -1].float(), toi) == "safe")
+                    corr[f"selective@{k}(no field)"] += (decide(step(model, clone(cache, dpos), dq, dpos).logits[0, -1].float(), toi) == "safe")
+                    # FIELD + selective@k (the corrected test: include the field the CoT re-reads)
+                    pc = patched_cache(co, cn, list(range(a, b)) + order[:k], L)
+                    dq, dpos, cache, _ = gen_cot_sample(model, tok, pc, nid_ids, L, 350 + s + k, max_new=args.max_new)
+                    corr[f"field+selective@{k}"] += (decide(step(model, clone(cache, dpos), dq, dpos).logits[0, -1].float(), toi) == "safe")
                 ntot += 1
             print(f"  {scn}/{oid} done ({ntot} samples)", flush=True)
     out = {"model": args.model, "n_samples": ntot, "methods": {}}

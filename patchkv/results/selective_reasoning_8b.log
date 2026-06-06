@@ -1,3 +1,13 @@
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.85it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:00<00:01,  2.04it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:01<00:00,  2.18it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  2.26it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:01<00:00,  2.95it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:01<00:00,  2.51it/s]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.87it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:00<00:01,  2.10it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:01<00:00,  2.22it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  2.31it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:01<00:00,  3.01it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:01<00:00,  2.56it/s]
   account_role/A4471 done (3 samples)
   account_role/B8820 done (6 samples)
+  safety_mode/A4471 done (9 samples)
+  safety_mode/B8820 done (12 samples)
+
+==== SELECTIVE vs ERRATUM under REASONING (Qwen/Qwen3-8B, n=12) ====
+  full           P_correct=1.00 CI(0.76, 1)
+  erratum        P_correct=1.00 CI(0.76, 1)
+  in_place(field) P_correct=0.75 CI(0.47, 0.91)
+  selective@32(no field) P_correct=0.00 CI(0, 0.24)
+  field+selective@32 P_correct=1.00 CI(0.76, 1)
+SELECTIVE_REASONING_DONE

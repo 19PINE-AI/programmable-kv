@@ -1,0 +1,61 @@
+{
+  "model": "unsloth/gemma-2-9b-it",
+  "n_tasks": 8,
+  "region_recovery_mass": {
+    "field": {
+      "mean": 0.005,
+      "ci": [
+        0.002,
+        0.008
+      ]
+    },
+    "session": {
+      "mean": 0.011,
+      "ci": [
+        0.005,
+        0.016
+      ]
+    },
+    "rule": {
+      "mean": 0.064,
+      "ci": [
+        0.036,
+        0.092
+      ]
+    },
+    "filler": {
+      "mean": 0.317,
+      "ci": [
+        0.178,
+        0.443
+      ]
+    },
+    "decision": {
+      "mean": 0.603,
+      "ci": [
+        0.458,
+        0.761
+      ]
+    }
+  },
+  "delimiter_vs_content": {
+    "delimiter": {
+      "mean": 0.552,
+      "ci": [
+        0.501,
+        0.602
+      ]
+    },
+    "content": {
+      "mean": 0.448,
+      "ci": [
+        0.398,
+        0.499
+      ]
+    }
+  },
+  "top_token_category_counts": {
+    "decision/delim": 7,
+    "decision/content": 1
+  }
+}

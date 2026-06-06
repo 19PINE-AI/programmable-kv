@@ -267,7 +267,15 @@ mode (recompute a fixed ~12% by decision-attention, no prompt change) — compar
 erratum (~5–15%) and useful where appending text is undesirable; the erratum remains simpler
 (append-only, no profiling, composes with prefix caching, slightly higher recovery). Across 7 models
 × 8 benchmarks, selective@64 (decision-attention) reaches the golden erratum (P(correct)=1.0 on every
-model; the erratum hits 1.0 with only ~30 appended tokens).
+model; the erratum hits 1.0 with only ~30 appended tokens). **The recomputed set must include the field token.** Selective recompute of the downstream tokens
+*alone* (omitting the field) works non-reasoning but **fails under reasoning** (Qwen3-8B + CoT: 0.00),
+because the CoT re-reads the *stale field* (the field has ~0.1% decision-attention, so it is never in
+the top-k). **Including the field fixes it**: `field+selective@32` = **1.00 under reasoning**,
+matching the golden erratum, and beats field-only in_place (0.75→1.00) — the field is *necessary*
+(the CoT re-reads it) and the selective downstream pushes recovery to full. So the correct recipe is
+"always refresh the field + the top-k most-affected downstream tokens," and it then works in both
+modes. The erratum remains the golden, mode-universal method (append-only, no field-position
+tracking, prefix-cache friendly); selective recompute is the in-place, no-appended-text alternative.
 
 **What tokens carry the conclusion (`esys/selective_tokens.py`).** Decoding the causally-important
 downstream tokens (ranked by per-position recovery) gives a concrete, interpretable picture of *where*

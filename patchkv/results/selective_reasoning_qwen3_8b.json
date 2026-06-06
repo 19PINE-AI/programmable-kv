@@ -1,0 +1,41 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "n_samples": 12,
+  "methods": {
+    "full": {
+      "P_correct": 1.0,
+      "ci": [
+        0.76,
+        1
+      ]
+    },
+    "erratum": {
+      "P_correct": 1.0,
+      "ci": [
+        0.76,
+        1
+      ]
+    },
+    "in_place(field)": {
+      "P_correct": 0.75,
+      "ci": [
+        0.47,
+        0.91
+      ]
+    },
+    "selective@32(no field)": {
+      "P_correct": 0.0,
+      "ci": [
+        0,
+        0.24
+      ]
+    },
+    "field+selective@32": {
+      "P_correct": 1.0,
+      "ci": [
+        0.76,
+        1
+      ]
+    }
+  }
+}
