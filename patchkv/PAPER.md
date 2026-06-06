@@ -241,6 +241,32 @@ validated (8 high + 8 low/irrelevant edits) with a confidence-margin knob tradin
 **P=1.00 @ margin 0.5 (zero over-correction) → R=0.86 @ margin 0** (a false negative is a stale
 decision; a false positive costs a few % — so the recall-oriented low margin is the safe default).
 
+**6.4 An erratum-free alternative: profile-guided selective recompute (Fig. `fig_selective_recompute`).**
+Instead of appending the erratum, can we recompute the KV of *only the few downstream tokens the
+decision needs* and leave the rest stale? The §5.1 map says yes in principle (~16 positions recover
+94%), but the *selection criterion* is everything. On Qwen3-1.7B (`esys/selective_recompute.py`),
+recovery vs the number of recomputed downstream tokens k, by ranking criterion:
+
+| k | KV-change (CacheBlend) | hidden-change | **decision-attention** | decision-recovery (oracle) | suffix |
+|---|---|---|---|---|---|
+| 8 | 0.18 | 0.18 | **0.55** | 0.85 | 0.46 |
+| 16 | 0.17 | 0.21 | **0.75** | 0.87 | 0.49 |
+| 32 | 0.25 | 0.25 | **0.94** | 0.94 | 0.59 |
+| 64 | 0.89 | 0.90 | 0.97 | 1.0 | 0.60 |
+
+Three findings. (i) **Representation-change rankings fail**: the tokens whose KV/hidden state changes
+*most* under the edit (what CacheBlend selects) are *not* the tokens the decision depends on — they
+need ~64 tokens (24% of downstream) to recover, the mechanistic reason CacheBlend underperforms
+(§6.2). (ii) **Ranking by *decision-attention* — which downstream tokens the decision token attends to
+— nearly matches the expensive decision-recovery oracle** (0.94 @ k=32, ~12% of downstream) and is
+*cheap* (one forward). (iii) **It is offline-profilable and value-independent**: decision-attention is
+computed on the *base/old* context, so the recorded position-set transfers *exactly* to a different
+new value (held-out value: **0.91 @ k=32**, identical to that value's own set) — validating
+"profile the affected set once, reuse in production." So selective recompute is a viable erratum-free
+mode (recompute a fixed ~12% by decision-attention, no prompt change) — comparable in cost to the
+erratum (~5–15%) and useful where appending text is undesirable; the erratum remains simpler
+(append-only, no profiling, composes with prefix caching, slightly higher recovery).
+
 ## 7. Generalization across architectures (Fig. `fig_architecture`)
 
 editkv is an **attention-architecture** method: the surgical edit needs a per-token KV; the erratum

@@ -1,0 +1,75 @@
+{
+  "model": "Qwen/Qwen3-1.7B",
+  "recovery_vs_k": {
+    "1": {
+      "kv_change": 0.09,
+      "hidden_change": 0.09,
+      "decision_attention": -0.01,
+      "decision_oracle": 0.37,
+      "suffix": -0.0,
+      "random": -0.02
+    },
+    "2": {
+      "kv_change": 0.09,
+      "hidden_change": 0.09,
+      "decision_attention": -0.02,
+      "decision_oracle": 0.55,
+      "suffix": -0.02,
+      "random": 0.01
+    },
+    "4": {
+      "kv_change": 0.1,
+      "hidden_change": 0.1,
+      "decision_attention": 0.37,
+      "decision_oracle": 0.75,
+      "suffix": 0.37,
+      "random": -0.03
+    },
+    "8": {
+      "kv_change": 0.18,
+      "hidden_change": 0.15,
+      "decision_attention": 0.55,
+      "decision_oracle": 0.85,
+      "suffix": 0.46,
+      "random": 0.07
+    },
+    "16": {
+      "kv_change": 0.17,
+      "hidden_change": 0.21,
+      "decision_attention": 0.75,
+      "decision_oracle": 0.87,
+      "suffix": 0.49,
+      "random": 0.1
+    },
+    "32": {
+      "kv_change": 0.25,
+      "hidden_change": 0.25,
+      "decision_attention": 0.94,
+      "decision_oracle": 0.94,
+      "suffix": 0.59,
+      "random": 0.15
+    },
+    "64": {
+      "kv_change": 0.89,
+      "hidden_change": 0.9,
+      "decision_attention": 0.97,
+      "decision_oracle": 1.02,
+      "suffix": 0.6,
+      "random": 0.21
+    }
+  },
+  "generalization": {
+    "8": {
+      "profiled_on_other": 0.538,
+      "own_set": 0.538
+    },
+    "16": {
+      "profiled_on_other": 0.763,
+      "own_set": 0.763
+    },
+    "32": {
+      "profiled_on_other": 0.908,
+      "own_set": 0.908
+    }
+  }
+}

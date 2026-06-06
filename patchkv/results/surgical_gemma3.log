@@ -1,0 +1,9 @@
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:04,  2.21it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:00<00:04,  2.05it/s]Loading checkpoint shards:  25%|██▌       | 3/12 [00:01<00:04,  2.01it/s]Loading checkpoint shards:  33%|███▎      | 4/12 [00:02<00:04,  1.80it/s]Loading checkpoint shards:  42%|████▏     | 5/12 [00:02<00:03,  1.78it/s]Loading checkpoint shards:  50%|█████     | 6/12 [00:03<00:03,  1.70it/s]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:03<00:03,  1.66it/s]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:04<00:02,  1.62it/s]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:05<00:01,  1.62it/s]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:05<00:01,  1.61it/s]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:06<00:00,  1.55it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:06<00:00,  1.81it/s]
+/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py:1014: UserWarning: `output_attentions=True` is not supported with `attn_implementation` other than ['eager', 'eager_paged', 'flex_attention']. Please use `model.set_attn_implementation('eager')` to enable capturing attention outputs.
+  warnings.warn(
+`sdpa` attention does not support `output_attentions=True` or `head_mask`. Please set your attention to `eager` if you want any of these features.
+
+==== SURGICAL in_place SUFFICES? — unsloth/gemma-3-27b-it (bootstrap CI, B=10000) ====
+  NON-REASONING (n=6):  in_place 0.0 CI[0.0, 0.0]  | oracle 1.0 stale 0.0
+  REASONING     (n=24):  in_place 0.0 CI[0.0, 0.0]  | oracle 1.0
+SURGICAL_SUFFICES_DONE

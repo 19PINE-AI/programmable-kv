@@ -162,6 +162,29 @@ def fig_baseline_frontier():
     fig.tight_layout(); fig.savefig(os.path.join(F, "fig_baseline_frontier.png")); plt.close(fig)
 
 
+def fig_selective():
+    d = load("selective_recompute_qwen3_1p7b.json")
+    if not d:
+        return
+    rk = d["recovery_vs_k"]
+    ks = sorted(int(k) for k in rk)
+    crits = [("decision_oracle", "decision-recovery (oracle, expensive)", "#000000", "-"),
+             ("decision_attention", "decision-attention (cheap, profilable)", "#1f77b4", "o-"),
+             ("kv_change", "KV-change (CacheBlend-style)", "#d62728", "s--"),
+             ("hidden_change", "hidden-change", "#ff7f0e", "^--"),
+             ("suffix", "suffix (last-k)", "#2ca02c", ":"),
+             ("random", "random", "#7f7f7f", ":")]
+    fig, ax = plt.subplots(figsize=(6.0, 3.8))
+    for key, lab, col, ls in crits:
+        ys = [rk[str(k)][key] for k in ks]
+        ax.plot(ks, ys, ls if len(ls) > 1 else "x" + ls, color=col, label=lab)
+    ax.set_xscale("log", base=2); ax.set_xlabel("# downstream tokens recomputed (k)")
+    ax.set_ylabel("decision recovery"); ax.set_ylim(-0.05, 1.05)
+    ax.set_title("Selective recompute (Qwen3-1.7B): ranking by what the\ndecision ATTENDS to ≈ oracle; KV-change does not")
+    ax.legend(fontsize=7, loc="upper left"); ax.grid(alpha=0.3)
+    fig.tight_layout(); fig.savefig(os.path.join(F, "fig_selective_recompute.png")); plt.close(fig)
+
+
 def fig_online_load():
     d = load("vllm_online_load_qwen3_8b.json")
     if not d:
@@ -181,7 +204,7 @@ def fig_online_load():
 
 
 for fn in [fig_memoization_map, fig_d1_generalization, fig_dose_response, fig_surgical,
-           fig_architecture, fig_serving, fig_baseline_frontier, fig_online_load]:
+           fig_architecture, fig_serving, fig_baseline_frontier, fig_online_load, fig_selective]:
     try:
         fn(); print("ok:", fn.__name__)
     except Exception as e:
