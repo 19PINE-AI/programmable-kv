@@ -8,11 +8,12 @@ import matplotlib.pyplot as plt
 R = os.path.join(os.path.dirname(__file__), "..", "results")
 F = os.path.join(os.path.dirname(__file__), "..", "figures")
 tags = sys.argv[1:] or ["qwen3_1p7b_par", "qwen3_4b_par", "qwen3_8b_par", "qwen3_14b_par"]
-names = {"1p7b": "Qwen3-1.7B", "4b": "Qwen3-4B", "8b": "Qwen3-8B", "14b": "Qwen3-14B"}
+# order matters: check longer/more-specific keys first ("14b" before "4b", which is a substring)
+names = [("1p7b", "Qwen3-1.7B"), ("14b", "Qwen3-14B"), ("4b", "Qwen3-4B"), ("8b", "Qwen3-8B")]
 
 
 def nm(tag):
-    for k, v in names.items():
+    for k, v in names:
         if k in tag:
             return v
     return tag

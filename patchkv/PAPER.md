@@ -287,9 +287,10 @@ overrides any earlier conclusion" is **1.00**, above even a full reprefill of th
 because the override adds instruction force the bare corrected value lacks. So the right recovery
 target for selective recompute is the *full-reprefill* upper bound, not the erratum. **(b) The minimal
 K is strongly model-dependent**, tracking how *sticky* the stale memoized conclusion is under CoT
-(the scale-reversal of §5.3): field-only reasoning recovery is 0.92 (8B) / 0.79 (1.7B) / **0.35 (4B)**,
-giving K\* (to reach full reprefill) ≈ **4 (8B), 8 (1.7B), >64 (4B)**. On the sticky 4B even 64
-recomputed tokens reach only 0.81. **Takeaway:** field+selective@K is an effective in-place surgical
+(the scale-reversal of §5.3): field-only reasoning recovery is 0.92 (8B) / 0.79 (1.7B) / 0.50 (14B) /
+**0.35 (4B)**, giving K\* (to reach full reprefill) ≈ **4 (8B), 8 (1.7B), ~64 (14B), >64 (4B)** — a
+16× spread across one model family. On the sticky 4B even 64 recomputed tokens reach only 0.81; 14B
+climbs monotonically to 0.97 by K=64. **Takeaway:** field+selective@K is an effective in-place surgical
 edit when the field-conditioned conclusion is not sticky (small K suffices), but K is not universal —
 it can exceed 64 on models where the CoT defers to the memoized stale conclusion. The erratum needs no
 such per-model K because it injects a fresh, emphatic statement rather than dislodging the stale
