@@ -6,36 +6,36 @@
       "composed": "deny",
       "agree": true,
       "cos": 0.995,
-      "full_ms": 466.7,
-      "comp_ms": 216.1,
-      "speedup": 2.16
+      "full_ms": 258.0,
+      "comp_ms": 84.8,
+      "speedup": 3.04
     },
     "2": {
       "full": "deny",
       "composed": "deny",
       "agree": true,
       "cos": 0.99,
-      "full_ms": 330.8,
-      "comp_ms": 218.9,
-      "speedup": 1.51
+      "full_ms": 83.1,
+      "comp_ms": 72.2,
+      "speedup": 1.15
     },
     "3": {
       "full": "deny",
       "composed": "deny",
       "agree": true,
       "cos": 0.977,
-      "full_ms": 435.4,
-      "comp_ms": 319.2,
-      "speedup": 1.36
+      "full_ms": 126.9,
+      "comp_ms": 96.1,
+      "speedup": 1.32
     },
     "4": {
       "full": "deny",
       "composed": "deny",
       "agree": true,
       "cos": 0.952,
-      "full_ms": 581.8,
-      "comp_ms": 421.7,
-      "speedup": 1.38
+      "full_ms": 159.4,
+      "comp_ms": 143.0,
+      "speedup": 1.11
     }
   }
 }

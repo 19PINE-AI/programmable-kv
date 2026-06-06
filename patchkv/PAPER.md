@@ -443,7 +443,12 @@ agreement across six models, logit cos-sim **0.96 (Qwen3-14B) → 0.999 (Gemma-2
 the models competent at the tasks (Gemma-2-9B, Mistral-7B, Llama-3.1-8B) and across **8 diverse skill
 domains** (refund, access, deploy, rx, loan, legal, incident, visa) full-recompute is correct **8/8 and
 precompiled preserves it 8/8** on all three (cos 0.98–0.996; **24/24** correct overall) —
-transplantation costs no correctness across families and domains.
+transplantation costs no correctness across families and domains. Transplant fidelity (reposition==full)
+also holds on Qwen3-8B over the 8 domains (8/8, cos 0.979) even where its non-reasoning competence is
+low — precompiled tracks full regardless. The same families confirm the **editable** axis too: Llama-3.1-8B's
+behavioral erratum recovers the oracle decision **1.0 in both modes** (24/24 discriminating), so a single
+model family (Llama-3.1) validates editing (D1 −0.028/full 1.0; erratum 1.0/1.0), transplanting
+(feasibility 8/8, scaling 13.6×), and the keystone (7/8) — the unified substrate in one model.
 
 **10.3 Context-staleness (analog of the architecture/robustness studies).** A skill precompiled in
 *isolation* (never attended to the real system prompt) matches one that did — on both self-contained

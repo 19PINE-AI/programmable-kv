@@ -1,0 +1,14 @@
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.36it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:02,  1.44it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:02<00:01,  1.42it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:02<00:00,  1.70it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.31it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  1.86it/s]
+=== SKILL feasibility (Qwen/Qwen3-8B) ===
+  --- self-contained skills ---
+  refund     skill_tok= 616 | full=wrong   reposition=wrong  (cos0.98) naive=wrong  (cos0.98) | agree=True
+  access     skill_tok= 617 | full=correct reposition=correct(cos0.98) naive=correct(cos0.98) | agree=True
+  deploy     skill_tok= 607 | full=wrong   reposition=wrong  (cos0.98) naive=wrong  (cos0.98) | agree=True
+  rx         skill_tok= 614 | full=wrong   reposition=wrong  (cos0.98) naive=wrong  (cos0.98) | agree=True
+  loan       skill_tok= 600 | full=wrong   reposition=wrong  (cos0.98) naive=wrong  (cos0.97) | agree=True
+  legal      skill_tok= 597 | full=wrong   reposition=wrong  (cos0.97) naive=wrong  (cos0.96) | agree=True
+  incident   skill_tok= 591 | full=correct reposition=correct(cos0.98) naive=correct(cos0.97) | agree=True
+  visa       skill_tok= 593 | full=wrong   reposition=wrong  (cos0.98) naive=wrong  (cos0.97) | agree=True
+  [self-contained] full_correct=2/8 precompiled_correct=2/8 | reposition==full: 8/8 (cos0.979) | naive==full: 8/8 (cos0.976)
+  TTFT: full median=44.7ms  precompiled median=36.3ms
+COMPOSABLE_KV_DONE
