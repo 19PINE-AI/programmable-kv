@@ -479,6 +479,15 @@ recomputed** for every method. Editing transplanted KV behaves identically to ed
 (e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). (Recovery-ratio metric, n=4; absolute
 decision margins do not always cross zero on non-reasoning.)
 
+**10.7 Unified system: one cache, both operations (`esys/editkv_unified.py`).** A capstone agent turn:
+a system prompt + a **library of 3 precompiled skills** (composed by KV splice, no reprefill) + a
+session context with a mutable `order_status` field. When the field changes, an in-place **erratum
+edit** is applied to the *same* cache. The unified path's decision matches a full reprefill
+(agree=True on Gemma-2-9B) while the **edit is 2.9× faster than full reprefill** (47 ms vs 136 ms).
+The `EditableComposableCache` object exposes `precompile`/`build` (compose) and the erratum edit on one
+substrate — editable and composable in a single API. Composability also holds on a **large quantized
+model** (Qwen3-32B-FP8: transplant + TTFT scaling validated, 2.2× at 2k skill tokens).
+
 ## 11. Limitations
 
 The mechanism battery (n=12 instances) is on a few scenario templates; the scale-reversal explanation

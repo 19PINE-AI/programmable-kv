@@ -1,0 +1,41 @@
+{
+  "model": "Qwen/Qwen3-32B-FP8",
+  "multiskill": {
+    "1": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.886,
+      "full_ms": 1453.9,
+      "comp_ms": 2777.0,
+      "speedup": 0.52
+    },
+    "2": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.856,
+      "full_ms": 1822.6,
+      "comp_ms": 1146.5,
+      "speedup": 1.59
+    },
+    "3": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.82,
+      "full_ms": 2042.6,
+      "comp_ms": 1275.9,
+      "speedup": 1.6
+    },
+    "4": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.76,
+      "full_ms": 3552.3,
+      "comp_ms": 1449.4,
+      "speedup": 2.45
+    }
+  }
+}

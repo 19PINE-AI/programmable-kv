@@ -1,0 +1,13 @@
+{
+  "model": "unsloth/gemma-2-9b-it",
+  "decision_before_edit(pending)": "refund",
+  "decision_after_edit(delivered)": "refund",
+  "decision_full_reprefill(delivered)": "refund",
+  "agree_edit_vs_full": true,
+  "t_compose_ms": 304.9,
+  "t_edit_ms": 46.8,
+  "t_unified_total_ms": 351.7,
+  "t_full_reprefill_ms": 136.1,
+  "edit_speedup_vs_full": 2.9,
+  "L_tokens": 841
+}

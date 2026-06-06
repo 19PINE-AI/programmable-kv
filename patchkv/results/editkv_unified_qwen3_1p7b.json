@@ -1,0 +1,13 @@
+{
+  "model": "Qwen/Qwen3-1.7B",
+  "decision_before_edit(pending)": "refund",
+  "decision_after_edit(delivered)": "escalate",
+  "decision_full_reprefill(delivered)": "refund",
+  "agree_edit_vs_full": false,
+  "t_compose_ms": 191.1,
+  "t_edit_ms": 26.7,
+  "t_unified_total_ms": 217.9,
+  "t_full_reprefill_ms": 66.4,
+  "edit_speedup_vs_full": 2.5,
+  "L_tokens": 786
+}

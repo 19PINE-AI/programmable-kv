@@ -1,0 +1,23 @@
+{
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "n_instances": 4,
+  "clean_flips": 4,
+  "agg": {
+    "in_place": {
+      "recomputed": 0.038,
+      "composed": 0.032
+    },
+    "sel@8": {
+      "recomputed": 0.615,
+      "composed": 0.492
+    },
+    "sel@32": {
+      "recomputed": 0.715,
+      "composed": 0.562
+    },
+    "erratum": {
+      "recomputed": 0.978,
+      "composed": 0.93
+    }
+  }
+}

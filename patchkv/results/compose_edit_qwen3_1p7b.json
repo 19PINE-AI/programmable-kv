@@ -4,20 +4,20 @@
   "clean_flips": 0,
   "agg": {
     "in_place": {
-      "recomputed": 0.05,
-      "composed": -0.428
+      "recomputed": -0.028,
+      "composed": -0.128
     },
     "sel@8": {
-      "recomputed": -0.01,
-      "composed": 3.366
+      "recomputed": -0.461,
+      "composed": 0.807
     },
     "sel@32": {
-      "recomputed": 0.64,
-      "composed": -2.034
+      "recomputed": -0.168,
+      "composed": 0.93
     },
     "erratum": {
-      "recomputed": -2.173,
-      "composed": 9.867
+      "recomputed": -0.722,
+      "composed": 0.95
     }
   }
 }
