@@ -1,0 +1,60 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "rows": [
+    {
+      "T": 1024,
+      "bs": 1,
+      "full_ms": 129.2,
+      "in_place_ms": 27.0,
+      "erratum_ms": 23.53,
+      "speedup_inplace": 4.8,
+      "speedup_erratum": 5.5
+    },
+    {
+      "T": 1024,
+      "bs": 8,
+      "full_ms": 782.1,
+      "in_place_ms": 35.33,
+      "erratum_ms": 40.62,
+      "speedup_inplace": 22.1,
+      "speedup_erratum": 19.3
+    },
+    {
+      "T": 4096,
+      "bs": 1,
+      "full_ms": 393.8,
+      "in_place_ms": 18.19,
+      "erratum_ms": 50.19,
+      "speedup_inplace": 21.7,
+      "speedup_erratum": 7.8
+    },
+    {
+      "T": 4096,
+      "bs": 8,
+      "full_ms": 3590.1,
+      "in_place_ms": 53.41,
+      "erratum_ms": 90.69,
+      "speedup_inplace": 67.2,
+      "speedup_erratum": 39.6
+    },
+    {
+      "T": 16384,
+      "bs": 1,
+      "full_ms": 1956.0,
+      "in_place_ms": 39.6,
+      "erratum_ms": 107.46,
+      "speedup_inplace": 49.4,
+      "speedup_erratum": 18.2
+    },
+    {
+      "T": 32768,
+      "bs": 1,
+      "full_ms": 4538.5,
+      "in_place_ms": 38.7,
+      "erratum_ms": 168.82,
+      "speedup_inplace": 117.3,
+      "speedup_erratum": 26.9
+    }
+  ],
+  "note": "reconstructed from logged CUDA-event measurements"
+}
