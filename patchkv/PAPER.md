@@ -518,6 +518,18 @@ which would confound absolute reward). Models are ≤32B open weights (no fronti
 multi-edit, and an online-load serving study (SGLang, in-place kernel) are future work. The erratum is
 template-sensitive in non-reasoning settings; field+erratum is the robust default.
 
+**Composable-axis limitations.** (i) The keystone uses a D1-style *recovery ratio*; absolute decision
+sign-flips need a competent regime (clean on Llama-3.1 7/8 and Mistral 4/4, but Qwen3-8B/14B do not flip
+on these templates in non-reasoning). (ii) The context-staleness failure mode — a skill that is the
+*sole carrier* of a context-derived computation (not re-derivable downstream) — is identified but not
+stress-tested; our skills are loosely coupled. (iii) The transplant machinery assumes standard
+single-RoPE attention with post-RoPE key caching; **Phi-3.5** (needs eager + legacy cache API) and
+**Gemma-3** (dual local/global rotary, multimodal wrapper) need adapter work and are untested for
+composition. (iv) Precompiling assumes the skill is reused enough to amortize the one-time isolation
+prefill; for single-use skills full reprefill is fine. (v) We do not claim a novel caching *system* —
+Prompt Cache/CacheBlend/EPIC established splicing; our contribution is the correctness lens and the
+unification with editing.
+
 **On quantization (a methodological note).** To run 32B-class models alongside a shared training job
 we used 8-bit checkpoints. The **causal-patching recovery is a margin-sensitive *ratio*** ((s_patched −
 s_old)/(s_new − s_old)), which becomes NaN/unstable when quantization collapses the decision margin — so
