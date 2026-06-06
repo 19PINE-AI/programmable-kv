@@ -1,0 +1,23 @@
+{
+  "model": "Qwen/Qwen3-1.7B",
+  "n_instances": 4,
+  "clean_flips": 0,
+  "agg": {
+    "in_place": {
+      "recomputed": 0.05,
+      "composed": -0.428
+    },
+    "sel@8": {
+      "recomputed": -0.01,
+      "composed": 3.366
+    },
+    "sel@32": {
+      "recomputed": 0.64,
+      "composed": -2.034
+    },
+    "erratum": {
+      "recomputed": -2.173,
+      "composed": 9.867
+    }
+  }
+}
