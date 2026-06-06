@@ -46,7 +46,8 @@ prefix caching for **16×** higher throughput).
 RoPE-reposition and splice its KV into a new context with **no recompute**. (7) The transplanted skill
 is behaviorally **indistinguishable from full recompute** — 100% decision agreement and logit
 cosine-similarity **0.96–0.999 across seven models** (Qwen3-1.7/4/8/14B, Gemma-2-9B, Mistral-7B, Llama-3.1-8B; the keystone also holds on DeepSeek-R1-Llama-8B and Qwen3-32B-FP8); on the
-competent models it *preserves correctness* (4/4, cos 0.999). (8) It is **context-robust**: a skill
+competent models it *preserves correct skill-following* across **8 diverse domains × 3 families (24/24,
+cos 0.98–0.999)**, and **16/16 under reasoning (CoT)**. (8) It is **context-robust**: a skill
 precompiled in isolation matches one that attended to the real context, because the decision re-derives
 from context it can still see; the only residual error is a **seam at the chunk's start**, which
 selective boundary recompute repairs. (9) TTFT scales O(L) vs full reprefill's O(L²): **up to 13.9×
@@ -79,6 +80,13 @@ reuse the rest? Our contributions:
 4. **End-to-end evidence** on the real τ²-bench env, single-decision and multi-turn agentic (§8), a
    **cost/latency frontier and a closed vLLM integration** (§9), and a **production library** with a
    per-edit diagnostic (§6.3).
+5. **The composable axis** (§10): precompile a SKILL's KV once and transplant it (RoPE-reposition +
+   splice) — behaviorally lossless across 8 families and 8 diverse domains, **13.9× lower TTFT**, with a
+   seam-repair knob and a skill library — positioned honestly against Prompt Cache/CacheBlend/EPIC.
+6. **The unification** (§10.6–10.7): a **keystone** experiment editing a field *inside* a transplanted
+   skill (editable mechanism preserved; composed ≈ recomputed across families) and a **unified
+   `edit()`+`compose()` API**, establishing that both operations act on one substrate whose information
+   is localized, position-portable, and context-robust.
 
 ## 2. Related work
 
