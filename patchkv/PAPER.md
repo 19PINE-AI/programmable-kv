@@ -455,12 +455,12 @@ just *matching* behavior: on Qwen3-8B and Qwen3-1.7B the full-recompute model fo
 and the precompiled-transplant model also **16/16**, with **16/16 decision agreement** — transplantation
 is lossless for skill-following when the model actually reasons over the skill.
 
-**10.5 TTFT scaling + the library (Fig. `fig_ksweep` companion; analog of §9 serving).** Full reprefill
+**10.5 TTFT scaling + the library (Fig. `fig_composable_scaling`; analog of §9 serving).** Full reprefill
 is O(L²) in skill length; transplant is O(L) re-rotation + small prefill. On Qwen3-8B the TTFT speedup
 is **1.16× @500 tok, 3.0× @2k, 9.8× @8k, 13.9× @32k**. A **skill library** composes: stacking N=1–4
 precompiled skills preserves the decision (4/4 agreement vs full).
 
-**10.6 Keystone — edit *inside* a transplanted skill (`esys/compose_edit.py`).** We precompile a skill
+**10.6 Keystone — edit *inside* a transplanted skill (Fig. `fig_keystone`, `esys/compose_edit.py`).** We precompile a skill
 with an embedded categorical state field, splice it in, then **surgically edit that field inside the
 transplanted chunk**. The editable mechanism carries over verbatim (8B, D1-style recovery; *composed*
 vs *recomputed* skill):

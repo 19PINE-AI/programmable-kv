@@ -13,3 +13,17 @@
         3    grant     grant   True     14.8     31.3    0.47x
         4    grant     grant   True     19.4     34.3    0.57x
 COMPOSABLE_KV_DONE
+=== COMPOSE-THEN-EDIT keystone (Qwen/Qwen3-0.6B) ===
+  account   recomputed: in_place=-0.50 sel@32=+2.50 err=+14.50 | composed: in_place=+0.71 sel@32=+0.82 err=-2.35
+  order     recomputed: in_place=+0.60 sel@32=+0.00 err=+4.40 | composed: in_place=-0.60 sel@32=+1.30 err=-0.00
+  subscription recomputed: in_place=+0.27 sel@32=+1.73 err=+2.55 | composed: in_place=+1.50 sel@32=+3.25 err=+2.00
+  door      recomputed: in_place=-0.00 sel@32=+1.00 err=-14.00 | composed: in_place=-0.75 sel@32=+1.50 err=-3.75
+
+  MEAN recovery (n=4, clean flips=1/4):
+  method       recomputed     composed
+  in_place          0.093        0.214
+  sel@8             2.114        0.824
+  sel@32            1.307        1.718
+  erratum           1.861       -1.026
+COMPOSE_EDIT_DONE
+DONE_QWEN06
