@@ -1,0 +1,14 @@
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:01,  1.59it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.60it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.64it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.63it/s]
+=== SKILL feasibility (mistralai/Mistral-7B-Instruct-v0.3) ===
+  --- self-contained skills ---
+  refund     skill_tok= 672 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
+  access     skill_tok= 670 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
+  deploy     skill_tok= 662 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
+  rx         skill_tok= 670 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
+  loan       skill_tok= 653 | full=correct reposition=correct(cos1.00) naive=correct(cos0.99) | agree=True
+  legal      skill_tok= 645 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
+  incident   skill_tok= 642 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
+  visa       skill_tok= 644 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
+  [self-contained] full_correct=8/8 precompiled_correct=8/8 | reposition==full: 8/8 (cos0.996) | naive==full: 8/8 (cos0.996)
+  TTFT: full median=39.9ms  precompiled median=32.1ms
+COMPOSABLE_KV_DONE

@@ -1,0 +1,14 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:03,  1.04s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:02<00:02,  1.09s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:03<00:01,  1.16s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.21it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.07it/s]
+=== SKILL feasibility (unsloth/Meta-Llama-3.1-8B-Instruct) ===
+  --- self-contained skills ---
+  refund     skill_tok= 605 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
+  access     skill_tok= 606 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
+  deploy     skill_tok= 596 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
+  rx         skill_tok= 603 | full=correct reposition=correct(cos1.00) naive=correct(cos0.99) | agree=True
+  loan       skill_tok= 587 | full=correct reposition=correct(cos0.98) naive=correct(cos0.98) | agree=True
+  legal      skill_tok= 586 | full=correct reposition=correct(cos0.97) naive=correct(cos0.94) | agree=True
+  incident   skill_tok= 580 | full=correct reposition=correct(cos0.93) naive=correct(cos0.93) | agree=True
+  visa       skill_tok= 582 | full=correct reposition=correct(cos0.98) naive=correct(cos0.95) | agree=True
+  [self-contained] full_correct=8/8 precompiled_correct=8/8 | reposition==full: 8/8 (cos0.980) | naive==full: 8/8 (cos0.971)
+  TTFT: full median=40.8ms  precompiled median=34.0ms
+COMPOSABLE_KV_DONE

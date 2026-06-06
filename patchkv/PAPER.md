@@ -432,8 +432,10 @@ values are position-free). Done in fp32 the round-trip is exact (residual = bf16
 **10.2 Feasibility + generalization (analog of D1's 8-model generalization).** A precompiled skill,
 repositioned and spliced, is **behaviorally indistinguishable from full recompute**: 100% decision
 agreement across six models, logit cos-sim **0.96 (Qwen3-14B) → 0.999 (Gemma-2-9B, Mistral-7B)**. On
-the models competent at the tasks (Gemma-2-9B, Mistral-7B) full-recompute is correct 4/4 **and
-precompiled preserves it 4/4** — transplantation costs no correctness.
+the models competent at the tasks (Gemma-2-9B, Mistral-7B, Llama-3.1-8B) and across **8 diverse skill
+domains** (refund, access, deploy, rx, loan, legal, incident, visa) full-recompute is correct **8/8 and
+precompiled preserves it 8/8** on all three (cos 0.98–0.996; **24/24** correct overall) —
+transplantation costs no correctness across families and domains.
 
 **10.3 Context-staleness (analog of the architecture/robustness studies).** A skill precompiled in
 *isolation* (never attended to the real system prompt) matches one that did — on both self-contained
