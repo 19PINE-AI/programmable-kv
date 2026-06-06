@@ -1,0 +1,30 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "scaling": {
+    "500": {
+      "full_ms": 83.9,
+      "precomp_ms": 72.6,
+      "speedup": 1.16
+    },
+    "2000": {
+      "full_ms": 264.2,
+      "precomp_ms": 87.9,
+      "speedup": 3.01
+    },
+    "8000": {
+      "full_ms": 1241.3,
+      "precomp_ms": 126.7,
+      "speedup": 9.8
+    },
+    "16000": {
+      "full_ms": 2506.5,
+      "precomp_ms": 236.8,
+      "speedup": 10.58
+    },
+    "32000": {
+      "full_ms": 6188.9,
+      "precomp_ms": 444.2,
+      "speedup": 13.93
+    }
+  }
+}

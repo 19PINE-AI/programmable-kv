@@ -250,13 +250,22 @@ def run_experiment(model, tok, skills=None, label="self-contained"):
                    cache_position=torch.tensor([L - 1], device="cuda")).logits[0, -1].float()
         pd = "correct" if pl[tc] >= pl[tw] else "wrong"
         cosv = torch.cosine_similarity(fl, pl, 0).item()
+        # NAIVE ablation: splice isolation KV WITHOUT re-rotation (keys keep position-0 RoPE)
+        naive = DynamicCache()
+        for li, l in enumerate(skill_alone.layers):
+            naive.update(l.keys.clone(), l.values.clone(), li)
+        nout = forward_suffix(model, cache_concat(pre_cache, naive), ids[:, b:L - 1], b)
+        nl = model(input_ids=ids[:, L - 1:L].to("cuda"), past_key_values=cache_slice(nout.past_key_values, 0, L - 1),
+                   cache_position=torch.tensor([L - 1], device="cuda")).logits[0, -1].float()
+        nd = "correct" if nl[tc] >= nl[tw] else "wrong"; ncos = torch.cosine_similarity(fl, nl, 0).item()
         res["full"] += (fd == "correct"); res["precompiled"] += (pd == "correct")
         res["agree"] += (fd == pd); res["cos"].append(cosv); res["n"] += 1
-        print(f"  {sk['name']:10s} skill_tok={nb:4d} | full={fd:7s} precompiled={pd:7s} | "
-              f"agree={fd==pd} logit-cos={cosv:.3f}", flush=True)
-    mc = sum(res["cos"]) / len(res["cos"])
+        res["naive_agree"] = res.get("naive_agree", 0) + (fd == nd); res["naive_cos"] = res.get("naive_cos", []) + [ncos]
+        print(f"  {sk['name']:10s} skill_tok={nb:4d} | full={fd:7s} reposition={pd:7s}(cos{cosv:.2f}) "
+              f"naive={nd:7s}(cos{ncos:.2f}) | agree={fd==pd}", flush=True)
+    mc = sum(res["cos"]) / len(res["cos"]); nmc = sum(res["naive_cos"]) / len(res["naive_cos"])
     print(f"  [{label}] full_correct={res['full']}/{res['n']} precompiled_correct={res['precompiled']}/{res['n']} "
-          f"| precompiled==full: {res['agree']}/{res['n']} | mean logit-cos={mc:.3f}")
+          f"| reposition==full: {res['agree']}/{res['n']} (cos{mc:.3f}) | naive==full: {res['naive_agree']}/{res['n']} (cos{nmc:.3f})")
     if tfull:
         print(f"  TTFT: full median={sorted(tfull)[len(tfull)//2]:.1f}ms  precompiled median={sorted(tpre)[len(tpre)//2]:.1f}ms")
     res["mean_cos"] = round(mc, 3)

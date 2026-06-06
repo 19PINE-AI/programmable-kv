@@ -1,0 +1,46 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "N_chunk": 395,
+  "portability": {
+    "0": {
+      "reposition_cos": 1.0,
+      "naive_cos": 1.0,
+      "argmax_agree": true
+    },
+    "64": {
+      "reposition_cos": 0.981,
+      "naive_cos": 0.9789,
+      "argmax_agree": false
+    },
+    "256": {
+      "reposition_cos": 0.9922,
+      "naive_cos": 0.9911,
+      "argmax_agree": true
+    },
+    "1024": {
+      "reposition_cos": 0.9817,
+      "naive_cos": 0.9842,
+      "argmax_agree": true
+    },
+    "4096": {
+      "reposition_cos": 0.9723,
+      "naive_cos": 0.9672,
+      "argmax_agree": false
+    }
+  },
+  "seam": {
+    "mean_dev_first8": 13.823,
+    "mean_dev_last8": 7.209,
+    "top_dev_positions": [
+      0,
+      146,
+      347,
+      1,
+      2,
+      365,
+      71,
+      127
+    ],
+    "frac_in_first_10pct": 0.1
+  }
+}
