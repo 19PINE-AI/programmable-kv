@@ -1,0 +1,55 @@
+{
+  "alpha_field": 0.00029079209390382797,
+  "alpha_downstream": 0.599709207906096,
+  "alpha_sink": 0.4,
+  "erratum_salience_threshold_s": 4.61,
+  "erratum_salience_used": 7.4,
+  "decision_sign": {
+    "stale": 1,
+    "full_reprefill": -1,
+    "in_place": 1,
+    "erratum": -1
+  },
+  "y": {
+    "stale": 0.6,
+    "full_reprefill": -0.6,
+    "in_place": 0.5994,
+    "erratum": -0.1861
+  },
+  "field_only_recovery": 0.0005,
+  "suffix_recovery@0.1": 0.43,
+  "suffix_recovery@0.2": 0.676,
+  "prefix_recovery@0.5": 0.057,
+  "dose_response": [
+    {
+      "m_downstream": 40,
+      "alpha_field": 0.0,
+      "in_place_recovery": 0.0
+    },
+    {
+      "m_downstream": 20,
+      "alpha_field": 0.005,
+      "in_place_recovery": 0.008
+    },
+    {
+      "m_downstream": 10,
+      "alpha_field": 0.025,
+      "in_place_recovery": 0.041
+    },
+    {
+      "m_downstream": 4,
+      "alpha_field": 0.089,
+      "in_place_recovery": 0.148
+    },
+    {
+      "m_downstream": 1,
+      "alpha_field": 0.279,
+      "in_place_recovery": 0.465
+    },
+    {
+      "m_downstream": 0,
+      "alpha_field": 0.6,
+      "in_place_recovery": 1.0
+    }
+  ]
+}

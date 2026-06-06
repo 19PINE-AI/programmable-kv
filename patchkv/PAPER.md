@@ -155,6 +155,35 @@ suffix region the decision reads; reasoning robustness is mediated by the CoT re
 real but fallible path (it backfires at scale), which is why a recomputation-free salience injection is
 the robust fix.
 
+**5.5 An analytical model (Fig. `fig_toy_model`).** The phenomenon follows from the memoization
+*structure* alone, with no training. Model the decision token's readout as one attention head over the
+cached tokens, with a 1-D signed value channel (field=old ↦ +1, new ↦ −1; decision = sign):
+$y(D)=\sum_t \alpha_t v_t$, $\alpha=\mathrm{softmax}(\text{scores})$. Encode the empirical structure: the
+field is the *oldest* token, $m$ downstream "conclusion" tokens memoized the field value at prefill
+($v_{C_i}=+1$), recency-weighted ($\alpha_t\propto e^{\gamma\,\text{pos}_t}$), and sinks carry value 0.
+With $m=40$, $\gamma=0.14$, sink mass 0.40 this gives $\alpha_{\text{field}}{=}0.000$,
+$\alpha_{\text{down}}{=}0.60$ — the empirical 0.1% / 50% / 36% split. Then, in closed form:
+- **`stale` and `in_place` do not flip.** $y_{\text{stale}}=+0.60$; refreshing only the field gives
+  $y_{\text{in\_place}}=+0.599$ — the field-only recovery equals $\alpha_{\text{field}}/(1{-}\text{sink})
+  =0.0005$ (cf. empirical 0.009). The decision reads the *memoized* $\sum\alpha_{C_i}v_{C_i}$, which the
+  edit never touches.
+- **Recovery is suffix-concentrated.** Patching the last $k$ conclusions to NEW recovers
+  $\sum_{\text{recent }k}\alpha_{C_i}/\alpha_{\text{down}}$; recency weighting makes suffix@10%=0.43 ≫
+  prefix@50%=0.06 (cf. Fig. `fig_memoization_map`).
+- **Dose-response.** As $m$ shrinks (field placed later), $\alpha_{\text{field}}$ grows, so in_place
+  recovery rises 0.0→0.008→0.04→0.15→0.47→**1.0** for $m=40,20,10,4,1,0$ — recovering fully only when
+  the field is hoisted to the end ($m{=}0$), matching D6.
+- **The erratum has a salience threshold.** Appending an override token of value NEW with salience $s$
+  (the decision weights an explicit "[STATE UPDATE] overrides any earlier conclusion" disproportionately)
+  gives $y_{\text{err}}=(y_{\text{stale}}+s\beta\,\text{NEW})/(1+s\beta)$, which **flips iff $s\beta$
+  exceeds the memoized-positive mass** — here $s^\*\!\approx\!4.6\times$ a normal recent token. This
+  *derives* three observations: a bare/weak update is sub-threshold (the §5d/§6 template-sensitivity);
+  the explicit override phrasing matters (it raises $s$); and a **pure SSM has no attention to place
+  weight on the override at all** ($\beta\to0$), so the erratum fails there (§7).
+
+The model thus reproduces all four mechanism findings analytically and shows they are forced by the
+memoization structure, not by anything Qwen-specific. (`esys/toy_model.py`.)
+
 ## 6. The robust fix and the baseline frontier
 
 **6.1 The erratum and field+erratum.** Leave the cache stale, append "[STATE UPDATE] <field>→<new>;
