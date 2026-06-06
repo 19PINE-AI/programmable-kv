@@ -123,8 +123,10 @@ NEW (K,V) into the OLD cache at chosen (layer, position) sites and read the deci
 split: direct ≈0.9%, indirect ≈99%); full-downstream = 1.00. The memoized conclusion is **suffix-
 concentrated**: patching the last 10%/20% of downstream recovers **64%/82%**, the first 10%/50% only
 29%/34%. Mid/late layers carry it; ~16 well-chosen positions recover 94% (distributed but
-identifiable). **Generalizes across 7 models** (field-only recovery ≪ full=1.0): Qwen3-4B/8B/14B/32B
-0.025/0.009/0.008/0.023, Gemma-2-9B/27B 0.001/0.219, Mistral-7B 0.004 (Fig. `fig_d1_generalization`).
+identifiable). **Generalizes across 8 models** (field-only recovery ≪ full=1.0): Qwen3-4B/8B/14B/32B
+0.025/0.009/0.008/0.023, Gemma-2-9B/27B 0.001/0.219, **Gemma-3-27B −0.003**, Mistral-7B 0.004
+(Fig. `fig_d1_generalization`; Gemma-3 loaded text-only — `Gemma3ForCausalLM`, vision tower stripped —
+in bf16, full-downstream=1.0, suffix@10%=0.85).
 **And across 8 *natural* diverse-domain tasks** (retail/airline/devops/banking/access/clinical/
 customs/oncall, chat template, `esys/mech_causal_natural.py`): field-only recovery **0.003 [−0.0,
 .007]**, full-downstream 1.0, suffix-concentrated (suffix@10%=0.71 vs prefix@50%=0.46) — so the

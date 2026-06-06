@@ -40,7 +40,7 @@ def fig_memoization_map():
 def fig_d1_generalization():
     order = [("qwen3_4b", "Qwen3-4B"), ("qwen3_8b", "Qwen3-8B"), ("qwen3_14b", "Qwen3-14B"),
              ("qwen3_32b", "Qwen3-32B"), ("gemma2_9b", "Gemma2-9B"), ("gemma2_27b", "Gemma2-27B"),
-             ("mistral7b", "Mistral-7B")]
+             ("gemma3_27b_bf16", "Gemma3-27B"), ("mistral7b", "Mistral-7B")]
     labels, fo, full = [], [], []
     for tag, name in order:
         d = load(f"mech_causal_patch_{tag}.json")

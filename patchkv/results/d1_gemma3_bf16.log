@@ -1,0 +1,46 @@
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:05,  2.13it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:01<00:05,  1.88it/s]Loading checkpoint shards:  25%|██▌       | 3/12 [00:01<00:04,  1.82it/s]Loading checkpoint shards:  33%|███▎      | 4/12 [00:02<00:04,  1.64it/s]Loading checkpoint shards:  42%|████▏     | 5/12 [00:02<00:04,  1.61it/s]Loading checkpoint shards:  50%|█████     | 6/12 [00:03<00:03,  1.55it/s]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:04<00:03,  1.51it/s]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:05<00:02,  1.46it/s]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:05<00:02,  1.45it/s]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:06<00:01,  1.45it/s]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:07<00:00,  1.31it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:07<00:00,  1.61it/s]
+/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py:1014: UserWarning: `output_attentions=True` is not supported with `attn_implementation` other than ['eager', 'eager_paged', 'flex_attention']. Please use `model.set_attn_implementation('eager')` to enable capturing attention outputs.
+  warnings.warn(
+`sdpa` attention does not support `output_attentions=True` or `head_mask`. Please set your attention to `eager` if you want any of these features.
+  [account_role/A4471] L=851 field_only=0.005 full_down=1.00 suffix@0.1=0.76 suffix@0.3=0.923 top_pos_region=decision
+  [account_role/B8820] L=851 field_only=-0.005 full_down=1.00 suffix@0.1=0.778 suffix@0.3=0.931 top_pos_region=decision
+  [safety_mode/A4471] L=845 field_only=-0.005 full_down=1.00 suffix@0.1=0.922 suffix@0.3=0.954 top_pos_region=decision
+  [safety_mode/B8820] L=845 field_only=-0.009 full_down=1.00 suffix@0.1=0.925 suffix@0.3=0.953 top_pos_region=decision
+
+==== D1 CAUSAL PATCHING SUMMARY ====
+n=4 instances
+FIELD-ONLY recovery (= in_place): -0.003 CI(-0.003, -0.003)  (small => why in_place fails)
+FULL-DOWNSTREAM recovery (sanity): 1.0 CI(1.0, 1.0)
+REGION mean single-pos recovery: {'field': -0.003, 'field->gate': 0.0, 'gate->convo': 0.001, 'convo->decision': 0.001, 'decision': 0.022}
+strongest single-site region counts: {'decision': 4}
+LAYER-band recovery: {'early': -0.0, 'mid': 0.03, 'late': 0.017}
+CUMULATIVE SUFFIX recovery (patch last fraction of downstream -> recovery):
+   suffix 0.02: 0.63 CI(0.633, 0.634)
+   suffix 0.05: 0.80 CI(0.802, 0.802)
+   suffix  0.1: 0.85 CI(0.846, 0.846)
+   suffix  0.2: 0.93 CI(0.927, 0.927)
+   suffix  0.3: 0.94 CI(0.94, 0.94)
+   suffix  0.5: 0.96 CI(0.958, 0.958)
+   suffix  0.7: 0.96 CI(0.964, 0.964)
+   suffix  0.9: 0.96 CI(0.965, 0.966)
+   suffix  1.0: 1.00 CI(1.0, 1.0)
+CUMULATIVE PREFIX recovery (patch first fraction of downstream -> recovery):
+   prefix 0.02: 0.00 CI(0.002, 0.002)
+   prefix 0.05: -0.00 CI(-0.002, -0.001)
+   prefix  0.1: 0.05 CI(0.048, 0.048)
+   prefix  0.2: 0.05 CI(0.054, 0.054)
+   prefix  0.3: 0.06 CI(0.056, 0.056)
+   prefix  0.5: 0.07 CI(0.072, 0.072)
+   prefix  0.7: 0.13 CI(0.126, 0.126)
+   prefix  0.9: 0.25 CI(0.249, 0.249)
+   prefix  1.0: 1.00 CI(1.0, 1.0)
+LOCALITY top-k (non-additive ranking; weak by construction):
+   top-  1 pos -> 0.21 CI(0.211, 0.211)
+   top-  2 pos -> 0.31 CI(0.312, 0.312)
+   top-  4 pos -> 0.46 CI(0.455, 0.455)
+   top-  8 pos -> 0.61 CI(0.615, 0.615)
+   top- 16 pos -> 0.66 CI(0.66, 0.66)
+   top- 32 pos -> 0.69 CI(0.69, 0.69)
+   top- 64 pos -> 0.70 CI(0.702, 0.702)
+   top-128 pos -> 0.72 CI(0.722, 0.722)
+D1_CAUSAL_PATCH_DONE

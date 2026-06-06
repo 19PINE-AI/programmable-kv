@@ -64,7 +64,13 @@ def load(name):
         kw["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
     elif not quantized:
         kw["dtype"] = torch.bfloat16
-    model = AutoModelForCausalLM.from_pretrained(name, **kw).eval()
+    # gemma-3 is multimodal; AutoModelForCausalLM loads the vision-wrapped conditional model whose
+    # text cache/logits break the patching metric. Use the text-only Gemma3ForCausalLM (strips vision).
+    if "gemma-3" in name.lower():
+        from transformers import Gemma3ForCausalLM
+        model = Gemma3ForCausalLM.from_pretrained(name, **kw).eval()
+    else:
+        model = AutoModelForCausalLM.from_pretrained(name, **kw).eval()
     if impl == "eager":
         try:
             install(model)                 # enables attention-knockout (mech experiments)
