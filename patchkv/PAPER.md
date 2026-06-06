@@ -277,27 +277,39 @@ these are not competence failures — they are staleness-recovery failures.)
 
 ### 6b. Architecture coverage: where each edit applies (attention → MLA → hybrid → pure SSM)
 Different sequence-mixing architectures store history differently, which determines whether each
-editkv mechanism applies (`esys/arch_erratum.py`, behavioral cancel/deny check):
+editkv mechanism applies. We test the erratum behaviorally in **both reasoning (CoT-prompted) and
+non-reasoning modes**, over 4 gating scenarios × K=8 stochastic samples, with **bootstrap 95% CIs**
+(B=10000, `esys/arch_erratum_v2.py`). Erratum recovery = P(erratum picks the oracle's flipped action
+| the oracle flips):
 
-| architecture (model) | history store | surgical `in_place` | erratum |
-|---|---|---|---|
-| full / GQA attention (Qwen3, Mistral, Gemma-2) | per-token KV | ✅ applies (§5e) | ✅ works |
-| **MLA** (DeepSeek-V2-Lite) | *compressed latent* KV | ⚠️ needs MLA-aware edit | ✅ works |
-| **hybrid attn+SSM** (Falcon-H1) | KV + recurrent state | ⚠️ attn layers only | ✅ **works** (PASS) |
-| **pure SSM / Mamba** (Falcon-Mamba) | recurrent state only — *no KV* | ❌ N/A (nothing to edit) | ❌ **fails** |
+| architecture (model) | history store | surgical `in_place` | erratum (non-reasoning) | erratum (reasoning) |
+|---|---|---|---|---|
+| full / GQA attention (Qwen3-8B) | per-token KV | ✅ applies (§5e) | (Qwen3 non-think quirk¹) | **0.97 [.91,1.0]** |
+| **MLA** (DeepSeek-V2-Lite) | *compressed latent* KV | ⚠️ needs MLA-aware edit | ✅ works | ✅ works |
+| **hybrid attn+SSM** (Falcon-H1) | KV + recurrent state | ⚠️ attn layers only | **1.00 [1.0,1.0]** | **0.97 [.91,1.0]** |
+| **pure SSM** (Falcon-Mamba) | recurrent state only — *no KV* | ❌ N/A (nothing to edit) | **0.37 [.20,.53]** ✗ | **0.78 [.63,.91]** ⚠ |
 
-Two findings. (i) **The surgical edit is fundamentally an attention-model capability**: it needs a
-per-token KV entry to overwrite. MLA compresses that (needs special handling); pure linear/SSM/RWKV
-keep history in a fixed-size *recurrent state* with no per-token KV, so there is nothing to surgically
-edit. (ii) **Even the erratum needs attention to be reliable.** It works on hybrid Falcon-H1 (clean
-PASS) because its attention layers can attend back to the appended override — but on **pure Mamba it
-fails**: the model *does* track the field (the oracle flips, stale→cancel / oracle→deny), yet the
-appended erratum cannot override the conclusion already committed to the recurrent state, because a
-pure SSM has no attention to "look back" at the recent authoritative mention. This is a direct
-prediction of the §7 mechanism (the erratum works *via attention to the override*) and sharpens the
-universality claim: **editkv is an attention-architecture method** — universal across full/GQA/MLA/
-sliding-window/hybrid, but not pure recurrent backbones (DeepSeek-V4 sparse-attention and Qwen3-Next
-keep attention sublayers, so they fall in the supported class, but exceed this 96 GB box to run).
+Three findings. (i) **The surgical edit is fundamentally an attention-model capability** — it needs a
+per-token KV entry to overwrite; MLA compresses that, and pure SSM/RWKV keep history in a fixed-size
+recurrent state with no per-token KV. (ii) **The erratum needs attention to "look back" at the
+override.** On hybrid Falcon-H1 it recovers ~1.0 in both modes (its attention layers attend back to
+the appended update). On **pure Mamba the erratum is the weakest** — and crucially **mode-dependent**:
+in non-reasoning mode it *fails* (recovery **0.37 [.20,.53]**), because the model has already
+committed the earlier conclusion to its recurrent state and cannot attend back to the override.
+(iii) **Chain-of-thought partially rescues it on pure SSM** (0.37 → **0.78**, *non-overlapping* CIs
+[.20,.53] vs [.63,.91] ⇒ a significant gain): the CoT regenerates tokens *after* the override, so the
+recurrent state processes the new value last and the model can re-derive — but it still trails the
+attention/hybrid backbones (~1.0). This is a direct prediction of
+the §7 mechanism (the erratum works *via attention to the override*) and sharpens the universality
+claim: **editkv is an attention-architecture method** — robust across full/GQA/MLA/sliding-window/
+hybrid, weaker (CoT-dependent) on pure recurrent backbones. DeepSeek-V4 (sparse attention) and
+Qwen3-Next (linear+attention) retain attention sublayers, so they fall in the supported class but
+exceed this 96 GB box to run.
+
+¹ Qwen3-8B forced into non-thinking mode via a generic chat template did not reliably follow these
+short gating prompts (oracle did not flip), so non-reasoning erratum recovery is not measurable there;
+its reasoning-mode recovery is 0.97, and the §5e/§6 results cover non-reasoning attention models
+(Mistral, Gemma) directly.
 
 ## 7. Mechanism (explainability)
 

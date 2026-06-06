@@ -1,0 +1,27 @@
+{
+  "model": "tiiuae/Falcon-H1-1.5B-Instruct",
+  "arch": "hybrid attn+Mamba2 (Falcon-H1)",
+  "K": 8,
+  "non_reasoning": {
+    "n_trials": 32,
+    "oracle_picks_new": 1.0,
+    "stale_picks_old": 1.0,
+    "discriminating_trials": 32,
+    "erratum_recovery": 1.0,
+    "erratum_recovery_ci": [
+      1.0,
+      1.0
+    ]
+  },
+  "reasoning": {
+    "n_trials": 32,
+    "oracle_picks_new": 1.0,
+    "stale_picks_old": 1.0,
+    "discriminating_trials": 32,
+    "erratum_recovery": 0.969,
+    "erratum_recovery_ci": [
+      0.938,
+      1.0
+    ]
+  }
+}

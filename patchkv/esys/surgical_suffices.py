@@ -21,19 +21,14 @@ from mech_suite import (load, clone, prefill, ftok, wilson, META, TOK_WORDS, bui
 from align import align_pair
 
 
-def boot_ci(xs, B=10000):
-    """Bootstrap 95% CI of a 0/1 list (deterministic resample, no RNG)."""
+def boot_ci(xs, B=10000, seed=0):
+    """Proper bootstrap 95% CI: B resamples WITH REPLACEMENT (fixed seed -> reproducible)."""
+    import random
     n = len(xs)
     if n == 0:
         return [0.0, 0.0]
-    means = []
-    for bsi in range(B):
-        s = 0.0
-        for j in range(n):
-            idx = (bsi * 2654435761 + j * 40503 + bsi * j) % n
-            s += xs[idx]
-        means.append(s / n)
-    means.sort()
+    rng = random.Random(seed)
+    means = sorted(sum(rng.choice(xs) for _ in range(n)) / n for _ in range(B))
     return [round(means[int(0.025 * B)], 3), round(means[int(0.975 * B)], 3)]
 
 

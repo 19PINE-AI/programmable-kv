@@ -14,7 +14,7 @@ Question: is the erratum's failure on PURE SSM (no attention to look back) rescu
 re-derivation, or is it a hard architectural limit? Run on attention / hybrid / pure-SSM models.
 Run: MECH_ATTN=sdpa python esys/arch_erratum_v2.py --model <id> --arch "<label>" --K 8
 """
-import argparse, os, sys, json, re
+import argparse, os, sys, json, re, random
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -76,18 +76,13 @@ def gen(model, tok, content, mode, seed, greedy):
     return tok.decode(out[0, ids["input_ids"].shape[1]:], skip_special_tokens=True)
 
 
-def boot_ci(xs, B=10000, z=1.96):
+def boot_ci(xs, B=10000, seed=0):
+    """Proper bootstrap 95% CI: B resamples WITH REPLACEMENT (fixed seed -> reproducible)."""
     n = len(xs)
     if n == 0:
         return [0.0, 0.0]
-    means = []
-    for bsi in range(B):
-        s = 0.0
-        for j in range(n):
-            idx = (bsi * 2654435761 + j * 40503 + bsi * j) % n
-            s += xs[idx]
-        means.append(s / n)
-    means.sort()
+    rng = random.Random(seed)
+    means = sorted(sum(rng.choice(xs) for _ in range(n)) / n for _ in range(B))
     return [round(means[int(0.025 * B)], 3), round(means[int(0.975 * B)], 3)]
 
 
@@ -129,7 +124,8 @@ def main():
             "stale_picks_old": round(sum(stale_old) / len(stale_old), 3),
             "discriminating_trials": n_flip,
             "erratum_recovery": round(sum(recov) / len(recov), 3) if recov else None,
-            "erratum_recovery_ci": boot_ci(recov) if recov else None}
+            "erratum_recovery_ci": boot_ci(recov) if recov else None,
+            "recov_raw": recov}
         r = res[mode]
         print(f"  [{mode:13s}] oracle_new={r['oracle_picks_new']} stale_old={r['stale_picks_old']} "
               f"| discriminating={n_flip}/{len(flips)} | ERRATUM_RECOVERY={r['erratum_recovery']} "
