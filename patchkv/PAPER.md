@@ -458,8 +458,7 @@ and the precompiled-transplant model also **16/16**, with **16/16 decision agree
 is lossless for skill-following when the model actually reasons over the skill.
 
 **10.5 TTFT scaling + the library (Fig. `fig_composable_scaling`; analog of §9 serving).** Full reprefill
-is O(L²) in skill length; transplant is O(L) re-rotation + small prefill. On Qwen3-8B the TTFT speedup
-is **1.16× @500 tok, 3.0× @2k, 9.8× @8k, 13.9× @32k**. A **skill library** composes: stacking N=1–4
+is O(L²) in skill length; transplant is O(L) re-rotation + small prefill. The TTFT speedup grows with model size and skill length — at 32k skill tokens: **5.5× (1.7B), 12× (DeepSeek-8B), 13.6× (Llama-3.1-8B), 13.9× (Qwen3-8B)**; on 8B: 1.16×@500, 3.0×@2k, 9.8×@8k. A **skill library** composes: stacking N=1–4
 precompiled skills preserves the decision (4/4 agreement vs full).
 
 **10.6 Keystone — edit *inside* a transplanted skill (Fig. `fig_keystone`, `esys/compose_edit.py`).** We precompile a skill

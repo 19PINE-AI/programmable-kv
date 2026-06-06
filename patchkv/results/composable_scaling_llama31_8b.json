@@ -1,0 +1,30 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "scaling": {
+    "500": {
+      "full_ms": 82.4,
+      "precomp_ms": 62.1,
+      "speedup": 1.33
+    },
+    "2000": {
+      "full_ms": 214.3,
+      "precomp_ms": 71.9,
+      "speedup": 2.98
+    },
+    "8000": {
+      "full_ms": 457.8,
+      "precomp_ms": 55.3,
+      "speedup": 8.28
+    },
+    "16000": {
+      "full_ms": 1039.7,
+      "precomp_ms": 94.5,
+      "speedup": 11.0
+    },
+    "32000": {
+      "full_ms": 2508.8,
+      "precomp_ms": 184.0,
+      "speedup": 13.64
+    }
+  }
+}

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 R = os.path.join(os.path.dirname(__file__), "..", "results")
 F = os.path.join(os.path.dirname(__file__), "..", "figures")
-NAMES = {"qwen3_8b": "Qwen3-8B", "dsr1_llama8b": "DeepSeek-R1-Llama-8B", "qwen3_1p7b": "Qwen3-1.7B"}
+NAMES = {"qwen3_8b": "Qwen3-8B", "dsr1_llama8b": "DeepSeek-R1-Llama-8B", "qwen3_1p7b": "Qwen3-1.7B", "llama31_8b": "Llama-3.1-8B", "qwen3_4b": "Qwen3-4B"}
 
 
 def fig_scaling():
