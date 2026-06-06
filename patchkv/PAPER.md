@@ -254,10 +254,12 @@ recovery vs the number of recomputed downstream tokens k, by ranking criterion:
 | 32 | 0.25 | 0.25 | **0.94** | 0.94 | 0.59 |
 | 64 | 0.89 | 0.90 | 0.97 | 1.0 | 0.60 |
 
-Three findings. (i) **Representation-change rankings fail**: the tokens whose KV/hidden state changes
-*most* under the edit (what CacheBlend selects) are *not* the tokens the decision depends on — they
-need ~64 tokens (24% of downstream) to recover, the mechanistic reason CacheBlend underperforms
-(§6.2). (ii) **Ranking by *decision-attention* — which downstream tokens the decision token attends to
+Three findings. (i) **Change-based rankings fail**: the tokens whose KV/hidden state — or *attention
+distribution* — changes *most* under the edit are *not* the tokens the decision depends on. KV-change
+and hidden-change need ~64 tokens (24% of downstream) to recover (the mechanistic reason CacheBlend
+underperforms, §6.2); the *attention-difference* criterion (rank by how much each token's attention
+changes) is even worse — `field+attention-difference@32` recovers **0.00** non-reasoning vs
+`field+decision-attention@32` 0.50 — confirming that "most-changed" ≠ "decision-relevant". (ii) **Ranking by *decision-attention* — which downstream tokens the decision token attends to
 — nearly matches the expensive decision-recovery oracle** (0.94 @ k=32, ~12% of downstream) and is
 *cheap* (one forward). (iii) **It is offline-profilable and value-independent**: decision-attention is
 computed on the *base/old* context, so the recorded position-set transfers *exactly* to a different

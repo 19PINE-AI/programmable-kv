@@ -1,0 +1,89 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "k": 32,
+  "non_reasoning_n": 4,
+  "reasoning_n": 12,
+  "results": {
+    "non_reasoning": {
+      "stale": {
+        "P_correct": 0.0,
+        "ci": [
+          0,
+          0.49
+        ]
+      },
+      "full": {
+        "P_correct": 1.0,
+        "ci": [
+          0.51,
+          1
+        ]
+      },
+      "erratum": {
+        "P_correct": 1.0,
+        "ci": [
+          0.51,
+          1
+        ]
+      },
+      "field_only": {
+        "P_correct": 0.0,
+        "ci": [
+          0,
+          0.49
+        ]
+      },
+      "field+attndiff@32": {
+        "P_correct": 0.0,
+        "ci": [
+          0,
+          0.49
+        ]
+      },
+      "field+decattn@32": {
+        "P_correct": 0.5,
+        "ci": [
+          0.15,
+          0.85
+        ]
+      }
+    },
+    "reasoning": {
+      "full": {
+        "P_correct": 1.0,
+        "ci": [
+          0.76,
+          1
+        ]
+      },
+      "erratum": {
+        "P_correct": 1.0,
+        "ci": [
+          0.76,
+          1
+        ]
+      },
+      "field_only": {
+        "P_correct": 1.0,
+        "ci": [
+          0.76,
+          1
+        ]
+      },
+      "field+attndiff@32": {
+        "P_correct": 0.833,
+        "ci": [
+          0.55,
+          0.95
+        ]
+      },
+      "field+decattn@32": {
+        "P_correct": 1.0,
+        "ci": [
+          0.76,
+          1
+        ]
+      }
+    }
+  }
+}
