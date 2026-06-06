@@ -1,593 +1,271 @@
 # Editable KV Cache for Mutable Fields in Agentic Contexts: When the Cheap Edit Works, Why It Fails, and a Robust Fix
 
-*Working draft. Consolidates the experimental program; numbers are from local runs on
-1× RTX PRO 6000 (Qwen3 0.6–32B family + cross-family checks). Results marked
-(preliminary) have small n or are still replicating.*
+*Conference-style consolidation of the experimental program. All numbers are from local runs on
+1× RTX PRO 6000 (Blackwell, 96 GB): Qwen3 0.6–32B plus cross-family/architecture checks. Detailed
+per-experiment logs and the full result set are in `PAPER_detailed.md` and `results/`; figures in
+`figures/`; the production library in `editkv/`.*
 
 ---
 
 ## Abstract
 
-Prefix caching forces an inference-layer constraint into the application layer: to keep
-cache hits, programmers must hoist every *mutable field* (time, ids, user/account state)
-to the end of the prompt, even when it belongs elsewhere. We ask whether a field can be
-edited *in place* in the KV cache instead. We find: (1) the region before the field is
-provably reusable (exact), and the blast radius of an edit is sparse and field-dependent;
-(2) naively refreshing only the field's KV and leaving the rest stale **fails** — the
-decision reverts to the old value — because the decision reads the field almost entirely
-*indirectly*, through downstream tokens that *memoized the field-conditioned inference at
-prefill time* (the decision's direct attention to the field token is ≈0.1% at every model
-scale); (3) **chain-of-thought reasoning can rescue the cheap edit, but unreliably and
-scale-dependently** — at 8B the CoT re-derives correctly, at 14B it *amplifies* the stale
-inference into unsafe actions, at 32B it collapses to caution; (4) a **salient erratum** —
-appending "[STATE UPDATE] <field> → <new>; overrides any earlier value and conclusion" and
-recomputing only those ~tens of tokens — recovers the oracle decision across scales and domains
-and is poison-robust *even where a full re-prefill is fooled by contradictory context*; in the
-robust **`field+erratum`** form (refresh the field token *and* append the override) it matches the
-strong hoist-to-end baseline's correctness **without rewriting the prompt**, whereas the bare
-erratum is template-sensitive in non-reasoning settings (the stale early value competes). A
-rigorous baseline comparison (§8d) shows there is no single dominant method but a *frontier*: hoist
-is strong but requires moving every mutable field; `field+erratum` matches it in place; and the bare
-surgical `in_place` edit is **~free (1% recompute) and sufficient for reasoning models** (0.94 at
-8B), the regime that dominates agent deployments. Controlling for model competence (an oracle
-baseline), the in-place edit has a real penalty (0.12–0.67, up to 29% unsafe actions) that
-field+erratum eliminates. We give a
-mechanistic account via four independent causal methods — KV-patching (the field's own KV
-causally drives <1% of the decision; the memoized conclusion is suffix-concentrated in mid/late
-layers), linear probing, a reasoning-circuit knockout, and a position dose-response — that
-*triangulate* the same story. Two consequences sharpen the practical picture. **When the
-surgical edit alone suffices:** with no erratum at all, the bare ~0.1% field-KV overwrite recovers
-the oracle decision **0.94** of the time on a *reasoning* 8B model but **never** without reasoning
-(0.00 at every scale) and only partially at 14B/32B — so "just do the surgical edit" is a real
-cheap win for reasoning models, strongest at the agent-scale 8B, but not universal, which is why
-the erratum (the robust default) and a per-edit diagnostic both exist. **Architecture coverage:**
-editkv is an *attention-architecture* method — the surgical edit needs a per-token KV (full/GQA/
-MLA), and the erratum needs attention to "look back" at the override: it works on full/GQA/MLA
-(DeepSeek-V2-Lite) and hybrid attention+SSM (Falcon-H1) backbones, but *fails on a pure SSM*
-(Falcon-Mamba), whose recurrent state has no look-back. We close with a cost/latency frontier and a
-production realization on vLLM (the append-only erratum composes with prefix caching for 16× higher
-throughput; an in-prefix edit invalidates the cache).
+Prefix caching forces an inference-layer constraint into the application layer: to keep cache hits,
+programmers must hoist every *mutable field* (time, ids, user/account state) to the end of the
+prompt, even when it belongs elsewhere. We ask whether a field can be edited *in place* in the KV
+cache instead, and answer it across behavior, mechanism, architecture, and systems. (1) The region
+before the field is provably reusable (KV deviation 0.0). (2) Naively refreshing only the field's KV
+and leaving the rest stale **fails** — the decision reverts to the old value — because the decision
+reads the field almost entirely *indirectly*, through downstream tokens that **memoized the
+field-conditioned conclusion at prefill time**. We establish this causally with four independent
+methods that triangulate the same account: KV-patching (the field's own KV causally drives **<1%** of
+the decision; the memoized conclusion is **suffix-concentrated** in mid/late layers), linear probing,
+a reasoning-circuit knockout, and a position dose-response. (3) **The cheap surgical edit alone
+suffices for *reasoning* models** — at 8B it recovers the oracle decision **0.94** of the time at ~1%
+recompute with no further help — but **never without reasoning** (0.00 at every scale) and only
+partially at 14B/32B; we explain the scale-reversal mechanistically. (4) A **salient erratum** (append
+"[STATE UPDATE] <field>→<new>; overrides any earlier value and conclusion") and in particular
+**`field+erratum`** matches the strong *hoist-to-end* baseline's correctness and poison-robustness
+**without rewriting the prompt**; a rigorous baseline comparison shows there is no single dominant
+method but a *frontier*. (5) editkv is an **attention-architecture** method: it works on full/GQA/MLA
+and hybrid attention+SSM backbones but is weaker on a pure SSM (whose recurrent state has no
+look-back; CoT partially rescues it). (6) On the real τ²-bench retail environment — single decisions
+(N=20) and a multi-turn autonomous-agent loop (N=30) with the env's own tool enforcement as reward —
+editkv preserves task success at a fraction of the recompute where the stale agent collapses. We
+release a production library and a closed vLLM integration (the append-only erratum composes with
+prefix caching for **16×** higher throughput).
 
 ---
 
 ## 1. Introduction
 
-Agents re-read long, mostly-static instructions every turn; KV caching reuses the
-"reading" (prefill) across turns, but only across an *exact* shared prefix. A single
-changed token — a clock tick, a session id, an account-status flip — invalidates the
-entire suffix. The de-facto fix, hoisting all mutable content to the prompt's end, taxes
-programmability: fields referenced in multiple places, nested sub-agent prompts, and
-dynamically assembled prompts cannot all be cleanly hoisted.
+Agents re-read long, mostly-static instructions every turn; KV caching reuses the prefill across
+turns, but only across an *exact* shared prefix. A single changed token — a clock tick, a session id,
+an account-status flip — invalidates the entire suffix. The de-facto fix, hoisting all mutable content
+to the prompt's end, taxes programmability: fields referenced in multiple places, nested sub-agent
+prompts, and dynamically assembled prompts cannot all be cleanly hoisted, and it forces the
+application to pre-identify every mutable field.
 
-We study **in-place field editing**: when a field changes, can we surgically update the
-cache and reuse the rest? Contributions:
-1. **Characterization** of the edit's blast radius and decision-flip behavior by field class.
-2. **A regime map**: when the cheap edit (refresh-field-only, leave-rest-stale) is safe,
-   and the **reasoning-vs-non-reasoning** and **scale** dependence of that safety.
-3. **A robust mechanism** — the *erratum* — and an oracle-controlled evaluation isolating
-   the edit penalty from model competence, across 5 sizes, 8 domains, and model families.
-4. **A mechanistic explanation** (attention-mediated memoized inference) with causal
-   evidence (knockout, patching), and a cost/latency frontier.
+We study **in-place field editing**: when a field changes, can we surgically update the cache and
+reuse the rest? Our contributions:
+1. **A regime map** of when the cheap edit (refresh-field-only, leave-rest-stale) is safe, and its
+   **reasoning-vs-non-reasoning** and **scale** dependence (§4).
+2. **A causal mechanistic account** — *attention-mediated memoized inference* — established by four
+   independent methods (§5), generalized across 7 models and validated against architecture (§7).
+3. **A robust in-place fix** (the erratum / field+erratum) and a **rigorous baseline frontier** that
+   honestly positions it against hoist-to-end and prior selective-recompute work (§6).
+4. **End-to-end evidence** on the real τ²-bench env, single-decision and multi-turn agentic (§8), a
+   **cost/latency frontier and a closed vLLM integration** (§9), and a **production library** with a
+   per-edit diagnostic (§6.3).
 
-## 2. Related work and positioning
+## 2. Related work
 
-Prefix caching (vLLM APC, SGLang RadixAttention) reuses exact prefixes. Selective-recompute
-methods for *composition* (CacheBlend, EPIC/AttnLink, KV Packet) recompute the ~15% / boundary
-tokens to restore cross-attention when assembling *independent* chunks; selection methods
-(InfoFlow KV, KVShare) decide *which* tokens to recompute. All target chunk composition or
-cross-request sharing and **recompute the affected downstream**. We study a *temporal edit of
-one already-jointly-encoded context*, and our central question is the opposite: when can the
-downstream be left **stale**? Prompt Cache tolerates staleness (accepts quality loss);
-Prompt Choreography reuses message-level blocks but re-encodes on edit. Crucially, prior
-work implicitly assumes **single-pass (instruction) decoding**; we show **reasoning models
-change the picture** — and that the robust fix is a salience injection, not recomputation.
+Prefix caching (vLLM APC, SGLang RadixAttention) reuses exact prefixes. Selective-recompute methods
+for *composition* (CacheBlend, EPIC/AttnLink) recompute ~15% / boundary tokens to restore
+cross-attention when assembling *independent* chunks; selection methods (InfoFlow KV, KVShare) decide
+*which* tokens to recompute. All target chunk composition or cross-request sharing and recompute the
+affected downstream. We study a *temporal edit of one already-jointly-encoded context*, and ask the
+opposite question — when can the downstream be left **stale**? We also show prior work implicitly
+assumes **single-pass (instruction) decoding**; reasoning models change the picture, and the robust
+fix is a salience injection, not recomputation. Our mechanism analysis adapts causal tracing
+(ROME/MEMIT) and circuit knockout (IOI) to the *KV cache* — the object an editor manipulates. We
+compare against CacheBlend directly (§6).
 
 ## 3. Method
 
-**Setup.** An OLD context is cached. A field flips OLD→NEW. We compare cache-construction
-strategies for the next decode:
-- *full_reprefill* (ceiling), *stale* (floor), *hoist_to_end* (the baseline to beat).
-- *field_only*: overwrite the field span's KV with its in-context-recomputed (exact) value,
-  leave all else stale. Cost ≈ field tokens (~0.1%).
-- *erratum*: leave the cache stale; append "[STATE UPDATE] <field> → <new>; overrides any
-  earlier value AND conclusion"; recompute only the appended span (~5–6%).
-- *field+erratum*: both.
+**Setup.** An OLD context is cached; a field flips OLD→NEW; we compare cache-construction strategies
+for the next decode. *full_reprefill* (recompute all), *stale* (reuse all), *hoist_to_end* (field
+moved to the end — the baseline to beat), *in_place* (overwrite only the field span's KV, exact, ~1%),
+*erratum* (leave stale; append the override; recompute that span ~5–15%), *field+erratum* (both),
+and *CacheBlend@k* (recompute field + top-k% KV-deviation downstream). **Metrics:** P(correct/safe
+decision), agreement with the oracle, recompute fraction, wall-clock; proportions with Wilson or
+bootstrap (B=10000) 95% CIs. **Characterization (E1/E2):** KV of every token *before* the field is
+bit-identical OLD vs NEW (deviation 0.0 — the prefix is free); low-conditioning fields (time/ids) are
+leave-stale-safe with zero refresh; gating fields (role/status/tier) flip the decision and a bare
+field-only edit does not recover it without help — which the rest of the paper explains and fixes.
 
-**Metrics.** Decision *safety* P(avoid the policy-violating action); *fidelity*/agreement
-with the oracle; recompute fraction; wall-clock latency. Reported as proportions with
-Wilson 95% CIs over instances and (for stochastic CoT) samples.
+## 4. The regime map: when the cheap edit works
 
-## 4. Characterization (E1/E2)
+**Reasoning is the axis.** Within-model ablation (Qwen3-8B, `enable_thinking` on/off, account_role,
+n=12 / 36 samples): field-only P(safe) is **0.00 [0,.24] non-reasoning vs 1.00 [.90,1] reasoning**;
+under a *poisoned* context (a stale self-conclusion asserting the old value) field-only is fooled even
+with reasoning (0.42 unsafe) while the erratum holds (0 unsafe) — thinking is *necessary but not
+sufficient*.
 
-- **H2 (exact prior region):** KV of every token *before* the field is bit-identical OLD vs
-  NEW (deviation 0.0 across all layers/fields/models). The prefix is reusable for free.
-- **Blast radius** (attention-output deviation): sparse and field-dependent (low<medium<high
-  conditioning); raw KV-deviation over-counts and is not a portable threshold — **decisions
-  are the metric with teeth.**
-- **Decision-flip:** low-conditioning fields (time/ids/counters) are leave-stale-safe with
-  zero refresh; gating fields (role/safety-mode/tier) flip the decision and a bare field-only
-  edit **does not recover it** without further help.
+**When the *surgical* edit alone suffices — no erratum (the cheap win; Fig. `fig_surgical_suffices`).**
+P(in_place-only == oracle), no erratum (`esys/surgical_suffices.py`):
 
-## 5. The reasoning axis and the erratum (the core result)
-
-**Within-model ablation (Qwen3-8B, `enable_thinking` on/off, account_role, n=12 / 36 samples):**
-
-| field-only intervention | non-reasoning | reasoning |
+| Qwen3 | non-reasoning | reasoning |
 |---|---|---|
-| baseline P(safe) | 0.00 [0,.24] | 1.00 [.90,1] |
-| KO original stale downstream | 1.00 [.76,1] (fixes) | 0.97 (harmless) |
-| KO fresh CoT | — | 0.61 [.45,.75] (reverts) |
+| 8B | 0.00 [0,.39] | **0.94 [.74,.99]** |
+| 14B | 0.00 | 0.33 |
+| 32B | 0.00 | 0.50 |
 
-Non-reasoning decisions are *harmed by* the stale downstream; reasoning decisions *depend
-on* the fresh CoT. But this rescue is **not reliable across scale** (§7).
+Without reasoning the surgical edit **never** suffices (it reverts to the stale downstream, §5). With
+reasoning it can — at 8B the bare ~1% edit recovers the oracle decision **0.94** of the time with no
+erratum (the CoT re-reads the refreshed field, §5.3) — but it is **scale-dependent**: at 14B/32B the
+larger CoT is less reliable (oracle is 1.0, so these are staleness failures, not competence). So "just
+do the surgical edit" is a real cheap win for the reasoning models that dominate agent deployments,
+strongest at the agent-scale 8B, but not universal — which is why the erratum and a per-edit
+diagnostic exist.
 
-**Oracle-controlled edit penalty (reasoning; isolates the edit from competence):**
+## 5. Why it fails: the mechanism (four causal methods)
 
-| model | oracle | field_only (unsafe) | **erratum** | edit penalty |
-|---|---|---|---|---|
-| 4B | 1.00 | 0.38 (.25) | **1.00** | 0.62 |
-| 8B | 1.00 | 0.88 (.04) | **1.00** | 0.12 |
-| 14B | 0.96 | 0.29 (.29) | **1.00** | 0.67 |
-| 30B-A3B / 32B | (running) | | | |
+The decision reads the field's value **indirectly**: prefill memoizes the field-conditioned conclusion
+into *downstream* KV, so refreshing the field token's own KV leaves the decision stale. Four
+independent methods triangulate this (Fig. `fig_memoization_map`, `fig_dose_response`).
 
-The field-only edit has a **real penalty** (the model would be correct with a full
-re-prefill); the **erratum recovers to the oracle ceiling (≈1.0, 0% unsafe) at every size**,
-including 14B where field-only is 29% unsafe.
+**5.1 Causal KV-patching → a memoization map (D1).** ROME-style causal tracing on the KV cache: patch
+NEW (K,V) into the OLD cache at chosen (layer, position) sites and read the decision logit; *recovery*
+= fraction of the OLD→NEW swing restored. Qwen3-8B, n=12: **field-only recovery = 0.009** [.006,.014]
+— refreshing the field token's own KV recovers **<1%** of the flip (this *is* the direct/indirect path
+split: direct ≈0.9%, indirect ≈99%); full-downstream = 1.00. The memoized conclusion is **suffix-
+concentrated**: patching the last 10%/20% of downstream recovers **64%/82%**, the first 10%/50% only
+29%/34%. Mid/late layers carry it; ~16 well-chosen positions recover 94% (distributed but
+identifiable). **Generalizes across 7 models** (field-only recovery ≪ full=1.0): Qwen3-4B/8B/14B/32B
+0.025/0.009/0.008/0.023, Gemma-2-9B/27B 0.001/0.219, Mistral-7B 0.004 (Fig. `fig_d1_generalization`).
 
-**Negative control (erratum is causal, not an append artifact), Qwen3-8B, 8 tasks:** oracle 1.00, stale 0.00, **err_correct 1.00**, **err_wrong (restates the OLD value) 0.00**, **err_irrelevant (neutral notice) 0.00**. Only an erratum stating the *correct new value* recovers the decision; restating the old value or appending unrelated text stays stale — so the effect is content-specific, not 'any append resets the model.'
+**5.2 Linear probing, independent of patching (D3).** A cross-domain probe (8 domains, leave-one-
+domain-out) for the gated *conclusion* is decodable only in **late layers** (early 0.50 = chance →
+0.875), and the **in_place decision residual is classified as the OLD conclusion**, identical to
+stale (P(new) = stale 0.0 / in_place 0.0 / erratum 0.88 / full 0.75) — the residual-level reason
+in_place fails.
 
-## 5b. Erratum robustness (Qwen3-8B, 8 tasks)
+**5.3 The reasoning-axis circuit (D4).** On the in_place cache (field NEW, downstream stale),
+reasoning ON: blocking the CoT's attention to the field collapses the in_place benefit (8B: 1.0→0.0,
+n=8, non-overlapping CIs) while blocking the *decision's* direct field read does not — **the CoT
+re-read, not the decision's direct read, is the causal carrier** of reasoning robustness (per-token
+CoT→field attention is only ~0.1%, yet causally decisive). **This also explains the scale-reversal**:
+at 14B `inplace_base` is already ~0 (the CoT does *not* recover), and masking the stale gate/downstream
+region *improves* it — i.e. the larger CoT **defers to the stickier memoized stale conclusion** rather
+than re-deriving from the refreshed field. (n small; see §10.)
 
-- **Phrasing:** robust in benign contexts — override-full / bare-value / minimal "field: value"
-  all recover 8/8; only a question framing dips to 7/8. (The explicit "overrides any earlier
-  conclusion" framing matters specifically under *poisoned* context, §4.)
-- **Over-correction:** an erratum for an *irrelevant* field flips the decision **0/8** — it does
-  not cause spurious behavior on the benign case.
-- **Multi-edit:** stacking an irrelevant erratum before the relevant one still yields the
-  correct decision **8/8** — no interference; the relevant trigger drives the decision.
+**5.4 Position dose-response (D6).** Sweeping the field's position (value appears once), in_place
+recovery rises **monotonically** as the field moves later — pos0 −0.01 → hoisted 0.11 — the causal
+underpinning of "hoist to end." Even full hoisting only *partially* rescues a single-pass decision,
+which is why the erratum's explicit conclusion-override, not mere hoisting, is the in-place fix.
 
-## 5c. Validating the per-case diagnostic (`needs_erratum`)
-The library's diagnostic predicts, for a specific edit, whether the cheap in_place edit
-suffices or must escalate to field+erratum. We validate it against ground truth (does the
-in_place decision differ from the full-reprefill oracle?) over 8 high-conditioning edits + 8
-low/irrelevant edits, with a confidence-margin knob (`esys/diagnostic_eval.py`, Qwen3-8B):
+**Takeaway.** The field is read indirectly through a suffix-concentrated, mid/late-layer memoized
+conclusion in downstream KV; in_place is causally inert (<1%) because it never updates that
+conclusion; the erratum works because appending at the end writes a fresh carrier into exactly the
+suffix region the decision reads; reasoning robustness is mediated by the CoT re-reading the field — a
+real but fallible path (it backfires at scale), which is why a recomputation-free salience injection is
+the robust fix.
 
-| margin | precision | recall |
-|---|---|---|
-| 0.0 | 0.46 | **0.86** |
-| 0.3 | 0.83 | 0.71 |
-| 0.5 | **1.00** | 0.71 |
+## 6. The robust fix and the baseline frontier
 
-It compares the *deterministic first decision token* (not a noisy multi-token decode) and
-fires only when field+erratum confidently moves the decision off the stale token. A false
-negative (use in_place when the erratum was needed) yields a stale decision; a false positive
-costs only a few % of compute (the erratum is cheap and correct, §5/§8). Since FN is the costly
-error, the **recall-oriented low margin is the safe default**; cost-sensitive deployments can
-raise the margin to eliminate over-correction (P=1.0 at margin 0.5). The diagnostic is a useful
-conservative heuristic, not a perfect oracle — distinguishing the two classes *cheaply* is
-inherently approximate (a faithful reference is what is expensive).
+**6.1 The erratum and field+erratum.** Leave the cache stale, append "[STATE UPDATE] <field>→<new>;
+overrides any earlier value AND conclusion", recompute only that span. The robust **field+erratum**
+also refreshes the field token. Over 8 domains, 5 families, 0.6–32B, both modes: for every competent
+model the cheap field-only edit carries a penalty (0.12–0.67 oracle-controlled, up to 29% unsafe
+actions) and field+erratum recovers to the oracle ceiling; the erratum is poison-robust *even where a
+full reprefill is fooled*; over-correction on an irrelevant field is 0/8; multi-field edits compose
+without interference.
 
-## 5d. Robustness: multi-field edits and multi-edit accumulation
-- **Multi-field (interference).** A decision gated by *two* fields (account_role AND order_status).
-  Flipping one, the other, or both, the erratum recovers the correct *joint* decision **4/4** in
-  every case (stale **0/4**), and a no-op arm stays correct **4/4** — editing one field does not
-  corrupt the other's contribution, and there is no over-correction. (`esys/robustness_multi.py`.)
-- **Multi-edit (accumulation).** A field evolving through a *sequence* of values. Monotonic chains
-  work: stacked sequential erratums track the latest value **4/4** (= a direct reprefill to the
-  final value). **Honest failure mode:** a *non-monotonic* chain (pending→processed→cancelled→
-  pending) breaks the stacked form **0/4** — once a salient terminal state ("cancelled") enters the
-  stack, the model ignores a later "pending" erratum (a direct reprefill to the current value is
-  4/4). **Guidance:** for repeated edits to one field, collapse to a *single* current-value erratum
-  rather than stacking the history; the library applies one erratum per current value by default.
+**6.2 The baseline frontier — answering "why not just hoist?" (Fig. `fig_baseline_frontier`).**
+8 gating tasks, non-reasoning (the regime where strategies differ), P(correct) × recompute, with a
+poisoned-context column (`esys/baseline_table.py`, Qwen3-8B):
 
-## 5e. When the *surgical* edit alone suffices — no erratum (the cheap win)
-*(Figure: `figures/fig_surgical_suffices.png`.)*
-The erratum is the robust fallback (it works by construction). The sharper question is when you can
-skip it entirely and just **surgically overwrite the field's KV** (~0.1% recompute), leave the whole
-downstream stale, and still get the oracle decision. Measuring P(in_place decision == correct)
-with no erratum, reasoning vs non-reasoning (`esys/surgical_suffices.py`, in_place = refresh only the
-field-token KV; 3 scenarios × 2 surface variants; reasoning = 3 stochastic CoT samples each):
-
-| model | non-reasoning in_place | reasoning in_place | oracle |
-|---|---|---|---|
-| Qwen3-8B | 0.00 [0,.39] | **0.94 [.74,.99]** | 1.00 |
-| Qwen3-14B | 0.00 [0,.39] | 0.33 [.16,.56] | 1.00 |
-| Qwen3-32B | 0.00 [0,.39] | 0.50 [.29,.71] | 1.00 |
-
-**Two clean findings.** (i) **Without reasoning the surgical edit alone NEVER suffices** (0.00 at every
-scale — it reverts to the stale downstream, §7). (ii) **With reasoning it can** — at 8B the bare
-surgical edit recovers the oracle decision **0.94** of the time with *no erratum* (the CoT re-reads
-the refreshed field, §7.3) — but this is **scale-dependent**: 14B 0.33 / 32B 0.50, the same reasoning
-that re-derives correctly at 8B is less reliable at larger scale (consistent with the §7.3/§7.5
-scale-reversal — the CoT re-derivation can itself go wrong). So "just do the surgical edit" is a
-*real* cheap win for reasoning models (and strongest at the scale most used for agents), but it is
-not universal — which is exactly why the erratum exists as the robust default, and why the per-edit
-diagnostic (§5c) is useful to pick between them. (Oracle is 1.0 under reasoning at every scale, so
-these are not competence failures — they are staleness-recovery failures.)
-
-## 6. Generalization
-
-- **8 diverse domains** (retail, airline, devops, banking-numeric, access-control, clinical
-  safety, customs routing, on-call severity; permission gates, numeric thresholds, safety
-  attributes, routing), Qwen3-8B: **non-reasoning** field_only=0.00 / erratum=1.00 (n=8);
-  **reasoning** field_only=1.00 / erratum=0.98 (n=48). The non-reasoning "always stale" and the
-  reasoning rescue both hold uniformly across every domain — not a customer-support artifact.
-- **Family × scale survey (5 families, 0.6B–32B; diverse tasks, non-reasoning, n=8).**
-  For every *competent* model (oracle P(correct) ≥ 0.75) the pattern holds: field-only fails,
-  erratum recovers to the oracle ceiling.
-
-  | model | family | oracle | field_only | erratum |
-  |---|---|---|---|---|
-  | Qwen3-1.7B / 4B / 8B | Qwen | 0.88 / 1.0 / 1.0 | 0.12 / 0.00 / 0.00 | 1.0 / 1.0 / 1.0 |
-  | SmolLM2-1.7B | HF/SmolLM | 0.75 | 0.25 | 0.62 |
-  | Gemma-2-2B / 2-9B / 3-4B | Google | 0.88 / 1.0 / 1.0 | 0.38 / 0.00 / 0.25 | 0.88 / 1.0 / 1.0 |
-  | Mistral-7B | Mistral | 1.0 | 0.00 | 0.88 |
-  | DeepSeek-R1-Distill-Llama-8B | Llama | 0.97 | 0.81 (reasoning) | 1.0 |
-
-  (Qwen3-0.6B oracle=0.12 — too small to do the task at all, uninformative. Phi-3.5's
-  outdated custom modeling code is incompatible with the installed transformers; dropped.)
-
-- **Reasoning detail (3 families):** the pattern holds beyond Qwen.
-  - *Mistral-7B-Instruct* (different arch, non-reasoning, n=8): field_only **0.00**, erratum 0.88.
-  - *DeepSeek-R1-Distill-Llama-8B* (Llama arch, reasoning, n=32): oracle 0.97, field_only 0.81
-    (edit penalty ~0.16), **erratum 1.00** [.89,1].
-  The field-only edit carries a penalty on every family; **the erratum recovers to the oracle
-  ceiling on every family.** (DeepSeek-R1's reasoning is *more* staleness-robust than Qwen3-14B's,
-  which amplified it — reasoning-training-dependent, but the erratum is family-invariant.)
-- **τ-bench retail (real policy):** H2 holds on the real 81-line policy; a late-placed field
-  recovers at 4.4% recompute (94.8% reused free); erratum robust to a poisoned prior.
-- **τ²-bench retail, end-to-end multi-turn (the production-relevant stress test).** We run the
-  full editkv library on the **real τ²-bench retail policy** (6699 chars; sierra-research/tau2)
-  with a multi-turn cancel-order trajectory. The gating field is `order_status`, buried early
-  (token span 1429/~1700) in the long policy; per the documented rule "*an order can only be
-  cancelled if its status is 'pending'*", it changes `pending → processed` mid-conversation, so
-  the correct next action flips **cancel → deny**. Decisions on Qwen3-8B:
-
-  | strategy | decision | vs oracle |
-  |---|---|---|
-  | oracle (full reprefill, processed) | deny | — |
-  | stale (still pending) | cancel | ✗ |
-  | in_place → processed | cancel | ✗ |
-  | **erratum alone** → processed | **cancel** | **✗** |
-  | **field+erratum** → processed | **deny** | ✓ |
-
-  **New finding from going end-to-end:** in a *long real policy with the field buried early*,
-  the **erratum alone misses** — the stale early field token still competes with the appended
-  override — and only **field+erratum** (refresh the token *and* append the override) recovers
-  to the oracle. This is invisible in the short synthetic tasks (where erratum alone suffices)
-  and motivated two library changes: (i) **`FIELD_PLUS_ERRATUM` is now the robust default /
-  AUTO escalation** (not erratum alone); (ii) the **diagnostic references `field+erratum`**, not
-  erratum, as ground truth — referencing erratum would have falsely reported "in-place
-  sufficient" here (both in_place and erratum returned `cancel`). After the fix the diagnostic
-  correctly returns `needs_erratum=True` and AUTO selects `field+erratum → deny`.
-  (`esys/tau2_editkv.py`, `results/tau2_editkv.json`.)
-- **τ²-bench end-to-end EPISODE loop (real env + real tools + real reward, N=20 orders).** To
-  go beyond a single gated decision, we run a multi-turn cancel-order trajectory on the **real
-  τ²-bench retail environment** — real policy, real `RetailDB`, and the real `cancel_pending_order`
-  tool whose own enforcement ("Non-pending order cannot be cancelled") is the **ground-truth
-  reward** — over 20 real pending orders, with a control arm and a treatment arm, Wilson CIs:
-
-  | strategy | Arm A: stays pending (correct=cancel) | Arm B: →processed (correct=deny) |
-  |---|---|---|
-  | full (oracle) | 1.00 | 1.00 |
-  | stale | 1.00 | **0.00** |
-  | in_place | 1.00 | **0.00** |
-  | erratum | 1.00 | **1.00** |
-  | field+erratum | 1.00 | **1.00** |
-
-  Arm A shows editkv does not break the no-change control (no over-correction). Arm B: when the
-  order is fulfilled mid-episode, the stale/in_place agents call `cancel` on a now-processed
-  order → the **real tool raises → task fails** (tool-consistency 0.00), while the erratum agents
-  deny → **task succeeds** (1.00). So on the real τ²-bench env, with the environment's own tool
-  enforcement as reward, the cheap in_place edit fails **100%** of the time while editkv recovers
-  full task correctness. This statistically (N=20, CIs) answers the "single gated-decision proxy"
-  concern. (`esys/tau2_episode.py`, `results/tau2_episode_qwen3_8b.json`.)
-- **τ²-bench MULTI-TURN agentic loop (autonomous tool execution, N=30 orders).** Beyond a single
-  decision: the local model is an autonomous agent that *emits and executes a sequence of tool
-  calls* against the live RetailDB over a multi-turn conversation (`get_order_details` → the gating
-  field flips pending→processed mid-episode → the cancel/deny action), scored by the env's own tool
-  enforcement (`esys/tau2_agent_loop.py`, Qwen3-8B). Here the editkv mechanism is the deployment-
-  realistic ERRATUM (append-only; the buried-token in_place edit needs position tracking a serving
-  stack lacks):
-
-  | strategy | task success | recompute | 
-  |---|---|---|
-  | full reprefill | 1.00 | 1.00× |
-  | **erratum (append-only)** | **0.70** | **0.55×** |
-  | stale | 0.00 | 0.49× |
-
-  Honest, realistic result: in a real multi-turn loop where the user has *already* asked to cancel
-  (the decision is primed), the append-only erratum overrides the now-stale commitment 70% of the
-  time at 0.55× the recompute — vs stale's *total collapse* (it keeps trying to cancel a processed
-  order; the real tool rejects it). The recompute saving grows with conversation length (full
-  reprefills the whole history each turn; the erratum appends one line). The gap to full reprefill is
-  the genuinely hard part of multi-turn (a primed prior commitment) — motivating field+erratum /
-  stronger overrides for agent loops, which a buried-token edit would enable (future work).
-
-### 6b. Architecture coverage: where each edit applies (attention → MLA → hybrid → pure SSM)
-*(Figure: `figures/fig_architecture.png`.)*
-Different sequence-mixing architectures store history differently, which determines whether each
-editkv mechanism applies. We test the erratum behaviorally in **both reasoning (CoT-prompted) and
-non-reasoning modes**, over 4 gating scenarios × K=8 stochastic samples, with **bootstrap 95% CIs**
-(B=10000, `esys/arch_erratum_v2.py`). Erratum recovery = P(erratum picks the oracle's flipped action
-| the oracle flips):
-
-| architecture (model) | history store | surgical `in_place` | erratum (non-reasoning) | erratum (reasoning) |
-|---|---|---|---|---|
-| full / GQA attention (Qwen3-8B) | per-token KV | ✅ applies (§5e) | (Qwen3 non-think quirk¹) | **0.97 [.91,1.0]** |
-| **MLA** (DeepSeek-V2-Lite) | *compressed latent* KV | ⚠️ needs MLA-aware edit | ✅ works | ✅ works |
-| **hybrid attn+SSM** (Falcon-H1) | KV + recurrent state | ⚠️ attn layers only | **1.00 [1.0,1.0]** | **0.97 [.91,1.0]** |
-| **pure SSM** (Falcon-Mamba) | recurrent state only — *no KV* | ❌ N/A (nothing to edit) | **0.37 [.20,.53]** ✗ | **0.78 [.63,.91]** ⚠ |
-
-Three findings. (i) **The surgical edit is fundamentally an attention-model capability** — it needs a
-per-token KV entry to overwrite; MLA compresses that, and pure SSM/RWKV keep history in a fixed-size
-recurrent state with no per-token KV. (ii) **The erratum needs attention to "look back" at the
-override.** On hybrid Falcon-H1 it recovers ~1.0 in both modes (its attention layers attend back to
-the appended update). On **pure Mamba the erratum is the weakest** — and crucially **mode-dependent**:
-in non-reasoning mode it *fails* (recovery **0.37 [.20,.53]**), because the model has already
-committed the earlier conclusion to its recurrent state and cannot attend back to the override.
-(iii) **Chain-of-thought partially rescues it on pure SSM** (0.37 → **0.78**, *non-overlapping* CIs
-[.20,.53] vs [.63,.91] ⇒ a significant gain): the CoT regenerates tokens *after* the override, so the
-recurrent state processes the new value last and the model can re-derive — but it still trails the
-attention/hybrid backbones (~1.0). This is a direct prediction of
-the §7 mechanism (the erratum works *via attention to the override*) and sharpens the universality
-claim: **editkv is an attention-architecture method** — robust across full/GQA/MLA/sliding-window/
-hybrid, weaker (CoT-dependent) on pure recurrent backbones. DeepSeek-V4 (sparse attention) and
-Qwen3-Next (linear+attention) retain attention sublayers, so they fall in the supported class but
-exceed this 96 GB box to run.
-
-¹ Qwen3-8B forced into non-thinking mode via a generic chat template did not reliably follow these
-short gating prompts (oracle did not flip), so non-reasoning erratum recovery is not measurable there;
-its reasoning-mode recovery is 0.97, and the §5e/§6 results cover non-reasoning attention models
-(Mistral, Gemma) directly.
-
-## 7. Mechanism (explainability)
-*(Figures: `figures/fig_memoization_map.png`, `fig_d1_generalization.png`, `fig_dose_response.png`.)*
-
-The decision reads the field's value **indirectly**: prefill memoizes the field-conditioned
-conclusion into *downstream* KV, so refreshing the field token's own KV (the cheap in_place
-edit) leaves the decision stale. We establish this with four methods — causal KV patching,
-linear probing, a causal reasoning-circuit test, and a position dose-response — that
-triangulate the same account. (Earlier attention-attribution / graded-knockout results, §7.5,
-are correlational antecedents; the results below are causal.)
-
-### 7.1 Causal KV-patching: a memoization map (D1)
-ROME-style causal tracing applied to the KV cache itself. Two token-aligned prefills (OLD
-value→unsafe action, NEW value→safe action); we patch NEW (K,V) into the OLD cache at chosen
-(layer, position) sites and read the decision logit. *Recovery* = fraction of the OLD→NEW
-decision swing restored. Qwen3-8B, n=12 aligned flip instances:
-- **FIELD-ONLY recovery = 0.009** [CI .006–.014]: refreshing the field token's own KV causally
-  recovers **<1%** of the flip — the rigorous reason in_place fails. This *is* the direct/
-  indirect path decomposition: direct (field→decision) path ≈0.9%, indirect (field→downstream
-  →decision) ≈99%. **FULL-DOWNSTREAM recovery = 1.00** (sanity = full reprefill).
-- **The memoized conclusion is concentrated in the SUFFIX** near the decision: patching the
-  last 10% / 20% of downstream recovers **64% / 82%**; the first 10% / 50% recover only
-  29% / 34% (strongly asymmetric). This is the mechanistic basis for why appending the erratum
-  works and quantifies the partial-reprefill depth needed.
-- **Distributed but identifiable, not holographic:** ~16 well-chosen positions recover 94%;
-  the strongest single sites split across the policy-rule, reasoning, and decision regions.
-  **Layer band:** mid/late layers carry it (early ≈0).
-- **Generalizes across scale and family** (in_place recovery ≪ full-downstream=1.0, suffix-
-  concentrated everywhere): Qwen3-4B 0.025 / 8B 0.009 / 14B 0.008 / **32B 0.023**, Gemma-2-9B
-  0.001 / **Gemma-2-27B 0.219**, Mistral-7B 0.004. The causal account is not Qwen3-8B-specific and
-  holds across 7 models up to 32B (Gemma-2-27B does somewhat more residual *direct* field reading —
-  0.22, still a minority of the 1.0 full-downstream effect — so in_place remains insufficient).
-  (`esys/mech_causal_patch.py`.)
-- **MLA backbone (DeepSeek-V2-Lite-Chat).** The erratum works on a Multi-head Latent Attention
-  model: via vLLM's native MLA, stale(pending)→cancel, oracle(processed)→deny, and
-  **erratum(pending+update)→deny matches the oracle** — the append-only erratum is architecture-
-  agnostic, as expected (`esys/mla_behavioral.py`). The one open piece is *causal KV-patching* (D1)
-  on MLA: MLA stores a shared *compressed latent* KV, so an MLA-aware in_place edit / position-
-  resolved patch needs special handling — architecture-specific future work, not a method
-  limitation. (Reaching this required two environment fixes — see §10.1.)
-
-### 7.2 Linear probing (independent of patching) (D3)
-A cross-domain linear probe for the gated *conclusion* (8 diverse domains, leave-one-domain-
-out, diff-of-means), a different methodology that should agree if 7.1 is right.
-- **Decodability by layer:** conclusion is decodable only in **late layers** (early 0.50 =
-  chance → late 0.83; best layer 26 = 0.875) — confirms 7.1's mid/late locus via probing.
-- **in_place staleness signature:** apply the stale/full-trained probe to the decision residual
-  under each strategy → P(new) = {stale 0.0, **in_place 0.0**, erratum 0.875, full 0.75}. The
-  in_place residual is classified as the **OLD** conclusion, identical to stale — the residual-
-  level reason it fails; erratum/full flip it to NEW.
-
-### 7.3 The reasoning-axis circuit: the CoT re-reads the field (D4)
-Reasoning models tolerate in_place where non-reasoning models revert. **Why?** Hypothesis: the
-CoT re-reads and re-derives the field *after* it, so an in_place-refreshed field is re-consumed
-by freshly generated CoT tokens that the decision then reads. Causal test on the in_place cache
-(field NEW, downstream stale), reasoning ON: `inplace_base` (correct) vs `block_cot_field`
-(mask every CoT-generation query's attention to the field) vs `block_dec_field` (mask only the
-decision→field) vs `block_cot_gate` (same-width control band).
-- Result (Qwen3-8B, n=8 = 2 scenarios × 4 CoT samples): **`block_cot_field` collapses the
-  in_place benefit — P(correct) = 0.0 [CI 0, .32], reverting to OLD on all 8 samples** — while
-  `inplace_base` 1.0 [.68, 1], `block_dec_field` 1.0 [.68, 1], and `block_cot_gate` 1.0 [.68, 1]
-  **hold** (non-overlapping CIs). The CoT re-read, not the decision's direct field read, is the
-  causal carrier of reasoning robustness. Strikingly, per-token CoT→field attention is only
-  ~0.1% (mass 0.0011), yet blocking it flips every sample (attention magnitude ≠ causal
-  importance, echoing 7.1). (`results/mech_reasoning_reread_qwen3_8b.json`.)
-- This explains the scale-dependence (§7.5): the CoT re-derivation can itself go wrong (14B
-  amplifies), so "thinking rescues the cheap edit" is real but **not guaranteed** — whereas the
-  erratum injects an explicit override independent of whether the CoT reasons correctly.
-
-### 7.4 Position dose-response: mechanism → system (D6)
-Causal field-position sweep (value appears once; alignment preserved). in_place recovery rises
-**monotonically** as the field moves later, i.e. as less field-conditioned text sits after it to
-memoize: pos0(early) −0.01 → pos4(hoisted, just before the decision) **0.11**. This is the
-causal underpinning of the practical "hoist the mutable field to the end" knob. Nuance: even
-full hoisting only *partially* rescues a single-pass decision (0.11, not ~1.0) — which is why
-the erratum's explicit conclusion-override, not mere hoisting, is the robust fix (coherent with
-the τ²-bench `field+erratum` result, §6).
-
-### 7.5 Correlational antecedents (attention, graded knockout)
-Consistent with the causal picture above, on every scale (4B–32B): the decision's *direct*
-attention to the field token ≈0.1% (~50–56% to downstream, ~36–48% to attention sinks); graded
-knockout of the top-attention downstream restores the correct action (distributed); the stale
-signal is read in mid/late layers; and E3 reasoning-resolution is scale-dependent (8B & 30B-A3B
-CoT corrects, 14B amplifies — manufacturing 19% unsafe, removed by bypassing the CoT, 32B
-collapses to caution).
-
-**Takeaway.** Four independent methods agree: the field is read *indirectly* through a
-suffix-concentrated, mid/late-layer memoized conclusion in downstream KV; in_place is causally
-inert (<1%) because it never updates that conclusion; the erratum works because appending at the
-end writes a fresh, high-leverage carrier into exactly the suffix region the decision reads; and
-reasoning robustness is mediated by the CoT re-reading the field — a real but fallible path,
-which is why the erratum (not reasoning, not hoisting) is the robust fix.
-
-## 8. Cost/latency frontier (E-sys)
-
-Real wall-clock (CUDA events, warmup+median) to build a decode-ready cache, Qwen3-8B:
-
-| context T | full_reprefill | field_only | erratum | hoist_to_end |
-|---|---|---|---|---|
-| 586 | 78 ms | 30 ms (0.34%) | 27 ms (10%) | 38 ms |
-| 1706 | 198 ms | 30 ms (0.12%) | 45 ms (3.5%) | 44 ms |
-| 4047 | 417 ms | 30 ms (0.05%) | 57 ms (1.5%) | 52 ms |
-| 9947 | **1260 ms** | **30 ms** (0.02%) | **94 ms** (0.6%) | 86 ms |
-
-Full reprefill scales linearly with context; **field_only is ~constant (~30 ms) and erratum
-small (~27–94 ms)**, so the saving grows with length — at 10K context **~42× (field_only) / ~13×
-(erratum)** vs full reprefill, both keeping the field in place. The erratum thus delivers a ~7×
-TTFT reduction *with* correctness (→oracle, §5) *and* natural placement, and uniquely retains
-correctness under contradictory context. (field+erratum ~67–83 ms; still ≪ full at large T.)
-
-### 8b. Serving under load: batched TTFT and long context (up to 32K)
-*(Figure: `figures/fig_serving.png`.)*
-The single-stream numbers above understate the serving win — under batching and at long context
-the gap widens sharply. TTFT (ms) to build a decode-ready cache after a field edit vs full
-reprefill, Qwen3-8B (CUDA events; in_place/erratum forward the field/short-suffix tokens over the
-*reused* length-T KV cache):
-
-| context T | batch | full reprefill | in_place | erratum | speedup (in_place / erratum) |
-|---|---|---|---|---|---|
-| 1024 | 1 | 129 ms | 27 ms | 24 ms | 4.8× / 5.5× |
-| 1024 | 8 | 782 ms | 35 ms | 41 ms | **22× / 19×** |
-| 4096 | 1 | 394 ms | 18 ms | 50 ms | 22× / 8× |
-| 4096 | 8 | 3590 ms | 53 ms | 91 ms | **67× / 40×** |
-| 16384 | 1 | 1956 ms | 40 ms | 107 ms | 49× / 18× |
-| 32768 | 1 | 4538 ms | 39 ms | 169 ms | **117× / 27×** |
-
-in_place TTFT is ~flat (~20–40 ms; it recomputes ~one token regardless of T); erratum grows
-gently (24→169 ms; the short suffix attends over T keys); full reprefill grows ~linearly in T and
-×batch. So the win compounds with **both** context length and batch size — at 32K context, building
-the edited cache is **117× (in_place) / 27× (erratum)** cheaper than re-prefilling, and batching
-alone takes the 4K win from 22×→67×. These are HF-level measurements; a paged-attention engine
-(vLLM/SGLang) that shares the reused prefix across the batch would widen the gap further, so they
-are conservative lower bounds. (`esys/serving_bench.py`, `results/serving_bench_*.json`.)
-
-**On kernels / `torch.compile`.** The *edit itself* is trivial: with a `StaticCache`, overwriting
-the field span's KV in place is **0.16 ms** (no clone/realloc) — the measured cost is the
-partial-prefill recompute and decode, not the edit. `torch.compile` gives only a **modest ~1.2×**
-on the partial prefill and ~1.26× on decode *with StaticCache* (and *hurts* decode with
-`DynamicCache`, which graph-breaks). So the win is algorithmic (recompute a few tokens, not the
-whole context), not a compile flag.
-
-### 8c. Closed integration on a real PagedAttention engine (vLLM)
-The erratum is **append-only**, so it composes directly with a production paged-attention engine's
-content-addressed automatic prefix caching (APC): the long policy prefix stays cached and only the
-short erratum suffix is computed. The naive alternative — putting the new field value into the
-context — *mutates a token inside the cached prefix*, changing that block's content hash and
-**invalidating every downstream block**, so the engine recomputes from the field position onward.
-We demonstrate this on **vLLM 0.19** (prefix caching ON), with the mutable field placed early
-(before the long policy), 48 requests, Qwen3-8B:
-
-| arm | throughput | latency |
-|---|---|---|
-| baseline (new field in prefix → downstream invalidated) | 8.2 req/s | 121 ms/req |
-| **erratum (append-only → prefix is an APC hit)** | **134.8 req/s** | **7.4 ms/req** |
-
-**16.4× throughput** on a real engine — the production realization of the erratum design. (This
-also clarifies why the erratum, not the in_place edit, is the serving-friendly mode: an in-prefix
-field edit is exactly what breaks content-addressed prefix caching.) Implementation note: this
-machine's NVML userspace lib (595.71) mismatches its kernel driver (595.58), breaking vLLM's
-NVML-based platform detection (torch.cuda is unaffected); we force the CUDA platform plugin and a
-single-process engine to work around it. (`esys/vllm_editkv_serving.py`.)
-
-## 8d. Head-to-head baselines: correctness × cost (answering "why not just hoist?")
-A rigorous comparison on 8 gating tasks, **non-reasoning** (the regime where strategies differ;
-reasoning is §5e), reporting P(correct) and recompute fraction, plus a poisoned-context column (a
-prior note asserting the old value). `esys/baseline_table.py`, Qwen3-8B:
-
-| method | P(correct) | recompute | poison P(correct) | needs prompt rewrite? |
+| method | P(correct) | recompute | poison | needs prompt rewrite? |
 |---|---|---|---|---|
 | full reprefill | 0.88 | 100% | 0.62 | no |
-| stale | 0.12 | 0% | — | no |
-| in_place (surgical) | 0.12 | 1.0% | — | no |
+| stale / in_place | 0.12 / 0.12 | 0% / 1% | — | no |
 | CacheBlend @15% (prior work) | 0.38 | 15% | — | no |
-| **hoist-to-end** | **1.00** | **4.4%** | **1.00** | **yes** |
-| erratum (stale field + update) | 0.62 | 15% | 1.00 | no |
-| **field+erratum** | **1.00** | 16% | **1.00** | no |
+| **hoist-to-end** | **1.00** | **4.4%** | 1.00 | **yes** |
+| erratum (stale + update) | 0.62 | 15% | 1.00 | no |
+| **field+erratum** | **1.00** | 16% | 1.00 | no |
 
-This is deliberately not a clean editkv sweep — it is the honest picture, and it *is* the answer to
-"why not hoist?":
-- **Hoist-to-end is genuinely strong** (1.00, poison-robust, cheapest) — *but it requires rewriting
-  the prompt to move the mutable field to the end*. That does not compose: it fails for multiple
-  mutable fields, for fields the rules must reference in place, and it forces the application to
-  pre-identify every mutable field. (And programmers do this *today* precisely to keep cache hits —
-  the pathology this paper is about.)
-- **`field+erratum` matches hoist's correctness and poison-robustness (1.00) with no prompt rewrite**
-  — it edits in place. *That* is editkv's advantage over hoist, not raw accuracy.
-- **`erratum` alone is weaker non-reasoning (0.62)**: the stale early value competes (§7), so
-  `field+erratum` is the robust default (consistent with the τ²-bench finding, §6).
-- **`in_place` alone fails here (0.12) but is ~0.94 under *reasoning* at 1% cost (§5e)** — so for the
-  reasoning models that dominate agent deployments, the *cheapest* correct option is the bare
-  surgical edit, beating even hoist on cost.
-- **CacheBlend's KV-deviation selection underperforms (0.38 @15%)**: the decision-relevant content is
-  *suffix-concentrated*, not in the highest-deviation tokens (§7.1), so selecting by deviation misses it.
-- **Full reprefill is neither a correctness ceiling (0.88) nor poison-robust (0.62)** — emphasizing the
-  late authoritative value (hoist / field+erratum) *beats* recomputing everything when the early
-  context is misleading.
+This is the honest picture and *is* the answer: **hoist is strong but requires rewriting the prompt to
+move every mutable field** (it does not compose across multiple fields or fields the rules reference in
+place — the pathology this paper is about). **`field+erratum` matches hoist's correctness and
+poison-robustness in place, with no rewrite** — that, not raw accuracy, is editkv's advantage.
+`erratum` alone is weaker non-reasoning (0.62, the stale value competes → field+erratum is the
+default). **CacheBlend's KV-deviation selection underperforms (0.38)** because the decision-relevant
+content is suffix-concentrated, not in the highest-deviation tokens (§5.1). And `in_place` is ~free and
+sufficient under *reasoning* (0.94, §4). There is no single dominant method — a *frontier* — and
+editkv contributes the mechanistic map of it plus two in-place options (free in_place for reasoning;
+hoist-matching field+erratum without surgery).
 
-**Takeaway.** There is no single dominant method; there is a *frontier*, and editkv's contribution is
-(i) the mechanistic account of why each option lands where it does, (ii) `in_place` as a ~free correct
-edit for reasoning models, and (iii) `field+erratum` as an in-place option that matches hoist without
-prompt surgery and composes across arbitrary fields. (`figures/fig_baseline_frontier.png`.)
+**6.3 A per-edit diagnostic.** `needs_erratum` predicts, for a specific edit, whether the cheap
+in_place suffices or must escalate to field+erratum, by decoding the next decision token under each;
+validated (8 high + 8 low/irrelevant edits) with a confidence-margin knob trading precision/recall:
+**P=1.00 @ margin 0.5 (zero over-correction) → R=0.86 @ margin 0** (a false negative is a stale
+decision; a false positive costs a few % — so the recall-oriented low margin is the safe default).
 
-## 9. Limitations
-- Behavioral scenarios are mostly single gated decisions; we *do* now close part of this gap with
-  the τ²-bench end-to-end episode loop (§6: real env/tools/reward, N=20, both arms) and the causal
-  mechanism (§7), but a full 114-task user-simulator sweep with a stateful editkv-backed agent is
-  future work (the local open models that fit a single 96 GB GPU are weak τ²-bench agents for
-  reasons unrelated to editkv, which would confound a full-sweep reward).
-- Decision proxy = tool/answer argmax; CoT truncation censors some fidelity numbers (safety
-  numbers are censoring-robust).
-- **Length-changing edits:** the *erratum* handles them by construction — it appends the new
-  value and never shifts positions, so it is length-agnostic (already demonstrated on tasks
-  with length-changing field values, e.g. "8200 USD"→"30 USD"). Only *field_only* needs
-  length-preservation (we pad) or RoPE re-rotation of the suffix for a genuine length change —
-  a known asymmetry that *favors* the erratum.
-- MLA/sparse-attention backbones untested; multi-field simultaneous edits, full multi-turn
-  task-success, and a serving-engine fused operator are future work. Family coverage: Qwen,
-  Gemma, Mistral, SmolLM, Llama (Phi blocked by an outdated custom-modeling/transformers
-  mismatch); 70B+ would need 4-bit quantization (a confound) and exceeds this 96 GB GPU in bf16.
-- Mechanism evidence now spans four causal/independent methods (§7: KV-patching, probing, the
-  reasoning-circuit knockout, dose-response); a **head-level circuit** localization (which
-  specific heads read the memoized suffix vs the erratum) is the natural next step, deferred
-  here. The *scale reversal* of CoT helpfulness is characterized (§7.3/7.5) — the CoT-re-read
-  circuit explains *why* reasoning helps and why it can backfire — but a full per-scale circuit
-  account is open.
-- Serving numbers (§8b) are HF-level (CUDA events); the §8c vLLM integration confirms the win on a
-  real paged-attention engine (16.4×). The 32K×large-batch HF points OOM a single 96 GB GPU in
-  bf16 (measured to 32K at bs=1, 16K at bs=8).
-- **MLA backbones:** the erratum is now *verified* on DeepSeek-V2-Lite (MLA) via vLLM (§6). The
-  remaining open piece is an MLA-aware causal in_place edit/patch of the shared compressed latent
-  KV. **Multi-edit** of one field is robust only when collapsed to the current value — stacking a
-  non-monotonic history can let a salient intermediate state dominate (§5d).
+## 7. Generalization across architectures (Fig. `fig_architecture`)
 
-### 10.1 Reproducibility / environment fixes
-Two environment issues on the Blackwell (RTX PRO 6000, `sm_120`) box had to be fixed and are worth
-recording: (1) **NVML driver/library mismatch** — a security update bumped the userspace NVML to
-595.71 while the loaded kernel module stayed 595.58 (a GPU training job blocked a module reload),
-breaking `nvidia-smi` and vLLM's NVML-based platform detection (torch.cuda was unaffected). Fix:
-install the matching `libnvidia-ml.so.595.58.03` and repoint the SONAME — non-disruptive to the
-running job. (2) **Stale `nvcc`** — `/usr/bin/nvcc` was CUDA 11.5 (max `compute_87`), so flashinfer's
-JIT MLA kernels failed to build for `sm_120`; pointing `CUDA_HOME` at the present **CUDA 12.8**
-toolkit (`compute_120`) fixed it and unblocked MLA on vLLM. With both fixed, the vLLM integration
-needs no NVML workaround and MLA runs natively.
+editkv is an **attention-architecture** method: the surgical edit needs a per-token KV; the erratum
+needs attention to "look back" at the override. Behavioral erratum recovery, both modes, 4 scenarios ×
+K=8 samples, bootstrap CIs (`esys/arch_erratum_v2.py`):
 
-## 10. Conclusion
-Editable KV is viable, but the naive cheap edit is *not* a free lunch: the decision reads the
-field indirectly, so leaving the downstream stale reverts it, and reasoning rescues it only
-unreliably and scale-dependently. A salient erratum — keep the field in place, append a short
-authoritative override, recompute only that — recovers the full-reprefill decision at every
-scale and domain we tested, and is *more robust than recomputation itself* under contradictory
-context. The contribution is the regime map + the mechanism + the robust, cheap fix.
+| backbone | history store | surgical `in_place` | erratum (non-rsn) | erratum (reasoning) |
+|---|---|---|---|---|
+| full/GQA attention (Qwen3-8B) | per-token KV | ✅ (§4) | (Qwen3 non-think quirk) | 0.97 [.91,1] |
+| MLA (DeepSeek-V2-Lite) | compressed latent KV | ⚠ MLA-aware | ✅ verified | ✅ verified |
+| hybrid attn+SSM (Falcon-H1) | KV + recurrent state | ⚠ attn layers | 1.00 [1,1] | 0.97 [.91,1] |
+| **pure SSM (Falcon-Mamba)** | recurrent state, no KV | ❌ N/A | **0.37 [.20,.53]** | **0.78 [.63,.91]** |
+
+On a pure SSM the erratum is the **weakest and mode-dependent**: in non-reasoning it *fails* (0.37 —
+the model commits the earlier conclusion to its recurrent state and cannot attend back), and **CoT
+partially rescues it** (→0.78, non-overlapping CIs) because the CoT regenerates tokens after the
+override so the state processes the new value last. MLA and hybrid backbones work. DeepSeek-V4 (sparse
+attention) and Qwen3-Next (linear+attention) retain attention sublayers → supported class but exceed
+this 96 GB box to run.
+
+## 8. End-to-end on the real τ²-bench retail environment
+
+**8.1 Single decision, N=20 orders (real policy/DB/tools; the `cancel_pending_order` tool's own
+enforcement is the reward).** When an order is fulfilled mid-episode (pending→processed, correct flips
+cancel→deny): stale & in_place agents call cancel on a processed order → the **real tool raises → task
+fails** (0.00); erratum & field+erratum **deny → succeed** (1.00); a no-change control stays 1.00 for
+all (no over-correction). The cheap in_place edit fails **100%** of the time while editkv recovers full
+task correctness.
+
+**8.2 Multi-turn autonomous-agent loop, N=30 (`esys/tau2_agent_loop.py`).** The model emits and
+executes a *sequence* of tool calls against the live DB over a multi-turn conversation; the gating
+field flips mid-episode; the deployment-realistic append-only **erratum** is compared to full-reprefill
+and stale:
+
+| strategy | task success | recompute |
+|---|---|---|
+| full reprefill | 1.00 | 1.00× |
+| erratum (append-only) | 0.70 | 0.55× |
+| stale | 0.00 | 0.49× |
+
+Honest, realistic: where the user has *already* requested the action, the append-only erratum overrides
+the primed-stale decision 70% of the time at 0.55× recompute, vs stale's total collapse; the saving
+grows with conversation length. The gap to full-reprefill is the genuinely hard part of multi-turn (a
+primed prior commitment), which a buried-token field+erratum would close (future work).
+
+## 9. Cost, latency, and a closed serving integration
+
+**Cost frontier (Qwen3-8B, CUDA events):** full reprefill scales linearly (78 ms@586 → 1260 ms@9947)
+while in_place is ~constant (~30 ms) and the erratum small (27–94 ms) — ~42×/~13× cheaper at 10K. The
+*edit itself* is 0.16 ms with a StaticCache; the cost is the partial recompute (`torch.compile` adds
+only ~1.2×, so the win is algorithmic). **Serving under load (Fig. `fig_serving`):** TTFT speedup grows
+with context and batch — 22×/19× at 1K·bs8, 67×/40× at 4K·bs8, **117×/27× at 32K·bs1**. **Closed vLLM
+integration:** the append-only erratum composes with vLLM's content-addressed prefix caching for
+**16.4×** throughput (a naive in-prefix field edit invalidates downstream blocks — exactly why the
+erratum is the serving-friendly mode). (Two environment fixes — NVML driver/lib mismatch and a stale
+CUDA-11.5 nvcc vs Blackwell sm_120 — were required; see `PAPER_detailed.md` §10.1.)
+
+## 10. Limitations
+
+The mechanism battery (n=12 instances) is on a few scenario templates; the scale-reversal explanation
+(§5.3) is qualitatively clear but small-n at 14B. The τ²-bench evidence is the retail cancel-task
+family (real env/tools/reward, single-decision N=20 + multi-turn N=30), not the full 114-task
+user-simulator sweep with a strong agent (local models that fit one 96 GB GPU are weak τ²-bench agents,
+which would confound absolute reward). Models are ≤32B open weights (no frontier/API scale; 70B needs
+4-bit). MLA in_place editing of the compressed latent KV, pure-SSM support, multi-field/long
+multi-edit, and an online-load serving study (SGLang, in-place kernel) are future work. The erratum is
+template-sensitive in non-reasoning settings; field+erratum is the robust default.
+
+## 11. Conclusion
+
+Editable KV is viable, but the naive cheap edit is not a free lunch: the decision reads the field
+indirectly through a memoized downstream, so leaving it stale reverts the decision, and reasoning
+rescues it only unreliably and scale-dependently. The practical picture is a frontier, not a winner:
+the bare surgical edit is ~free and sufficient for reasoning models; `field+erratum` matches the strong
+hoist baseline *in place*, without prompt surgery; and on a real agent environment editkv preserves
+task success at a fraction of the recompute where the stale agent collapses. We give a causal,
+multi-method mechanistic account of *why*, show it is an attention-architecture method, and release a
+production library and a closed vLLM integration.
