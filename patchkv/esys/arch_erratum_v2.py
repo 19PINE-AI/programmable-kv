@@ -96,12 +96,18 @@ def main():
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     impl = os.environ.get("MECH_ATTN", "sdpa")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
+    kw = dict(device_map="cuda", attn_implementation=impl, trust_remote_code=True)
+    quantized = any(q in args.model.upper() for q in ("FP8", "-INT8", "GPTQ", "AWQ", "QUANTIZED.W", "W8A", "W4A"))
+    if os.environ.get("BNB_8BIT"):
+        from transformers import BitsAndBytesConfig
+        kw["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
+    elif not quantized:
+        kw["dtype"] = torch.bfloat16
     try:
-        model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda",
-                                                     attn_implementation=impl, trust_remote_code=True).eval()
+        model = AutoModelForCausalLM.from_pretrained(args.model, **kw).eval()
     except (ValueError, KeyError):
-        model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda",
-                                                     trust_remote_code=True).eval()
+        kw.pop("attn_implementation", None)
+        model = AutoModelForCausalLM.from_pretrained(args.model, **kw).eval()
     res = {"model": args.model, "arch": args.arch, "K": args.K}
     print(f"=== {args.arch}: {args.model} (K={args.K} samples/scenario) ===", flush=True)
     for mode in ["non_reasoning", "reasoning"]:

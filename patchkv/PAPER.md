@@ -312,6 +312,21 @@ which would confound absolute reward). Models are ≤32B open weights (no fronti
 multi-edit, and an online-load serving study (SGLang, in-place kernel) are future work. The erratum is
 template-sensitive in non-reasoning settings; field+erratum is the robust default.
 
+**On quantization (a methodological note).** To run 32B-class models alongside a shared training job
+we used 8-bit checkpoints. The **causal-patching recovery is a margin-sensitive *ratio*** ((s_patched −
+s_old)/(s_new − s_old)), which becomes NaN/unstable when quantization collapses the decision margin — so
+mechanism *patching* should use full precision, while the **behavioral checks** (binary decisions: the
+D4 circuit, erratum recovery) are quantization-robust. The official **Qwen3-32B-FP8** loaded cleanly
+(FP8 is natively supported on this Blackwell `sm_120` GPU) and gave a clean D4 circuit (§5.3). **8-bit
+*Gemma* could not be run cleanly here**, for distinct concrete reasons we record for reproducibility:
+the largest Gemma (gemma-3-27b) is *multimodal* (its vision tower makes even the FP8 checkpoint ~58 GB →
+OOM with the 31 GB training job, and the multimodal wrapper breaks the text-only KV-patching);
+bitsandbytes int8 *degrades* gemma-2-27b's gated-decision competence (the oracle stops flipping);
+RedHat's calibrated W8A16 triggers a CUDA device-side assert (int8 kernels are immature on `sm_120`);
+and community FP8 gemma-2 checkpoints fail to load (meta-tensor materialization bug). The clean Gemma
+mechanism point therefore remains bf16 gemma-2-27b (§5.1). Completing 8-bit Gemma needs more GPU memory
+(for multimodal gemma-3) or fixed int8 Blackwell kernels / FP8 checkpoints — infrastructure, not method.
+
 ## 11. Conclusion
 
 Editable KV is viable, but the naive cheap edit is not a free lunch: the decision reads the field

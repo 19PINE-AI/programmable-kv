@@ -56,7 +56,7 @@ def load(name):
     tok = AutoTokenizer.from_pretrained(name, trust_remote_code=True)
     # For officially-quantized checkpoints (FP8/compressed-tensors) do NOT force a dtype — let the
     # quantization config keep weights quantized (forcing bf16 would dequantize -> OOM).
-    quantized = any(q in name.upper() for q in ("FP8", "-INT8", "GPTQ", "AWQ"))
+    quantized = any(q in name.upper() for q in ("FP8", "-INT8", "GPTQ", "AWQ", "QUANTIZED.W", "W8A", "W4A"))
     kw = dict(device_map="cuda", attn_implementation=impl, trust_remote_code=True)
     if os.environ.get("BNB_8BIT"):
         # on-the-fly bitsandbytes int8 (8-bit) quantization of a full-precision checkpoint

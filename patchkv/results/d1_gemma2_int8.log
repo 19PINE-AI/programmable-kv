@@ -1,0 +1,46 @@
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:01<00:13,  1.24s/it]Loading checkpoint shards:  17%|█▋        | 2/12 [00:02<00:13,  1.35s/it]Loading checkpoint shards:  25%|██▌       | 3/12 [00:04<00:12,  1.41s/it]Loading checkpoint shards:  33%|███▎      | 4/12 [00:05<00:11,  1.49s/it]Loading checkpoint shards:  42%|████▏     | 5/12 [00:07<00:10,  1.47s/it]Loading checkpoint shards:  50%|█████     | 6/12 [00:09<00:09,  1.59s/it]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:10<00:08,  1.60s/it]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:12<00:06,  1.54s/it]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:13<00:04,  1.54s/it]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:15<00:03,  1.53s/it]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:16<00:01,  1.51s/it]Loading checkpoint shards: 100%|██████████| 12/12 [00:16<00:00,  1.13s/it]Loading checkpoint shards: 100%|██████████| 12/12 [00:16<00:00,  1.40s/it]
+/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py:1014: UserWarning: `output_attentions=True` is not supported with `attn_implementation` other than ['eager', 'eager_paged', 'flex_attention']. Please use `model.set_attn_implementation('eager')` to enable capturing attention outputs.
+  warnings.warn(
+`sdpa` attention does not support `output_attentions=True` or `head_mask`. Please set your attention to `eager` if you want any of these features.
+  [account_role/A4471] L=849 field_only=0.401 full_down=2.21 suffix@0.1=-1.646 suffix@0.3=-1.132 top_pos_region=gate->convo
+  [account_role/B8820] L=849 field_only=-0.229 full_down=0.23 suffix@0.1=0.439 suffix@0.3=-0.174 top_pos_region=gate->convo
+  [safety_mode/A4471] L=842 field_only=2.160 full_down=-0.37 suffix@0.1=4.246 suffix@0.3=1.594 top_pos_region=gate->convo
+  [safety_mode/B8820] L=842 field_only=-0.313 full_down=0.35 suffix@0.1=0.284 suffix@0.3=0.022 top_pos_region=gate->convo
+
+==== D1 CAUSAL PATCHING SUMMARY ====
+n=4 instances
+FIELD-ONLY recovery (= in_place): 0.505 CI(0.505, 0.505)  (small => why in_place fails)
+FULL-DOWNSTREAM recovery (sanity): 0.604 CI(0.604, 0.604)
+REGION mean single-pos recovery: {'field': 0.828, 'field->gate': 0.453, 'gate->convo': 0.734, 'convo->decision': 1.62, 'decision': 1.659}
+strongest single-site region counts: {'gate->convo': 4}
+LAYER-band recovery: {'early': 0.252, 'mid': 0.0, 'late': 0.0}
+CUMULATIVE SUFFIX recovery (patch last fraction of downstream -> recovery):
+   suffix 0.02: 0.85 CI(0.848, 0.849)
+   suffix 0.05: -1.64 CI(-1.642, -1.642)
+   suffix  0.1: 0.83 CI(0.831, 0.831)
+   suffix  0.2: 2.14 CI(2.136, 2.136)
+   suffix  0.3: 0.08 CI(0.078, 0.078)
+   suffix  0.5: 1.68 CI(1.679, 1.679)
+   suffix  0.7: 2.56 CI(2.563, 2.563)
+   suffix  0.9: 3.07 CI(3.066, 3.066)
+   suffix  1.0: 0.60 CI(0.604, 0.604)
+CUMULATIVE PREFIX recovery (patch first fraction of downstream -> recovery):
+   prefix 0.02: 2.99 CI(2.989, 2.989)
+   prefix 0.05: 1.54 CI(1.544, 1.544)
+   prefix  0.1: 1.84 CI(1.839, 1.839)
+   prefix  0.2: 2.25 CI(2.249, 2.249)
+   prefix  0.3: 4.09 CI(4.09, 4.09)
+   prefix  0.5: 5.22 CI(5.225, 5.225)
+   prefix  0.7: 5.07 CI(5.066, 5.067)
+   prefix  0.9: 2.77 CI(2.766, 2.766)
+   prefix  1.0: 0.60 CI(0.604, 0.604)
+LOCALITY top-k (non-additive ranking; weak by construction):
+   top-  1 pos -> 6.47 CI(6.47, 6.47)
+   top-  2 pos -> -3.19 CI(-3.185, -3.185)
+   top-  4 pos -> 3.52 CI(3.523, 3.524)
+   top-  8 pos -> 0.92 CI(0.917, 0.917)
+   top- 16 pos -> 0.48 CI(0.48, 0.48)
+   top- 32 pos -> 1.85 CI(1.848, 1.848)
+   top- 64 pos -> 4.75 CI(4.747, 4.747)
+   top-128 pos -> -0.26 CI(-0.257, -0.257)
+D1_CAUSAL_PATCH_DONE
