@@ -1,0 +1,23 @@
+{
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "n_instances": 4,
+  "clean_flips": 1,
+  "agg": {
+    "in_place": {
+      "recomputed": 0.043,
+      "composed": 0.065
+    },
+    "sel@8": {
+      "recomputed": 0.549,
+      "composed": 0.329
+    },
+    "sel@32": {
+      "recomputed": 0.506,
+      "composed": 0.442
+    },
+    "erratum": {
+      "recomputed": 1.246,
+      "composed": 1.24
+    }
+  }
+}

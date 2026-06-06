@@ -458,8 +458,11 @@ def main():
     ap.add_argument("--tag", default=None)
     args = ap.parse_args()
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda",
-                                                 attn_implementation="sdpa", trust_remote_code=True).eval()
+    quantized = any(q in args.model.upper() for q in ("FP8", "-INT8", "GPTQ", "AWQ", "W8A", "W4A", "QUANTIZED.W"))
+    kw = dict(device_map="cuda", attn_implementation="sdpa", trust_remote_code=True)
+    if not quantized:
+        kw["dtype"] = torch.bfloat16
+    model = AutoModelForCausalLM.from_pretrained(args.model, **kw).eval()
     if args.sanity:
         sanity(model, tok)
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")

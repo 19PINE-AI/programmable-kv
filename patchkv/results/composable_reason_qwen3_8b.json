@@ -1,0 +1,9 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "reason": {
+    "full": 16,
+    "precompiled": 16,
+    "agree": 16,
+    "n": 16
+  }
+}

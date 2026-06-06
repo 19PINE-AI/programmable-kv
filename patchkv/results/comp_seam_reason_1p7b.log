@@ -7,3 +7,11 @@
     K=  8: cos=0.9988
     K= 16: cos=0.9991
     K= 32: cos=0.9991
+=== REASONING CORRECTNESS (Qwen/Qwen3-1.7B) ===
+  refund: done
+  access: done
+  deploy: done
+  rx: done
+  [reasoning] full_correct=16/16 precompiled_correct=16/16 agree=16/16
+COMPOSABLE_KV_DONE
+SEAM_REASON_1P7B_DONE

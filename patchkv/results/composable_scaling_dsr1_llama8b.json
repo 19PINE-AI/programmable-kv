@@ -1,0 +1,30 @@
+{
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "scaling": {
+    "500": {
+      "full_ms": 91.6,
+      "precomp_ms": 75.7,
+      "speedup": 1.21
+    },
+    "2000": {
+      "full_ms": 304.5,
+      "precomp_ms": 104.6,
+      "speedup": 2.91
+    },
+    "8000": {
+      "full_ms": 1291.2,
+      "precomp_ms": 158.2,
+      "speedup": 8.16
+    },
+    "16000": {
+      "full_ms": 2400.8,
+      "precomp_ms": 255.6,
+      "speedup": 9.39
+    },
+    "32000": {
+      "full_ms": 6056.7,
+      "precomp_ms": 501.6,
+      "speedup": 12.08
+    }
+  }
+}

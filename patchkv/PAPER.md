@@ -444,8 +444,16 @@ is a skill that is the *sole carrier* of a context-derived computation.
 **10.4 Transplant mechanism + the seam (analog of D1's locality map).** Per-position KV deviation
 (transplanted vs native) localizes the error to the chunk's **start** (mean dev first-8 tokens 13.8
 vs last-8 7.2): the first tokens most needed the prefix. This is the composable analog of the editable
-*suffix-concentration* — and it is exactly the **seam** that boundary recompute (CacheBlend-style,
-reusing our selective-recompute machinery) targets.
+*suffix-concentration* — and it is exactly the **seam** that boundary recompute targets. **Seam-repair
+(`--seam`):** recomputing just the first **K** chunk tokens with the real prefix lifts logit cos-to-full
+monotonically — 8B: 0.982 (K=0) → 0.993 (K=2) → 0.996 (K=4+); 1.7B: 0.989 → 0.999 (K=2). So **2–4
+boundary tokens repair the residual** (CacheBlend-style, reusing the selective-recompute machinery) —
+the few tokens that needed the prefix.
+
+**Correctness under reasoning (C3).** Under CoT, the precompiled skill preserves *correct* behavior, not
+just *matching* behavior: on Qwen3-8B and Qwen3-1.7B the full-recompute model follows the skill **16/16**
+and the precompiled-transplant model also **16/16**, with **16/16 decision agreement** — transplantation
+is lossless for skill-following when the model actually reasons over the skill.
 
 **10.5 TTFT scaling + the library (Fig. `fig_ksweep` companion; analog of §9 serving).** Full reprefill
 is O(L²) in skill length; transplant is O(L) re-rotation + small prefill. On Qwen3-8B the TTFT speedup
@@ -466,8 +474,10 @@ vs *recomputed* skill):
 
 `in_place` is weak (memoization), selective recovers, erratum is strongest — and **composed ≈
 recomputed** for every method. Editing transplanted KV behaves identically to editing recomputed KV:
-**edit and compose are two operations on one substrate**, which is the unifying thesis. (Recovery-ratio
-metric, n=4; the absolute decision margins do not always cross zero on 8B non-reasoning.)
+**edit and compose are two operations on one substrate**, which is the unifying thesis. The keystone
+**generalizes across families** — composed ≈ recomputed also holds on Qwen3-4B and **DeepSeek-R1-Llama-8B**
+(e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). (Recovery-ratio metric, n=4; absolute
+decision margins do not always cross zero on non-reasoning.)
 
 ## 11. Limitations
 

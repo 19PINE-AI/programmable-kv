@@ -9,3 +9,9 @@
     K= 32: cos=0.9969
 === REASONING CORRECTNESS (Qwen/Qwen3-8B) ===
   refund: done
+  access: done
+  deploy: done
+  rx: done
+  [reasoning] full_correct=16/16 precompiled_correct=16/16 agree=16/16
+COMPOSABLE_KV_DONE
+SEAM_REASON_8B_DONE
