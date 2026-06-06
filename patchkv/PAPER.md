@@ -282,8 +282,13 @@ only ~1.2×, so the win is algorithmic). **Serving under load (Fig. `fig_serving
 with context and batch — 22×/19× at 1K·bs8, 67×/40× at 4K·bs8, **117×/27× at 32K·bs1**. **Closed vLLM
 integration:** the append-only erratum composes with vLLM's content-addressed prefix caching for
 **16.4×** throughput (a naive in-prefix field edit invalidates downstream blocks — exactly why the
-erratum is the serving-friendly mode). (Two environment fixes — NVML driver/lib mismatch and a stale
-CUDA-11.5 nvcc vs Blackwell sm_120 — were required; see `PAPER_detailed.md` §10.1.)
+erratum is the serving-friendly mode). **Online load sweep (Fig. `fig_online_load`):** submitting an
+increasing number of concurrent requests to one vLLM engine, the **baseline saturates at ~11 req/s**
+(compute-bound — each request full-prefills the long policy) while the **erratum scales to ~178 req/s**
+(cache-bound — shared prefix is an APC hit, only the suffix is computed); the throughput advantage
+*grows* with offered load — 6× (N=8) → 13× (N=32) → **16× (N=128–512)** — and the baseline's saturation
+is exactly the regime where editkv matters most. (Two environment fixes — NVML driver/lib mismatch and
+a stale CUDA-11.5 nvcc vs Blackwell sm_120 — were required; see `PAPER_detailed.md` §10.1.)
 
 ## 10. Limitations
 

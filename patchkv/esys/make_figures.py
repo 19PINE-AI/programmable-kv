@@ -162,8 +162,26 @@ def fig_baseline_frontier():
     fig.tight_layout(); fig.savefig(os.path.join(F, "fig_baseline_frontier.png")); plt.close(fig)
 
 
+def fig_online_load():
+    d = load("vllm_online_load_qwen3_8b.json")
+    if not d:
+        return
+    rows = sorted(d["rows"], key=lambda r: r["N"])
+    Ns = [r["N"] for r in rows]
+    fig, ax = plt.subplots(figsize=(5.4, 3.4))
+    ax.plot(Ns, [r["baseline"]["throughput_req_s"] for r in rows], "s--", color="#d62728",
+            label="baseline (new field in prefix)")
+    ax.plot(Ns, [r["erratum"]["throughput_req_s"] for r in rows], "o-", color="#1f77b4",
+            label="erratum (append-only, prefix reused)")
+    ax.set_xscale("log", base=2); ax.set_xlabel("offered concurrency (requests)")
+    ax.set_ylabel("throughput (req/s)")
+    ax.set_title("Online load on vLLM: baseline saturates (compute-bound),\nerratum scales (cache-bound)")
+    ax.legend(fontsize=8); ax.grid(alpha=0.3)
+    fig.tight_layout(); fig.savefig(os.path.join(F, "fig_online_load.png")); plt.close(fig)
+
+
 for fn in [fig_memoization_map, fig_d1_generalization, fig_dose_response, fig_surgical,
-           fig_architecture, fig_serving, fig_baseline_frontier]:
+           fig_architecture, fig_serving, fig_baseline_frontier, fig_online_load]:
     try:
         fn(); print("ok:", fn.__name__)
     except Exception as e:
