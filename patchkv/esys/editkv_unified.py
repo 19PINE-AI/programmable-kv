@@ -48,7 +48,12 @@ class EditableComposableCache:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="Qwen/Qwen3-8B"); ap.add_argument("--tag", default=None)
+    ap.add_argument("--pad", type=int, default=0, help="pad each skill to ~N tokens (realistic long skills)")
     args = ap.parse_args()
+    if args.pad:
+        global SKILLS
+        extra = "\n".join(f"- detailed procedure note {i}: handle the documented edge case per SOP and record the outcome." for i in range(args.pad // 12))
+        SKILLS = [s + "\n" + extra for s in SKILLS]
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     quant = any(q in args.model.upper() for q in ("FP8", "-INT8", "GPTQ", "AWQ", "W8A", "W4A"))

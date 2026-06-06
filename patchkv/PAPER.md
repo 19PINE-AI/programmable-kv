@@ -334,7 +334,12 @@ conclusion token-by-token — which is why it remains the robust, scale- and mod
 `field+selective@K` recovers **0.00–0.07 at every K (0–64)** while the erratum recovers **0.98** (full
 0.89). DeepSeek-R1's reasoning is the *stickiest* we measured (field-only 0.06): selective recompute
 fails entirely, the erratum still works — definitively establishing the erratum as the cross-family
-robust method and `field+selective@K` as unreliable.
+robust method and `field+selective@K` as unreliable. **Stickiness is domain×model dependent, not just
+model-dependent:** on the *diverse* gating domains the same DeepSeek-R1 is non-sticky (field-only =
+full = 0.79, K\*=0), whereas on the e2 templates it is maximally sticky — so a model's K\* cannot be
+quoted without its task distribution, reinforcing the erratum (which needs no K) as the safe default.
+(The reasoning K-sweep harness requires a CoT model; non-reasoning models score degenerately in it and
+are excluded.)
 
 **What tokens carry the conclusion (`esys/selective_tokens.py`).** Decoding the causally-important
 downstream tokens (ranked by per-position recovery) gives a concrete, interpretable picture of *where*

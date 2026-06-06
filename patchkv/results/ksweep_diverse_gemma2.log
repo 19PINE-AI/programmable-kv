@@ -1,0 +1,19 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.19it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:02,  1.03s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.10it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.29it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.20it/s]
+  retail_refund done (4)
+  airline_cancel done (8)
+  deploy_guard done (12)
+  bank_withdraw done (16)
+  doc_access done (20)
+  rx_safety done (24)
+  customs_route done (28)
+  oncall_route done (32)
+
+==== DIVERSE K-SWEEP (field+selective under REASONING) — unsloth/gemma-2-9b-it (n=32) ====
+  field+sel@0   P_correct=0.00 CI(0, 0.11)
+  field+sel@4   P_correct=0.00 CI(0, 0.11)
+  field+sel@8   P_correct=0.00 CI(0, 0.11)
+  field+sel@16  P_correct=0.00 CI(0, 0.11)
+  field+sel@32  P_correct=0.00 CI(0, 0.11)
+  field+sel@64  P_correct=0.00 CI(0, 0.11)
+  full=0.00  stale=0.00  => K* (>=full) = 0
+DIVERSE_KSWEEP_DONE

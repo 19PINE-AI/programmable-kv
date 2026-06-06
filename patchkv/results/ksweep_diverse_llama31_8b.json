@@ -1,0 +1,51 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "n": 32,
+  "K_correct": {
+    "0": {
+      "P_correct": 0.0,
+      "ci": [
+        0,
+        0.11
+      ]
+    },
+    "4": {
+      "P_correct": 0.125,
+      "ci": [
+        0.05,
+        0.28
+      ]
+    },
+    "8": {
+      "P_correct": 0.125,
+      "ci": [
+        0.05,
+        0.28
+      ]
+    },
+    "16": {
+      "P_correct": 0.156,
+      "ci": [
+        0.07,
+        0.32
+      ]
+    },
+    "32": {
+      "P_correct": 0.125,
+      "ci": [
+        0.05,
+        0.28
+      ]
+    },
+    "64": {
+      "P_correct": 0.125,
+      "ci": [
+        0.05,
+        0.28
+      ]
+    }
+  },
+  "full_P_correct": 0.125,
+  "stale_P_correct": 0.0,
+  "K_star_full": 4
+}

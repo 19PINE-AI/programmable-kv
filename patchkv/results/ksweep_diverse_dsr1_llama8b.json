@@ -1,0 +1,51 @@
+{
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "n": 24,
+  "K_correct": {
+    "0": {
+      "P_correct": 0.792,
+      "ci": [
+        0.6,
+        0.91
+      ]
+    },
+    "4": {
+      "P_correct": 0.708,
+      "ci": [
+        0.51,
+        0.85
+      ]
+    },
+    "8": {
+      "P_correct": 0.75,
+      "ci": [
+        0.55,
+        0.88
+      ]
+    },
+    "16": {
+      "P_correct": 0.792,
+      "ci": [
+        0.6,
+        0.91
+      ]
+    },
+    "32": {
+      "P_correct": 0.833,
+      "ci": [
+        0.64,
+        0.93
+      ]
+    },
+    "64": {
+      "P_correct": 0.792,
+      "ci": [
+        0.6,
+        0.91
+      ]
+    }
+  },
+  "full_P_correct": 0.792,
+  "stale_P_correct": 0.0,
+  "K_star_full": 0
+}
