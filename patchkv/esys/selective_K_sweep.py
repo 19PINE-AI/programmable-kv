@@ -73,18 +73,23 @@ def main():
             print(f"  {scn}/{oid} done ({n})", flush=True)
     out = {"model": args.model, "n": n, "K_safe": {}}
     er = safe["erratum"] / n if n else 0
-    kstar = None
+    er_lo = wilson(safe["erratum"], n)[0]      # golden's lower CI bound
+    kstar = None                                # strict: P_safe >= golden point estimate
+    kstar_ci = None                             # practical: P_safe within golden's CI (>= its lower bound)
     for k in KLIST:
         p = safe[f"field+sel@{k}"] / n if n else 0
         out["K_safe"][k] = {"P_safe": round(p, 3), "ci": wilson(safe[f"field+sel@{k}"], n)}
         if kstar is None and p >= er - 1e-9:
             kstar = k
+        if kstar_ci is None and p >= er_lo - 1e-9:
+            kstar_ci = k
+    out["K_star_ci"] = kstar_ci
     out["erratum_P_safe"] = round(er, 3); out["full_P_safe"] = round(safe["full"] / n, 3); out["K_star"] = kstar
     json.dump(out, open(os.path.join(os.path.dirname(__file__), "..", "results", f"selective_Ksweep_{tag}.json"), "w"), indent=2)
     print(f"\n==== K-SWEEP (field+selective under REASONING) — {args.model} (n={n}) ====")
     for k in KLIST:
         print(f"  field+sel@{k:<3d} P_safe={out['K_safe'][k]['P_safe']:.2f} CI{out['K_safe'][k]['ci']}")
-    print(f"  erratum(golden)={er:.2f}  full={out['full_P_safe']:.2f}  => K* (min K matching golden) = {kstar}")
+    print(f"  erratum(golden)={er:.2f}  full={out['full_P_safe']:.2f}  => K* (>=golden pt) = {kstar}  K*_ci (within golden CI) = {kstar_ci}")
     print("KSWEEP_DONE")
 
 
