@@ -476,10 +476,13 @@ vs *recomputed* skill):
 recomputed** for every method. Editing transplanted KV behaves identically to editing recomputed KV:
 **edit and compose are two operations on one substrate**, which is the unifying thesis. The keystone
 **generalizes across families** — composed ≈ recomputed also holds on Qwen3-4B and **DeepSeek-R1-Llama-8B**
-(e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). Llama-3.1-8B also confirms it (clean flips 3/4: in_place 0.05/0.04, sel@32 0.83/0.86, erratum 1.11/1.13). On **Mistral-7B the decisions cleanly
-flip (4/4)**, giving the sharpest read — in_place 0.04/0.03, sel@8 0.62/0.49, sel@32 0.72/0.56,
-erratum 0.98/0.93 (recomputed/composed): in_place fails, selective recovers, erratum is near-perfect,
-and composed tracks recomputed throughout.
+(e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). The sharpest, most rigorous read is
+**Llama-3.1-8B over 8 categorical domains (clean flips 7/8)**: in_place **0.054/0.036** (fails),
+sel@32 **0.802/0.805** (recovers), erratum **1.114/1.246** (strongest) — recomputed/composed match
+within noise at every method. **Mistral-7B (4/4 flips)** corroborates (in_place 0.04/0.03, sel@8
+0.62/0.49, sel@32 0.72/0.56, erratum 0.98/0.93), as does Qwen3-4B. Across families the picture is
+identical: editing a field *inside a transplanted skill* fails in place, recovers selectively, and is
+fixed by the erratum — exactly as for a recomputed skill.
 
 **10.7 Unified system: one cache, both operations (`esys/editkv_unified.py`).** A capstone agent turn:
 a system prompt + a **library of 3 precompiled skills** (composed by KV splice, no reprefill) + a

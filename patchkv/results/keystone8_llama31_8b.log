@@ -1,0 +1,18 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  1.56it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.61it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.60it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  2.30it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.98it/s]
+=== COMPOSE-THEN-EDIT keystone (unsloth/Meta-Llama-3.1-8B-Instruct) ===
+  account   recomputed: in_place=+0.09 sel@32=+0.89 err=+1.04 | composed: in_place=+0.08 sel@32=+0.87 err=+1.15
+  order     recomputed: in_place=+0.00 sel@32=+0.71 err=+0.93 | composed: in_place=+0.01 sel@32=+0.81 err=+1.09
+  subscription recomputed: in_place=+0.02 sel@32=+0.88 err=+1.50 | composed: in_place=-0.01 sel@32=+0.90 err=+1.33
+  door      recomputed: in_place=+0.08 sel@32=+0.85 err=+0.97 | composed: in_place=+0.07 sel@32=+0.84 err=+0.95
+  payout    recomputed: in_place=+0.07 sel@32=+0.81 err=+1.12 | composed: in_place=+0.03 sel@32=+0.77 err=+1.08
+  post      recomputed: in_place=+0.07 sel@32=+0.71 err=+1.23 | composed: in_place=+0.02 sel@32=+0.63 err=+1.44
+  ship      recomputed: in_place=+0.03 sel@32=+0.82 err=+1.06 | composed: in_place=+0.03 sel@32=+0.89 err=+1.18
+  login     recomputed: in_place=+0.07 sel@32=+0.74 err=+1.05 | composed: in_place=+0.06 sel@32=+0.73 err=+1.75
+
+  MEAN recovery (n=8, clean flips=7/8):
+  method       recomputed     composed
+  in_place          0.054        0.036
+  sel@8             0.574        0.623
+  sel@32            0.802        0.805
+  erratum           1.114        1.246
+COMPOSE_EDIT_DONE

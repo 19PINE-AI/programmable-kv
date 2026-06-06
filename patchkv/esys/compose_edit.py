@@ -40,6 +40,22 @@ INSTANCES = [
       rule="Unlock the secure door ONLY if badge is valid. If the badge is revoked, keep the door locked.",
       Told="valid", Tnew="revoked", task="The user swipes to enter. Answer one word — unlock or locked.\nDecision:",
       act_old="unlock", act_new="locked"),
+ dict(name="payout", sys="You are a payments agent.", skill_name="PAYOUT_POLICY", field="kyc_status",
+      rule="Release a payout ONLY if kyc_status is verified. If kyc_status is pending, you MUST hold the payout.",
+      Told="verified", Tnew="pending", task="The user requests a payout. Answer one word — release or hold.\nDecision:",
+      act_old="release", act_new="hold"),
+ dict(name="post", sys="You are a content moderator.", skill_name="MOD_POLICY", field="post_state",
+      rule="Publish a post ONLY if post_state is approved. If post_state is flagged, you MUST quarantine it.",
+      Told="approved", Tnew="flagged", task="A post is submitted. Answer one word — publish or quarantine.\nDecision:",
+      act_old="publish", act_new="quarantine"),
+ dict(name="ship", sys="You are a logistics agent.", skill_name="SHIP_POLICY", field="stock_state",
+      rule="Ship an order ONLY if stock_state is in_stock. If stock_state is backordered, you MUST defer shipping.",
+      Told="in_stock", Tnew="backordered", task="An order is ready to ship. Answer one word — ship or defer.\nDecision:",
+      act_old="ship", act_new="defer"),
+ dict(name="login", sys="You are an auth gateway.", skill_name="AUTH_POLICY", field="mfa_state",
+      rule="Allow login ONLY if mfa_state is passed. If mfa_state is failed, you MUST challenge the user.",
+      Told="passed", Tnew="failed", task="The user attempts to log in. Answer one word — allow or challenge.\nDecision:",
+      act_old="allow", act_new="challenge"),
 ]
 
 

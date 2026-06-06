@@ -1,0 +1,23 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "n_instances": 8,
+  "clean_flips": 7,
+  "agg": {
+    "in_place": {
+      "recomputed": 0.054,
+      "composed": 0.036
+    },
+    "sel@8": {
+      "recomputed": 0.574,
+      "composed": 0.623
+    },
+    "sel@32": {
+      "recomputed": 0.802,
+      "composed": 0.805
+    },
+    "erratum": {
+      "recomputed": 1.114,
+      "composed": 1.246
+    }
+  }
+}
