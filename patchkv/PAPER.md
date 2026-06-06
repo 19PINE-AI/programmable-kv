@@ -25,7 +25,21 @@ recomputing only those ~tens of tokens — **recovers the oracle decision at eve
 in every domain we tested, even where a full re-prefill is itself fooled by contradictory
 context.** Controlling for model competence (an oracle baseline), the in-place edit has a
 real penalty (0.12–0.67, up to 29% unsafe actions) that the erratum eliminates. We give a
-mechanistic account via attention knockout and causal patching, and a cost/latency frontier.
+mechanistic account via four independent causal methods — KV-patching (the field's own KV
+causally drives <1% of the decision; the memoized conclusion is suffix-concentrated in mid/late
+layers), linear probing, a reasoning-circuit knockout, and a position dose-response — that
+*triangulate* the same story. Two consequences sharpen the practical picture. **When the
+surgical edit alone suffices:** with no erratum at all, the bare ~0.1% field-KV overwrite recovers
+the oracle decision **0.94** of the time on a *reasoning* 8B model but **never** without reasoning
+(0.00 at every scale) and only partially at 14B/32B — so "just do the surgical edit" is a real
+cheap win for reasoning models, strongest at the agent-scale 8B, but not universal, which is why
+the erratum (the robust default) and a per-edit diagnostic both exist. **Architecture coverage:**
+editkv is an *attention-architecture* method — the surgical edit needs a per-token KV (full/GQA/
+MLA), and the erratum needs attention to "look back" at the override: it works on full/GQA/MLA
+(DeepSeek-V2-Lite) and hybrid attention+SSM (Falcon-H1) backbones, but *fails on a pure SSM*
+(Falcon-Mamba), whose recurrent state has no look-back. We close with a cost/latency frontier and a
+production realization on vLLM (the append-only erratum composes with prefix caching for 16× higher
+throughput; an in-prefix edit invalidates the cache).
 
 ---
 

@@ -60,6 +60,37 @@ can itself revert — so it is not a safe ground truth; see `../PAPER.md` §6.) 
 cheap, so it's a ~2-short-decode runtime check. `blast_radius()` is an even cheaper
 one-forward pre-filter.
 
+## When can you skip the erratum and just do the surgical edit?
+`IN_PLACE` is the cheapest mode (recompute ~the field token, ~0.1%), but on its own it usually
+reverts to the stale decision — **except for reasoning models**, whose chain-of-thought re-reads
+the refreshed field and re-derives the conclusion. Measured P(in_place-only == oracle decision),
+no erratum (`../esys/surgical_suffices.py`):
+
+| Qwen3 | non-reasoning | reasoning |
+|---|---|---|
+| 8B | 0.00 | **0.94** |
+| 14B | 0.00 | 0.33 |
+| 32B | 0.00 | 0.50 |
+
+So the bare surgical edit is a real cheap win **for reasoning models, strongest at ~8B** — but it
+is scale-dependent (the larger CoT re-derivation is less reliable) and never works without
+reasoning. Use `Mode.AUTO`/`needs_erratum` to pick per-edit; default to the erratum when unsure.
+
+## Architecture support
+editkv is an **attention-architecture** method. The surgical `IN_PLACE` edit needs a per-token KV
+entry to overwrite; the erratum needs attention to "look back" at the appended override.
+
+| backbone | history store | `IN_PLACE` | `ERRATUM` |
+|---|---|---|---|
+| full / GQA attention | per-token KV | ✅ | ✅ |
+| MLA (DeepSeek-V2/V3) | compressed latent KV | ⚠️ needs MLA-aware edit | ✅ (verified) |
+| hybrid attn+SSM (Falcon-H1) | KV + recurrent state | ⚠️ attn layers only | ✅ (verified) |
+| pure SSM / Mamba / RWKV | recurrent state, no KV | ❌ N/A | ❌ no look-back |
+
+On a pure SSM the erratum *fails* (the model tracks the field but cannot override the conclusion
+committed to its recurrent state). DeepSeek-V4 (sparse) and Qwen3-Next (linear+attention) retain
+attention sublayers and fall in the supported class.
+
 ## Notes / limitations
 - `IN_PLACE` requires the new value to tokenize to the field's length (length-preserving);
   otherwise it raises `LengthChangeError` — use `ERRATUM` (length-agnostic). `AUTO`/`ERRATUM`

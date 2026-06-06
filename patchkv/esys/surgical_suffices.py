@@ -21,6 +21,22 @@ from mech_suite import (load, clone, prefill, ftok, wilson, META, TOK_WORDS, bui
 from align import align_pair
 
 
+def boot_ci(xs, B=10000):
+    """Bootstrap 95% CI of a 0/1 list (deterministic resample, no RNG)."""
+    n = len(xs)
+    if n == 0:
+        return [0.0, 0.0]
+    means = []
+    for bsi in range(B):
+        s = 0.0
+        for j in range(n):
+            idx = (bsi * 2654435761 + j * 40503 + bsi * j) % n
+            s += xs[idx]
+        means.append(s / n)
+    means.sort()
+    return [round(means[int(0.025 * B)], 3), round(means[int(0.975 * B)], 3)]
+
+
 @torch.no_grad()
 def nonreasoning(model, tok, scn, oid):
     m = META[scn]
@@ -71,41 +87,38 @@ def main():
     tok, model = load(args.model)
     scns = list(META.keys()); oids = args.oids.split(",")
 
-    # NON-REASONING (deterministic)
-    nr = {"in_place": 0, "oracle": 0, "stale": 0, "n": 0}
+    # NON-REASONING (deterministic) — collect per-trial 0/1
+    nr = {"in_place": [], "oracle": [], "stale": []}
     for scn in scns:
         for oid in oids:
             r = nonreasoning(model, tok, scn, oid)
             for k in ("in_place", "oracle", "stale"):
-                nr[k] += (r[k] == "safe")
-            nr["n"] += 1
+                nr[k].append(1 if r[k] == "safe" else 0)
     # REASONING (K stochastic CoT samples)
-    rr = {"in_place": 0, "oracle": 0, "n": 0}
+    rr = {"in_place": [], "oracle": []}
     for scn in scns:
         for oid in oids:
             r = reasoning(model, tok, scn, oid, args.K, max_new=args.max_new)
-            rr["in_place"] += sum(x == "safe" for x in r["in_place"])
-            rr["oracle"] += sum(x == "safe" for x in r["oracle"])
-            rr["n"] += len(r["in_place"])
+            rr["in_place"] += [1 if x == "safe" else 0 for x in r["in_place"]]
+            rr["oracle"] += [1 if x == "safe" else 0 for x in r["oracle"]]
 
-    def line(name, k, n):
-        return f"{name}: {k}/{n} = {k/n:.2f} CI{wilson(k,n)}"
+    def mean(xs):
+        return round(sum(xs) / len(xs), 3)
     out = {"model": args.model,
-           "non_reasoning": {"n": nr["n"],
-               "in_place_correct": round(nr["in_place"]/nr["n"], 3), "in_place_ci": wilson(nr["in_place"], nr["n"]),
-               "oracle_correct": round(nr["oracle"]/nr["n"], 3), "stale_correct": round(nr["stale"]/nr["n"], 3)},
-           "reasoning": {"n": rr["n"],
-               "in_place_correct": round(rr["in_place"]/rr["n"], 3), "in_place_ci": wilson(rr["in_place"], rr["n"]),
-               "oracle_correct": round(rr["oracle"]/rr["n"], 3)}}
+           "non_reasoning": {"n": len(nr["in_place"]),
+               "in_place_correct": mean(nr["in_place"]), "in_place_boot_ci": boot_ci(nr["in_place"]),
+               "oracle_correct": mean(nr["oracle"]), "stale_correct": mean(nr["stale"])},
+           "reasoning": {"n": len(rr["in_place"]),
+               "in_place_correct": mean(rr["in_place"]), "in_place_boot_ci": boot_ci(rr["in_place"]),
+               "oracle_correct": mean(rr["oracle"])}}
     json.dump(out, open(os.path.join(os.path.dirname(__file__), "..", "results",
               f"surgical_suffices_{tag}.json"), "w"), indent=2)
-    print(f"\n==== SURGICAL in_place SUFFICES? — {args.model} ====")
-    print(f"  NON-REASONING (n={nr['n']}):  {line('in_place', nr['in_place'], nr['n'])}  "
-          f"| oracle {nr['oracle']/nr['n']:.2f} stale {nr['stale']/nr['n']:.2f}")
-    print(f"  REASONING     (n={rr['n']}):  {line('in_place', rr['in_place'], rr['n'])}  "
-          f"| oracle {rr['oracle']/rr['n']:.2f}")
-    print(f"  => surgical edit alone {'SUFFICES under reasoning' if rr['in_place']/rr['n'] >= 0.8 else 'partial'}; "
-          f"{'FAILS' if nr['in_place']/nr['n'] < 0.5 else 'works'} without reasoning")
+    nrr, rrr = out["non_reasoning"], out["reasoning"]
+    print(f"\n==== SURGICAL in_place SUFFICES? — {args.model} (bootstrap CI, B=10000) ====")
+    print(f"  NON-REASONING (n={nrr['n']}):  in_place {nrr['in_place_correct']} CI{nrr['in_place_boot_ci']}  "
+          f"| oracle {nrr['oracle_correct']} stale {nrr['stale_correct']}")
+    print(f"  REASONING     (n={rrr['n']}):  in_place {rrr['in_place_correct']} CI{rrr['in_place_boot_ci']}  "
+          f"| oracle {rrr['oracle_correct']}")
     print("SURGICAL_SUFFICES_DONE")
 
 
