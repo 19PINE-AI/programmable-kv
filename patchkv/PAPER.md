@@ -279,6 +279,22 @@ matching the golden erratum, and beats field-only in_place (0.75→1.00) — the
 modes. The erratum remains the golden, mode-universal method (append-only, no field-position
 tracking, prefix-cache friendly); selective recompute is the in-place, no-appended-text alternative.
 
+**How small can K be under reasoning? (Fig. `fig_ksweep`, `esys/selective_K_sweep.py`).** We sweep
+`field+selective@K` (K extra decision-attention tokens beyond the field) under reasoning across the
+Qwen3 family on 3 gating domains × 4 prompts × 8 CoT samples (n=72/model, bootstrap CIs). Two results.
+**(a) The erratum is stronger than full reprefill** — P(safe) for the explicit "[STATE UPDATE]…
+overrides any earlier conclusion" is **1.00**, above even a full reprefill of the new value (0.92–0.99),
+because the override adds instruction force the bare corrected value lacks. So the right recovery
+target for selective recompute is the *full-reprefill* upper bound, not the erratum. **(b) The minimal
+K is strongly model-dependent**, tracking how *sticky* the stale memoized conclusion is under CoT
+(the scale-reversal of §5.3): field-only reasoning recovery is 0.92 (8B) / 0.79 (1.7B) / **0.35 (4B)**,
+giving K\* (to reach full reprefill) ≈ **4 (8B), 8 (1.7B), >64 (4B)**. On the sticky 4B even 64
+recomputed tokens reach only 0.81. **Takeaway:** field+selective@K is an effective in-place surgical
+edit when the field-conditioned conclusion is not sticky (small K suffices), but K is not universal —
+it can exceed 64 on models where the CoT defers to the memoized stale conclusion. The erratum needs no
+such per-model K because it injects a fresh, emphatic statement rather than dislodging the stale
+conclusion token-by-token — which is why it remains the robust, scale- and mode-universal default.
+
 **What tokens carry the conclusion (`esys/selective_tokens.py`).** Decoding the causally-important
 downstream tokens (ranked by per-position recovery) gives a concrete, interpretable picture of *where*
 the memoized conclusion lives: it is stored in **the gating rule's conclusion tokens** — the literal
