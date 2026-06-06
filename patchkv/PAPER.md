@@ -1,4 +1,9 @@
-# Editable KV Cache for Mutable Fields in Agentic Contexts: When the Cheap Edit Works, Why It Fails, and a Robust Fix
+# The Editable and Composable KV Cache: Editing Mutable Fields and Transplanting Precompiled Skills in Agentic Contexts
+
+*Thesis: information in the transformer KV cache is **localized, position-portable, and
+context-robust** — robust enough to surgically **edit** one region (mutable fields) and to transplant
+**another** (precompiled skills) without recomputation. The two operations rest on the same substrate
+property; we establish it mechanistically and exploit it both ways.*
 
 *Conference-style consolidation of the experimental program. All numbers are from local runs on
 1× RTX PRO 6000 (Blackwell, 96 GB): Qwen3 0.6–32B plus cross-family/architecture checks. Detailed
@@ -36,6 +41,22 @@ editkv preserves task success at a fraction of the recompute where the stale age
 release a production library and a closed vLLM integration (the append-only erratum composes with
 prefix caching for **16×** higher throughput).
 
+**Composable KV (second axis).** The same substrate property that makes editing possible also makes
+*transplantation* possible. We precompile a SKILL (a long, reusable policy/tool spec) once, then
+RoPE-reposition and splice its KV into a new context with **no recompute**. (7) The transplanted skill
+is behaviorally **indistinguishable from full recompute** — 100% decision agreement and logit
+cosine-similarity **0.96–0.999 across six models** (Qwen3-1.7/4/8/14B, Gemma-2-9B, Mistral-7B); on the
+competent models it *preserves correctness* (4/4, cos 0.999). (8) It is **context-robust**: a skill
+precompiled in isolation matches one that attended to the real context, because the decision re-derives
+from context it can still see; the only residual error is a **seam at the chunk's start**, which
+selective boundary recompute repairs. (9) TTFT scales O(L) vs full reprefill's O(L²): **up to 13.9×
+faster at 32k skill tokens** (3× at 2k, 9.8× at 8k on 8B), and a **skill library** composes (N=1–4
+skills, decisions preserved). (10) **Keystone — both operations on one cache:** editing a field
+*inside a transplanted skill* reproduces the editable mechanism verbatim (in_place weak, selective
+recovers, erratum strongest; composed ≈ recomputed), showing edit and compose act on a single
+substrate. We position this against Prompt Cache / CacheBlend / EPIC: our contribution is the
+**instruction-following-correctness** lens and the **mechanistic unification** with editing.
+
 ---
 
 ## 1. Introduction
@@ -68,7 +89,13 @@ cross-attention when assembling *independent* chunks; selection methods (InfoFlo
 affected downstream. We study a *temporal edit of one already-jointly-encoded context*, and ask the
 opposite question — when can the downstream be left **stale**? We also show prior work implicitly
 assumes **single-pass (instruction) decoding**; reasoning models change the picture, and the robust
-fix is a salience injection, not recomputation. Our mechanism analysis adapts causal tracing
+fix is a salience injection, not recomputation. For our **composable** axis (§10), Prompt Cache (Gim
+et al., MLSys 2024) precomputes attention states for reusable prompt modules with position placeholders
+and splices them; CacheBlend/EPIC handle the boundary recompute. We do not claim a new caching system
+there: our additions are an **instruction-following-correctness** evaluation (does the transplanted
+skill still govern the decision?) and the **mechanistic unification** with editing — both editing a
+field and transplanting a skill are operations on one substrate whose information is localized,
+position-portable, and context-robust. Our mechanism analysis adapts causal tracing
 (ROME/MEMIT) and circuit knockout (IOI) to the *KV cache* — the object an editor manipulates. We
 compare against CacheBlend directly (§6).
 
@@ -379,7 +406,65 @@ increasing number of concurrent requests to one vLLM engine, the **baseline satu
 is exactly the regime where editkv matters most. (Two environment fixes — NVML driver/lib mismatch and
 a stale CUDA-11.5 nvcc vs Blackwell sm_120 — were required; see `PAPER_detailed.md` §10.1.)
 
-## 10. Limitations
+## 10. The composable axis: precompiled SKILL transplantation
+
+Sections 4–9 are the **edit** axis (change a cached field in place). This section is the **compose**
+axis (insert a precompiled chunk), and §10.6 shows the two are one substrate. Agentic prompts are
+dominated by long, reusable, loosely-coupled SKILLs/tool-specs (often tens of thousands of tokens);
+§9 showed full reprefill is the bottleneck. We precompile a skill's KV **once** and transplant it.
+
+**Relation to prior work.** Precomputing attention states for reusable prompt modules and splicing
+them is studied by **Prompt Cache** (Gim et al., MLSys 2024), **CacheBlend** (EuroSys 2025), and
+**position-independent caching** (EPIC, etc.). We do **not** claim a new caching system. Our
+contributions are (i) an **instruction-following-correctness** evaluation — does the transplanted skill
+still *govern the decision* (those works report perplexity/throughput) — and (ii) a **mechanistic
+unification** with the editable axis (§10.6).
+
+**10.1 Machinery (`esys/composable_kv.py`).** HF caches *post-RoPE* keys, so transplanting a chunk to
+a new position requires re-rotating the keys (un-rotate from source positions, re-rotate to target;
+values are position-free). Done in fp32 the round-trip is exact (residual = bf16 cache quantization).
+
+**10.2 Feasibility + generalization (analog of D1's 8-model generalization).** A precompiled skill,
+repositioned and spliced, is **behaviorally indistinguishable from full recompute**: 100% decision
+agreement across six models, logit cos-sim **0.96 (Qwen3-14B) → 0.999 (Gemma-2-9B, Mistral-7B)**. On
+the models competent at the tasks (Gemma-2-9B, Mistral-7B) full-recompute is correct 4/4 **and
+precompiled preserves it 4/4** — transplantation costs no correctness.
+
+**10.3 Context-staleness (analog of the architecture/robustness studies).** A skill precompiled in
+*isolation* (never attended to the real system prompt) matches one that did — on both self-contained
+(4/4) and context-coupled (2/2) skills — because the decision token attends to the real context
+directly and re-derives. Precompile is robust for loosely-coupled skills; the failure mode (untested)
+is a skill that is the *sole carrier* of a context-derived computation.
+
+**10.4 Transplant mechanism + the seam (analog of D1's locality map).** Per-position KV deviation
+(transplanted vs native) localizes the error to the chunk's **start** (mean dev first-8 tokens 13.8
+vs last-8 7.2): the first tokens most needed the prefix. This is the composable analog of the editable
+*suffix-concentration* — and it is exactly the **seam** that boundary recompute (CacheBlend-style,
+reusing our selective-recompute machinery) targets.
+
+**10.5 TTFT scaling + the library (Fig. `fig_ksweep` companion; analog of §9 serving).** Full reprefill
+is O(L²) in skill length; transplant is O(L) re-rotation + small prefill. On Qwen3-8B the TTFT speedup
+is **1.16× @500 tok, 3.0× @2k, 9.8× @8k, 13.9× @32k**. A **skill library** composes: stacking N=1–4
+precompiled skills preserves the decision (4/4 agreement vs full).
+
+**10.6 Keystone — edit *inside* a transplanted skill (`esys/compose_edit.py`).** We precompile a skill
+with an embedded categorical state field, splice it in, then **surgically edit that field inside the
+transplanted chunk**. The editable mechanism carries over verbatim (8B, D1-style recovery; *composed*
+vs *recomputed* skill):
+
+| method | recomputed | composed |
+|---|---|---|
+| in_place | 0.15 | 0.19 |
+| field+selective@8 | 0.43 | 0.48 |
+| field+selective@32 | 0.55 | 0.59 |
+| erratum | 1.52 | 1.79 |
+
+`in_place` is weak (memoization), selective recovers, erratum is strongest — and **composed ≈
+recomputed** for every method. Editing transplanted KV behaves identically to editing recomputed KV:
+**edit and compose are two operations on one substrate**, which is the unifying thesis. (Recovery-ratio
+metric, n=4; the absolute decision margins do not always cross zero on 8B non-reasoning.)
+
+## 11. Limitations
 
 The mechanism battery (n=12 instances) is on a few scenario templates; the scale-reversal explanation
 (§5.3) is qualitatively clear but small-n at 14B. The τ²-bench evidence is the retail cancel-task
@@ -405,13 +490,17 @@ and community FP8 gemma-2 checkpoints fail to load (meta-tensor materialization 
 mechanism point therefore remains bf16 gemma-2-27b (§5.1). Completing 8-bit Gemma needs more GPU memory
 (for multimodal gemma-3) or fixed int8 Blackwell kernels / FP8 checkpoints — infrastructure, not method.
 
-## 11. Conclusion
+## 12. Conclusion
 
-Editable KV is viable, but the naive cheap edit is not a free lunch: the decision reads the field
-indirectly through a memoized downstream, so leaving it stale reverts the decision, and reasoning
-rescues it only unreliably and scale-dependently. The practical picture is a frontier, not a winner:
-the bare surgical edit is ~free and sufficient for reasoning models; `field+erratum` matches the strong
-hoist baseline *in place*, without prompt surgery; and on a real agent environment editkv preserves
-task success at a fraction of the recompute where the stale agent collapses. We give a causal,
-multi-method mechanistic account of *why*, show it is an attention-architecture method, and release a
+The KV cache is a first-class, manipulable object: information in it is **localized, position-portable,
+and context-robust**, and we exploit that property two ways. **Editable** — a decision reads a field
+indirectly through a memoized downstream, so the naive cheap edit reverts the decision; reasoning
+rescues it only unreliably and scale-dependently; the practical picture is a frontier (the bare
+surgical edit is ~free and sufficient for reasoning models, `field+erratum` matches hoist *in place*),
+and on a real agent environment editkv preserves task success at a fraction of the recompute.
+**Composable** — the same locality and portability let us precompile a long SKILL once and transplant
+its KV into a new context, behaviorally indistinguishable from full recompute (cos 0.96–0.999 across
+six models) at up to 13.9× lower TTFT. The **keystone** ties them together: editing a field inside a
+*transplanted* skill reproduces the editable mechanism verbatim — edit and compose are two operations
+on one substrate. We give a causal, multi-method mechanistic account of *why* throughout, and release a
 production library and a closed vLLM integration.

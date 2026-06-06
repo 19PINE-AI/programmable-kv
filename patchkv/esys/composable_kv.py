@@ -303,11 +303,74 @@ def run_scaling(model, tok, lens=(500, 2000, 8000, 16000, 32000), trials=5):
     return out
 
 
+LIB = [  # a small SKILL LIBRARY; each precompiled once, composed in arbitrary subsets/orders
+ ("REFUND", "# SKILL: REFUND\nRULE: refund only if order_status is delivered; else escalate.\n" + FILLER_RULES),
+ ("ACCESS", "# SKILL: ACCESS\nRULE: grant a CONFIDENTIAL record only if clearance is L4+; else deny.\n" + FILLER_RULES),
+ ("DEPLOY", "# SKILL: DEPLOY\nRULE: block a production deploy if change_ticket is none.\n" + FILLER_RULES),
+ ("RX", "# SKILL: RX\nRULE: hold a medication if it is on the patient's allergy list.\n" + FILLER_RULES),
+]
+
+
+@torch.no_grad()
+def run_multiskill(model, tok):
+    """Compose N precompiled skills (each repositioned to its slot) vs full recompute. The TASK invokes
+    one skill (ACCESS). Measure decision agreement + TTFT for N = 1..4 composed skills."""
+    sys_txt = "You are an agent with access to the following SKILLS.\n\n"
+    task = "\n\nA requester with clearance = L2 asks to read a CONFIDENTIAL record (per ACCESS). One word — grant or deny.\nDecision:"
+    tc = tok("deny", add_special_tokens=False)["input_ids"][0]; tw = tok("grant", add_special_tokens=False)["input_ids"][0]
+    print(f"  {'#skills':>7} {'full':>8} {'composed':>9} {'agree':>6} {'full_ms':>8} {'comp_ms':>8} {'speedup':>8}")
+    out = {}
+    for N in range(1, len(LIB) + 1):
+        skills = LIB[:N]
+        # build full text with explicit skill spans
+        parts = [sys_txt]; spans = []
+        cur = sys_txt
+        for nm, tx in skills:
+            cur_start = len(cur); cur += tx + "\n\n"; spans.append((nm, tx))
+        body = sys_txt + "\n\n".join(tx for _, tx in skills) + task
+        full = tok.apply_chat_template([{"role": "user", "content": body}], tokenize=False, add_generation_prompt=True)
+        enc = tok(full, add_special_tokens=False, return_offsets_mapping=True)
+        ids = torch.tensor([enc["input_ids"]]).to("cuda"); offs = enc["offset_mapping"]; L = ids.shape[1]
+        # locate each skill span
+        locs = []
+        for _, tx in skills:
+            sc = full.find(tx); ec = sc + len(tx)
+            a = next(i for i, (lo, hi) in enumerate(offs) if lo <= sc < hi)
+            b = next((i for i, (lo, hi) in enumerate(offs) if lo >= ec), L)
+            locs.append((a, b))
+        # FULL
+        torch.cuda.synchronize(); t0 = time.perf_counter()
+        fc = prefill(model, ids[:, :L - 1])
+        torch.cuda.synchronize(); tf = (time.perf_counter() - t0) * 1000
+        fl = model(input_ids=ids[:, L - 1:L], past_key_values=cache_slice(fc, 0, L - 1),
+                   cache_position=torch.tensor([L - 1], device="cuda")).logits[0, -1].float()
+        fd = "deny" if fl[tc] >= fl[tw] else "grant"
+        # COMPOSED: each skill precompiled in isolation, repositioned to its slot
+        chunks = [precompute_chunk(model, ids[:, a:b]) for (a, b) in locs]   # offline
+        torch.cuda.synchronize(); t0 = time.perf_counter()
+        cache = prefill(model, ids[:, :locs[0][0]])                          # [sys]
+        pos = locs[0][0]
+        for (a, b), ch in zip(locs, chunks):
+            if a > pos:  # inter-skill text (the "\n\n")
+                cache = forward_suffix(model, cache, ids[:, pos:a], pos).past_key_values; pos = a
+            cache = cache_concat(cache, repositioned_chunk_cache(model, ch, b - a, a)); pos = b
+        cache = forward_suffix(model, cache, ids[:, pos:L - 1], pos).past_key_values
+        torch.cuda.synchronize(); tcmp = (time.perf_counter() - t0) * 1000
+        cl = model(input_ids=ids[:, L - 1:L], past_key_values=cache_slice(cache, 0, L - 1),
+                   cache_position=torch.tensor([L - 1], device="cuda")).logits[0, -1].float()
+        cd = "deny" if cl[tc] >= cl[tw] else "grant"
+        out[N] = {"full": fd, "composed": cd, "agree": fd == cd, "cos": round(torch.cosine_similarity(fl, cl, 0).item(), 3),
+                  "full_ms": round(tf, 1), "comp_ms": round(tcmp, 1), "speedup": round(tf / tcmp, 2)}
+        print(f"  {N:>7} {fd:>8} {cd:>9} {str(fd==cd):>6} {tf:>8.1f} {tcmp:>8.1f} {tf/tcmp:>7.2f}x", flush=True)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="Qwen/Qwen3-1.7B")
     ap.add_argument("--sanity", action="store_true")
     ap.add_argument("--experiment", action="store_true")
+    ap.add_argument("--multi", action="store_true")
     ap.add_argument("--scaling", action="store_true")
     ap.add_argument("--staleness", action="store_true")
     ap.add_argument("--tag", default=None)
@@ -328,6 +391,11 @@ def main():
         json.dump({"model": args.model, "self_contained": {k: sc[k] for k in ("full","precompiled","agree","n","mean_cos")},
                    "context_coupled": {k: cp[k] for k in ("full","precompiled","agree","n","mean_cos")}},
                   open(os.path.join(os.path.dirname(__file__), "..", "results", f"composable_staleness_{args.tag or 'm'}.json"), "w"), indent=2)
+    if args.multi:
+        print(f"=== MULTI-SKILL LIBRARY composition ({args.model}) ===")
+        ms = run_multiskill(model, tok)
+        json.dump({"model": args.model, "multiskill": ms},
+                  open(os.path.join(os.path.dirname(__file__), "..", "results", f"composable_multi_{args.tag or 'm'}.json"), "w"), indent=2)
     if args.scaling:
         print(f"=== TTFT scaling: full vs precompiled ({args.model}) ===")
         sc = run_scaling(model, tok)

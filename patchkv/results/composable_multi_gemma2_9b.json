@@ -1,0 +1,41 @@
+{
+  "model": "unsloth/gemma-2-9b-it",
+  "multiskill": {
+    "1": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.995,
+      "full_ms": 466.7,
+      "comp_ms": 216.1,
+      "speedup": 2.16
+    },
+    "2": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.99,
+      "full_ms": 330.8,
+      "comp_ms": 218.9,
+      "speedup": 1.51
+    },
+    "3": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.977,
+      "full_ms": 435.4,
+      "comp_ms": 319.2,
+      "speedup": 1.36
+    },
+    "4": {
+      "full": "deny",
+      "composed": "deny",
+      "agree": true,
+      "cos": 0.952,
+      "full_ms": 581.8,
+      "comp_ms": 421.7,
+      "speedup": 1.38
+    }
+  }
+}
