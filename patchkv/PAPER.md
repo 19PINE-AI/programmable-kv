@@ -125,6 +125,11 @@ concentrated**: patching the last 10%/20% of downstream recovers **64%/82%**, th
 29%/34%. Mid/late layers carry it; ~16 well-chosen positions recover 94% (distributed but
 identifiable). **Generalizes across 7 models** (field-only recovery ≪ full=1.0): Qwen3-4B/8B/14B/32B
 0.025/0.009/0.008/0.023, Gemma-2-9B/27B 0.001/0.219, Mistral-7B 0.004 (Fig. `fig_d1_generalization`).
+**And across 8 *natural* diverse-domain tasks** (retail/airline/devops/banking/access/clinical/
+customs/oncall, chat template, `esys/mech_causal_natural.py`): field-only recovery **0.003 [−0.0,
+.007]**, full-downstream 1.0, suffix-concentrated (suffix@10%=0.71 vs prefix@50%=0.46) — so the
+memoization map is not an artifact of the templated scenarios; the battery spans 12 templated + 8
+natural instances.
 
 **5.2 Linear probing, independent of patching (D3).** A cross-domain probe (8 domains, leave-one-
 domain-out) for the gated *conclusion* is decodable only in **late layers** (early 0.50 = chance →
@@ -141,7 +146,9 @@ n=18): `inplace_base` recovers only **0.11** [.03,.33] (vs 8B's 1.0) — the CoT
 14B CoT attends *less* to the field than 8B (0.0006 vs 0.0011); and masking the stale gate/downstream
 region roughly **doubles** recovery (0.11→0.22) — i.e. the larger CoT **defers to the stickier memoized
 stale conclusion** in the downstream rather than re-deriving from the refreshed field. (Directional:
-the gate-masking CIs overlap; see §10.)
+the gate-masking CIs overlap; see §10.) The scale curve is non-monotonic — in_place-under-reasoning
+recovery is 1.0 (8B) → 0.11–0.33 (14B) → 0.50 (32B, from `surgical_suffices`; the 32B *knockout*
+circuit OOMs alongside the shared training job) — i.e. the reversal is sharpest at 14B.
 
 **5.4 Position dose-response (D6).** Sweeping the field's position (value appears once), in_place
 recovery rises **monotonically** as the field moves later — pos0 −0.01 → hoisted 0.11 — the causal

@@ -1,0 +1,23 @@
+Loading checkpoint shards:   0%|          | 0/17 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▌         | 1/17 [00:00<00:10,  1.48it/s]Loading checkpoint shards:  12%|█▏        | 2/17 [00:01<00:09,  1.54it/s]Loading checkpoint shards:  18%|█▊        | 3/17 [00:01<00:08,  1.62it/s]Loading checkpoint shards:  24%|██▎       | 4/17 [00:02<00:09,  1.44it/s]Loading checkpoint shards:  29%|██▉       | 5/17 [00:03<00:09,  1.29it/s]Loading checkpoint shards:  35%|███▌      | 6/17 [00:04<00:07,  1.39it/s]Loading checkpoint shards:  41%|████      | 7/17 [00:04<00:06,  1.49it/s]Loading checkpoint shards:  47%|████▋     | 8/17 [00:05<00:05,  1.51it/s]Loading checkpoint shards:  53%|█████▎    | 9/17 [00:06<00:05,  1.52it/s]Loading checkpoint shards:  59%|█████▉    | 10/17 [00:06<00:04,  1.66it/s]Loading checkpoint shards:  65%|██████▍   | 11/17 [00:07<00:03,  1.72it/s]Loading checkpoint shards:  71%|███████   | 12/17 [00:07<00:02,  1.78it/s]Loading checkpoint shards:  76%|███████▋  | 13/17 [00:08<00:02,  1.81it/s]Loading checkpoint shards:  82%|████████▏ | 14/17 [00:08<00:01,  1.83it/s]Loading checkpoint shards:  88%|████████▊ | 15/17 [00:09<00:01,  1.85it/s]Loading checkpoint shards:  94%|█████████▍| 16/17 [00:09<00:00,  1.90it/s]Loading checkpoint shards:  94%|█████████▍| 16/17 [00:09<00:00,  1.65it/s]
+Traceback (most recent call last):
+  File "/home/ubuntu/editable-kv/patchkv/esys/mech_reasoning_reread.py", line 150, in <module>
+    main()
+  File "/home/ubuntu/editable-kv/patchkv/esys/mech_reasoning_reread.py", line 120, in main
+    tok, model = load(args.model)
+  File "/home/ubuntu/editable-kv/patchkv/esys/mech_suite.py", line 57, in load
+    model = AutoModelForCausalLM.from_pretrained(name, dtype=torch.bfloat16, device_map="cuda",
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 604, in from_pretrained
+    return model_class.from_pretrained(
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 277, in _wrapper
+    return func(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 5048, in from_pretrained
+    ) = cls._load_pretrained_model(
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 5468, in _load_pretrained_model
+    _error_msgs, disk_offload_index = load_shard_file(args)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 843, in load_shard_file
+    disk_offload_index = _load_state_dict_into_meta_model(
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 770, in _load_state_dict_into_meta_model
+    _load_parameter_into_model(model, param_name, param.to(param_device))
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.45 GiB. GPU 0 has a total capacity of 94.97 GiB of which 814.62 MiB is free. Process 3474680 has 31.42 GiB memory in use. Process 2099461 has 4.01 GiB memory in use. Including non-PyTorch memory, this process has 58.72 GiB memory in use. Of the allocated memory 58.18 GiB is allocated by PyTorch, and 6.98 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
