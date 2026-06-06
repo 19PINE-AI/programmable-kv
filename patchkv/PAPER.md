@@ -181,6 +181,7 @@ inherently approximate (a faithful reference is what is expensive).
   rather than stacking the history; the library applies one erratum per current value by default.
 
 ## 5e. When the *surgical* edit alone suffices — no erratum (the cheap win)
+*(Figure: `figures/fig_surgical_suffices.png`.)*
 The erratum is the robust fallback (it works by construction). The sharper question is when you can
 skip it entirely and just **surgically overwrite the field's KV** (~0.1% recompute), leave the whole
 downstream stale, and still get the oracle decision. Measuring P(in_place decision == correct)
@@ -304,6 +305,7 @@ these are not competence failures — they are staleness-recovery failures.)
   stronger overrides for agent loops, which a buried-token edit would enable (future work).
 
 ### 6b. Architecture coverage: where each edit applies (attention → MLA → hybrid → pure SSM)
+*(Figure: `figures/fig_architecture.png`.)*
 Different sequence-mixing architectures store history differently, which determines whether each
 editkv mechanism applies. We test the erratum behaviorally in **both reasoning (CoT-prompted) and
 non-reasoning modes**, over 4 gating scenarios × K=8 stochastic samples, with **bootstrap 95% CIs**
@@ -340,6 +342,7 @@ its reasoning-mode recovery is 0.97, and the §5e/§6 results cover non-reasonin
 (Mistral, Gemma) directly.
 
 ## 7. Mechanism (explainability)
+*(Figures: `figures/fig_memoization_map.png`, `fig_d1_generalization.png`, `fig_dose_response.png`.)*
 
 The decision reads the field's value **indirectly**: prefill memoizes the field-conditioned
 conclusion into *downstream* KV, so refreshing the field token's own KV (the cheap in_place
@@ -448,6 +451,7 @@ TTFT reduction *with* correctness (→oracle, §5) *and* natural placement, and 
 correctness under contradictory context. (field+erratum ~67–83 ms; still ≪ full at large T.)
 
 ### 8b. Serving under load: batched TTFT and long context (up to 32K)
+*(Figure: `figures/fig_serving.png`.)*
 The single-stream numbers above understate the serving win — under batching and at long context
 the gap widens sharply. TTFT (ms) to build a decode-ready cache after a field edit vs full
 reprefill, Qwen3-8B (CUDA events; in_place/erratum forward the field/short-suffix tokens over the
