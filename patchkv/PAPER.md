@@ -291,6 +291,14 @@ recovery — so it needs k≈32–64 to include the rule-conclusion tokens; KV-*
 rule region and the field-copies (largest representation change) but most of those are not
 decision-relevant (the CacheBlend failure mode); only causal *recovery* isolates the rule-conclusion +
 pre-decision aggregator tokens. This is the token-level face of the §5 memoization account.
+Quantitatively (`esys/token_stats.py`, 3 models × 8 tasks, per-position recovery mass with bootstrap
+CIs): the field carries 0.3–0.5% of recovery, while **delimiter/aggregator tokens (newlines,
+punctuation) carry 37–55%** — far above their token frequency — with the remainder in the decision
+region (26–60%) and forward-propagated through the filler (32–51%). This is consistent and
+complementary with Anthropic's attribution-graph results in *On the Biology of a Large Language Model*
+(Lindsey et al., 2025): their poetry case study finds the model stores a *planned* future word on the
+end-of-line newline token, so both works show **delimiter tokens acting as aggregation registers** —
+they for forward planning, we for backward-looking memoized conditional conclusions.
 
 ## 7. Generalization across architectures (Fig. `fig_architecture`)
 
