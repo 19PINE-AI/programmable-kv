@@ -57,6 +57,12 @@ skills, decisions preserved). (10) **Keystone — both operations on one cache:*
 recovers, erratum strongest; composed ≈ recomputed), showing edit and compose act on a single
 substrate. We position this against Prompt Cache / CacheBlend / EPIC: our contribution is the
 **instruction-following-correctness** lens and the **mechanistic unification** with editing.
+Transplantation generalizes across **content type** (rules *and* facts/RAG), **insertion point**
+(system-area *and* end-of-trajectory tool-results), and **actual agentic tool-calling** (function calls
+preserved 6/6 on Mistral/Llama-3.1/Qwen3-8B; degrades on Gemma-2-9B — model-dependent); and the **full
+substrate (edit + transplant + keystone) is validated end-to-end on three families** (Gemma-2-9B,
+Mistral-7B, Llama-3.1-8B), with `field+selective` an unreliable-but-sometimes-effective tool (works on
+Gemma-2-9B/Qwen3-4B/Llama-3.1).
 
 ---
 
