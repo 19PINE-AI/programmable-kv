@@ -498,8 +498,9 @@ recomputed** for every method. Editing transplanted KV behaves identically to ed
 (e.g. sel@32 0.61/0.63, erratum 1.06/0.70 recomputed/composed). The sharpest, most rigorous read is
 **Llama-3.1-8B over 8 categorical domains (clean flips 7/8)**: in_place **0.054/0.036** (fails),
 sel@32 **0.802/0.805** (recovers), erratum **1.114/1.246** (strongest) — recomputed/composed match
-within noise at every method. **Mistral-7B (4/4 flips)** corroborates (in_place 0.04/0.03, sel@8
-0.62/0.49, sel@32 0.72/0.56, erratum 0.98/0.93), as does Qwen3-4B. Across families the picture is
+within noise at every method. **Gemma-2-9B (7/7 clean flips)** and **Mistral-7B (4/4 flips)** corroborate (Gemma in_place −0.00,
+sel@32 0.96/0.90; Mistral in_place 0.04/0.03, sel@8 0.62/0.49, sel@32 0.72/0.56, erratum 0.98/0.93),
+as does Qwen3-4B. Across families the picture is
 identical: editing a field *inside a transplanted skill* fails in place, recovers selectively, and is
 fixed by the erratum — exactly as for a recomputed skill.
 
@@ -533,12 +534,14 @@ not universal, and tool-calling is the most sensitive case.
 **10.9 Substrate generalization (two scorecards, `esys/make_scorecards.py`).** To show the unified
 substrate is not a one-model artifact, we tabulate, per model, **editable** (D1 field-only≈0 / full=1.0;
 behavioral erratum recovery) and **composable** (keystone composed sel@32 / erratum). The full substrate
-(D1 + erratum + keystone) is validated on **Mistral-7B and Llama-3.1-8B end-to-end**, with the remaining
-pieces (D1 field-only≈0 / full=1.0; erratum ≈1.0) holding on Qwen3-4B/8B/14B, Gemma-2-9B, Gemma-3-27B —
-i.e. *every* component reproduces on *many* families. The second scorecard isolates **field+selective**:
-it is **unreliable but works on some** — composed recovery WORKS on Qwen3-4B (0.88) and Llama-3.1-8B
-(0.81), partial on Qwen3-8B (0.59) / Mistral (0.56) / DeepSeek (0.44) / Qwen3-14B (0.32) — confirming it
-is a useful-when-it-lands tool, never a universal one, which is why the erratum remains the default.
+(D1 + erratum + keystone) is validated **end-to-end on three families — Gemma-2-9B, Mistral-7B, and
+Llama-3.1-8B** (D1 field-only 0.00/0.00/−0.03 with full=1.0; erratum 1.0/1.0/1.0; keystone composed
+sel@32 0.90/0.56/0.81) — and the individual components additionally reproduce on Qwen3-4B/8B/14B and
+Gemma-3-27B (D1 ≈0/1.0; erratum ≈1.0 reasoning). *Every* component reproduces on *many* families; the
+substrate is general, not a one-model artifact. The second scorecard isolates **field+selective**: it
+is **unreliable but works on some** — composed recovery WORKS on Gemma-2-9B (0.90), Qwen3-4B (0.88),
+Llama-3.1-8B (0.81); partial on Qwen3-8B (0.59), Mistral (0.56), DeepSeek (0.44), Qwen3-14B (0.32) —
+a useful-when-it-lands tool, never universal, which is why the erratum remains the default.
 
 ## 11. Limitations
 

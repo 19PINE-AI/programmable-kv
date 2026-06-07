@@ -124,6 +124,8 @@ def one_instance(model, tok, inst, KS):
     td = tok(inst["act_old"], add_special_tokens=False)["input_ids"][0]   # decision under OLD field
     ids_A, a, b = assemble(tok, inst, inst["Told"])
     ids_B, _, _ = assemble(tok, inst, inst["Tnew"])
+    if ids_A.shape[1] != ids_B.shape[1]:
+        return None   # Told/Tnew tokenize to different lengths for this tokenizer; skip (keeps positions aligned)
     L = ids_A.shape[1]; dpos = L - 1; lastA = int(ids_A[0, dpos]); lastB = int(ids_B[0, dpos])
     al = align_pair(tok, skill_text(inst, inst["Told"]), skill_text(inst, inst["Tnew"]))
     fa, fb = al["field_span"]; thr = list(range(a + fa, a + fb))
@@ -170,8 +172,12 @@ def main():
     agg = {m: {meth: [] for meth in METHODS} for m in ["recomputed", "composed"]}
     flips = 0
     print(f"=== COMPOSE-THEN-EDIT keystone ({args.model}) ===")
+    used = 0
     for inst in INSTANCES:
         r = one_instance(model, tok, inst, KS)
+        if r is None:
+            print(f"  {inst['name']:9s} skipped (token-length mismatch)", flush=True); continue
+        used += 1
         flips += int(r["recomputed"]["flip"])
         for m in ["recomputed", "composed"]:
             for meth in METHODS:
@@ -179,11 +185,12 @@ def main():
         print(f"  {inst['name']:9s} recomputed: in_place={r['recomputed']['in_place']:+.2f} sel@32={r['recomputed']['sel@32']:+.2f} "
               f"err={r['recomputed']['erratum']:+.2f} | composed: in_place={r['composed']['in_place']:+.2f} "
               f"sel@32={r['composed']['sel@32']:+.2f} err={r['composed']['erratum']:+.2f}", flush=True)
-    out = {"model": args.model, "n_instances": len(INSTANCES), "clean_flips": flips, "agg": {}}
-    print(f"\n  MEAN recovery (n={len(INSTANCES)}, clean flips={flips}/{len(INSTANCES)}):")
+    N = max(used, 1)
+    out = {"model": args.model, "n_instances": used, "clean_flips": flips, "agg": {}}
+    print(f"\n  MEAN recovery (n={used}, clean flips={flips}/{used}):")
     print(f"  {'method':10s} {'recomputed':>12s} {'composed':>12s}")
     for meth in METHODS:
-        rr = sum(agg["recomputed"][meth]) / len(INSTANCES); cc = sum(agg["composed"][meth]) / len(INSTANCES)
+        rr = sum(agg["recomputed"][meth]) / N; cc = sum(agg["composed"][meth]) / N
         out["agg"][meth] = {"recomputed": round(rr, 3), "composed": round(cc, 3)}
         print(f"  {meth:10s} {rr:>12.3f} {cc:>12.3f}")
     json.dump(out, open(os.path.join(os.path.dirname(__file__), "..", "results", f"compose_edit_{tag}.json"), "w"), indent=2)
