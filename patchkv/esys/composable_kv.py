@@ -75,7 +75,11 @@ def _as_dyn(pkv):
 
 
 def prefill(model, ids):
-    return _as_dyn(model(input_ids=ids.to("cuda"), use_cache=True).past_key_values)
+    # Pass an explicit DynamicCache so sliding-window models (Gemma-2/3) keep the FULL per-layer KV
+    # (the window is enforced by the attention mask, not by truncating the cache) — this makes the
+    # uniform reposition/slice/concat ops work for sequences/chunks beyond the window.
+    return _as_dyn(model(input_ids=ids.to("cuda"), past_key_values=DynamicCache(),
+                         use_cache=True).past_key_values)
 
 
 def cache_slice(cache, lo, hi):

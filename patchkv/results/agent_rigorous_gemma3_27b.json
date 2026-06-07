@@ -1,0 +1,18 @@
+{
+  "model": "unsloth/gemma-3-27b-it",
+  "domains": 10,
+  "trajectories": 40,
+  "decisions": 120,
+  "agreement": 0.933,
+  "agreement_ci": [
+    0.883,
+    0.975
+  ],
+  "unified_correct": 0.933,
+  "full_correct": 1.0,
+  "mean_speedup": 5.63,
+  "speedup_ci": [
+    5.601,
+    5.657
+  ]
+}

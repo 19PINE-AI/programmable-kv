@@ -572,10 +572,11 @@ governed tool decision; we reuse the longest cached prefix and prefill only the 
 Qwen3-0.6B 0.99/0.7×, 1.7B 0.96/1.1×, 4B 0.97/2.0×, 8B 0.93/3.0×, 14B 0.85/4.2×, **32B-FP8 0.81/14.9×**,
 30B-A3B(MoE) 0.88/1.4×, DeepSeek-R1-8B 0.95/2.9×, Mistral-7B 0.98/3.2×, Llama-3.1-8B 0.96/2.8×,
 **Llama-3.1-70B(4bit) 1.00/5.3×**. So across **12 models** agreement is **0.81–1.00** and speedup scales
-with model size × policy length (up to 14.9×). **Caveat:** Gemma-2-9B/Gemma-3-27B **error** in this
-multi-turn setting — their fixed-window sliding cache is structurally incompatible with a growing splice
-(`size 4095≠4555`), see §10.13. This is editable *and* composable operating together in a live agent
-loop, lossless and faster, across ten domains and the model family.
+with model size × policy length (up to 14.9×). **Gemma-2-9B 0.942 [0.90,0.98] (3.6×) and Gemma-3-27B
+0.933 [0.88,0.98] (5.6×)** also pass once the sliding-window cache fix (§10.13: keep full KV, mask the
+window) is applied — they originally errored on the fixed-window cache. This is editable *and* composable
+operating together in a live agent loop, lossless and faster, across ten domains and the **full** model
+family (sliding-window included).
 
 **10.8 Composable taxonomy: content × insertion point × agentic tool-calling.** §10.1–10.7 transplant
 *rules-as-skills* inserted mid-context with a decision metric. Composition has other incarnations; we
@@ -693,16 +694,19 @@ changes (empirically mapped here):
   **PagedAttention/vLLM** (we ship the closed vLLM integration, §9). No change needed.
 - **Head-sharing — already covered:** **GQA/MQA** is in every model we ran (Qwen3, Llama, Mistral);
   `reposition` is head-count-agnostic.
-- **Sliding-window (Gemma-2/3) — root cause pinpointed:** two regimes. *Within the window* (sequence/chunk
-  ≤ 4096): transplant works (verified a composed splice at 3283 tokens is fine; the only residual is the
-  fine-grained-retrieval degradation that **seam-repair fixes**, §10.8). *Beyond the window*: Gemma's
-  sliding-window layers retain only a **windowed KV (≤4095 keys)** while global layers keep all, so per-layer
-  KV lengths diverge and the uniform `reposition`/splice breaks (reproduced exactly: `size 4095 ≠ 6354` in
-  `repositioned_chunk_cache` for a 6354-token chunk; same root cause as the `4095≠4555` H5 error). The fix
-  is a **window-aware adapter** that re-rotates each layer's *present* keys (windowed vs full) — feasible
-  *because the windowed KV is itself correct* (sliding layers only attend within-window) but it must track
-  per-layer-type lengths/offsets. Practically the common case (skills ≤ 4096 tokens) already works; only a
-  single chunk exceeding the window needs the adapter.
+- **Sliding-window (Gemma-2/3) — root-caused and FIXED.** Root cause: Gemma's *default* cache truncates
+  sliding-window layers to the window (≤4095 keys) while global layers keep all, so per-layer KV lengths
+  diverge and the uniform `reposition`/slice/concat break for sequences beyond the window (reproduced
+  exactly: `size 4095 ≠ 6354`; same as the original `4095≠4555` H5 error on both Gemma generations).
+  **Fix (`prefill` passes an explicit `DynamicCache`):** keep the *full* per-token KV for every layer and
+  let the **attention mask** (not cache truncation) enforce the window — the windowing is a masking concern,
+  not a storage one. After the fix, the previously-erroring **H5 unified agent now runs on both Gemma
+  generations: Gemma-2-9B agreement 0.942 [0.90,0.98] (3.6×), Gemma-3-27B 0.933 [0.88,0.98] (5.6×)** — in
+  line with the rest of the family — and the ≤window feasibility is unchanged (Gemma-2-9B 8/8, cos 0.996,
+  no regression). *Residual edge case:* a single **chunk that itself exceeds the window** (artificial
+  7114-token chunk) drops to cos≈0.89 (within-chunk sliding-isolation differences); real skills are far
+  smaller, so this does not arise in practice. Seam-repair (§10.8) still handles the fine-grained-retrieval
+  degradation orthogonally.
 - **MLA (DeepSeek-V2/Coder-V2) — adapter implemented & validated (`esys/mla_composable.py`):** MLA caches
   full reconstructed K/V but RoPE touches **only the last `qk_rope_head_dim`=64 dims of the key (`k_pe`,
   shared across heads)**; `k_nope` and value are position-free. Our **decoupled-`k_pe` reposition**

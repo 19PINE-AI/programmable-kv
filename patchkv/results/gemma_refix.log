@@ -1,0 +1,9 @@
+##### Gemma-3-27B H5 #####
+  unified==full agreement = 0.933 CI[0.883, 0.975]
+  unified_correct=0.933 full_correct=1.0
+  cumulative-TTFT speedup = 5.63x CI[5.601, 5.657]
+AGENT_RIGOROUS_DONE
+##### Gemma-2-9B composable feasibility (regression check) #####
+  --- self-contained skills ---
+  [self-contained] full_correct=8/8 precompiled_correct=8/8 | reposition==full: 8/8 (cos0.996) | naive==full: 8/8 (cos0.996)
+===GEMMA_REFIX_DONE===

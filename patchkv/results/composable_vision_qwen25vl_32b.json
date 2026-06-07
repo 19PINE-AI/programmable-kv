@@ -1,0 +1,50 @@
+{
+  "model": "Qwen/Qwen2.5-VL-32B-Instruct",
+  "n": 120,
+  "img_tokens": 1296,
+  "by_category": {
+    "agentic": {
+      "n": 36,
+      "full": 1.0,
+      "precompiled": 1.0,
+      "precompiled_ci": [
+        1.0,
+        1.0
+      ],
+      "agreement": 1.0
+    },
+    "perception": {
+      "n": 24,
+      "full": 0.5,
+      "precompiled": 0.5,
+      "precompiled_ci": [
+        0.292,
+        0.708
+      ],
+      "agreement": 1.0
+    },
+    "reasoning": {
+      "n": 60,
+      "full": 0.733,
+      "precompiled": 0.75,
+      "precompiled_ci": [
+        0.633,
+        0.85
+      ],
+      "agreement": 0.983
+    }
+  },
+  "overall": {
+    "full": 0.767,
+    "precompiled": 0.775,
+    "precompiled_ci": [
+      0.7,
+      0.85
+    ],
+    "agreement": 0.992,
+    "agreement_ci": [
+      0.975,
+      1.0
+    ]
+  }
+}

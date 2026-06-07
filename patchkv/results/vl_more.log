@@ -27,3 +27,15 @@ huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6a2
 OSError: You are trying to access a gated repo.
 401 Client Error. (Request ID: Root=1-6a257c2f-7111470f4009f68c23a2547b;350e122f-3aeb-4fec-8aff-e207d12edc9f)
 ########## Qwen/Qwen2.5-VL-32B-Instruct ##########
+loaded Qwen/Qwen2.5-VL-32B-Instruct; image_token_id=151655
+  [0/120] perception ans=6 full=False pre=False img_tok=1296
+  [24/120] reasoning ans=red full=True pre=True img_tok=1296
+  [48/120] reasoning ans=purple full=True pre=True img_tok=1296
+  [72/120] reasoning ans=2 full=True pre=True img_tok=1296
+  [96/120] agentic ans=halt full=True pre=True img_tok=1296
+  agentic   n= 36 full=1.00 precompiled=1.00 CI[1.0, 1.0] agree=1.00
+  perception n= 24 full=0.50 precompiled=0.50 CI[0.292, 0.708] agree=1.00
+  reasoning n= 60 full=0.73 precompiled=0.75 CI[0.633, 0.85] agree=0.98
+  OVERALL full=0.767 precompiled=0.775 CI[0.7, 0.85] agreement=0.992 CI[0.975, 1.0]
+VISION_DONE
+===VL_MORE_DONE===
