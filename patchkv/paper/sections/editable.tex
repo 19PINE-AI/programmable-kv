@@ -1,0 +1,45 @@
+\section{Consequence I: the cache is editable}
+\label{sec:editable}
+
+\paragraph{Naive editing fails---by design.} The mechanism predicts the in-place edit will fail, and it
+does: refreshing the field's KV while reusing the stale downstream leaves the decision at the old value
+(\Cref{fig:teaser}b). The prefix before the field is genuinely reusable (deviation $0.0$); the problem is
+that the conclusion was already memoized after it.
+
+\paragraph{The robust fix is an erratum, not recomputation.} If the stale notes carry an old conclusion,
+the cheapest correct intervention is to append a \emph{salient erratum} that supplies the corrected state
+late in the context---``\texttt{[STATE UPDATE] field $\rightarrow$ new; overrides any earlier value and
+conclusion}''---so the decision token attends to a fresh, authoritative note. Appended after the original
+field (\texttt{field+erratum}), this matches the strong \emph{hoist-to-end} baseline's oracle correctness
+\emph{without rewriting the prompt}: under chain-of-thought the erratum recovers the flipped decision at
+$0.97$ on Qwen3-8B (\Cref{fig:edit}a), and the edit is append-only, so it composes with prefix caching
+(\Cref{sec:systems}).
+
+\paragraph{When the ${\sim}1\%$-compute edit alone suffices: a reasoning/scale law.} Surprisingly, under
+explicit reasoning the cheap in-place edit \emph{by itself} can recover the decision, because the
+chain re-reads the (now-refreshed) field and re-derives the conclusion rather than trusting the stale
+notes. This recovery is strongly model-size dependent (\Cref{fig:edit}b): field-only reasoning recovery
+falls as the memoized conclusion becomes ``stickier'' with scale, so the minimal amount of selective
+recomputation needed, \fieldsel{}@$K$ (refresh the field plus the $K$ highest-effect downstream tokens),
+varies from $K^\star\approx 4$ at $8$B to $>64$ at $4$B (\Cref{fig:edit}c). Without reasoning, no small
+$K$ helps ($0.00$ recovery at every scale). \fieldsel{}@$K$ is therefore a genuine but
+\emph{unreliable} surgical tool---effective when the conclusion is not sticky, model-dependent otherwise;
+we report it honestly rather than as a default.
+
+\paragraph{A frontier, not a winner.} A controlled comparison (full table in the appendix) shows no single
+dominant method. Hoist-to-end is cheapest but demands prompt surgery and pre-identification of every field;
+\texttt{field+erratum} matches it with no surgery at a one-line append; \inplace{} is near-free but only
+under reasoning; a KV-deviation-ranked selective recompute (CacheBlend-style) underperforms here because it
+chases changed keys rather than the tokens that \emph{memoized the conclusion}. The practical
+recommendation is \texttt{field+erratum} as the robust default, with \inplace{} as a free fast-path for
+reasoning models.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig3_editable}
+\caption{\textbf{Editing the cache.} (a) Editing the field's KV is ignored; \texttt{field+erratum} reaches
+the hoist-to-end oracle under CoT. (b) The memoized conclusion grows stickier with scale, so field-only
+reasoning recovery varies non-monotonically across model sizes. (c) \texttt{field+selective}@$K$: the
+minimal recompute $K^\star$ to reach full quality is model-dependent.}
+\label{fig:edit}
+\end{figure}

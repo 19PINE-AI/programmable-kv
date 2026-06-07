@@ -1,0 +1,15 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+A surgical edit to a field's KV is ignored not because the cache is fragile but because the model already
+did the work: at prefill it memoizes the field-conditioned \emph{conclusion} onto downstream aggregator
+tokens, and the decision reads those notes. Reframing the KV cache as a notebook of memoized conclusions
+makes two capabilities fall out of one mechanism---you can \emph{edit} the notes (amend them with a late,
+salient erratum rather than recompute) and \emph{compose} the notes (reposition and splice a precompiled
+skill, in $O(L)$ time)---and a keystone experiment shows they act on a single substrate. The substrate is
+any per-token attention KV cache: it holds across scale, quantization, Mixture-of-Experts, and multimodal
+image caches, transfers freely across throughput optimizations, and reaches Multi-head Latent Attention,
+sliding-window, and interleaved-M-RoPE models through small adapters---up to the edge of the 2026
+sparse/compressed-attention frontier, where the unit of editing and composition becomes a block rather
+than a token. We hope the ``models take notes at prefill'' lens is useful beyond editing and composition:
+the cache is a readable, writable record of what a model has already concluded.

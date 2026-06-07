@@ -1,0 +1,53 @@
+\section{The discovery: memoized inference in the KV cache}
+\label{sec:mechanism}
+
+\paragraph{Setup.} We study a minimal but agent-realistic decision: a context contains a policy rule and a
+\emph{mutable field} whose value determines the correct action (e.g.\ ``cancel an order only if its status
+is \texttt{pending}''; with \texttt{status=shipped} the correct action flips from \emph{cancel} to
+\emph{deny}). After prefilling the full context we compare four cache states at the decision token:
+\emph{stale} (old field, old downstream), \emph{field-only} (refresh the field's KV, leave the downstream
+stale), \emph{full-downstream} (recompute everything after the field), and \emph{oracle} (a clean prefill
+of the new value). We report \emph{decision recovery}: the fraction of the oracle's flip that a cache
+state reproduces ($0$ = behaves like stale, $1$ = behaves like oracle). Four independent probes converge
+on one account (\Cref{fig:mech}).
+
+\paragraph{(1) Locality: the field's own KV barely matters.} Refreshing only the field's KV recovers
+essentially none of the decision---field-only recovery is $-0.028$ on Llama-3.1-8B and near zero across
+models---whereas recomputing the downstream recovers it fully ($1.0$) (\Cref{fig:mech}a). The field is
+read \emph{indirectly}: its causal contribution to the decision is under $1\%$.
+
+\paragraph{(2) Suffix concentration: the effect lives downstream and late.} Sweeping how many downstream
+tokens we patch (ranked by causal effect) shows recovery accrues slowly and saturates only as we include
+many tokens after the field, with the causal mass concentrated in mid/late layers
+(\Cref{fig:mech}b). The information the decision needs is not in the field but distributed over the tokens
+that followed it at prefill (\Cref{fig:mech}c).
+
+\paragraph{(3) Linear decodability.} The field-conditioned conclusion is linearly decodable from those
+downstream tokens' residual stream at prefill time---i.e.\ the model has already \emph{computed and
+written down} the answer, not merely copied the field.
+
+\paragraph{(4) Knockout and dose-response.} Ablating the high-effect downstream tokens flips the decision
+back to stale, and the effect grows with the number/position of memoizing tokens, ruling out a diffuse
+explanation: specific aggregator/delimiter positions carry the conclusion. This mirrors the delimiter-token
+aggregation reported by \citet{lindsey2025biology} for forward planning; here the stored quantity is a
+backward-looking, field-conditioned \emph{conclusion}.
+
+\paragraph{What the note contains.} If the note were a verbatim copy of the field, restating the value
+would suffice and emphatic wording would be inert. Instead, a wording ablation (\Cref{fig:mech}d) shows
+that once the corrected value is present, the override phrasing is \emph{redundant} (bare value, tagged
+update, and explicit override all reach $\approx 1.0$ P(safe)), while aggressive ``disregard your earlier
+conclusion and re-evaluate'' phrasing actively \emph{hurts} ($0.81$). The note behaves like a committed
+conclusion that a late, salient correction can overwrite---but that confrontational instructions can
+destabilize. We name the phenomenon \textbf{attention-mediated memoized inference}, and the rest of the
+paper shows it makes the cache both editable (\Cref{sec:editable}) and composable (\Cref{sec:composable}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig2_mechanism}
+\caption{\textbf{Four causal probes for memoized inference.} (a) Refreshing the field's own KV recovers
+$\approx 0$ of the decision; recomputing the downstream recovers it fully. (b) Recovery is
+suffix-concentrated, accruing only as many post-field tokens are patched. (c) The decision reads almost
+entirely from downstream notes, not the field token. (d) Once the value is present, override wording is
+redundant and ``re-evaluate'' phrasing hurts---the note is a committed conclusion.}
+\label{fig:mech}
+\end{figure}

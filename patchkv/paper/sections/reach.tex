@@ -1,0 +1,49 @@
+\section{Reach and the 2026 frontier}
+\label{sec:reach}
+
+\paragraph{Scale, quantization, MoE.} The transplant is faithful from $0.6$B to $32$B, on FP8 checkpoints,
+on a 30B-A3B Mixture-of-Experts, and on a $4$-bit $70$B model (feasibility $8/8$, logit cosine $0.986$);
+the unified agent of \Cref{sec:keystone} likewise spans all twelve.
+
+\paragraph{Multimodal: images take notes too.} In an agent trajectory an image costs a full prefill---the
+vision tower \emph{plus} prefilling its ${>}1$k soft-tokens through the LM. Because image notes are also
+position-portable, we cache an image's LM-side KV once and splice it, re-running only text. Across $120$
+diverse VQA tasks per model (perception/reasoning/agentic), the spliced image is near-lossless versus full
+re-encode---agreement $0.958$--$1.0$ on Qwen2.5-VL-3B/7B/32B and Qwen3-VL-8B (\Cref{fig:reach}b)---and
+reusing a cached image is $2.4$--$8.4\times$ faster TTFT. Moving an image to a different trajectory position
+requires re-rotating only the temporal axis of M-RoPE; we handle both the \emph{sectioned} (Qwen2.5-VL)
+and \emph{interleaved} (Qwen3-VL) layouts, with position-shifted transplant lossless (agreement $0.99$,
+$\Delta{=}161$ positions). This subsumes MPIC's multimodal reuse \citep{mpic2025}, replacing its
+boundary-recompute with exact re-rotation.
+
+\paragraph{The substrate is any per-token attention KV.} The operations depend on the cache
+\emph{representation}, not the attention kernel, so we map exactly where they hold (\Cref{fig:reach}a):
+\begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
+\item \textbf{Free}---throughput optimizations that keep per-token KV: FlashAttention, paged attention /
+vLLM, and GQA/MQA (already used by every model we ran).
+\item \textbf{Adapter (implemented, validated)}---representation changes. \emph{MLA} (DeepSeek-V2/Coder-V2)
+caches a position-free latent plus a small decoupled-RoPE sub-vector; our decoupled-\kpe{} reposition
+re-rotates only that sub-vector, giving logit cosine $0.98$ and composed-vs-full agreement $1.00$ on
+DeepSeek-Coder-V2-Lite. \emph{Interleaved M-RoPE} (above) is the other adapter.
+\item \textbf{Fixed}---sliding-window (Gemma): the default cache truncates sliding layers to the window,
+breaking uniform splices beyond it; keeping the \emph{full} per-token KV and letting the attention
+\emph{mask} enforce the window restores correctness (the previously-failing unified agent now runs at
+agreement $0.93$--$0.94$).
+\item \textbf{Partial}---hybrids with full-attention layers (Falcon-H1): the attention KV is transplantable
+but the per-layer Mamba scan-state is recurrent, not per-token, so a correct transplant must re-scan the
+Mamba path and saves only the attention fraction.
+\item \textbf{Open frontier}---sequence-dimension KV compression (DeepSeek-V4's CSA/HCA) merges tokens into
+sub-token-count entries, so edit/splice become block-granular; DeepSeek-V3.2's sparse attention (DSA) is
+MLA plus top-$k$ selection and inherits our MLA adapter.
+\item \textbf{Out of scope}---no per-token attention KV: pure-recurrent (RWKV), pure-SSM (Mamba), and
+diffusion LMs. The prompt-level erratum still applies there, but it is not a KV operation.
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig6_reach}
+\caption{\textbf{Reach.} (a) The substrate is any per-token attention KV cache; we map each attention
+variant as free / adapter / fixed / partial / open / out-of-scope. (b) Image-KV transplant is near-lossless
+across vision-language models---images are position-portable too.}
+\label{fig:reach}
+\end{figure}

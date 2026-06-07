@@ -1,0 +1,66 @@
+\section{Introduction}
+\label{sec:intro}
+
+Modern LLM agents re-read long, mostly-static instructions on every turn: a system policy, a tool
+specification, retrieved documents. Key/value (KV) caching makes this affordable by reusing the prefill
+computation across turns---but only across an \emph{exact} shared prefix. The moment a single token
+changes inside the reused region---a timestamp, a user id, an order's status---the keys and values of
+\emph{every} subsequent token are invalidated, because each attended to the token that changed. The
+de-facto workaround is to \emph{hoist} all mutable content to the end of the prompt so the static prefix
+stays cache-aligned. This pushes an inference-layer constraint into the application layer: fields
+referenced in several places, nested sub-agent prompts, and dynamically assembled contexts cannot all be
+cleanly hoisted, and the application must enumerate every mutable field in advance.
+
+This paper starts from a concrete puzzle. The region of the cache \emph{before} a field is, by
+construction, independent of the field's value---we measure a key/value deviation of exactly $0.0$ when
+the field changes. One might therefore hope to \emph{surgically} refresh only the field's own keys and
+values, leave the rest of the cache stale, and pay almost nothing. We find this fails completely: the
+model's decision reverts to the \emph{old} field value, as if the edit never happened
+(\Cref{fig:teaser}b).
+
+\paragraph{The discovery.} The reason, which we establish causally, is that transformers do not defer
+their reasoning to decode time. At \emph{prefill} the model already computes the
+\emph{field-conditioned conclusion} and writes it onto downstream tokens---disproportionately onto
+aggregator/delimiter tokens that later positions attend through. The decision then reads these
+\emph{notes}, not the field itself: across models the field's own KV causally drives less than $1\%$ of
+the decision, while the downstream notes drive essentially all of it. The KV cache is best understood not
+as a frozen byproduct of prefill but as a \emph{notebook of memoized conclusions} (\Cref{fig:teaser}a).
+
+\paragraph{Two capabilities from one mechanism.} This reframing is generative. (1) If the conclusion is
+already written downstream, then \emph{editing} a field means amending the notes, not recomputing them:
+a one-line salient \emph{erratum} suffices, and we map exactly when the cheap in-place edit alone is
+enough (under reasoning) versus when it is not. (2) If the notes are localized and position-portable,
+then a reusable skill can be \emph{composed} into a new context by repositioning and splicing its cached
+notes---no recompute. A \emph{keystone} experiment, editing a field \emph{inside} a transplanted skill,
+shows the two operations act on a single substrate.
+
+\paragraph{Contributions.}
+\begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
+\item \textbf{A mechanism} (\Cref{sec:mechanism}): \emph{attention-mediated memoized inference}, established
+by four independent causal probes (locality patching, suffix concentration, linear probing, circuit
+knockout), connecting to delimiter-token aggregation observed in interpretability.
+\item \textbf{An editing capability} (\Cref{sec:editable}): naive KV editing fails; the erratum /
+\texttt{field+erratum} fix matches the hoist-to-end oracle without prompt surgery; a reasoning/scale
+analysis of when the ${\sim}1\%$-compute in-place edit suffices.
+\item \textbf{A composing capability} (\Cref{sec:composable}): position-portable transplant of precompiled
+skills, $O(L)$ vs.\ $O(L^2)$ TTFT ($13.9\times$ at $32$k), with a seam-repair knob---honestly credited to
+prior caching work, with our addition being the mechanism that explains it and a correctness lens.
+\item \textbf{The unification} (\Cref{sec:keystone}): the keystone and a unified edit+compose agent over
+twelve models.
+\item \textbf{Reach and scope} (\Cref{sec:reach}): validation across scale, MoE, quantization, and
+multimodal image caches; small adapters for MLA and interleaved M-RoPE; a fix for sliding-window; and an
+analysis of where the substrate holds up to the 2026 sparse/compressed-attention frontier.
+\item \textbf{Systems payoff} (\Cref{sec:systems}): a real agentic environment and a closed vLLM
+integration ($16\times$ throughput).
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig1_teaser}
+\caption{\textbf{Models take notes at prefill.} (a) At prefill the model memoizes the field-conditioned
+conclusion onto downstream aggregator tokens (orange); at decode the decision reads those notes (blue).
+(b) Consequently, surgically editing the field's own KV is ignored---the fix is an \emph{erratum} that
+amends the notes. (c) Because the notes are position-portable, a precompiled skill can be pasted into a
+new context in $O(L)$ rather than $O(L^2)$ time.}
+\label{fig:teaser}
+\end{figure}

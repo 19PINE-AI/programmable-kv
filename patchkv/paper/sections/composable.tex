@@ -1,0 +1,46 @@
+\section{Consequence II: the cache is composable}
+\label{sec:composable}
+
+\paragraph{From mechanism to prediction.} If a region's notes are localized and re-derivable from context
+the decision can still see, then the notes should be \emph{position-portable}: we can compute a reusable
+chunk's KV once, in isolation, move it to a new absolute position, and splice it in. Concretely we
+precompile a long \emph{skill} (a policy or tool specification), and because the attention library caches
+post-RoPE keys, we re-rotate the chunk's keys from their source positions to the target positions (values
+are position-free) before concatenating. This is the position-aware reuse of \citet{liu2026cacheslide};
+our point is that the \emph{mechanism predicts it should preserve behavior}.
+
+\paragraph{Transplant is behaviorally indistinguishable from full recompute.} It does. The spliced skill
+matches a full reprefill in next-token logits with cosine $0.90$--$0.999$ across the full model family---
+Qwen3-1.7B through 32B (including FP8 and the 30B-A3B Mixture-of-Experts), Gemma-2/3, Mistral-7B,
+Llama-3.1-8B and 70B, and DeepSeek-R1 (\Cref{fig:comp}b)---and on the models competent at the task it
+preserves \emph{correct} skill-following across $8$ diverse domains and $3$ families ($24/24$, cosine
+$0.98$--$0.999$), including $16/16$ under chain-of-thought.
+
+\paragraph{Context-robustness and the seam.} A chunk precompiled in isolation matches one that attended to
+the real preceding context, because the decision re-derives from context it still sees. The one residual
+error is a \emph{seam} at the chunk's start---the first tokens that, in a full prefill, would have
+attended to the now-missing prefix. Recomputing a few boundary tokens (\emph{seam-repair}) closes it; this
+is exactly the boundary recompute of CacheBlend/EPIC/MPIC, and \Cref{sec:mechanism} explains why it is
+the boundary, specifically, that needs repair.
+
+\paragraph{Linear-time TTFT.} Full reprefill of a length-$L$ skill is $O(L^2)$; transplant is $O(L)$ (a
+re-rotation pass plus the suffix). Time-to-first-token speedups grow with skill length: $3\times$ at $2$k
+tokens, $9.8\times$ at $8$k, and $13.9\times$ at $32$k on an $8$B model (\Cref{fig:comp}a). A library of
+skills composes (decisions preserved for $N=1$--$4$ concurrent skills).
+
+\paragraph{Generality of content, placement, and agency.} Transplantation is not specific to rule-like
+skills. It preserves decisions for \emph{facts/RAG} passages as well as rules; for chunks inserted in the
+system area \emph{and} mid-trajectory as tool results; and---measured with actual function calls rather
+than a proxy---it preserves \emph{agentic tool-calling} ($N{=}108$ with bootstrap CIs: function-call
+accuracy $1.00\,[1.0,1.0]$ on Mistral, Llama-3.1, Qwen3-8B/32B-FP8/30B-A3B). The one consistent exception
+is sliding-window attention (Gemma), which we diagnose and fix in \Cref{sec:reach}. Full per-domain
+scorecards are in the appendix.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig4_composable}
+\caption{\textbf{Composing the cache.} (a) Pasting a precompiled skill is $O(L)$ vs.\ full reprefill's
+$O(L^2)$; TTFT speedup reaches $13.9\times$ at $32$k tokens. (b) The transplanted skill matches full
+recompute in next-token logits (cosine $0.90$--$0.999$) across the model family.}
+\label{fig:comp}
+\end{figure}

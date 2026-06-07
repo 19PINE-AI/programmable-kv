@@ -1,0 +1,37 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Where computation is stored, and how to edit it.} A line of interpretability work localizes
+stored \emph{knowledge} in transformer weights and edits it there: ROME and MEMIT \citep{meng2022rome,
+meng2023memit} locate and rewrite factual associations in MLP weights, while circuit analyses such as the
+indirect-object-identification study \citep{wang2023ioi} trace how specific computations are carried by
+attention heads. Closest in spirit, \citet{lindsey2025biology} find models commit \emph{plans} to
+specific tokens (e.g.\ a planned rhyme stored on a line-break token) during the forward pass. We study a
+complementary object: not weights and not decode-time computation, but the \emph{KV cache}---the
+activations an inference system already stores and an editor can directly manipulate---and show it holds
+\emph{memoized conclusions} concentrated on aggregator/delimiter tokens. To our knowledge this is the
+first causal account of why in-place KV field editing fails and what to do instead.
+
+\paragraph{KV reuse and composable caching.} Reusing precomputed KV beyond an exact prefix is an active
+systems topic, and our \emph{composing} capability builds directly on it; we claim none of the caching
+machinery as novel. Prompt Cache \citep{gim2024promptcache} precomputes reusable prompt modules with
+position placeholders and splices them. CacheBlend \citep{yao2025cacheblend} reuses non-prefix chunk KV
+and selectively recomputes ${\sim}15\%$ of tokens to restore cross-attention. EPIC
+\citep{hu2025epic} introduces position-independent caching with \textsc{AttnLink}, recomputing only a few
+chunk-boundary tokens (exploiting attention sinks) for near-linear recompute. CacheSlide
+\citep{liu2026cacheslide} reuses KV in a position-\emph{aware} way via relative-position-dependent caching,
+and MPIC \citep{mpic2025} extends position-independent caching to the multimodal setting by recomputing
+image-boundary tokens; KVLink \citep{yang2025kvlink} is a further reuse system. Mapped onto our terms, our
+RoPE-repositioning is CacheSlide's relative-position reuse, our seam-repair is the boundary recompute of
+CacheBlend/EPIC/MPIC, and our image-KV transplant is MPIC's idea (we \emph{re-rotate} M-RoPE rather than
+recompute). Our contributions over this line are orthogonal: (i) the \emph{mechanism} that explains
+\emph{why} boundary recompute is what is needed; (ii) a \emph{decision-governance} evaluation---does a
+transplanted skill still \emph{govern the tool decision}, rather than only preserve perplexity or
+throughput; (iii) the \emph{editing} axis and the keystone unification; and (iv) adapters that extend the
+operations to new attention representations (MLA, interleaved M-RoPE, sliding-window).
+
+\paragraph{Prefix caching and KV compression.} Production prefix caching (vLLM Automatic Prefix Caching,
+SGLang RadixAttention) reuses exact prefixes. StreamingLLM \citep{xiao2024streamingllm} keeps attention
+sinks; eviction/compression methods (H2O, SnapKV, and others) drop or compress tokens. These change
+\emph{which} tokens are retained, and compose with our operations only over retained tokens; we treat
+them, and the 2026 sparse/compressed-attention designs, as scope boundaries in \Cref{sec:reach}.

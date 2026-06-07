@@ -1,0 +1,56 @@
+% arxiv.sty — clean arXiv-preprint style (self-contained reproduction of the popular template).
+% Sans-serif section headings, 1-inch-ish margins, title block, running header with a vertical rule.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{arxiv}[2024/01/01 arXiv preprint style]
+
+\RequirePackage{geometry}
+\geometry{
+  letterpaper,
+  top=1.1in, bottom=1.1in, left=1.25in, right=1.25in,
+  headheight=14pt,
+}
+
+\RequirePackage{fancyhdr}
+\RequirePackage{xcolor}
+\RequirePackage[explicit]{titlesec}
+\RequirePackage{titling}
+\RequirePackage{lastpage}
+
+\definecolor{arxivgray}{gray}{0.45}
+
+% ---- running header: a thin vertical rule + short title ----
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\newcommand{\headername}{}
+\newcommand{\setheadername}[1]{\renewcommand{\headername}{#1}}
+\fancyhead[C]{\small\color{arxivgray}\headername}
+\fancyfoot[C]{\small\thepage}
+
+% ---- title block ----
+\setlength{\droptitle}{-3.2em}
+\pretitle{\begin{flushleft}\LARGE\bfseries\sffamily}
+\posttitle{\par\end{flushleft}\vskip 0.4em}
+\preauthor{\begin{flushleft}\large}
+\postauthor{\par\end{flushleft}}
+\predate{\begin{flushleft}\color{arxivgray}}
+\postdate{\par\end{flushleft}\vskip 0.5em\hrule\vskip 1.0em}
+
+% ---- section heading style: sans-serif, bold, compact ----
+\titleformat{\section}{\large\bfseries\sffamily}{\thesection}{0.6em}{#1}
+\titleformat{\subsection}{\normalsize\bfseries\sffamily}{\thesubsection}{0.6em}{#1}
+\titleformat{\paragraph}[runin]{\normalsize\bfseries\sffamily}{}{0pt}{#1}
+\titlespacing*{\section}{0pt}{1.4ex plus .2ex}{0.8ex}
+\titlespacing*{\subsection}{0pt}{1.1ex plus .2ex}{0.6ex}
+\titlespacing*{\paragraph}{0pt}{0.8ex}{0.8em}
+
+% ---- abstract a touch narrower, with a rule ----
+\renewenvironment{abstract}{%
+  \vskip 0.2em
+  \begin{center}\bfseries\sffamily Abstract\end{center}
+  \begin{quote}\small\noindent\ignorespaces
+}{%
+  \end{quote}\vskip 0.6em\hrule\vskip 1.0em
+}
+
+\endinput

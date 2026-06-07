@@ -1,4 +1,4 @@
-# The Editable and Composable KV Cache: Editing Mutable Fields and Transplanting Precompiled Skills in Agentic Contexts
+# Models Take Notes at Prefill: KV Cache Can Be Editable and Composable
 
 *Thesis: information in the transformer KV cache is **localized, position-portable, and
 context-robust** — robust enough to surgically **edit** one region (mutable fields) and to transplant

@@ -1,0 +1,27 @@
+\section{Systems payoff}
+\label{sec:systems}
+
+\paragraph{A real agentic environment.} On the \(\tau^2\)-bench retail environment---single tool-decisions
+and a multi-turn autonomous-agent loop scored by the environment's own tool enforcement---an agent that
+reuses a stale cache after a state change collapses, while \texttt{field+erratum} preserves task success at
+a fraction of the recompute. On the real ${\sim}1.4$k-token retail policy, transplant reproduces the clean
+decision (composed $=$ full on Llama-3.1 and Mistral); the one hard case, a long buried field that must
+\emph{flip} a conclusion, requires the robust \texttt{field+erratum} edit rather than transplant-plus-bare-
+erratum---the same long-context lesson the editing axis predicts, now in a real environment.
+
+\paragraph{A closed serving integration.} Because the erratum is append-only, it composes with standard
+prefix caching: the static prefix stays cache-aligned and only the short erratum (and the decode) is new
+work. In a vLLM integration this yields up to $16\times$ higher throughput than reprefilling on each state
+change (\Cref{fig:sys}a), and an online load study shows the gap widening under load. The image-KV reuse of
+\Cref{sec:reach} contributes a complementary serving win---$2.4$--$8.4\times$ faster first-token as image
+size grows (\Cref{fig:sys}b)---by skipping the vision tower and image-token prefill entirely.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.86\linewidth]{fig7_systems}
+\caption{\textbf{Systems payoff.} (a) The append-only erratum composes with prefix caching for up to
+$16\times$ higher serving throughput than full reprefill on each state change. (b) Reusing a cached image
+(skipping the vision tower and image-token prefill) accelerates time-to-first-token, more so for larger
+images.}
+\label{fig:sys}
+\end{figure}

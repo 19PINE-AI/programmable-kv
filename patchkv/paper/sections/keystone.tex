@@ -1,0 +1,33 @@
+\section{One substrate: the keystone and a unified agent}
+\label{sec:keystone}
+
+\paragraph{The keystone: editing inside a transplant.} If editing and composing are truly two operations
+on the same object, then editing a field that lives \emph{inside a transplanted skill} should behave
+exactly as editing a field in a normally-prefilled context. We test this directly: transplant a skill
+whose body contains a mutable field, then apply each editing method to that field and measure recovery,
+comparing the \emph{composed} cache (skill spliced in) against a fully \emph{recomputed} cache. The
+editing mechanism reproduces verbatim (\Cref{fig:key}a): the in-place edit is weak ($\approx 0.05$),
+selective recompute recovers ($\mathrm{sel}@32 \approx 0.80$), the erratum is strongest, and crucially
+\emph{composed $\approx$ recomputed} for every method (points lie on the diagonal) across Gemma-2-9B and
+Llama-3.1-8B. The notes a transplant pastes in are the same notes an edit amends---one substrate.
+
+\paragraph{A unified edit+compose agent.} We embody both operations in a single live agent loop: a long
+policy is \emph{composed} once and never re-prefilled; as the world changes across turns the mutable state
+is \emph{edited} by appended errata; and each turn reuses the longest cached prefix and prefills only the
+delta. Against a reprefill-every-turn baseline, over $10$ agent domains $\times$ $10$ instances ($300$
+decisions) per model and across twelve models, the unified path is decision-identical to full recompute
+with agreement $0.81$--$1.00$ (e.g.\ Llama-3.1-8B $0.963$, Mistral-7B $0.983$, Llama-3.1-70B $1.00$) at
+cumulative-TTFT speedups up to $14.9\times$ (\Cref{fig:key}b); the speedup scales with policy length
+$\times$ turns. This is editing and composing operating together, losslessly and faster, across the model
+family.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig5_keystone}
+\caption{\textbf{Edit and compose are one substrate.} (a) Keystone: editing a field \emph{inside} a
+transplanted skill reproduces the editing mechanism, and the \emph{composed} cache matches the
+\emph{recomputed} cache for every method (points on the diagonal). (b) A unified edit+compose agent over
+twelve models ($10$ domains $\times$ $100$ trajectories): unified-vs-full agreement (bars) and
+cumulative-TTFT speedup (markers).}
+\label{fig:key}
+\end{figure}
