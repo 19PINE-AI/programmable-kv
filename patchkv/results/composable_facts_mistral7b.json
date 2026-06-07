@@ -1,0 +1,16 @@
+{
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "n": 4,
+  "results": {
+    "early": {
+      "full": 4,
+      "precompiled": 4,
+      "agree": 4
+    },
+    "late": {
+      "full": 4,
+      "precompiled": 4,
+      "agree": 4
+    }
+  }
+}

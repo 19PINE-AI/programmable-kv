@@ -1,0 +1,9 @@
+{
+  "model": "unsloth/gemma-2-9b-it",
+  "n": 6,
+  "full_fn": 6,
+  "full_argfn": 6,
+  "precompiled_fn": 2,
+  "precompiled_argfn": 2,
+  "agree_fn": 2
+}

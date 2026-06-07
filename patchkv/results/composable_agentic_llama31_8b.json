@@ -1,0 +1,9 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "n": 6,
+  "full_fn": 6,
+  "full_argfn": 6,
+  "precompiled_fn": 6,
+  "precompiled_argfn": 6,
+  "agree_fn": 6
+}

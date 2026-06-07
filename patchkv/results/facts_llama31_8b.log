@@ -1,0 +1,14 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:03,  1.15s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.15it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.29it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.91it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.53it/s]
+  early | full=Y('nimbus.<|eot_i') precompiled=Y('nimbus.<|eot_i')
+  late  | full=Y('nimbus.<|eot_i') precompiled=Y('nimbus.<|eot_i')
+  early | full=Y('metformin<|eot') precompiled=Y('metformin<|eot')
+  late  | full=Y('metformin<|eot') precompiled=Y('metformin<|eot')
+  early | full=Y('denver.<|eot_i') precompiled=Y('denver<|eot_id')
+  late  | full=Y('denver.<|eot_i') precompiled=Y('denver<|eot_id')
+  early | full=Y('24<|eot_id|>') precompiled=Y('24<|eot_id|>')
+  late  | full=Y('24<|eot_id|>') precompiled=Y('24<|eot_id|>')
+
+=== FACTS/RAG transplant (unsloth/Meta-Llama-3.1-8B-Instruct, n=4) ===
+  [early] full_correct=4/4 precompiled_correct=4/4 agree=4/4
+  [late] full_correct=4/4 precompiled_correct=4/4 agree=4/4
+FACTS_DONE

@@ -1,0 +1,79 @@
+{
+  "model": "unsloth/gemma-2-9b-it",
+  "arch": "Gemma-2-9B",
+  "K": 6,
+  "non_reasoning": {
+    "n_trials": 24,
+    "oracle_picks_new": 1.0,
+    "stale_picks_old": 1.0,
+    "discriminating_trials": 24,
+    "erratum_recovery": 1.0,
+    "erratum_recovery_ci": [
+      1.0,
+      1.0
+    ],
+    "recov_raw": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "reasoning": {
+    "n_trials": 24,
+    "oracle_picks_new": 1.0,
+    "stale_picks_old": 1.0,
+    "discriminating_trials": 24,
+    "erratum_recovery": 1.0,
+    "erratum_recovery_ci": [
+      1.0,
+      1.0
+    ],
+    "recov_raw": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  }
+}

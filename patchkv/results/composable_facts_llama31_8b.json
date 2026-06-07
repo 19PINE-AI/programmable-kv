@@ -1,0 +1,16 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "n": 4,
+  "results": {
+    "early": {
+      "full": 4,
+      "precompiled": 4,
+      "agree": 4
+    },
+    "late": {
+      "full": 4,
+      "precompiled": 4,
+      "agree": 4
+    }
+  }
+}

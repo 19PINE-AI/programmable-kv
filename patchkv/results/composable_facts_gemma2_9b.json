@@ -1,0 +1,16 @@
+{
+  "model": "unsloth/gemma-2-9b-it",
+  "n": 4,
+  "results": {
+    "early": {
+      "full": 4,
+      "precompiled": 3,
+      "agree": 3
+    },
+    "late": {
+      "full": 4,
+      "precompiled": 3,
+      "agree": 3
+    }
+  }
+}

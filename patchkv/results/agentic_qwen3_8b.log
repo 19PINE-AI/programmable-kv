@@ -1,0 +1,12 @@
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.45it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:02,  1.15it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:02<00:01,  1.00it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:03<00:00,  1.21it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.69it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.40it/s]
+  get_weather     full=(get_weather,True) precompiled=(get_weather,True) agree=True
+  cancel_order    full=(cancel_order,True) precompiled=(cancel_order,True) agree=True
+  search_flights  full=(search_flights,True) precompiled=(search_flights,True) agree=True
+  lookup_account  full=(lookup_account,True) precompiled=(lookup_account,True) agree=True
+  send_email      full=(send_email,True) precompiled=(send_email,True) agree=True
+  create_ticket   full=(create_ticket,True) precompiled=(create_ticket,True) agree=True
+
+=== AGENTIC TOOL-CALLING with transplanted tool-defs (Qwen/Qwen3-8B, n=6) ===
+  full: correct-fn 6/6, correct-fn+arg 6/6
+  precompiled: correct-fn 6/6, correct-fn+arg 6/6 | tool-call agreement 6/6
+AGENTIC_DONE

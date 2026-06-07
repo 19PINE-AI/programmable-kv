@@ -1,0 +1,12 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.50it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.43it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.28it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.88it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.65it/s]
+  get_weather     full=(get_weather,True) precompiled=(get_weather,True) agree=True
+  cancel_order    full=(cancel_order,True) precompiled=(cancel_order,True) agree=True
+  search_flights  full=(search_flights,True) precompiled=(search_flights,True) agree=True
+  lookup_account  full=(lookup_account,True) precompiled=(lookup_account,True) agree=True
+  send_email      full=(send_email,True) precompiled=(send_email,True) agree=True
+  create_ticket   full=(create_ticket,True) precompiled=(create_ticket,True) agree=True
+
+=== AGENTIC TOOL-CALLING with transplanted tool-defs (unsloth/Meta-Llama-3.1-8B-Instruct, n=6) ===
+  full: correct-fn 6/6, correct-fn+arg 6/6
+  precompiled: correct-fn 6/6, correct-fn+arg 6/6 | tool-call agreement 6/6
+AGENTIC_DONE
