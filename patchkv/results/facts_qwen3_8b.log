@@ -1,0 +1,12 @@
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.07s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:02,  1.14it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:02<00:01,  1.31it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:02<00:00,  1.53it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  2.11it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.63it/s]
+  [0/104] early full~0.00 pre~0.00
+  [25/104] early full~0.00 pre~0.00
+  [50/104] early full~0.00 pre~0.00
+  [75/104] early full~0.00 pre~0.00
+  [100/104] early full~0.00 pre~0.00
+
+=== FACTS/RAG transplant (Qwen/Qwen3-8B, n=104) ===
+  [early] full=0.000 CI[0.0, 0.0] | precompiled=0.000 CI[0.0, 0.0] | agree=1.000 CI[1.0, 1.0]
+  [late ] full=0.000 CI[0.0, 0.0] | precompiled=0.000 CI[0.0, 0.0] | agree=1.000 CI[1.0, 1.0]
+FACTS_DONE
+DONE_qwen3_8b

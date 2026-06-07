@@ -1,14 +1,12 @@
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:01<00:02,  1.16s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.09it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:02<00:00,  1.29it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:02<00:00,  1.19it/s]
-  early | full=Y('nimbus</s>') precompiled=Y('nimbus</s>')
-  late  | full=Y('nimbus</s>') precompiled=Y('nimbus</s>')
-  early | full=Y('metformin</s>') precompiled=Y('metformin</s>')
-  late  | full=Y('metformin</s>') precompiled=Y('metformin</s>')
-  early | full=Y('denver</s>') precompiled=Y('denver</s>')
-  late  | full=Y('denver</s>') precompiled=Y('denver</s>')
-  early | full=Y('24</s>') precompiled=Y('24</s>')
-  late  | full=Y('24</s>') precompiled=Y('24</s>')
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:01,  1.60it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.62it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.67it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.66it/s]
+  [0/104] early full~1.00 pre~1.00
+  [25/104] early full~0.96 pre~0.96
+  [50/104] early full~0.96 pre~0.96
+  [75/104] early full~0.95 pre~0.96
+  [100/104] early full~0.94 pre~0.95
 
-=== FACTS/RAG transplant (mistralai/Mistral-7B-Instruct-v0.3, n=4) ===
-  [early] full_correct=4/4 precompiled_correct=4/4 agree=4/4
-  [late] full_correct=4/4 precompiled_correct=4/4 agree=4/4
+=== FACTS/RAG transplant (mistralai/Mistral-7B-Instruct-v0.3, n=104) ===
+  [early] full=0.942 CI[0.894, 0.981] | precompiled=0.952 CI[0.904, 0.99] | agree=0.990 CI[0.971, 1.0]
+  [late ] full=0.942 CI[0.894, 0.981] | precompiled=0.952 CI[0.904, 0.99] | agree=0.990 CI[0.971, 1.0]
 FACTS_DONE
+DONE_mistral7b

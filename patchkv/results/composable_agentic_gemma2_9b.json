@@ -1,9 +1,19 @@
 {
   "model": "unsloth/gemma-2-9b-it",
-  "n": 6,
-  "full_fn": 6,
-  "full_argfn": 6,
-  "precompiled_fn": 2,
-  "precompiled_argfn": 2,
-  "agree_fn": 2
+  "n": 108,
+  "full_acc": 1.0,
+  "full_ci": [
+    1.0,
+    1.0
+  ],
+  "precompiled_acc": 0.435,
+  "precompiled_ci": [
+    0.343,
+    0.528
+  ],
+  "toolcall_agreement": 0.454,
+  "agreement_ci": [
+    0.361,
+    0.546
+  ]
 }

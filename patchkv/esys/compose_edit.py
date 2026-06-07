@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(__file__)); sys.path.insert(0, os.path.join(o
 from align import align_pair
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.cache_utils import DynamicCache
-from composable_kv import (prefill, cos_sin, rotate_half, cache_slice, cache_concat,
+from composable_kv import (load_lm, prefill, cos_sin, rotate_half, cache_slice, cache_concat,
                            precompute_chunk, repositioned_chunk_cache, forward_suffix)
 
 FILLER = "\n".join(f"- Standard guideline {i+1}: log the interaction and follow SOP for routine matters." for i in range(18))
@@ -166,8 +166,7 @@ def main():
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda",
-                                                 attn_implementation="eager", trust_remote_code=True).eval()
+    model = load_lm(args.model, attn="eager")
     KS = [8, 32]; METHODS = ["in_place", "sel@8", "sel@32", "erratum"]
     agg = {m: {meth: [] for meth in METHODS} for m in ["recomputed", "composed"]}
     flips = 0

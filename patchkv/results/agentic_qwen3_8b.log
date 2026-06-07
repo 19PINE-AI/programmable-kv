@@ -1,12 +1,13 @@
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.45it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:02,  1.15it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:02<00:01,  1.00it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:03<00:00,  1.21it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.69it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.40it/s]
-  get_weather     full=(get_weather,True) precompiled=(get_weather,True) agree=True
-  cancel_order    full=(cancel_order,True) precompiled=(cancel_order,True) agree=True
-  search_flights  full=(search_flights,True) precompiled=(search_flights,True) agree=True
-  lookup_account  full=(lookup_account,True) precompiled=(lookup_account,True) agree=True
-  send_email      full=(send_email,True) precompiled=(send_email,True) agree=True
-  create_ticket   full=(create_ticket,True) precompiled=(create_ticket,True) agree=True
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:03,  1.19it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:02,  1.04it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:02<00:02,  1.01s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:03<00:00,  1.06it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:04<00:00,  1.41it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:04<00:00,  1.22it/s]
+  [0/108] full_acc~1.00 pre_acc~1.00
+  [20/108] full_acc~1.00 pre_acc~1.00
+  [40/108] full_acc~1.00 pre_acc~1.00
+  [60/108] full_acc~1.00 pre_acc~1.00
+  [80/108] full_acc~1.00 pre_acc~1.00
+  [100/108] full_acc~0.99 pre_acc~1.00
 
-=== AGENTIC TOOL-CALLING with transplanted tool-defs (Qwen/Qwen3-8B, n=6) ===
-  full: correct-fn 6/6, correct-fn+arg 6/6
-  precompiled: correct-fn 6/6, correct-fn+arg 6/6 | tool-call agreement 6/6
+=== AGENTIC TOOL-CALLING (transplanted tool-defs), Qwen/Qwen3-8B, n=108 ===
+  full fn+arg acc      = 0.991 CI[0.972, 1.0]
+  precompiled fn+arg   = 1.0 CI[1.0, 1.0]
+  tool-call agreement  = 0.991 CI[0.972, 1.0]
 AGENTIC_DONE

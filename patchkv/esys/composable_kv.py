@@ -19,6 +19,24 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.cache_utils import DynamicCache
 
 
+def load_lm(name, attn="eager"):
+    """Uniform loader: bf16 default; FP8/AWQ/GPTQ quant checkpoints as-is; bnb-4bit for 70B; gemma-3 text-only."""
+    from transformers import AutoModelForCausalLM as AM
+    up = name.upper()
+    kw = dict(device_map="cuda", attn_implementation=attn, trust_remote_code=True)
+    if "4BIT" in up or "BNB-4" in up:
+        from transformers import BitsAndBytesConfig
+        kw["quantization_config"] = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_quant_type="nf4")
+    elif any(q in up for q in ("FP8", "-INT8", "GPTQ", "AWQ", "W8A", "W4A", "QUANTIZED.W")):
+        pass
+    elif "GEMMA-3" in up:
+        from transformers import Gemma3ForCausalLM
+        return Gemma3ForCausalLM.from_pretrained(name, dtype=torch.bfloat16, **kw).eval()
+    else:
+        kw["dtype"] = torch.bfloat16
+    return AM.from_pretrained(name, **kw).eval()
+
+
 def rotate_half(x):
     d = x.shape[-1] // 2
     return torch.cat([-x[..., d:], x[..., :d]], dim=-1)
@@ -478,11 +496,7 @@ def main():
     ap.add_argument("--tag", default=None)
     args = ap.parse_args()
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    quantized = any(q in args.model.upper() for q in ("FP8", "-INT8", "GPTQ", "AWQ", "W8A", "W4A", "QUANTIZED.W"))
-    kw = dict(device_map="cuda", attn_implementation="sdpa", trust_remote_code=True)
-    if not quantized:
-        kw["dtype"] = torch.bfloat16
-    model = AutoModelForCausalLM.from_pretrained(args.model, **kw).eval()
+    model = load_lm(args.model, attn="sdpa")
     if args.sanity:
         sanity(model, tok)
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")

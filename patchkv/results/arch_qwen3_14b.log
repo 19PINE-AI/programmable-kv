@@ -2,3 +2,5 @@
 === Qwen3-14B: Qwen/Qwen3-14B (K=6 samples/scenario) ===
 The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
   [non_reasoning] oracle_new=0.0 stale_old=0.0 | discriminating=0/24 | ERRATUM_RECOVERY=None CINone
+  [reasoning    ] oracle_new=1.0 stale_old=0.958 | discriminating=23/24 | ERRATUM_RECOVERY=0.957 CI[0.87, 1.0]
+ARCH_ERRATUM_V2_DONE

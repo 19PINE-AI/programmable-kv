@@ -1,14 +1,12 @@
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:03,  1.15s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.15it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.29it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.91it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.53it/s]
-  early | full=Y('nimbus.<|eot_i') precompiled=Y('nimbus.<|eot_i')
-  late  | full=Y('nimbus.<|eot_i') precompiled=Y('nimbus.<|eot_i')
-  early | full=Y('metformin<|eot') precompiled=Y('metformin<|eot')
-  late  | full=Y('metformin<|eot') precompiled=Y('metformin<|eot')
-  early | full=Y('denver.<|eot_i') precompiled=Y('denver<|eot_id')
-  late  | full=Y('denver.<|eot_i') precompiled=Y('denver<|eot_id')
-  early | full=Y('24<|eot_id|>') precompiled=Y('24<|eot_id|>')
-  late  | full=Y('24<|eot_id|>') precompiled=Y('24<|eot_id|>')
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  1.53it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.52it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.52it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  2.20it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.89it/s]
+  [0/104] early full~1.00 pre~1.00
+  [25/104] early full~0.96 pre~1.00
+  [50/104] early full~0.98 pre~1.00
+  [75/104] early full~0.99 pre~1.00
+  [100/104] early full~0.99 pre~1.00
 
-=== FACTS/RAG transplant (unsloth/Meta-Llama-3.1-8B-Instruct, n=4) ===
-  [early] full_correct=4/4 precompiled_correct=4/4 agree=4/4
-  [late] full_correct=4/4 precompiled_correct=4/4 agree=4/4
+=== FACTS/RAG transplant (unsloth/Meta-Llama-3.1-8B-Instruct, n=104) ===
+  [early] full=0.990 CI[0.971, 1.0] | precompiled=1.000 CI[1.0, 1.0] | agree=0.990 CI[0.971, 1.0]
+  [late ] full=1.000 CI[1.0, 1.0] | precompiled=1.000 CI[1.0, 1.0] | agree=1.000 CI[1.0, 1.0]
 FACTS_DONE
+DONE_llama31_8b

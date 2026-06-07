@@ -1,9 +1,19 @@
 {
   "model": "Qwen/Qwen3-8B",
-  "n": 6,
-  "full_fn": 6,
-  "full_argfn": 6,
-  "precompiled_fn": 6,
-  "precompiled_argfn": 6,
-  "agree_fn": 6
+  "n": 108,
+  "full_acc": 0.991,
+  "full_ci": [
+    0.972,
+    1.0
+  ],
+  "precompiled_acc": 1.0,
+  "precompiled_ci": [
+    1.0,
+    1.0
+  ],
+  "toolcall_agreement": 0.991,
+  "agreement_ci": [
+    0.972,
+    1.0
+  ]
 }

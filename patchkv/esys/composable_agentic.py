@@ -1,42 +1,62 @@
-"""G2 — Agentic ACTUAL tool-calling with a transplanted KV chunk: does functionality degrade?
+"""G2 (rigorous) — Agentic ACTUAL tool-calling with a transplanted KV chunk, N>=100 + bootstrap CIs.
 
-A real tool-calling workload (not a reasoning/decision metric): the agent must emit a structured
-function call (name + arguments) given a long, reusable TOOL-DEFINITIONS block. That block is exactly
-the kind of chunk you precompile once and reuse, so we precompile + RoPE-transplant it and check
-whether the emitted tool call is still FUNCTIONALLY CORRECT (right function, right argument) vs full
-recompute. We also test a TOOL-RESULT chunk transplanted at the end of the trajectory (the agent's
-next call depends on it). Run: python esys/composable_agentic.py --model unsloth/gemma-2-9b-it
+The agent must emit a structured function call (name + argument) given a long, reusable TOOL-DEFINITIONS
+block; that block is precompiled once and RoPE-transplanted. We score FUNCTIONAL correctness (right
+function + right argument) vs full recompute over >=100 programmatically-varied requests, with bootstrap
+95% CIs. Run: python esys/composable_agentic.py --model unsloth/gemma-2-9b-it
 """
-import argparse, os, sys, json, re
+import argparse, os, sys, json, random
 import torch
 sys.path.insert(0, os.path.dirname(__file__)); sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "e1"))
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from composable_kv import (prefill, cache_slice, cache_concat, precompute_chunk,
+from composable_kv import (load_lm, prefill, cache_slice, cache_concat, precompute_chunk,
                            repositioned_chunk_cache, forward_suffix)
 
-# Long, reusable tool-definitions block (the precompilable chunk). Real tools + filler tools for length.
-FILLER_TOOLS = "\n".join(
-    f'- noop_{i}(x: string): internal utility number {i}; never call this for user requests.' for i in range(24))
+FILLER_TOOLS = "\n".join(f'- noop_{i}(x: string): internal utility {i}; never call for user requests.' for i in range(24))
 TOOLDEFS = (
     "# AVAILABLE TOOLS\n"
-    '- get_weather(city: string): return the current weather for a city.\n'
-    '- search_flights(origin: string, destination: string): find flights between two cities.\n'
+    '- get_weather(city: string): current weather for a city.\n'
+    '- search_flights(origin: string, destination: string): flights between two cities.\n'
     '- cancel_order(order_id: string): cancel a customer order by id.\n'
     '- lookup_account(email: string): fetch the account record for an email.\n'
     '- send_email(to: string, subject: string): send an email.\n'
     '- create_ticket(priority: string): open a support ticket.\n'
     f"{FILLER_TOOLS}\n# END TOOLS")
-SYS = ("You are a tool-using agent. For the user's request, respond with EXACTLY one JSON tool call of "
-       'the form {"name": <tool>, "arguments": {<arg>: <value>}} and nothing else.')
+SYS = ('You are a tool-using agent. For the user request, respond with EXACTLY one JSON tool call '
+       '{"name": <tool>, "arguments": {<arg>: <value>}} and nothing else.')
+FNS = ["get_weather", "search_flights", "cancel_order", "lookup_account", "send_email", "create_ticket"]
 
-TASKS = [
- dict(req="What's the weather in Paris right now?", fn="get_weather", arg="paris"),
- dict(req="Cancel my order number A7731 please.", fn="cancel_order", arg="a7731"),
- dict(req="Find me flights from Boston to Denver.", fn="search_flights", arg="denver"),
- dict(req="Look up the account for jane@x.io.", fn="lookup_account", arg="jane@x.io"),
- dict(req="Email bob@y.com about the refund.", fn="send_email", arg="bob@y.com"),
- dict(req="Open a high priority support ticket.", fn="create_ticket", arg="high"),
-]
+CITIES = ["Paris", "Denver", "Tokyo", "Cairo", "Lima", "Oslo", "Delhi", "Boston", "Madrid", "Seoul",
+          "Lagos", "Dublin", "Quito", "Perth", "Milan", "Austin", "Kyoto", "Bogota", "Accra", "Riga"]
+NAMES = ["jane", "bob", "amir", "lena", "carlos", "yuki", "noor", "ivan", "sara", "tom"]
+PRIOS = ["low", "medium", "high", "urgent", "critical"]
+
+
+def gen_tasks(n=108):
+    rng = random.Random(0); tasks = []
+    while len(tasks) < n:
+        fn = FNS[len(tasks) % len(FNS)]
+        if fn == "get_weather":
+            c = rng.choice(CITIES); tasks.append((f"What's the weather in {c} right now?", fn, c.lower()))
+        elif fn == "search_flights":
+            a, b = rng.sample(CITIES, 2); tasks.append((f"Find flights from {a} to {b}.", fn, b.lower()))
+        elif fn == "cancel_order":
+            oid = f"{rng.choice('ABCDEFGH')}{rng.randint(1000,9999)}"; tasks.append((f"Cancel my order {oid} please.", fn, oid.lower()))
+        elif fn == "lookup_account":
+            e = f"{rng.choice(NAMES)}@{rng.choice(['x.io','acme.com','mail.net'])}"; tasks.append((f"Look up the account for {e}.", fn, e))
+        elif fn == "send_email":
+            e = f"{rng.choice(NAMES)}@{rng.choice(['x.io','acme.com','mail.net'])}"; tasks.append((f"Email {e} about the update.", fn, e))
+        else:
+            p = rng.choice(PRIOS); tasks.append((f"Open a {p} priority support ticket.", fn, p))
+    return tasks
+
+
+def boot_ci(xs, B=10000, seed=0):
+    n = len(xs)
+    if n == 0:
+        return [0.0, 0.0]
+    r = random.Random(seed); m = sorted(sum(r.choice(xs) for _ in range(n)) / n for _ in range(B))
+    return [round(m[int(0.025 * B)], 3), round(m[int(0.975 * B)], 3)]
 
 
 def chat_spans(tok, body, chunk):
@@ -53,8 +73,7 @@ def chat_spans(tok, body, chunk):
 def gen(model, tok, ids, cache_full=None, n=40):
     L = ids.shape[1]
     cache = cache_slice(cache_full, 0, L - 1) if cache_full is not None else prefill(model, ids[:, :L - 1])
-    cur = int(ids[0, L - 1]); pos = L - 1; out = []
-    eos = tok.eos_token_id
+    cur = int(ids[0, L - 1]); pos = L - 1; out = []; eos = tok.eos_token_id
     for _ in range(n):
         o = model(input_ids=torch.tensor([[cur]], device="cuda"), past_key_values=cache,
                   cache_position=torch.tensor([pos], device="cuda"), use_cache=True); pos += 1
@@ -64,47 +83,42 @@ def gen(model, tok, ids, cache_full=None, n=40):
     return tok.decode(out)
 
 
-@torch.no_grad()
-def transplanted(model, ids, a, b):
-    L = ids.shape[1]; chunk = precompute_chunk(model, ids[:, a:b]); nb = b - a
-    cache = cache_concat(prefill(model, ids[:, :a]), repositioned_chunk_cache(model, chunk, nb, a))
-    return forward_suffix(model, cache, ids[:, b:L - 1], b).past_key_values
-
-
-def parse(txt):
+def parse_fn(txt):
     t = txt.lower()
-    fn = next((f for f in ["get_weather", "search_flights", "cancel_order", "lookup_account", "send_email", "create_ticket"] if f in t), None)
-    return fn, t
+    return next((f for f in FNS if f in t), None), t
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="unsloth/gemma-2-9b-it"); ap.add_argument("--tag", default=None)
+    ap.add_argument("--n", type=int, default=108)
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    quant = any(q in args.model.upper() for q in ("FP8", "-INT8", "GPTQ", "AWQ", "W8A", "W4A"))
-    kw = dict(device_map="cuda", attn_implementation="eager", trust_remote_code=True)
-    if not quant:
-        kw["dtype"] = torch.bfloat16
-    model = AutoModelForCausalLM.from_pretrained(args.model, **kw).eval()
+    model = load_lm(args.model, attn="eager")
 
-    R = {"full_fn": 0, "full_arg": 0, "pre_fn": 0, "pre_arg": 0, "agree_fn": 0, "n": 0}
-    for t in TASKS:
-        body = f"{SYS}\n\n{TOOLDEFS}\n\nUser: {t['req']}\nAssistant:"
-        ids, a, b = chat_spans(tok, body, TOOLDEFS)   # transplant the TOOL-DEFS chunk
-        ft = gen(model, tok, ids); pt = gen(model, tok, ids, cache_full=transplanted(model, ids, a, b))
-        ffn, flow = parse(ft); pfn, plow = parse(pt)
-        R["full_fn"] += (ffn == t["fn"]); R["full_arg"] += (ffn == t["fn"] and t["arg"] in flow)
-        R["pre_fn"] += (pfn == t["fn"]); R["pre_arg"] += (pfn == t["fn"] and t["arg"] in plow)
-        R["agree_fn"] += (ffn == pfn); R["n"] += 1
-        print(f"  {t['fn']:15s} full=({ffn},{t['arg'] in flow}) precompiled=({pfn},{t['arg'] in plow}) agree={ffn==pfn}", flush=True)
-    n = R["n"]
-    out = {"model": args.model, "n": n, "full_fn": R["full_fn"], "full_argfn": R["full_arg"],
-           "precompiled_fn": R["pre_fn"], "precompiled_argfn": R["pre_arg"], "agree_fn": R["agree_fn"]}
-    print(f"\n=== AGENTIC TOOL-CALLING with transplanted tool-defs ({args.model}, n={n}) ===")
-    print(f"  full: correct-fn {R['full_fn']}/{n}, correct-fn+arg {R['full_arg']}/{n}")
-    print(f"  precompiled: correct-fn {R['pre_fn']}/{n}, correct-fn+arg {R['pre_arg']}/{n} | tool-call agreement {R['agree_fn']}/{n}")
+    tasks = gen_tasks(args.n)
+    full_ok, pre_ok, agree = [], [], []
+    for i, (req, fn, arg) in enumerate(tasks):
+        body = f"{SYS}\n\n{TOOLDEFS}\n\nUser: {req}\nAssistant:"
+        ids, a, b = chat_spans(tok, body, TOOLDEFS)
+        chunk = precompute_chunk(model, ids[:, a:b])
+        tr = forward_suffix(model, cache_concat(prefill(model, ids[:, :a]), repositioned_chunk_cache(model, chunk, b - a, a)), ids[:, b:ids.shape[1] - 1], b).past_key_values
+        ft = gen(model, tok, ids); pt = gen(model, tok, ids, cache_full=tr)
+        ffn, fl = parse_fn(ft); pfn, pl = parse_fn(pt)
+        fc = (ffn == fn and arg in fl); pc = (pfn == fn and arg in pl)
+        full_ok.append(int(fc)); pre_ok.append(int(pc)); agree.append(int(ffn == pfn))
+        if i % 20 == 0:
+            print(f"  [{i}/{len(tasks)}] full_acc~{sum(full_ok)/len(full_ok):.2f} pre_acc~{sum(pre_ok)/len(pre_ok):.2f}", flush=True)
+    n = len(tasks)
+    out = {"model": args.model, "n": n,
+           "full_acc": round(sum(full_ok) / n, 3), "full_ci": boot_ci(full_ok),
+           "precompiled_acc": round(sum(pre_ok) / n, 3), "precompiled_ci": boot_ci(pre_ok),
+           "toolcall_agreement": round(sum(agree) / n, 3), "agreement_ci": boot_ci(agree)}
+    print(f"\n=== AGENTIC TOOL-CALLING (transplanted tool-defs), {args.model}, n={n} ===")
+    print(f"  full fn+arg acc      = {out['full_acc']} CI{out['full_ci']}")
+    print(f"  precompiled fn+arg   = {out['precompiled_acc']} CI{out['precompiled_ci']}")
+    print(f"  tool-call agreement  = {out['toolcall_agreement']} CI{out['agreement_ci']}")
     json.dump(out, open(os.path.join(os.path.dirname(__file__), "..", "results", f"composable_agentic_{tag}.json"), "w"), indent=2)
     print("AGENTIC_DONE")
 

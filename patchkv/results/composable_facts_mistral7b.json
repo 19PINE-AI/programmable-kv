@@ -1,16 +1,40 @@
 {
   "model": "mistralai/Mistral-7B-Instruct-v0.3",
-  "n": 4,
+  "n": 104,
   "results": {
     "early": {
-      "full": 4,
-      "precompiled": 4,
-      "agree": 4
+      "full_acc": 0.942,
+      "full_ci": [
+        0.894,
+        0.981
+      ],
+      "precompiled_acc": 0.952,
+      "precompiled_ci": [
+        0.904,
+        0.99
+      ],
+      "agreement": 0.99,
+      "agreement_ci": [
+        0.971,
+        1.0
+      ]
     },
     "late": {
-      "full": 4,
-      "precompiled": 4,
-      "agree": 4
+      "full_acc": 0.942,
+      "full_ci": [
+        0.894,
+        0.981
+      ],
+      "precompiled_acc": 0.952,
+      "precompiled_ci": [
+        0.904,
+        0.99
+      ],
+      "agreement": 0.99,
+      "agreement_ci": [
+        0.971,
+        1.0
+      ]
     }
   }
 }
