@@ -14,12 +14,13 @@ def J(n): return json.load(open(os.path.join(R, n)))
 def has(n): return os.path.exists(os.path.join(R, n))
 
 plt.rcParams.update({
-    "font.family": "serif", "font.serif": ["DejaVu Serif"], "mathtext.fontset": "dejavuserif",
-    "font.size": 8.5, "axes.titlesize": 9, "axes.labelsize": 8.5, "legend.fontsize": 7.5,
-    "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "axes.linewidth": 0.7,
-    "lines.linewidth": 1.6, "lines.markersize": 5, "figure.dpi": 150,
-    "axes.grid": True, "grid.alpha": 0.25, "grid.linewidth": 0.5,
-    "axes.spines.top": False, "axes.spines.right": False, "legend.frameon": False,
+    "font.family": "serif", "font.serif": ["STIXGeneral"], "mathtext.fontset": "stix",
+    "font.size": 8.5, "axes.titlesize": 9, "axes.titleweight": "bold", "axes.titlelocation": "left",
+    "axes.titlepad": 4, "axes.labelsize": 8.5, "legend.fontsize": 7.5,
+    "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "axes.linewidth": 0.8, "axes.edgecolor": "#3a3a3a",
+    "xtick.color": "#3a3a3a", "ytick.color": "#3a3a3a", "lines.linewidth": 1.9, "lines.markersize": 5,
+    "figure.dpi": 150, "axes.grid": True, "grid.alpha": 0.16, "grid.linewidth": 0.6, "grid.color": "#8a8a8a",
+    "axes.spines.top": False, "axes.spines.right": False, "legend.frameon": False, "axes.axisbelow": True,
 })
 C = {"blue":"#0072B2","orange":"#E69F00","green":"#009E73","red":"#D55E00",
      "purple":"#CC79A7","sky":"#56B4E9","yellow":"#F0E442","grey":"#999999"}

@@ -13,18 +13,30 @@ R = os.path.join(os.path.dirname(__file__), "..", "..", "results")
 OUT = os.path.dirname(__file__)
 def J(name): return json.load(open(os.path.join(R, name)))
 
-# ---- NeurIPS-ish style ----
+# ---- refined publication style (Times-like STIX to match the paper body) ----
 plt.rcParams.update({
-    "font.family": "serif", "font.serif": ["DejaVu Serif"], "mathtext.fontset": "dejavuserif",
-    "font.size": 8.5, "axes.titlesize": 9, "axes.labelsize": 8.5, "legend.fontsize": 7.5,
-    "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "axes.linewidth": 0.7,
-    "lines.linewidth": 1.6, "lines.markersize": 4, "figure.dpi": 150,
-    "axes.grid": True, "grid.alpha": 0.25, "grid.linewidth": 0.5,
+    "font.family": "serif", "font.serif": ["STIXGeneral"], "mathtext.fontset": "stix",
+    "font.size": 8.5, "axes.titlesize": 9, "axes.titleweight": "bold", "axes.titlelocation": "left",
+    "axes.titlepad": 4, "axes.labelsize": 8.5, "legend.fontsize": 7.5,
+    "xtick.labelsize": 7.5, "ytick.labelsize": 7.5,
+    "axes.linewidth": 0.8, "axes.edgecolor": "#3a3a3a",
+    "xtick.color": "#3a3a3a", "ytick.color": "#3a3a3a",
+    "xtick.major.width": 0.7, "ytick.major.width": 0.7,
+    "lines.linewidth": 1.9, "lines.markersize": 4.5, "figure.dpi": 150,
+    "axes.grid": True, "grid.alpha": 0.16, "grid.linewidth": 0.6, "grid.color": "#8a8a8a",
     "axes.spines.top": False, "axes.spines.right": False, "legend.frameon": False,
+    "axes.axisbelow": True, "figure.facecolor": "white", "savefig.facecolor": "white",
 })
 # colorblind-friendly (Wong)
 C = {"blue":"#0072B2","orange":"#E69F00","green":"#009E73","red":"#D55E00",
-     "purple":"#CC79A7","sky":"#56B4E9","yellow":"#F0E442","grey":"#999999"}
+     "purple":"#CC79A7","sky":"#56B4E9","yellow":"#F0E442","grey":"#9a9a9a"}
+
+def barlabels(ax, bars, fmt="%.2f", dy=2, fs=6.6, color="#222222"):
+    for b in bars:
+        h = b.get_height()
+        if h == h:  # not NaN
+            ax.annotate(fmt % h, (b.get_x()+b.get_width()/2, h), textcoords="offset points",
+                        xytext=(0, dy), ha="center", fontsize=fs, color=color)
 
 def save(fig, name):
     fig.tight_layout(pad=0.5)
@@ -340,7 +352,78 @@ def fig_systems():
     axs[1].set_title("(b) reusing a cached image", fontsize=8.5, loc="left")
     save(fig, "fig7_systems")
 
+# =====================================================================================
+# FIG OVERVIEW — one mechanism -> two operations -> one substrate (the spine)
+# =====================================================================================
+def fig_overview():
+    fig, ax = plt.subplots(figsize=(7.2, 3.0)); ax.axis("off")
+    ax.set_xlim(0, 12); ax.set_ylim(0, 8)
+    def card(x, y, w, h, title, body, fc, ec, tc="white", chip=None):
+        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.05,rounding_size=0.16",
+                     fc=fc, ec=ec, lw=1.3))
+        ax.text(x+w/2, y+h-0.32, title, ha="center", va="center", fontsize=8.8, fontweight="bold", color=tc)
+        chip_top = y + 0.58
+        ax.text(x+w/2, (chip_top + (y+h-0.55))/2, body, ha="center", va="center", fontsize=7.0, color=tc)
+        if chip:
+            ax.add_patch(FancyBboxPatch((x+0.18, y+0.13), w-0.36, 0.40, boxstyle="round,pad=0.02,rounding_size=0.1",
+                         fc="white", ec="none", alpha=0.95))
+            ax.text(x+w/2, y+0.33, chip, ha="center", va="center", fontsize=6.5, color=ec, fontstyle="italic")
+    def arrow(x1,y1,x2,y2,col):
+        ax.add_patch(FancyArrowPatch((x1,y1),(x2,y2), arrowstyle="-|>", mutation_scale=13, lw=2.0,
+                     color=col, connectionstyle="arc3,rad=0.0"))
+    card(3.3, 5.9, 5.4, 1.8, "Discovery: memoized inference",
+         "conclusion memoized onto aggregator tokens at prefill",
+         "#1b2a41", "#1b2a41", chip="field's own KV drives $<$1\\% of the decision")
+    card(0.3, 2.9, 5.1, 1.9, "EDITABLE", "amend the notes with a salient erratum",
+         C["blue"], "#04568a", chip="field+erratum $=$ hoist oracle, no surgery")
+    card(6.6, 2.9, 5.1, 1.9, "COMPOSABLE", "reposition + splice precompiled notes",
+         C["green"], "#066b50", chip="$O(L)$ TTFT, up to 13.9$\\times$")
+    card(3.3, 0.1, 5.4, 1.7, "One substrate (keystone)",
+         "edit a field inside a transplant: composed $\\approx$ recomputed",
+         C["orange"], "#9a6a00", tc="#1b1b1b", chip="holds to the 2026 attention frontier")
+    arrow(5.1, 5.9, 2.95, 4.85, C["blue"]); arrow(6.9, 5.9, 9.05, 4.85, C["green"])
+    arrow(2.95, 2.85, 5.1, 1.85, "#04568a"); arrow(9.05, 2.85, 6.9, 1.85, "#066b50")
+    save(fig, "fig0_overview")
+
+# =====================================================================================
+# FIG OPERATIONS — edit (append erratum) vs compose (reposition+splice) on the cache
+# =====================================================================================
+def fig_operations():
+    fig, axs = plt.subplots(2, 1, figsize=(7.2, 2.7));
+    def cell(ax, x, lab, col, w=0.9, y=0.0, h=0.8, tc="black", fs=6.6):
+        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.01,rounding_size=0.05",
+                     fc=col, ec="#3a3a3a", lw=0.7))
+        ax.text(x+w/2, y+h/2, lab, ha="center", va="center", fontsize=fs, color=tc)
+    # (a) EDIT
+    ax = axs[0]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.4, 1.5)
+    xs = 0.2
+    for lab, col, tc in [("sys","#E8E8E8","black"),("field=old",C["orange"],"white"),("rule","#E8E8E8","black"),
+                         ("notes",C["sky"],"white"),("notes",C["sky"],"white"),("dec.",C["green"],"white")]:
+        cell(ax, xs, lab, col, tc=tc); xs += 1.0
+    cell(ax, xs+0.25, "ERRATUM", C["red"], w=1.5, tc="white");
+    ax.add_patch(FancyArrowPatch((xs-0.05,0.4),(xs+0.25,0.4), arrowstyle="-|>", mutation_scale=10, lw=1.4, color=C["red"]))
+    ax.text(0.2, 1.25, "(a) Editable: append a salient erratum (O(1)); reuse the whole prefix",
+            fontsize=8.2, fontweight="bold")
+    ax.text(xs+1.0, -0.3, "amends the stale notes", fontsize=6.5, color=C["red"], ha="center")
+    # (b) COMPOSE
+    ax = axs[1]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.5, 2.15)
+    ax.text(0.2, 1.95, "(b) Composable: reposition + splice precompiled notes (O(L)); skip reprefill",
+            fontsize=8.2, fontweight="bold")
+    # isolated skill
+    for i,xs in enumerate([0.2,1.2,2.2]):
+        cell(ax, xs, "skill", C["purple"], tc="white", y=0.55, h=0.7)
+    ax.text(1.4, 1.42, "precompiled in isolation", fontsize=6.4, ha="center", color="#5a3a8a")
+    ax.add_patch(FancyArrowPatch((3.35,0.9),(4.5,0.45), arrowstyle="-|>", mutation_scale=11, lw=1.6, color="#5a3a8a"))
+    ax.text(3.95, 1.05, "RoPE\nreposition", fontsize=6.2, ha="center", color="#5a3a8a")
+    # target context with spliced skill
+    xs = 4.6
+    for lab, col, tc in [("sys","#E8E8E8","black"),("skill",C["purple"],"white"),("skill",C["purple"],"white"),
+                         ("skill",C["purple"],"white"),("query","#E8E8E8","black"),("dec.",C["green"],"white")]:
+        cell(ax, xs, lab, col, tc=tc); xs += 1.0
+    save(fig, "fig_operations")
+
 if __name__ == "__main__":
+    fig_overview(); fig_operations()
     fig_teaser(); fig_mechanism(); fig_editable(); fig_composable()
     fig_keystone(); fig_reach(); fig_systems()
     print("ALL FIGURES DONE")

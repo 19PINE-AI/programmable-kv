@@ -6,8 +6,8 @@ the decision can still see, then the notes should be \emph{position-portable}: w
 chunk's KV once, in isolation, move it to a new absolute position, and splice it in. Concretely we
 precompile a long \emph{skill} (a policy or tool specification), and because the attention library caches
 post-RoPE keys, we re-rotate the chunk's keys from their source positions to the target positions (values
-are position-free) before concatenating. This is the position-aware reuse of \citet{liu2026cacheslide};
-our point is that the \emph{mechanism predicts it should preserve behavior}.
+are position-free) before concatenating (\Cref{fig:ops}b). This is the position-aware reuse of
+\citet{liu2026cacheslide}; our point is that the \emph{mechanism predicts it should preserve behavior}.
 
 \paragraph{Transplant is behaviorally indistinguishable from full recompute.} It does. The spliced skill
 matches a full reprefill in next-token logits with cosine $0.90$--$0.999$ across the full model family---

@@ -32,7 +32,7 @@ a one-line salient \emph{erratum} suffices, and we map exactly when the cheap in
 enough (under reasoning) versus when it is not. (2) If the notes are localized and position-portable,
 then a reusable skill can be \emph{composed} into a new context by repositioning and splicing its cached
 notes---no recompute. A \emph{keystone} experiment, editing a field \emph{inside} a transplanted skill,
-shows the two operations act on a single substrate.
+shows the two operations act on a single substrate (\Cref{fig:overview}).
 
 \paragraph{Contributions.}
 \begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
@@ -63,4 +63,14 @@ conclusion onto downstream aggregator tokens (orange); at decode the decision re
 amends the notes. (c) Because the notes are position-portable, a precompiled skill can be pasted into a
 new context in $O(L)$ rather than $O(L^2)$ time.}
 \label{fig:teaser}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{fig0_overview}
+\caption{\textbf{One mechanism, two capabilities, one substrate.} The discovery that models memoize
+field-conditioned conclusions at prefill makes the KV cache both \emph{editable} (amend the notes with a
+salient erratum) and \emph{composable} (reposition and splice precompiled notes); a keystone experiment
+shows they act on a single substrate, which holds up to the 2026 attention frontier.}
+\label{fig:overview}
 \end{figure}

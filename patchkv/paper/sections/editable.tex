@@ -1,10 +1,22 @@
 \section{Consequence I: the cache is editable}
 \label{sec:editable}
 
+\Cref{fig:ops} contrasts the two cache operations this section and the next make precise: editing appends
+a salient correction; composing repositions and splices precompiled KV.
+
 \paragraph{Naive editing fails---by design.} The mechanism predicts the in-place edit will fail, and it
 does: refreshing the field's KV while reusing the stale downstream leaves the decision at the old value
 (\Cref{fig:teaser}b). The prefix before the field is genuinely reusable (deviation $0.0$); the problem is
 that the conclusion was already memoized after it.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_operations}
+\caption{\textbf{Two cache operations.} (a) \emph{Editable}: append a salient erratum that amends the
+stale notes ($O(1)$ extra work, the whole prefix is reused). (b) \emph{Composable}: precompute a skill's
+KV in isolation, RoPE-reposition it to the target positions, and splice it in ($O(L)$, no reprefill).}
+\label{fig:ops}
+\end{figure}
 
 \paragraph{The robust fix is an erratum, not recomputation.} If the stale notes carry an old conclusion,
 the cheapest correct intervention is to append a \emph{salient erratum} that supplies the corrected state
