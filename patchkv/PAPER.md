@@ -512,6 +512,34 @@ The `EditableComposableCache` object exposes `precompile`/`build` (compose) and 
 substrate — editable and composable in a single API. Composability also holds on a **large quantized
 model** (Qwen3-32B-FP8: transplant + TTFT scaling validated, 2.2× at 2k skill tokens).
 
+**10.8 Composable taxonomy: content × insertion point × agentic tool-calling.** §10.1–10.7 transplant
+*rules-as-skills* inserted mid-context with a decision metric. Composition has other incarnations; we
+test them. **(a) Content = facts/RAG** (`esys/composable_facts.py`): transplanting a *retrieved
+passage* and answering a fact question over it is preserved — Mistral-7B and Llama-3.1-8B **4/4**,
+Gemma-2-9B 3/4 (one numeric fact lost) — facts are slightly less robust than rules but still mostly
+lossless. **(b) Insertion point**: the same holds whether the chunk is spliced in the *system-area*
+(early, retrieved-context style) or at the *end of the trajectory as a tool result* (late) — 4/4 at
+both for Mistral/Llama-3.1 — so RoPE-repositioned transplant is insertion-point-agnostic. **(c) Agentic
+*actual tool-calling*** (`esys/composable_agentic.py`): the realistic case — an agent emits a structured
+function call (name+arguments) governed by a transplanted long **tool-definitions** block; we score
+*functional* correctness, not a decision. Full recompute is 6/6 on all four models; the transplant is
+**functionally lossless on Mistral-7B / Llama-3.1-8B / Qwen3-8B (6/6, tool-call agreement 6/6)** but
+**degrades on Gemma-2-9B (2/6)** — the lone failure, plausibly its alternating sliding-window attention
+interacting with an isolation-precompiled chunk (a seam-repair / anchored-precompute target). **Takeaway:**
+transplantation generalizes across *content type* (rules and facts) and *insertion point* (system and
+tool-result), and preserves *agentic tool-calling* on most models — but, like every result here, it is
+not universal, and tool-calling is the most sensitive case.
+
+**10.9 Substrate generalization (two scorecards, `esys/make_scorecards.py`).** To show the unified
+substrate is not a one-model artifact, we tabulate, per model, **editable** (D1 field-only≈0 / full=1.0;
+behavioral erratum recovery) and **composable** (keystone composed sel@32 / erratum). The full substrate
+(D1 + erratum + keystone) is validated on **Mistral-7B and Llama-3.1-8B end-to-end**, with the remaining
+pieces (D1 field-only≈0 / full=1.0; erratum ≈1.0) holding on Qwen3-4B/8B/14B, Gemma-2-9B, Gemma-3-27B —
+i.e. *every* component reproduces on *many* families. The second scorecard isolates **field+selective**:
+it is **unreliable but works on some** — composed recovery WORKS on Qwen3-4B (0.88) and Llama-3.1-8B
+(0.81), partial on Qwen3-8B (0.59) / Mistral (0.56) / DeepSeek (0.44) / Qwen3-14B (0.32) — confirming it
+is a useful-when-it-lands tool, never a universal one, which is why the erratum remains the default.
+
 ## 11. Limitations
 
 The mechanism battery (n=12 instances) is on a few scenario templates; the scale-reversal explanation
