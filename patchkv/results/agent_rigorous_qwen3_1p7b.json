@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3-1.7B",
+  "domains": 10,
+  "trajectories": 100,
+  "decisions": 300,
+  "agreement": 0.963,
+  "agreement_ci": [
+    0.94,
+    0.983
+  ],
+  "unified_correct": 0.533,
+  "full_correct": 0.497,
+  "mean_speedup": 1.09,
+  "speedup_ci": [
+    1.084,
+    1.101
+  ]
+}

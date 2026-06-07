@@ -45,7 +45,7 @@ prefix caching for **16×** higher throughput).
 *transplantation* possible. We precompile a SKILL (a long, reusable policy/tool spec) once, then
 RoPE-reposition and splice its KV into a new context with **no recompute**. (7) The transplanted skill
 is behaviorally **indistinguishable from full recompute** — 100% decision agreement and logit
-cosine-similarity **0.96–0.999 across seven models** (Qwen3-1.7/4/8/14B, Gemma-2-9B, Mistral-7B, Llama-3.1-8B; the keystone also holds on DeepSeek-R1-Llama-8B and Qwen3-32B-FP8); on the
+cosine-similarity **0.90–0.999 across the full model family** (Qwen3-1.7B–32B incl. FP8 and the 30B-A3B MoE, Gemma-2/3, Mistral-7B, Llama-3.1-8B and 70B, DeepSeek-R1-Llama-8B); on the
 competent models it *preserves correct skill-following* across **8 diverse domains × 3 families (24/24,
 cos 0.98–0.999)**, and **16/16 under reasoning (CoT)**. (8) It is **context-robust**: a skill
 precompiled in isolation matches one that attended to the real context, because the decision re-derives
@@ -58,10 +58,11 @@ recovers, erratum strongest; composed ≈ recomputed), showing edit and compose 
 substrate. We position this against Prompt Cache / CacheBlend / EPIC: our contribution is the
 **instruction-following-correctness** lens and the **mechanistic unification** with editing.
 Transplantation generalizes across **content type** (rules *and* facts/RAG), **insertion point**
-(system-area *and* end-of-trajectory tool-results), and **actual agentic tool-calling** (function calls
-preserved 6/6 on Mistral/Llama-3.1/Qwen3-8B; degrades on Gemma-2-9B — model-dependent); and the **full
-substrate (edit + transplant + keystone) is validated end-to-end on three families** (Gemma-2-9B,
-Mistral-7B, Llama-3.1-8B), with `field+selective` an unreliable-but-sometimes-effective tool (works on
+(system-area *and* end-of-trajectory tool-results), and **actual agentic tool-calling** (N=108+CIs:
+function calls preserved **1.00 [1.0,1.0]** on Mistral/Llama-3.1/Qwen3-8B/32B-FP8/30B-A3B; degrades on
+Gemma — sliding-window attention — but **seam-repair recovers it**); the **unified edit+compose agent**
+is decision-identical to full recompute (agreement 0.96–0.98 over 10 domains × 100 trajectories) at
+~3× lower TTFT; and `field+selective` is an unreliable-but-sometimes-effective tool (works on
 Gemma-2-9B/Qwen3-4B/Llama-3.1).
 
 ---
@@ -323,10 +324,11 @@ tracking, prefix-cache friendly); selective recompute is the in-place, no-append
 **How small can K be under reasoning? (Fig. `fig_ksweep`, `esys/selective_K_sweep.py`).** We sweep
 `field+selective@K` (K extra decision-attention tokens beyond the field) under reasoning across the
 Qwen3 family on 3 gating domains × 4 prompts × 8 CoT samples (n=72/model, bootstrap CIs). Two results.
-**(a) The erratum is stronger than full reprefill** — P(safe) for the explicit "[STATE UPDATE]…
-overrides any earlier conclusion" is **1.00**, above even a full reprefill of the new value (0.92–0.99),
-because the override adds instruction force the bare corrected value lacks. So the right recovery
-target for selective recompute is the *full-reprefill* upper bound, not the erratum. **(b) The minimal
+**(a) The erratum reaches full-reprefill quality** — P(safe) for the explicit "[STATE UPDATE]…overrides
+any earlier conclusion" is **1.00**; a full reprefill of the new value scores 0.92–0.99 in the same run,
+but a higher-sample wording ablation (§6.5) shows full-reprefill-of-the-new-value is itself ≈1.00 and the
+small gap was sampling noise — so the erratum *matches* full reprefill (it does not exceed it), and
+full-reprefill is the right recovery target for selective recompute. **(b) The minimal
 K is strongly model-dependent**, tracking how *sticky* the stale memoized conclusion is under CoT
 (the scale-reversal of §5.3): field-only reasoning recovery is 0.92 (8B) / 0.79 (1.7B) / 0.50 (14B) /
 **0.35 (4B)**, giving K\* (to reach full reprefill) ≈ **4 (8B), 8 (1.7B), ~64 (14B), >64 (4B)** — a
@@ -367,6 +369,17 @@ complementary with Anthropic's attribution-graph results in *On the Biology of a
 (Lindsey et al., 2025): their poetry case study finds the model stores a *planned* future word on the
 end-of-line newline token, so both works show **delimiter tokens acting as aggregation registers** —
 they for forward planning, we for backward-looking memoized conditional conclusions.
+
+**6.5 Erratum wording ablation (`esys/why_erratum.py`).** Given the corrected value is present in context,
+which ingredient of the erratum matters? On Qwen3-8B (n=36 reasoning, bootstrap CIs): **none** (bare new
+value / full reprefill) **1.00**, **value_only** ("X is now new") 1.00, **update_tag** ("[STATE UPDATE]…")
+1.00, **override_full** (…"overrides any earlier conclusion") 0.97, **conclusion** ("any earlier
+conclusion is void; re-evaluate") **0.81**. Two takeaways: (i) once the value is in context the override
+wording is **redundant**, and aggressive "re-evaluate from scratch" phrasing actually *hurts* — so the
+erratum's value is *delivering the corrected state late/saliently*, not magic wording; (ii)
+full-reprefill-of-the-new-value is itself ≈1.00, confirming that the "erratum > full reprefill" gap seen
+at lower sample counts (§6.4) was **sampling noise**: the erratum *matches* full reprefill, it does not
+beat it.
 
 ## 7. Generalization across architectures (Fig. `fig_architecture`)
 
@@ -449,8 +462,10 @@ a new position requires re-rotating the keys (un-rotate from source positions, r
 values are position-free). Done in fp32 the round-trip is exact (residual = bf16 cache quantization).
 
 **10.2 Feasibility + generalization (analog of D1's 8-model generalization).** A precompiled skill,
-repositioned and spliced, is **behaviorally indistinguishable from full recompute**: 100% decision
-agreement across six models, logit cos-sim **0.96 (Qwen3-14B) → 0.999 (Gemma-2-9B, Mistral-7B)**. On
+repositioned and spliced, is **behaviorally indistinguishable from full recompute** across the full
+model family — **Qwen3-1.7/4/8/14B, Qwen3-32B-FP8, Qwen3-30B-A3B (MoE), Gemma-2-9B, Gemma-3-27B,
+Mistral-7B, Llama-3.1-8B, Llama-3.1-70B (4-bit), DeepSeek-R1-Llama-8B** — 100% decision agreement and
+logit cos-sim **0.90 (Qwen3-30B-A3B) → 0.999 (Gemma-2-9B, Mistral-7B)** (reposition==full 7–8/8). On
 the models competent at the tasks (Gemma-2-9B, Mistral-7B, Llama-3.1-8B) and across **8 diverse skill
 domains** (refund, access, deploy, rx, loan, legal, incident, visa) full-recompute is correct **8/8 and
 precompiled preserves it 8/8** on all three (cos 0.98–0.996; **24/24** correct overall) —
@@ -679,8 +694,8 @@ rescues it only unreliably and scale-dependently; the practical picture is a fro
 surgical edit is ~free and sufficient for reasoning models, `field+erratum` matches hoist *in place*),
 and on a real agent environment editkv preserves task success at a fraction of the recompute.
 **Composable** — the same locality and portability let us precompile a long SKILL once and transplant
-its KV into a new context, behaviorally indistinguishable from full recompute (cos 0.96–0.999 across
-six models) at up to 13.9× lower TTFT. The **keystone** ties them together: editing a field inside a
+its KV into a new context, behaviorally indistinguishable from full recompute (cos 0.90–0.999 across
+the full model family) at up to 13.9× lower TTFT. The **keystone** ties them together: editing a field inside a
 *transplanted* skill reproduces the editable mechanism verbatim — edit and compose are two operations
 on one substrate. We give a causal, multi-method mechanistic account of *why* throughout, and release a
 production library and a closed vLLM integration.

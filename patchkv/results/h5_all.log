@@ -1,0 +1,9 @@
+########## H5 Qwen/Qwen3-0.6B ##########
+  unified==full agreement = 0.99 CI[0.977, 1.0]
+  unified_correct=0.57 full_correct=0.573
+  cumulative-TTFT speedup = 0.7x CI[0.698, 0.71]
+########## H5 Qwen/Qwen3-1.7B ##########
+  unified==full agreement = 0.963 CI[0.94, 0.983]
+  unified_correct=0.533 full_correct=0.497
+  cumulative-TTFT speedup = 1.09x CI[1.084, 1.101]
+########## H5 Qwen/Qwen3-4B ##########
