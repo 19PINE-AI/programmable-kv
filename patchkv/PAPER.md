@@ -519,6 +519,15 @@ The `EditableComposableCache` object exposes `precompile`/`build` (compose) and 
 substrate — editable and composable in a single API. Composability also holds on a **large quantized
 model** (Qwen3-32B-FP8: transplant + TTFT scaling validated, 2.2× at 2k skill tokens).
 
+**Multi-turn agent end-to-end (`esys/editkv_agent.py`).** The realistic target: a 4-turn order-ops agent
+on ONE evolving cache — the long POLICY is **composed once** (precompiled+spliced, never re-prefilled),
+the mutable `order_status`/VIP state is **edited by appended errata** across turns, and each turn makes a
+governed tool decision; we reuse the longest cached prefix and prefill only the per-turn delta. Versus a
+**reprefill-every-turn** baseline (Llama-3.1-8B, ~3k-token policy): the unified path's decisions are
+**identical every turn (agreement 4/4; unified-correct = full-correct)** at **2.35× lower cumulative
+TTFT** — and the gap grows with policy length × turns (cf. §10.5's 13.9× at 32k). This is editable *and*
+composable operating together in a live agent loop, lossless and faster.
+
 **10.8 Composable taxonomy: content × insertion point × agentic tool-calling.** §10.1–10.7 transplant
 *rules-as-skills* inserted mid-context with a decision metric. Composition has other incarnations; we
 test them, all with **N≈100+ and bootstrap 95% CIs**. **(a) Content = facts/RAG**
@@ -579,7 +588,10 @@ moving an image shifts only the temporal `t` (h,w intrinsic), so a position chan
 temporal mrope-section — same-position reuse needs none. **Qwen3-VL-30B-A3B is excluded** (degenerate:
 full-accuracy ≈0 on this synthetic VQA format, so agreement is uninformative). So composable KV extends
 from text to **vision tokens**: the substrate property (localized, position-portable, context-robust
-information) holds for images too.
+information) holds for images too. **TTFT win (`esys/vision_ttft.py`):** reusing a cached image (skip the
+vision tower + image-token prefill, recompute only text) is **2.4–8.4× faster first-token** than
+re-encoding on Qwen2.5-VL-7B — 3.9× at 256 image tokens, **8.4× at 2304 tokens** (797→95 ms) — the
+saving grows with image size, the practical payoff of image-KV reuse.
 
 **10.11 Scale: composable at 27–32B and on MoE.** The transplant holds at large scale (`results/g5.log`):
 **Gemma-3-27B** (text) feasibility 8/8 (cos 0.955) + keystone 7/7 clean (composed≈recomputed); **Qwen3-32B-FP8**
@@ -590,8 +602,9 @@ feasibility 7/8 (cos 0.91) + agentic tool-calling preserved (0.95→**0.97**); *
 ~93 GB** — well above the nominal 70 GB, because compressed-tensors keeps embeddings/lm_head/scales in
 higher precision — leaving ~3 GB, so the transplant's cache-clone forwards OOM even with sdpa +
 `expandable_segments`. 8-bit 70B suffices for *inference* but not for the cache-manipulating experiment
-on one GPU; a **4-bit 70B** rerun, which fits with headroom, is in progress. Facts/RAG is degenerate
-full≈0 on the Qwen3 family in this non-reasoning QA format, as in §10.8.)
+on one GPU; the **4-bit 70B** fits and confirms the result — **feasibility 8/8 (cos 0.986), agentic
+tool-calling 1.0/1.0**, so composable KV holds at **70B**. Facts/RAG is degenerate full≈0 on the Qwen3
+family in this non-reasoning QA format, as in §10.8.)
 
 ## 11. Limitations
 

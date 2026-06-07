@@ -1,0 +1,22 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "turns": 4,
+  "unified_decisions": [
+    "other",
+    "correct",
+    "correct",
+    "correct"
+  ],
+  "full_decisions": [
+    "other",
+    "correct",
+    "correct",
+    "correct"
+  ],
+  "agreement": "4/4",
+  "unified_correct": "3/4",
+  "full_correct": "3/4",
+  "t_unified_ms": 415.6,
+  "t_full_ms": 977.2,
+  "speedup": 2.35
+}

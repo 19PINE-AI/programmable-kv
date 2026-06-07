@@ -1,0 +1,29 @@
+{
+  "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+  "by_size": {
+    "448": {
+      "img_tokens": 256,
+      "full_ms": 201.3,
+      "reuse_ms": 51.1,
+      "speedup": 3.94
+    },
+    "672": {
+      "img_tokens": 576,
+      "full_ms": 95.6,
+      "reuse_ms": 39.7,
+      "speedup": 2.41
+    },
+    "1008": {
+      "img_tokens": 1296,
+      "full_ms": 187.9,
+      "reuse_ms": 65.7,
+      "speedup": 2.86
+    },
+    "1344": {
+      "img_tokens": 2304,
+      "full_ms": 797.5,
+      "reuse_ms": 94.8,
+      "speedup": 8.41
+    }
+  }
+}

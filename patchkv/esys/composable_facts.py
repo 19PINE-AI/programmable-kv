@@ -10,7 +10,28 @@ import torch
 sys.path.insert(0, os.path.dirname(__file__)); sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "e1"))
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from composable_kv import (load_lm, prefill, cache_slice, cache_concat, precompute_chunk,
-                           repositioned_chunk_cache, forward_suffix)
+                           repositioned_chunk_cache, forward_suffix, cos_sin, rotate_half)
+from transformers.cache_utils import DynamicCache
+
+
+@torch.no_grad()
+def transplanted_repair(model, ids, a, b, K):
+    """Seam-repair: recompute the first K chunk tokens WITH the real prefix; rest from isolation KV."""
+    L = ids.shape[1]; nb = b - a
+    alone = precompute_chunk(model, ids[:, a:b])
+    cache = prefill(model, ids[:, :a])
+    if K > 0:
+        cache = forward_suffix(model, cache, ids[:, a:a + K], a).past_key_values
+    if K < nb:
+        cs, ss = cos_sin(model, list(range(K, nb))); ct, st = cos_sin(model, list(range(a + K, a + nb)))
+        tail = DynamicCache()
+        for i, l in enumerate(alone.layers):
+            kk = l.keys[:, :, K:nb, :].float(); raw = kk * cs - rotate_half(kk) * ss
+            tail.update((raw * ct + rotate_half(raw) * st).to(l.keys.dtype), l.values[:, :, K:nb, :], i)
+        cache = cache_concat(cache_slice(cache, 0, a + K), tail)
+    else:
+        cache = cache_slice(cache, 0, a + nb)
+    return forward_suffix(model, cache, ids[:, b:L - 1], b).past_key_values
 
 PAD = "\n".join(f"- background note {i}: routine context, no action required." for i in range(18))
 # domains: (template with {a}{b}{c}{d}{e}, [(label, pool)]*5, question templates per slot)
@@ -98,10 +119,29 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="unsloth/gemma-2-9b-it"); ap.add_argument("--tag", default=None)
     ap.add_argument("--n", type=int, default=104)
+    ap.add_argument("--repair", action="store_true", help="seam-repair K-sweep (recompute first-K chunk tokens)")
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     model = load_lm(args.model, attn="sdpa")
+
+    if args.repair:
+        KS = [0, 4, 8, 16, 32, 64]
+        items = gen_items(args.n); rep = {K: [] for K in KS}; full = []
+        for i, (passage, q, ans) in enumerate(items):
+            ids, a, b = chat_spans(tok, f"{SYS}\n\n{passage}\n\n{q}", passage)
+            full.append(int(ans in answer_text(model, tok, ids)))
+            for K in KS:
+                rep[K].append(int(ans in answer_text(model, tok, ids, cache_full=transplanted_repair(model, ids, a, b, K))))
+            if i % 25 == 0:
+                print(f"  [{i}/{len(items)}] full~{sum(full)/len(full):.2f} K0~{sum(rep[0])/len(rep[0]):.2f} K16~{sum(rep[16])/len(rep[16]):.2f}", flush=True)
+        n = len(items); out = {"model": args.model, "n": n, "full_acc": round(sum(full) / n, 3), "by_K": {}}
+        print(f"\n=== SEAM-REPAIR (facts/RAG, {args.model}, n={n}) full_acc={out['full_acc']} ===")
+        for K in KS:
+            pa = sum(rep[K]) / n; out["by_K"][K] = {"acc": round(pa, 3), "ci": boot_ci(rep[K])}
+            print(f"  K={K:>3} (recomputed seam tokens): acc={pa:.3f} CI{boot_ci(rep[K])}")
+        json.dump(out, open(os.path.join(os.path.dirname(__file__), "..", "results", f"facts_seamrepair_{tag}.json"), "w"), indent=2)
+        print("SEAMREPAIR_DONE"); return
 
     items = gen_items(args.n)
     acc = {p: {"full": [], "pre": [], "agree": []} for p in ["early", "late"]}

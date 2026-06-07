@@ -1,0 +1,19 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-70B-Instruct-bnb-4bit",
+  "n": 108,
+  "full_acc": 1.0,
+  "full_ci": [
+    1.0,
+    1.0
+  ],
+  "precompiled_acc": 1.0,
+  "precompiled_ci": [
+    1.0,
+    1.0
+  ],
+  "toolcall_agreement": 1.0,
+  "agreement_ci": [
+    1.0,
+    1.0
+  ]
+}

@@ -1,3 +1,33 @@
 /home/ubuntu/.local/lib/python3.10/site-packages/transformers/quantizers/auto.py:239: UserWarning: You passed `quantization_config` or equivalent parameters to `from_pretrained` but the model you're loading already has a `quantization_config` attribute. The `quantization_config` from the model will be used.
   warnings.warn(warning_msg)
-Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]Fetching 6 files:  17%|█▋        | 1/6 [05:34<27:54, 334.95s/it]Fetching 6 files: 100%|██████████| 6/6 [05:34<00:00, 55.83s/it] 
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|█▋        | 1/6 [00:01<00:05,  1.12s/it]Loading checkpoint shards:  33%|███▎      | 2/6 [00:02<00:04,  1.03s/it]Loading checkpoint shards:  50%|█████     | 3/6 [00:03<00:02,  1.02it/s]Loading checkpoint shards:  67%|██████▋   | 4/6 [00:03<00:01,  1.05it/s]Loading checkpoint shards:  83%|████████▎ | 5/6 [00:04<00:00,  1.06it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:05<00:00,  1.15it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:05<00:00,  1.08it/s]
+=== SKILL feasibility (unsloth/Meta-Llama-3.1-70B-Instruct-bnb-4bit) ===
+  --- self-contained skills ---
+  refund     skill_tok= 605 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
+  access     skill_tok= 606 | full=correct reposition=correct(cos0.99) naive=correct(cos0.98) | agree=True
+  deploy     skill_tok= 596 | full=correct reposition=correct(cos0.98) naive=correct(cos0.96) | agree=True
+  rx         skill_tok= 603 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
+  loan       skill_tok= 587 | full=correct reposition=correct(cos0.98) naive=correct(cos0.98) | agree=True
+  legal      skill_tok= 586 | full=correct reposition=correct(cos0.99) naive=correct(cos1.00) | agree=True
+  incident   skill_tok= 580 | full=correct reposition=correct(cos0.98) naive=correct(cos0.98) | agree=True
+  visa       skill_tok= 582 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
+  [self-contained] full_correct=8/8 precompiled_correct=8/8 | reposition==full: 8/8 (cos0.986) | naive==full: 8/8 (cos0.982)
+  TTFT: full median=463.7ms  precompiled median=483.9ms
+COMPOSABLE_KV_DONE
+/home/ubuntu/.local/lib/python3.10/site-packages/transformers/quantizers/auto.py:239: UserWarning: You passed `quantization_config` or equivalent parameters to `from_pretrained` but the model you're loading already has a `quantization_config` attribute. The `quantization_config` from the model will be used.
+  warnings.warn(warning_msg)
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|█▋        | 1/6 [00:01<00:05,  1.09s/it]Loading checkpoint shards:  33%|███▎      | 2/6 [00:02<00:04,  1.05s/it]Loading checkpoint shards:  50%|█████     | 3/6 [00:03<00:03,  1.01s/it]Loading checkpoint shards:  67%|██████▋   | 4/6 [00:03<00:01,  1.03it/s]Loading checkpoint shards:  83%|████████▎ | 5/6 [00:04<00:00,  1.05it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:05<00:00,  1.15it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:05<00:00,  1.07it/s]
+  [0/108] full_acc~1.00 pre_acc~1.00
+  [20/108] full_acc~1.00 pre_acc~1.00
+  [40/108] full_acc~1.00 pre_acc~1.00
+  [60/108] full_acc~1.00 pre_acc~1.00
+  [80/108] full_acc~1.00 pre_acc~1.00
+  [100/108] full_acc~1.00 pre_acc~1.00
+
+=== AGENTIC TOOL-CALLING (transplanted tool-defs), unsloth/Meta-Llama-3.1-70B-Instruct-bnb-4bit, n=108 ===
+  full fn+arg acc      = 1.0 CI[1.0, 1.0]
+  precompiled fn+arg   = 1.0 CI[1.0, 1.0]
+  tool-call agreement  = 1.0 CI[1.0, 1.0]
+AGENTIC_DONE
+DONE_70B4
