@@ -552,6 +552,31 @@ is **unreliable but works on some** — composed recovery WORKS on Gemma-2-9B (0
 Llama-3.1-8B (0.81); partial on Qwen3-8B (0.59), Mistral (0.56), DeepSeek (0.44), Qwen3-14B (0.32) —
 a useful-when-it-lands tool, never universal, which is why the erratum remains the default.
 
+**10.10 Composable KV for IMAGES (multimodal, `esys/composable_vision.py`).** In an agent trajectory an
+image costs a full prefill — the vision tower *plus* prefilling the image's >1k soft-tokens through the
+LM. We **cache the image's LM KV once and splice it in**, re-running only text, so later turns skip that
+prefill entirely (the image analogue of facts/RAG transplant). Across **N=120 diverse VQA tasks per
+model** spanning **perception** (read digit / name colour), **visual reasoning** (count, shape, spatial,
+size), and **agentic** (the image governs a *tool* decision — status-light → halt/proceed, gauge →
+scale_up/down), with **>1000-token images** (1024–1296 image tokens) and bootstrap CIs, the spliced
+image KV is **near-lossless vs full re-encode** (agreement = precompiled==full):
+
+| VL model | img tokens | overall agreement | agentic agree | reasoning agree |
+|---|---|---|---|---|
+| Qwen2.5-VL-3B | ~1296 | **1.00 [1.0,1.0]** | 1.00 | 1.00 |
+| Qwen2.5-VL-7B | ~1296 | **0.958 [.92,.99]** | 1.00 | 0.97 |
+| Qwen3-VL-8B | ~1024 | **0.992 [.98,1.0]** | 1.00 | 0.98 |
+
+**Agentic tool-decisions from a transplanted image agree 1.00 on all three** — an agent can reuse a
+cached image instead of re-prefilling it, including when the image drives a tool call. (Where the VLM's
+*own* accuracy is low — e.g. reading a high-res digit — precompiled still tracks full; agreement, not
+absolute accuracy, is the transplant-fidelity metric.) **M-RoPE note:** image position is `(t,h,w)`;
+moving an image shifts only the temporal `t` (h,w intrinsic), so a position change re-rotates only the
+temporal mrope-section — same-position reuse needs none. **Qwen3-VL-30B-A3B is excluded** (degenerate:
+full-accuracy ≈0 on this synthetic VQA format, so agreement is uninformative). So composable KV extends
+from text to **vision tokens**: the substrate property (localized, position-portable, context-robust
+information) holds for images too.
+
 ## 11. Limitations
 
 The mechanism battery (n=12 instances) is on a few scenario templates; the scale-reversal explanation

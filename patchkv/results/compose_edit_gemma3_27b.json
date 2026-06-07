@@ -1,0 +1,23 @@
+{
+  "model": "unsloth/gemma-3-27b-it",
+  "n_instances": 7,
+  "clean_flips": 7,
+  "agg": {
+    "in_place": {
+      "recomputed": -0.003,
+      "composed": 0.005
+    },
+    "sel@8": {
+      "recomputed": 0.699,
+      "composed": 0.745
+    },
+    "sel@32": {
+      "recomputed": 0.837,
+      "composed": 0.806
+    },
+    "erratum": {
+      "recomputed": 0.893,
+      "composed": 11.508
+    }
+  }
+}

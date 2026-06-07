@@ -1,0 +1,50 @@
+{
+  "model": "Qwen/Qwen3-VL-8B-Instruct",
+  "n": 120,
+  "img_tokens": 1024,
+  "by_category": {
+    "agentic": {
+      "n": 30,
+      "full": 0.767,
+      "precompiled": 0.767,
+      "precompiled_ci": [
+        0.6,
+        0.9
+      ],
+      "agreement": 1.0
+    },
+    "perception": {
+      "n": 30,
+      "full": 0.5,
+      "precompiled": 0.5,
+      "precompiled_ci": [
+        0.333,
+        0.667
+      ],
+      "agreement": 1.0
+    },
+    "reasoning": {
+      "n": 60,
+      "full": 0.967,
+      "precompiled": 0.95,
+      "precompiled_ci": [
+        0.883,
+        1.0
+      ],
+      "agreement": 0.983
+    }
+  },
+  "overall": {
+    "full": 0.8,
+    "precompiled": 0.792,
+    "precompiled_ci": [
+      0.717,
+      0.867
+    ],
+    "agreement": 0.992,
+    "agreement_ci": [
+      0.975,
+      1.0
+    ]
+  }
+}

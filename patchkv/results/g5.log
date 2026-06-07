@@ -1,0 +1,36 @@
+VL batch done; starting G5 large models
+########## unsloth/gemma-3-27b-it ##########
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:10,  1.01it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:02<00:11,  1.17s/it]Loading checkpoint shards:  25%|██▌       | 3/12 [00:03<00:10,  1.22s/it]Loading checkpoint shards:  33%|███▎      | 4/12 [00:04<00:09,  1.22s/it]Loading checkpoint shards:  42%|████▏     | 5/12 [00:06<00:08,  1.23s/it]Loading checkpoint shards:  50%|█████     | 6/12 [00:07<00:07,  1.24s/it]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:08<00:06,  1.27s/it]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:09<00:05,  1.30s/it]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:11<00:03,  1.30s/it]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:12<00:02,  1.31s/it]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:14<00:01,  1.33s/it]Loading checkpoint shards: 100%|██████████| 12/12 [00:14<00:00,  1.04it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:14<00:00,  1.18s/it]
+=== SKILL feasibility (unsloth/gemma-3-27b-it) ===
+  --- self-contained skills ---
+  refund     skill_tok= 640 | full=correct reposition=correct(cos0.94) naive=correct(cos0.94) | agree=True
+  access     skill_tok= 642 | full=correct reposition=correct(cos0.98) naive=correct(cos0.98) | agree=True
+  deploy     skill_tok= 630 | full=correct reposition=correct(cos0.97) naive=correct(cos0.97) | agree=True
+  rx         skill_tok= 634 | full=correct reposition=correct(cos0.98) naive=correct(cos0.98) | agree=True
+  loan       skill_tok= 624 | full=correct reposition=correct(cos0.94) naive=correct(cos0.95) | agree=True
+  legal      skill_tok= 615 | full=correct reposition=correct(cos0.97) naive=correct(cos0.97) | agree=True
+  incident   skill_tok= 613 | full=correct reposition=correct(cos0.95) naive=correct(cos0.95) | agree=True
+  visa       skill_tok= 614 | full=correct reposition=correct(cos0.91) naive=correct(cos0.91) | agree=True
+  [self-contained] full_correct=8/8 precompiled_correct=8/8 | reposition==full: 8/8 (cos0.955) | naive==full: 8/8 (cos0.955)
+  TTFT: full median=146.0ms  precompiled median=106.9ms
+COMPOSABLE_KV_DONE
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:04,  2.41it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:00<00:05,  1.96it/s]Loading checkpoint shards:  25%|██▌       | 3/12 [00:01<00:04,  1.88it/s]Loading checkpoint shards:  33%|███▎      | 4/12 [00:02<00:04,  1.89it/s]Loading checkpoint shards:  42%|████▏     | 5/12 [00:02<00:03,  1.88it/s]Loading checkpoint shards:  50%|█████     | 6/12 [00:03<00:03,  1.89it/s]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:03<00:02,  1.82it/s]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:04<00:02,  1.76it/s]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:04<00:01,  1.70it/s]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:05<00:01,  1.65it/s]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:06<00:00,  1.65it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:06<00:00,  1.91it/s]
+=== COMPOSE-THEN-EDIT keystone (unsloth/gemma-3-27b-it) ===
+  account   recomputed: in_place=+0.00 sel@32=+0.91 err=+0.92 | composed: in_place=+0.00 sel@32=+0.82 err=+7.21
+  order     recomputed: in_place=-0.00 sel@32=+0.94 err=+0.94 | composed: in_place=+0.00 sel@32=+0.94 err=+6.33
+  subscription recomputed: in_place=-0.01 sel@32=+0.90 err=+0.92 | composed: in_place=+0.00 sel@32=+1.00 err=+41.80
+  door      recomputed: in_place=+0.00 sel@32=+0.91 err=+0.91 | composed: in_place=+0.07 sel@32=+0.73 err=+18.10
+  payout    recomputed: in_place=+0.00 sel@32=+0.84 err=+0.85 | composed: in_place=+0.00 sel@32=+0.73 err=+3.78
+  post      recomputed: in_place=-0.01 sel@32=+0.64 err=+0.93 | composed: in_place=+0.00 sel@32=+0.67 err=+1.72
+  ship      skipped (token-length mismatch)
+  login     recomputed: in_place=-0.01 sel@32=+0.72 err=+0.80 | composed: in_place=-0.03 sel@32=+0.74 err=+1.61
+
+  MEAN recovery (n=7, clean flips=7/7):
+  method       recomputed     composed
+  in_place         -0.003        0.005
+  sel@8             0.699        0.745
+  sel@32            0.837        0.806
+  erratum           0.893       11.508
+COMPOSE_EDIT_DONE
+Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:04,  2.40it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:00<00:05,  1.96it/s]Loading checkpoint shards:  25%|██▌       | 3/12 [00:01<00:04,  1.88it/s]Loading checkpoint shards:  33%|███▎      | 4/12 [00:02<00:04,  1.89it/s]Loading checkpoint shards:  42%|████▏     | 5/12 [00:02<00:03,  1.88it/s]Loading checkpoint shards:  50%|█████     | 6/12 [00:03<00:03,  1.89it/s]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:03<00:02,  1.83it/s]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:04<00:02,  1.77it/s]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:04<00:01,  1.73it/s]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:05<00:01,  1.70it/s]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:06<00:00,  1.67it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:06<00:00,  1.93it/s]
+  [0/104] early full~1.00 pre~0.00

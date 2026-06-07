@@ -1,20 +1,20 @@
 {
   "model": "Qwen/Qwen2.5-VL-3B-Instruct",
-  "n": 120,
-  "img_tokens": 1296,
+  "n": 24,
+  "img_tokens": 576,
   "by_category": {
     "agentic": {
-      "n": 30,
-      "full": 0.6,
-      "precompiled": 0.6,
+      "n": 6,
+      "full": 1.0,
+      "precompiled": 0.667,
       "precompiled_ci": [
-        0.433,
-        0.767
+        0.333,
+        1.0
       ],
-      "agreement": 1.0
+      "agreement": 0.667
     },
     "perception": {
-      "n": 30,
+      "n": 6,
       "full": 1.0,
       "precompiled": 1.0,
       "precompiled_ci": [
@@ -24,26 +24,26 @@
       "agreement": 1.0
     },
     "reasoning": {
-      "n": 60,
-      "full": 0.65,
-      "precompiled": 0.65,
+      "n": 12,
+      "full": 0.583,
+      "precompiled": 0.583,
       "precompiled_ci": [
-        0.533,
-        0.767
+        0.333,
+        0.833
       ],
       "agreement": 1.0
     }
   },
   "overall": {
-    "full": 0.725,
-    "precompiled": 0.725,
+    "full": 0.792,
+    "precompiled": 0.708,
     "precompiled_ci": [
-      0.642,
-      0.8
+      0.542,
+      0.875
     ],
-    "agreement": 1.0,
+    "agreement": 0.917,
     "agreement_ci": [
-      1.0,
+      0.792,
       1.0
     ]
   }

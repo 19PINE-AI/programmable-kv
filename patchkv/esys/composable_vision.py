@@ -1,12 +1,13 @@
-"""G6 — Composable KV for IMAGES: pre-encode an image once, splice its cached KV into a trajectory,
-skip the vision-tower + image-token prefill. Feasibility: does VQA survive the transplant?
+"""G6 — Composable KV for IMAGES across DIVERSE tasks (perception / visual-reasoning / agentic), N>=100.
 
-Use case: an agent reads an image; today that costs a full prefill (vision tower + prefill of the
->1k image soft-tokens). We cache the image's LM KV once and SPLICE it in, re-running only the text.
-We test SAME-position reuse (no reposition) first — the core "skip the prefill" claim — measuring VQA
-agreement vs full re-encode and the image-token prefill saved. M-RoPE note: image position is (t,h,w);
-moving the image shifts only the temporal t (h,w intrinsic), so a position shift re-rotates only the
-temporal mrope section. Run: python esys/composable_vision.py --model Qwen/Qwen2.5-VL-3B-Instruct
+Cache an image's LM KV once, splice it into the trajectory (skip the vision tower + image-token
+prefill), re-run only text. Feasibility across diverse tasks with bootstrap 95% CIs, per category:
+  perception : read a digit / name the colour
+  reasoning  : count shapes, identify a shape, spatial (left/right colour), size comparison
+  agentic    : the image governs a TOOL decision (status light -> halt/proceed; gauge fill -> scale)
+We report full-VQA vs precompiled(spliced image KV) accuracy + agreement, per category, per model.
+M-RoPE handled via get_rope_index; same-position reuse needs no temporal re-rotation.
+Run: python esys/composable_vision.py --model Qwen/Qwen2.5-VL-7B-Instruct --n 120
 """
 import argparse, os, sys, json, random
 import torch
@@ -17,17 +18,89 @@ from transformers.cache_utils import DynamicCache
 
 COLORS = [("red", (200, 30, 30)), ("green", (30, 160, 30)), ("blue", (40, 60, 200)),
           ("yellow", (220, 200, 40)), ("purple", (130, 40, 160)), ("orange", (230, 130, 30))]
+SHAPES = ["circle", "square", "triangle"]
 
 
-def make_img(digit, rgb, size=336):
-    im = Image.new("RGB", (size, size), rgb)
-    d = ImageDraw.Draw(im)
+def _font(sz):
     try:
-        f = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", size=int(size * 0.6))
+        return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", size=sz)
     except Exception:
-        f = ImageFont.load_default()
-    d.text((size * 0.32, size * 0.12), str(digit), fill=(255, 255, 255), font=f)
-    return im
+        return ImageFont.load_default()
+
+
+def _shape(d, kind, box, fill):
+    x0, y0, x1, y1 = box
+    if kind == "circle":
+        d.ellipse(box, fill=fill)
+    elif kind == "square":
+        d.rectangle(box, fill=fill)
+    else:
+        d.polygon([(x0, y1), ((x0 + x1) / 2, y0), (x1, y1)], fill=fill)
+
+
+def gen_tasks(n, size=1008):
+    rng = random.Random(0); tasks = []
+    cats = ["perc_digit", "perc_color", "reason_count", "reason_shape", "reason_spatial", "reason_size",
+            "agentic_status", "agentic_gauge"]
+    while len(tasks) < n:
+        cat = cats[len(tasks) % len(cats)]
+        im = Image.new("RGB", (size, size), (245, 245, 245)); d = ImageDraw.Draw(im)
+        if cat == "perc_digit":
+            dg = rng.randint(0, 9); cn, rgb = rng.choice(COLORS)
+            im.paste(Image.new("RGB", (size, size), rgb)); d = ImageDraw.Draw(im)
+            d.text((size * .33, size * .12), str(dg), fill=(255, 255, 255), font=_font(int(size * .6)))
+            q, ans, c = "What digit is shown? Answer one word.", str(dg), "perception"
+        elif cat == "perc_color":
+            dg = rng.randint(0, 9); cn, rgb = rng.choice(COLORS)
+            im.paste(Image.new("RGB", (size, size), rgb)); d = ImageDraw.Draw(im)
+            d.text((size * .33, size * .12), str(dg), fill=(255, 255, 255), font=_font(int(size * .6)))
+            q, ans, c = "What is the background colour? Answer one word.", cn, "perception"
+        elif cat == "reason_count":
+            k = rng.randint(2, 5); cn, rgb = rng.choice(COLORS)
+            for _ in range(k):
+                x = rng.randint(40, size - 200); y = rng.randint(40, size - 200)
+                _shape(d, "circle", (x, y, x + 150, y + 150), rgb)
+            q, ans, c = "How many circles are in the image? Answer with a number.", str(k), "reasoning"
+        elif cat == "reason_shape":
+            kind = rng.choice(SHAPES); cn, rgb = rng.choice(COLORS)
+            _shape(d, kind, (size * .25, size * .25, size * .75, size * .75), rgb)
+            q, ans, c = "What shape is shown (circle, square, or triangle)? Answer one word.", kind, "reasoning"
+        elif cat == "reason_spatial":
+            (cl, rl), (cr, rr) = rng.sample(COLORS, 2)
+            _shape(d, "circle", (size * .08, size * .35, size * .38, size * .65), rl)
+            _shape(d, "square", (size * .62, size * .35, size * .92, size * .65), rr)
+            q, ans, c = "What colour is the shape on the LEFT? Answer one word.", cl, "reasoning"
+        elif cat == "reason_size":
+            cn, rgb = rng.choice(COLORS); big_left = rng.random() < 0.5
+            rb, rs = (int(size * .34), int(size * .16))
+            if big_left:
+                _shape(d, "circle", (size * .05, size * .3, size * .05 + 2 * rb, size * .3 + 2 * rb), rgb)
+                _shape(d, "circle", (size * .7, size * .4, size * .7 + 2 * rs, size * .4 + 2 * rs), rgb)
+            else:
+                _shape(d, "circle", (size * .1, size * .4, size * .1 + 2 * rs, size * .4 + 2 * rs), rgb)
+                _shape(d, "circle", (size * .55, size * .3, size * .55 + 2 * rb, size * .3 + 2 * rb), rgb)
+            q, ans, c = "Which circle is bigger, the one on the left or the right? Answer left or right.", ("left" if big_left else "right"), "reasoning"
+        elif cat == "agentic_status":
+            red = rng.random() < 0.5; rgb = (200, 30, 30) if red else (30, 160, 30)
+            d.rectangle((size * .2, size * .2, size * .8, size * .8), fill=rgb)
+            q = ("A monitoring panel shows a status light. POLICY: if the light is red, call the tool "
+                 "halt; if it is green, call the tool proceed. Which tool do you call? Answer one word.")
+            ans, c = ("halt" if red else "proceed"), "agentic"
+        else:  # agentic_gauge
+            fill = rng.choice([20, 35, 65, 80]); d.rectangle((size * .1, size * .45, size * .9, size * .55), outline=(0, 0, 0), width=6)
+            d.rectangle((size * .1, size * .45, size * .1 + (size * .8) * fill / 100, size * .55), fill=(40, 60, 200))
+            q = (f"A load gauge is shown. POLICY: if the bar is more than half full, call scale_up; "
+                 f"otherwise call scale_down. Which tool do you call? Answer one word.")
+            ans, c = ("scale_up" if fill > 50 else "scale_down"), "agentic"
+        tasks.append((im, q, ans.lower(), c))
+    return tasks
+
+
+def boot_ci(xs, B=10000, seed=0):
+    if not xs:
+        return [0.0, 0.0]
+    r = random.Random(seed); m = sorted(sum(r.choice(xs) for _ in range(len(xs))) / len(xs) for _ in range(B))
+    return [round(m[int(.025 * B)], 3), round(m[int(.975 * B)], 3)]
 
 
 def cache_slice(c, lo, hi):
@@ -46,91 +119,76 @@ def cache_concat(*cs):
 
 def load_vlm(name):
     import transformers as T
-    dtype = torch.bfloat16
+    key = name.lower().replace("-", "").replace(".", "").replace("_", "")
     for cls in ["Qwen3VLForConditionalGeneration", "Qwen2_5_VLForConditionalGeneration", "Qwen2VLForConditionalGeneration",
-                "Gemma3ForConditionalGeneration", "AutoModelForImageTextToText"]:
-        if hasattr(T, cls) and (cls.split("For")[0].lower().replace("_", "") in name.lower().replace("-", "").replace(".", "") or cls == "AutoModelForImageTextToText"):
-            try:
-                return getattr(T, cls).from_pretrained(name, dtype=dtype, device_map="cuda", trust_remote_code=True).eval()
-            except Exception as e:
-                print(f"[load] {cls} failed: {str(e)[:60]}")
-    return T.AutoModelForImageTextToText.from_pretrained(name, dtype=dtype, device_map="cuda", trust_remote_code=True).eval()
+                "Gemma3ForConditionalGeneration"]:
+        tag = cls.split("For")[0].lower().replace("_", "")
+        if hasattr(T, cls) and tag in key:
+            return getattr(T, cls).from_pretrained(name, dtype=torch.bfloat16, device_map="cuda", trust_remote_code=True).eval()
+    return T.AutoModelForImageTextToText.from_pretrained(name, dtype=torch.bfloat16, device_map="cuda", trust_remote_code=True).eval()
 
 
 @torch.no_grad()
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="Qwen/Qwen2.5-VL-3B-Instruct"); ap.add_argument("--tag", default=None)
-    ap.add_argument("--n", type=int, default=24)
+    ap.add_argument("--model", default="Qwen/Qwen2.5-VL-7B-Instruct"); ap.add_argument("--tag", default=None)
+    ap.add_argument("--n", type=int, default=120); ap.add_argument("--size", type=int, default=1008)
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     proc = AutoProcessor.from_pretrained(args.model, trust_remote_code=True)
     model = load_vlm(args.model)
-    cfg = model.config
-    img_tok = getattr(cfg, "image_token_id", None) or getattr(cfg, "image_token_index", None)
-    print(f"loaded {args.model}; image_token_id={img_tok}")
+    img_tok = getattr(model.config, "image_token_id", None) or getattr(model.config, "image_token_index", None)
+    print(f"loaded {args.model}; image_token_id={img_tok}", flush=True)
 
     def build(img, q):
         msgs = [{"role": "user", "content": [{"type": "image"}, {"type": "text", "text": q}]}]
         text = proc.apply_chat_template(msgs, add_generation_prompt=True, tokenize=False)
         return proc(text=[text], images=[img], return_tensors="pt").to("cuda")
 
-    def img_span(input_ids):
-        m = (input_ids[0] == img_tok).nonzero().squeeze(-1)
-        return int(m[0]), int(m[-1]) + 1
-
-    rng = random.Random(0)
-    ag_full, ag_pre, agree = [], [], []
-    for i in range(args.n):
-        digit = rng.randint(0, 9); cname, rgb = rng.choice(COLORS)
-        ask_color = (i % 2 == 0)
-        img = make_img(digit, rgb)
-        q = "What color is the background? Answer one word." if ask_color else "What digit is shown? Answer one word."
-        ans = cname if ask_color else str(digit)
-        inp = build(img, q); ids = inp["input_ids"]; L = ids.shape[1]; a, b = img_span(ids)
-        # FULL forward -> answer
+    cats = {}
+    tasks = gen_tasks(args.n, args.size); ntok = 0
+    for i, (img, q, ans, c) in enumerate(tasks):
+        inp = build(img, q); ids = inp["input_ids"]; L = ids.shape[1]
+        m = (ids[0] == img_tok).nonzero().squeeze(-1); a, b = int(m[0]), int(m[-1]) + 1; ntok = b - a
         gen = model.generate(**inp, max_new_tokens=4, do_sample=False)
         full_txt = proc.batch_decode(gen[:, L:], skip_special_tokens=True)[0].lower()
-        # cache the FULL kv once (this contains the image-token KV at [a,b))
-        out = model(**inp, use_cache=True)
-        full_cache = out.past_key_values
-        # PRECOMPILED reuse: prefill text [0,a), splice cached image KV [a,b), prefill text [b,L) -- NO pixel_values
-        pos = None
+        full_cache = model(**inp, use_cache=True).past_key_values
         try:
-            # text-only forwards need M-RoPE position ids that match the image layout
             pids, _ = model.get_rope_index(ids, inp.get("image_grid_thw"), attention_mask=torch.ones_like(ids))
         except Exception:
             pids = None
-        def fwd(seg_ids, past, start):
-            n = seg_ids.shape[1]
-            kw = dict(input_ids=seg_ids, past_key_values=past, use_cache=True,
-                      cache_position=torch.arange(start, start + n, device="cuda"))
+        def fwd(seg, past, start):
+            kw = dict(input_ids=seg, past_key_values=past, use_cache=True,
+                      cache_position=torch.arange(start, start + seg.shape[1], device="cuda"))
             if pids is not None:
-                kw["position_ids"] = pids[:, :, start:start + n]
+                kw["position_ids"] = pids[:, :, start:start + seg.shape[1]]
             return model.model(**kw) if hasattr(model, "model") else model(**kw)
         pre = fwd(ids[:, :a], DynamicCache(), 0).past_key_values
         spliced = cache_concat(pre, cache_slice(full_cache, a, b))
-        fin = fwd(ids[:, b:L], spliced, b)
-        lg = fin.logits if hasattr(fin, "logits") else model.lm_head(fin.last_hidden_state)
-        nxt = int(lg[0, -1].argmax())
-        # greedy 3 more
-        dec = [nxt]; past = fin.past_key_values; pos2 = L
-        for _ in range(3):
-            o = fwd(torch.tensor([[dec[-1]]], device="cuda"), past, pos2); pos2 += 1
-            past = o.past_key_values
+        o = fwd(ids[:, b:L], spliced, b); past = o.past_key_values; pos = L
+        dec = []
+        for _ in range(4):
             lg = o.logits if hasattr(o, "logits") else model.lm_head(o.last_hidden_state)
-            dec.append(int(lg[0, -1].argmax()))
+            nx = int(lg[0, -1].argmax()); dec.append(nx)
+            o = fwd(torch.tensor([[nx]], device="cuda"), past, pos); past = o.past_key_values; pos += 1
         pre_txt = proc.tokenizer.decode(dec, skip_special_tokens=True).lower()
         fc = ans in full_txt; pc = ans in pre_txt
-        ag_full.append(int(fc)); ag_pre.append(int(pc)); agree.append(int(fc == pc))
-        if i < 4 or i % 8 == 0:
-            print(f"  [{i}] ans={ans} full={full_txt[:8]!r}({fc}) precompiled={pre_txt[:8]!r}({pc}) | img_tokens={b-a}", flush=True)
-    n = args.n
-    out = {"model": args.model, "n": n, "img_tokens": b - a,
-           "full_acc": round(sum(ag_full) / n, 3), "precompiled_acc": round(sum(ag_pre) / n, 3),
-           "agreement": round(sum(agree) / n, 3)}
-    print(f"\n=== IMAGE KV TRANSPLANT ({args.model}, n={n}, ~{b-a} img tokens) ===")
-    print(f"  full VQA acc={out['full_acc']} | precompiled(spliced image KV) acc={out['precompiled_acc']} | agreement={out['agreement']}")
+        cats.setdefault(c, {"full": [], "pre": [], "agree": []})
+        cats[c]["full"].append(int(fc)); cats[c]["pre"].append(int(pc)); cats[c]["agree"].append(int(fc == pc))
+        if i % 24 == 0:
+            print(f"  [{i}/{len(tasks)}] {c} ans={ans} full={fc} pre={pc} img_tok={ntok}", flush=True)
+    allf = [v for c in cats.values() for v in c["full"]]; allp = [v for c in cats.values() for v in c["pre"]]; alla = [v for c in cats.values() for v in c["agree"]]
+    out = {"model": args.model, "n": len(tasks), "img_tokens": ntok, "by_category": {}}
+    print(f"\n=== IMAGE KV TRANSPLANT — DIVERSE ({args.model}, n={len(tasks)}, ~{ntok} img tok) ===")
+    for c, v in sorted(cats.items()):
+        nf = sum(v["full"]) / len(v["full"]); npr = sum(v["pre"]) / len(v["pre"]); ng = sum(v["agree"]) / len(v["agree"])
+        out["by_category"][c] = {"n": len(v["full"]), "full": round(nf, 3), "precompiled": round(npr, 3),
+                                 "precompiled_ci": boot_ci(v["pre"]), "agreement": round(ng, 3)}
+        print(f"  {c:9s} n={len(v['full']):>3} full={nf:.2f} precompiled={npr:.2f} CI{boot_ci(v['pre'])} agree={ng:.2f}")
+    out["overall"] = {"full": round(sum(allf) / len(allf), 3), "precompiled": round(sum(allp) / len(allp), 3),
+                      "precompiled_ci": boot_ci(allp), "agreement": round(sum(alla) / len(alla), 3), "agreement_ci": boot_ci(alla)}
+    print(f"  OVERALL full={out['overall']['full']} precompiled={out['overall']['precompiled']} "
+          f"CI{out['overall']['precompiled_ci']} agreement={out['overall']['agreement']} CI{out['overall']['agreement_ci']}")
     json.dump(out, open(os.path.join(os.path.dirname(__file__), "..", "results", f"composable_vision_{tag}.json"), "w"), indent=2)
     print("VISION_DONE")
 

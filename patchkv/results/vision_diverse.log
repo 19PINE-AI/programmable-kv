@@ -1,0 +1,53 @@
+########## Qwen/Qwen2.5-VL-3B-Instruct ##########
+loaded Qwen/Qwen2.5-VL-3B-Instruct; image_token_id=151655
+  [0/120] perception ans=6 full=True pre=True img_tok=1296
+  [24/120] perception ans=8 full=True pre=True img_tok=1296
+  [48/120] perception ans=0 full=True pre=True img_tok=1296
+  [72/120] perception ans=9 full=True pre=True img_tok=1296
+  [96/120] perception ans=8 full=True pre=True img_tok=1296
+=== IMAGE KV TRANSPLANT — DIVERSE (Qwen/Qwen2.5-VL-3B-Instruct, n=120, ~1296 img tok) ===
+  agentic   n= 30 full=0.60 precompiled=0.60 CI[0.433, 0.767] agree=1.00
+  perception n= 30 full=1.00 precompiled=1.00 CI[1.0, 1.0] agree=1.00
+  reasoning n= 60 full=0.65 precompiled=0.65 CI[0.533, 0.767] agree=1.00
+  OVERALL full=0.725 precompiled=0.725 CI[0.642, 0.8] agreement=1.0 CI[1.0, 1.0]
+VISION_DONE
+########## Qwen/Qwen2.5-VL-7B-Instruct ##########
+loaded Qwen/Qwen2.5-VL-7B-Instruct; image_token_id=151655
+  [0/120] perception ans=6 full=False pre=False img_tok=1296
+  [24/120] perception ans=8 full=False pre=False img_tok=1296
+  [48/120] perception ans=0 full=False pre=False img_tok=1296
+  [72/120] perception ans=9 full=False pre=False img_tok=1296
+  [96/120] perception ans=8 full=False pre=True img_tok=1296
+=== IMAGE KV TRANSPLANT — DIVERSE (Qwen/Qwen2.5-VL-7B-Instruct, n=120, ~1296 img tok) ===
+  agentic   n= 30 full=1.00 precompiled=1.00 CI[1.0, 1.0] agree=1.00
+  perception n= 30 full=0.50 precompiled=0.60 CI[0.433, 0.767] agree=0.90
+  reasoning n= 60 full=0.97 precompiled=0.93 CI[0.867, 0.983] agree=0.97
+  OVERALL full=0.858 precompiled=0.867 CI[0.808, 0.925] agreement=0.958 CI[0.917, 0.992]
+VISION_DONE
+########## Qwen/Qwen3-VL-8B-Instruct ##########
+loaded Qwen/Qwen3-VL-8B-Instruct; image_token_id=151655
+  [0/120] perception ans=6 full=False pre=False img_tok=1024
+  [24/120] perception ans=8 full=False pre=False img_tok=1024
+  [48/120] perception ans=0 full=False pre=False img_tok=1024
+  [72/120] perception ans=9 full=False pre=False img_tok=1024
+  [96/120] perception ans=8 full=False pre=False img_tok=1024
+=== IMAGE KV TRANSPLANT — DIVERSE (Qwen/Qwen3-VL-8B-Instruct, n=120, ~1024 img tok) ===
+  agentic   n= 30 full=0.77 precompiled=0.77 CI[0.6, 0.9] agree=1.00
+  perception n= 30 full=0.50 precompiled=0.50 CI[0.333, 0.667] agree=1.00
+  reasoning n= 60 full=0.97 precompiled=0.95 CI[0.883, 1.0] agree=0.98
+  OVERALL full=0.8 precompiled=0.792 CI[0.717, 0.867] agreement=0.992 CI[0.975, 1.0]
+VISION_DONE
+########## Qwen/Qwen3-VL-30B-A3B-Instruct ##########
+loaded Qwen/Qwen3-VL-30B-A3B-Instruct; image_token_id=151655
+  [0/120] perception ans=6 full=False pre=False img_tok=1024
+  [24/120] perception ans=8 full=False pre=False img_tok=1024
+  [48/120] perception ans=0 full=False pre=False img_tok=1024
+  [72/120] perception ans=9 full=False pre=False img_tok=1024
+  [96/120] perception ans=8 full=False pre=False img_tok=1024
+=== IMAGE KV TRANSPLANT — DIVERSE (Qwen/Qwen3-VL-30B-A3B-Instruct, n=120, ~1024 img tok) ===
+  agentic   n= 30 full=0.00 precompiled=0.00 CI[0.0, 0.0] agree=1.00
+  perception n= 30 full=0.00 precompiled=0.00 CI[0.0, 0.0] agree=1.00
+  reasoning n= 60 full=0.00 precompiled=0.00 CI[0.0, 0.0] agree=1.00
+  OVERALL full=0.0 precompiled=0.0 CI[0.0, 0.0] agreement=1.0 CI[1.0, 1.0]
+VISION_DONE
+===VISION_DIVERSE_DONE===
