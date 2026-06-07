@@ -1,0 +1,18 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "policy_tokens": 1401,
+  "pending": {
+    "full": "cancel",
+    "composed": "cancel",
+    "correct_is": "cancel"
+  },
+  "processed": {
+    "full": "deny",
+    "composed": "cancel",
+    "correct_is": "deny"
+  },
+  "unified_compose+edit(pending->processed)": "cancel",
+  "ttft_full_ms": 86.6,
+  "ttft_composed_ms": 115.4,
+  "ttft_speedup": 0.75
+}

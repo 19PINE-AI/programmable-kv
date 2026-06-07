@@ -1,0 +1,18 @@
+{
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "policy_tokens": 1571,
+  "pending": {
+    "full": "cancel",
+    "composed": "cancel",
+    "correct_is": "cancel"
+  },
+  "processed": {
+    "full": "cancel",
+    "composed": "cancel",
+    "correct_is": "deny"
+  },
+  "unified_compose+edit(pending->processed)": "cancel",
+  "ttft_full_ms": 87.7,
+  "ttft_composed_ms": 119.8,
+  "ttft_speedup": 0.73
+}

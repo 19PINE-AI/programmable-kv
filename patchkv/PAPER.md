@@ -614,6 +614,20 @@ on one GPU; the **4-bit 70B** fits and confirms the result — **feasibility 8/8
 tool-calling 1.0/1.0**, so composable KV holds at **70B**. Facts/RAG is degenerate full≈0 on the Qwen3
 family in this non-reasoning QA format, as in §10.8.)
 
+**10.12 Composable on the REAL τ²-bench policy (`esys/tau2_composable.py`).** We precompile the real
+retail `policy.md` (~1.4–1.6k tokens — the reusable chunk an agent re-reads every turn) and transplant
+it for the documented decision ("cancel only if order_status is pending"). The **clean** decision
+transplants faithfully — pending→cancel, composed==full on Llama-3.1-8B *and* Mistral-7B. But the **hard
+flipped** decision (processed→deny) is *fragile in the long real policy*: Llama-3.1 composed returns
+*cancel* where full returns *deny*, and an erratum-alone edit (pending→processed) does **not** flip it.
+This is precisely the **editable axis's real-policy lesson resurfacing** (§6: on this same long policy
+the bare erratum misses and **field+erratum** is required) — the composable axis inherits the same
+long-context memoization fragility and the same `field+erratum` fix. TTFT shows no win at ~1.4k policy
+tokens (the compose overhead exceeds the saved prefill at this length; the win appears for longer
+policies / more turns, §10.5). **Honest takeaway:** composition is faithful for clean retrieval/decisions
+on a real policy, but a long buried field that must *flip* a conclusion needs the robust `field+erratum`
+edit, not transplant-plus-erratum alone — unifying the two axes' caveats.
+
 ## 11. Limitations
 
 The mechanism battery (n=12 instances) is on a few scenario templates; the scale-reversal explanation
