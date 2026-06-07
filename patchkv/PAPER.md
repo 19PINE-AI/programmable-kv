@@ -523,10 +523,12 @@ model** (Qwen3-32B-FP8: transplant + TTFT scaling validated, 2.2× at 2k skill t
 on ONE evolving cache — the long POLICY is **composed once** (precompiled+spliced, never re-prefilled),
 the mutable `order_status`/VIP state is **edited by appended errata** across turns, and each turn makes a
 governed tool decision; we reuse the longest cached prefix and prefill only the per-turn delta. Versus a
-**reprefill-every-turn** baseline (Llama-3.1-8B, ~3k-token policy): the unified path's decisions are
-**identical every turn (agreement 4/4; unified-correct = full-correct)** at **2.35× lower cumulative
-TTFT** — and the gap grows with policy length × turns (cf. §10.5's 13.9× at 32k). This is editable *and*
-composable operating together in a live agent loop, lossless and faster.
+**reprefill-every-turn** baseline. **Rigorous: 10 agent domains × 10 instances = 100 trajectories
+(300 decisions) per model** with bootstrap CIs (`esys/editkv_agent_rigorous.py`): the unified path's
+decisions match full almost exactly — **agreement 0.963 [0.94,0.98] (Llama-3.1-8B) / 0.983 [0.97,1.0]
+(Mistral-7B)**, unified-correct 0.96/0.98 vs full 1.0 — at **2.83× / 3.19× lower cumulative TTFT**
+(CIs ±0.02/0.04). The gap grows with policy length × turns (cf. §10.5's 13.9× at 32k). This is editable
+*and* composable operating together in a live agent loop, lossless and faster, across ten domains.
 
 **10.8 Composable taxonomy: content × insertion point × agentic tool-calling.** §10.1–10.7 transplant
 *rules-as-skills* inserted mid-context with a decision metric. Composition has other incarnations; we
@@ -592,8 +594,10 @@ absolute accuracy, is the transplant-fidelity metric.) **M-RoPE position-shift v
 (`esys/composable_vision_shift.py`).** Image position is `(t,h,w)`; moving an image shifts only the
 temporal `t` (h,w intrinsic), so we re-rotate only the temporal mrope-section (first 32 of 128 head dims).
 An image **cached at position 15 and transplanted to position 176 (Δ=161)** matches a full re-encode at
-the new position **exactly — agreement 1.00** (both 0.792 acc, Qwen2.5-VL-3B, n=24). So images are
-*position-portable*, not just same-position-reusable: encode once, splice anywhere in the trajectory. **Qwen3-VL-30B-A3B is excluded** (degenerate:
+the new position. **Rigorous: N=120 across the 10 diverse task categories** (perception/reasoning/agentic),
+per VL model with bootstrap CIs — **agreement 0.992 [0.975,1.0] (Qwen2.5-VL-3B) / 1.00 [1.0,1.0]
+(Qwen2.5-VL-7B)**, agentic-category agreement 1.00. So images are *position-portable*, not just
+same-position-reusable: encode once, splice anywhere in the trajectory, across diverse tasks. **Qwen3-VL-30B-A3B is excluded** (degenerate:
 full-accuracy ≈0 on this synthetic VQA format, so agreement is uninformative). So composable KV extends
 from text to **vision tokens**: the substrate property (localized, position-portable, context-robust
 information) holds for images too. **TTFT win (`esys/vision_ttft.py`):** reusing a cached image (skip the

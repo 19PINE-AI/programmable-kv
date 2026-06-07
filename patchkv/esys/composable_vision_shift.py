@@ -11,17 +11,7 @@ from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, os.path.dirname(__file__))
 from transformers import AutoProcessor
 from transformers.cache_utils import DynamicCache
-from composable_vision import load_vlm, cache_slice, cache_concat, COLORS
-
-
-def make_img(digit, rgb, size=672):
-    im = Image.new("RGB", (size, size), rgb); d = ImageDraw.Draw(im)
-    try:
-        f = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", size=int(size * .6))
-    except Exception:
-        f = ImageFont.load_default()
-    d.text((size * .33, size * .12), str(digit), fill=(255, 255, 255), font=f)
-    return im
+from composable_vision import load_vlm, cache_slice, cache_concat, gen_tasks, boot_ci
 
 
 def rotate_half(x):
@@ -44,7 +34,7 @@ def mrope_cossin(rot, position_ids, mrope_section):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="Qwen/Qwen2.5-VL-3B-Instruct"); ap.add_argument("--tag", default=None)
-    ap.add_argument("--n", type=int, default=24)
+    ap.add_argument("--n", type=int, default=120); ap.add_argument("--size", type=int, default=672)
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     proc = AutoProcessor.from_pretrained(args.model, trust_remote_code=True)
@@ -74,12 +64,9 @@ def main():
             lg = model.lm_head(o.last_hidden_state); cur = int(lg[0, -1].argmax()); out.append(cur)
         return proc.tokenizer.decode(out, skip_special_tokens=True).lower()
 
-    rng = random.Random(0); shifted, full_at_b = [], []
-    PAD = "Context preface. " * 40  # makes the image land at a later position in context B
-    for i in range(args.n):
-        dg = rng.randint(0, 9); cn, rgb = rng.choice(COLORS); ask_c = (i % 2 == 0)
-        img = make_img(dg, rgb); q = ("What is the background colour? One word." if ask_c else "What digit is shown? One word.")
-        ans = (cn if ask_c else str(dg))
+    cats = {}; PAD = "Context preface. " * 40  # makes the image land at a later position in context B
+    tasks = gen_tasks(args.n, args.size)
+    for i, (img, q, ans, c) in enumerate(tasks):
         # context A (short): encode image, cache its KV + its position_ids
         iA = build(img, q); idsA = iA["input_ids"]; aA, bA = span(idsA)
         cacheA = model(**iA, use_cache=True).past_key_values
@@ -106,14 +93,23 @@ def main():
         spliced = cache_concat(pre, img_kv)
         o = fwd(idsB[:, bB:LB], spliced, bB)
         sh_txt = gen_from(o.past_key_values, idsB, LB)
-        shifted.append(int(ans in sh_txt)); full_at_b.append(int(ans in full_txt))
-        if i < 3 or i % 8 == 0:
-            print(f"  [{i}] ans={ans} full@B={full_txt[:8]!r}({ans in full_txt}) shifted={sh_txt[:8]!r}({ans in sh_txt}) | posA_img={aA} posB_img={aB}", flush=True)
-    n = args.n; agree = sum(s == f for s, f in zip(shifted, full_at_b))
-    out = {"model": args.model, "n": n, "full_at_B_acc": round(sum(full_at_b) / n, 3),
-           "shifted_transplant_acc": round(sum(shifted) / n, 3), "agreement": round(agree / n, 3)}
-    print(f"\n=== M-RoPE POSITION-SHIFT image transplant ({args.model}, n={n}) ===")
-    print(f"  full re-encode @B acc={out['full_at_B_acc']} | shifted-transplant acc={out['shifted_transplant_acc']} | agreement={out['agreement']}")
+        fc = int(ans in full_txt); sc = int(ans in sh_txt)
+        cats.setdefault(c, {"full": [], "sh": [], "agree": []})
+        cats[c]["full"].append(fc); cats[c]["sh"].append(sc); cats[c]["agree"].append(int(fc == sc))
+        if i % 24 == 0:
+            print(f"  [{i}/{len(tasks)}] {c} ans={ans} full@B={fc} shifted={sc} | posA_img={aA} posB_img={aB} (Δ={aB-aA})", flush=True)
+    allf = [v for d in cats.values() for v in d["full"]]; alls = [v for d in cats.values() for v in d["sh"]]; alla = [v for d in cats.values() for v in d["agree"]]
+    out = {"model": args.model, "n": len(tasks), "by_category": {}}
+    print(f"\n=== M-RoPE POSITION-SHIFT image transplant — DIVERSE ({args.model}, n={len(tasks)}, {len(cats)} categories) ===")
+    for c, v in sorted(cats.items()):
+        ag = sum(v["agree"]) / len(v["agree"])
+        out["by_category"][c] = {"n": len(v["full"]), "full": round(sum(v["full"]) / len(v["full"]), 3),
+                                 "shifted": round(sum(v["sh"]) / len(v["sh"]), 3), "agreement": round(ag, 3)}
+        print(f"  {c:9s} n={len(v['full']):>3} full@B={out['by_category'][c]['full']:.2f} shifted={out['by_category'][c]['shifted']:.2f} agree={ag:.2f}")
+    out["overall"] = {"full_at_B": round(sum(allf) / len(allf), 3), "shifted": round(sum(alls) / len(alls), 3),
+                      "agreement": round(sum(alla) / len(alla), 3), "agreement_ci": boot_ci(alla), "shifted_ci": boot_ci(alls)}
+    print(f"  OVERALL full@B={out['overall']['full_at_B']} shifted={out['overall']['shifted']} CI{out['overall']['shifted_ci']} "
+          f"agreement={out['overall']['agreement']} CI{out['overall']['agreement_ci']}")
     json.dump(out, open(os.path.join(os.path.dirname(__file__), "..", "results", f"vision_shift_{tag}.json"), "w"), indent=2)
     print("VISION_SHIFT_DONE")
 

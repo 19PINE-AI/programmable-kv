@@ -41,7 +41,7 @@ def _shape(d, kind, box, fill):
 def gen_tasks(n, size=1008):
     rng = random.Random(0); tasks = []
     cats = ["perc_digit", "perc_color", "reason_count", "reason_shape", "reason_spatial", "reason_size",
-            "agentic_status", "agentic_gauge"]
+            "agentic_status", "agentic_gauge", "reason_vertical", "agentic_battery"]
     while len(tasks) < n:
         cat = cats[len(tasks) % len(cats)]
         im = Image.new("RGB", (size, size), (245, 245, 245)); d = ImageDraw.Draw(im)
@@ -86,12 +86,23 @@ def gen_tasks(n, size=1008):
             q = ("A monitoring panel shows a status light. POLICY: if the light is red, call the tool "
                  "halt; if it is green, call the tool proceed. Which tool do you call? Answer one word.")
             ans, c = ("halt" if red else "proceed"), "agentic"
-        else:  # agentic_gauge
+        elif cat == "agentic_gauge":
             fill = rng.choice([20, 35, 65, 80]); d.rectangle((size * .1, size * .45, size * .9, size * .55), outline=(0, 0, 0), width=6)
             d.rectangle((size * .1, size * .45, size * .1 + (size * .8) * fill / 100, size * .55), fill=(40, 60, 200))
-            q = (f"A load gauge is shown. POLICY: if the bar is more than half full, call scale_up; "
-                 f"otherwise call scale_down. Which tool do you call? Answer one word.")
+            q = ("A load gauge is shown. POLICY: if the bar is more than half full, call scale_up; "
+                 "otherwise call scale_down. Which tool do you call? Answer one word.")
             ans, c = ("scale_up" if fill > 50 else "scale_down"), "agentic"
+        elif cat == "reason_vertical":
+            (ct_, rt), (cb, rbcol) = rng.sample(COLORS, 2)
+            _shape(d, "square", (size * .35, size * .06, size * .65, size * .36), rt)
+            _shape(d, "circle", (size * .35, size * .64, size * .65, size * .94), rbcol)
+            q, ans, c = "What colour is the shape at the TOP? Answer one word.", ct_, "reasoning"
+        else:  # agentic_battery
+            lvl = rng.choice([10, 15, 70, 90]); d.rectangle((size * .15, size * .4, size * .85, size * .6), outline=(0, 0, 0), width=6)
+            d.rectangle((size * .15, size * .4, size * .15 + (size * .7) * lvl / 100, size * .6), fill=(30, 160, 30) if lvl >= 20 else (200, 30, 30))
+            q = ("A battery indicator is shown. POLICY: if the battery is below 20 percent, call charge; "
+                 "otherwise call operate. Which tool do you call? Answer one word.")
+            ans, c = ("charge" if lvl < 20 else "operate"), "agentic"
         tasks.append((im, q, ans.lower(), c))
     return tasks
 

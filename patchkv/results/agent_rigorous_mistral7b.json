@@ -1,0 +1,18 @@
+{
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "domains": 10,
+  "trajectories": 100,
+  "decisions": 300,
+  "agreement": 0.983,
+  "agreement_ci": [
+    0.967,
+    0.997
+  ],
+  "unified_correct": 0.983,
+  "full_correct": 1.0,
+  "mean_speedup": 3.19,
+  "speedup_ci": [
+    3.148,
+    3.231
+  ]
+}

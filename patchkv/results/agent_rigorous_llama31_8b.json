@@ -1,0 +1,18 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "domains": 10,
+  "trajectories": 100,
+  "decisions": 300,
+  "agreement": 0.963,
+  "agreement_ci": [
+    0.94,
+    0.983
+  ],
+  "unified_correct": 0.963,
+  "full_correct": 1.0,
+  "mean_speedup": 2.83,
+  "speedup_ci": [
+    2.807,
+    2.846
+  ]
+}
