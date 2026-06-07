@@ -1,0 +1,14 @@
+{
+  "model": "deepseek-ai/DeepSeek-V2-Lite-Chat",
+  "rope_dim": 64,
+  "n_decisions": 160,
+  "domains": 10,
+  "composed_vs_full_agreement": 0.744,
+  "agreement_ci": [
+    0.675,
+    0.806
+  ],
+  "composed_correct": 0.863,
+  "full_correct": 0.669,
+  "mean_logit_cos": 0.9832
+}

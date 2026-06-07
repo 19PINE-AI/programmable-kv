@@ -1,0 +1,37 @@
+{
+  "model": "Qwen/Qwen3-VL-8B-Instruct",
+  "n": 120,
+  "by_category": {
+    "agentic": {
+      "n": 36,
+      "full": 0.722,
+      "shifted": 0.722,
+      "agreement": 1.0
+    },
+    "perception": {
+      "n": 24,
+      "full": 0.5,
+      "shifted": 0.5,
+      "agreement": 1.0
+    },
+    "reasoning": {
+      "n": 60,
+      "full": 0.95,
+      "shifted": 0.933,
+      "agreement": 0.983
+    }
+  },
+  "overall": {
+    "full_at_B": 0.792,
+    "shifted": 0.783,
+    "agreement": 0.992,
+    "agreement_ci": [
+      0.975,
+      1.0
+    ],
+    "shifted_ci": [
+      0.708,
+      0.858
+    ]
+  }
+}

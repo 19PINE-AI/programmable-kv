@@ -1,0 +1,14 @@
+{
+  "model": "deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
+  "rope_dim": 64,
+  "n_decisions": 160,
+  "domains": 10,
+  "composed_vs_full_agreement": 1.0,
+  "agreement_ci": [
+    1.0,
+    1.0
+  ],
+  "composed_correct": 1.0,
+  "full_correct": 1.0,
+  "mean_logit_cos": 0.9801
+}

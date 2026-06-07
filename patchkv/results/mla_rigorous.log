@@ -1,0 +1,13 @@
+########## deepseek-ai/DeepSeek-V2-Lite-Chat ##########
+=== MLA composable (RIGOROUS) deepseek-ai/DeepSeek-V2-Lite-Chat rope_dim=64 ===
+=== MLA composable RIGOROUS deepseek-ai/DeepSeek-V2-Lite-Chat: 10 domains, 160 decisions ===
+  composed==full agreement = 0.744 CI[0.675, 0.806]
+  composed_correct=0.863 full_correct=0.669 | mean logit cos=0.9832
+MLA_COMPOSABLE_DONE
+########## deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct ##########
+=== MLA composable (RIGOROUS) deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct rope_dim=64 ===
+=== MLA composable RIGOROUS deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct: 10 domains, 160 decisions ===
+  composed==full agreement = 1.0 CI[1.0, 1.0]
+  composed_correct=1.0 full_correct=1.0 | mean logit cos=0.9801
+MLA_COMPOSABLE_DONE
+===MLA_RIG_DONE===

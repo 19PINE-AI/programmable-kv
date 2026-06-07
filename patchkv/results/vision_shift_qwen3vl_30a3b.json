@@ -1,0 +1,37 @@
+{
+  "model": "Qwen/Qwen3-VL-30B-A3B-Instruct",
+  "n": 120,
+  "by_category": {
+    "agentic": {
+      "n": 36,
+      "full": 0.0,
+      "shifted": 0.0,
+      "agreement": 1.0
+    },
+    "perception": {
+      "n": 24,
+      "full": 0.0,
+      "shifted": 0.042,
+      "agreement": 0.958
+    },
+    "reasoning": {
+      "n": 60,
+      "full": 0.0,
+      "shifted": 0.0,
+      "agreement": 1.0
+    }
+  },
+  "overall": {
+    "full_at_B": 0.0,
+    "shifted": 0.008,
+    "agreement": 0.992,
+    "agreement_ci": [
+      0.975,
+      1.0
+    ],
+    "shifted_ci": [
+      0.0,
+      0.025
+    ]
+  }
+}

@@ -615,8 +615,12 @@ temporal `t` (h,w intrinsic), so we re-rotate only the temporal mrope-section (f
 An image **cached at position 15 and transplanted to position 176 (Δ=161)** matches a full re-encode at
 the new position. **Rigorous: N=120 across the 10 diverse task categories** (perception/reasoning/agentic),
 per VL model with bootstrap CIs — **agreement 0.992 [0.975,1.0] (Qwen2.5-VL-3B) / 1.00 [1.0,1.0]
-(Qwen2.5-VL-7B)**, agentic-category agreement 1.00. So images are *position-portable*, not just
-same-position-reusable: encode once, splice anywhere in the trajectory, across diverse tasks. **Qwen3-VL-30B-A3B is excluded** (degenerate:
+(Qwen2.5-VL-7B)**, agentic-category agreement 1.00. **This holds across both M-RoPE layouts**: Qwen2.5-VL
+uses *sectioned* mrope (re-rotate contiguous t/h/w sections) and **Qwen3-VL uses *interleaved* mrope**
+(`mrope_interleaved`, `[24,20,20]`); the adapter detects the layout and uses the model's assembled rotary,
+giving **Qwen3-VL-8B agreement 0.992 [0.975,1.0]** at Δ=161 (N=120). So images are *position-portable*,
+not just same-position-reusable: encode once, splice anywhere in the trajectory, across diverse tasks and
+both mrope layouts. **Qwen3-VL-30B-A3B is excluded** (degenerate:
 full-accuracy ≈0 on this synthetic VQA format, so agreement is uninformative). So composable KV extends
 from text to **vision tokens**: the substrate property (localized, position-portable, context-robust
 information) holds for images too. **TTFT win (`esys/vision_ttft.py`):** reusing a cached image (skip the
@@ -662,13 +666,15 @@ changes (empirically mapped here):
   retrieval, **seam-repair fixes it** (§10.8); *long* multi-turn: the fixed-window cache (4096) is
   **structurally incompatible** with a growing splice (`H5` errored on both Gemma generations,
   `size 4095≠4555`). So sliding-window needs either seam-repair (short) or a window-aware cache (long).
-- **MLA (DeepSeek-V2/Coder-V2):** editing works on the editable axis (§7), but composable transplant
-  needs **MLA-specific handling**: MLA caches a **position-free compressed latent** (needs *no*
-  re-rotation — *more* portable) plus a small **decoupled-RoPE sub-vector applied per-layer** (the only
-  part needing re-rotation). Our generic model-level-rotary `reposition` does not apply; the available
-  small MLA checkpoints also ship legacy-cache custom modeling (we shimmed `get_usable_length` and
-  legacy→DynamicCache, then hit the per-layer-rotary structure). A decoupled-`k_pe` reposition is the
-  identified adapter (future work), not a method limitation.
+- **MLA (DeepSeek-V2/Coder-V2) — adapter implemented & validated (`esys/mla_composable.py`):** MLA caches
+  full reconstructed K/V but RoPE touches **only the last `qk_rope_head_dim`=64 dims of the key (`k_pe`,
+  shared across heads)**; `k_nope` and value are position-free. Our **decoupled-`k_pe` reposition**
+  re-rotates only that 64-dim sub-vector (per-layer YaRN rotary) and leaves the rest untouched. Evaluated
+  rigorously (10 domains × 160 decisions + CIs): **mean logit-cos to full = 0.983 / 0.980**, composed==full
+  decision **agreement 1.00 [1.0,1.0] on DeepSeek-Coder-V2-Lite** (V2-Lite-Chat's lower 0.74 is its own
+  near-random competence — full_correct 0.67 — not transplant error; the logit-cos is the clean metric).
+  So MLA transplant works — and most of the MLA cache is *more* portable (position-free latent needs no
+  re-rotation). (We shimmed the checkpoints' legacy cache API: `get_usable_length`, legacy→DynamicCache.)
 - **Hybrids with full-attention layers (Falcon-H1, Granite-4.0-H):** the methods live only in the
   full-attention layers; empirically their **hybrid caches expose no uniform per-layer KV**
   (`NoneType has no .layers`), so transplant needs a **cache adapter** that touches only attention
@@ -681,9 +687,37 @@ changes (empirically mapped here):
   that is not a KV method). The editable axis's SSM result (§7) is the boundary evidence.
 
 **Summary:** the substrate is *any per-token attention KV cache*. It transfers for free across the
-common throughput optimizations (FlashAttn, paged/vLLM, GQA/MQA), needs a small documented adapter for
-representation-changing ones (sliding-window→seam/window-aware; MLA→decoupled-`k_pe`; hybrids→
+common throughput optimizations (FlashAttn, paged/vLLM, GQA/MQA), needs a small **now-implemented** adapter
+for representation-changing ones (**MLA→decoupled-`k_pe`, validated; interleaved-M-RoPE→use the model's
+assembled rotary, validated**; sliding-window→seam-repair short / window-aware long; hybrids→
 attention-layer-only + SSM recompute), and does not apply where there is no per-token KV.
+
+**10.14 The 2026 frontier — sparse/compressed attention (analysis).** The newest attention variants push on
+the KV *sparsity/compression* axis; we analyze compatibility (these models — DeepSeek-V3.2 685B, V4-Pro
+1.6T / V4-Flash 284B — exceed a single 96 GB GPU, so this is analytical, building on our validated MLA
+adapter which is their shared substrate).
+- **DeepSeek Sparse Attention (DSA, V3.2)** = **MLA + a "lightning-indexer" that picks top-K key blocks per
+  query**. The KV is still **per-token MLA** (our adapter applies); the indexer only changes *which* cached
+  keys a query reads. A transplanted/edited chunk keeps per-token keys that the indexer scores normally, so
+  edit/transplant remain well-defined — DSA = (handled MLA representation) + (eviction-class selection,
+  §10.13), i.e. compatible in principle, modulo re-scoring the spliced keys.
+- **DeepSeek-V4 (CSA + HCA)** compresses the KV **along the sequence dimension** (≈10% of V3.2's KV
+  footprint). Sequence-dim compression **merges tokens into sub-token-count entries**, so a field edit or
+  chunk splice no longer maps 1:1 to cache slots — this needs a **compression-domain adapter** (edit/splice
+  at block granularity), the genuine open case beyond per-token methods.
+- **Multimodal 2026:** (i) **M-RoPE variants** — sectioned (Qwen2.5-VL) and **interleaved (Qwen3-VL)** are
+  both handled (§10.10); (ii) **visual-token sparsification** (SparseVLM/BlindSight) **prunes image
+  tokens** — orthogonal: transplant supplies the full image KV and the model prunes it identically to a
+  fresh encode (compose over retained visual tokens); (iii) **KV quantization for VLMs** (AKVQ-VL, 2-bit)
+  is orthogonal — our transplant already runs on FP8/4-bit caches; (iv) **cross-attention VLMs**
+  (early-fusion + sparse cross-attention, e.g. Llama-3.2-Vision style) keep image KV in a **separate
+  cross-attention cache**, not the token sequence, so the in-sequence splice does not apply — a
+  cross-attention-cache transplant is the analog (future work).
+
+**Net:** every 2026 advance that *keeps a per-token (possibly latent/quantized) attention KV* is in scope
+(MLA validated; DSA inherits it; M-RoPE/quant/visual-sparsification handled or orthogonal); the open
+frontier is *sequence-dimension KV compression* (DeepSeek-V4 CSA/HCA) and *cross-attention image caches*,
+where the unit of edit/transplant becomes a compressed block rather than a token.
 
 ## 11. Limitations
 

@@ -21,12 +21,17 @@ def rotate_half(x):
 
 @torch.no_grad()
 def mrope_cossin(rot, position_ids, mrope_section):
-    """Assembled M-RoPE cos/sin for given 3D position_ids [3,1,L] -> [1,L,D] (fp32)."""
+    """Assembled M-RoPE cos/sin for 3D position_ids [3,1,L] -> [1,1,L,D] (fp32).
+    Handles BOTH layouts: Qwen2.5-VL sectioned (rotary returns 3-component [3,1,L,D], we assemble the
+    contiguous t/h/w sections) and Qwen3-VL interleaved (rotary returns already-assembled [1,L,D])."""
     dummy = torch.zeros(1, position_ids.shape[-1], 1, dtype=torch.float32, device="cuda")
-    cos, sin = rot(dummy, position_ids)            # [3,1,L,D]
-    ms = [s * 2 for s in mrope_section]
-    cos = torch.cat([c[i % 3] for i, c in enumerate(cos.float().split(ms, dim=-1))], dim=-1)  # [1,L,D]
-    sin = torch.cat([s[i % 3] for i, s in enumerate(sin.float().split(ms, dim=-1))], dim=-1)
+    cos, sin = rot(dummy, position_ids)
+    if cos.ndim == 4 and cos.shape[0] == 3:        # sectioned (Qwen2.5-VL): assemble t/h/w sections
+        ms = [s * 2 for s in mrope_section]
+        cos = torch.cat([c[i % 3] for i, c in enumerate(cos.float().split(ms, dim=-1))], dim=-1)
+        sin = torch.cat([s[i % 3] for i, s in enumerate(sin.float().split(ms, dim=-1))], dim=-1)
+    else:                                          # interleaved (Qwen3-VL): rotary already assembled it
+        cos = cos.float(); sin = sin.float()
     return cos[:, None], sin[:, None]              # [1,1,L,D]
 
 
@@ -39,8 +44,12 @@ def main():
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     proc = AutoProcessor.from_pretrained(args.model, trust_remote_code=True)
     model = load_vlm(args.model)
-    rot = model.model.rotary_emb if hasattr(model.model, "rotary_emb") else model.model.language_model.rotary_emb
-    ms = model.config.rope_scaling["mrope_section"]
+    # text rotary: model.model.rotary_emb (Qwen2.5-VL) or model.model.language_model.rotary_emb (Qwen3-VL)
+    rot = getattr(model.model, "rotary_emb", None) or model.model.language_model.rotary_emb
+    # mrope_section: top-level rope_scaling (Qwen2.5-VL) or text_config.rope_scaling (Qwen3-VL)
+    rs = getattr(model.config, "rope_scaling", None) or getattr(getattr(model.config, "text_config", None), "rope_scaling", None)
+    ms = rs["mrope_section"]
+    print(f"mrope_section={ms} interleaved={rs.get('mrope_interleaved', False)}", flush=True)
     img_tok = getattr(model.config, "image_token_id", None) or getattr(model.config, "image_token_index", None)
 
     def build(img, q, pad=""):
