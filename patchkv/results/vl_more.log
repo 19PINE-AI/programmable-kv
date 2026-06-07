@@ -1,0 +1,29 @@
+########## Qwen/Qwen2-VL-7B-Instruct ##########
+loaded Qwen/Qwen2-VL-7B-Instruct; image_token_id=151655
+  [0/120] perception ans=6 full=True pre=True img_tok=1296
+  [24/120] reasoning ans=red full=True pre=True img_tok=1296
+  [48/120] reasoning ans=purple full=True pre=True img_tok=1296
+  [72/120] reasoning ans=2 full=True pre=True img_tok=1296
+  [96/120] agentic ans=halt full=False pre=False img_tok=1296
+  agentic   n= 36 full=0.69 precompiled=0.47 CI[0.306, 0.639] agree=0.78
+  perception n= 24 full=1.00 precompiled=1.00 CI[1.0, 1.0] agree=1.00
+  reasoning n= 60 full=0.98 precompiled=0.95 CI[0.883, 1.0] agree=0.97
+  OVERALL full=0.9 precompiled=0.817 CI[0.742, 0.883] agreement=0.917 CI[0.867, 0.958]
+VISION_DONE
+########## google/gemma-3-4b-it ##########
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/google/gemma-3-4b-it/resolve/main/config.json
+    raise _format(GatedRepoError, message, response) from e
+huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6a257c29-4bf82f20120d73be36233214;5caf79e6-7fd7-41b0-9747-dcba263455dc)
+    raise OSError(
+OSError: You are trying to access a gated repo.
+401 Client Error. (Request ID: Root=1-6a257c29-4bf82f20120d73be36233214;5caf79e6-7fd7-41b0-9747-dcba263455dc)
+########## google/gemma-3-12b-it ##########
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error: Unauthorized for url: https://huggingface.co/google/gemma-3-12b-it/resolve/main/config.json
+    raise _format(GatedRepoError, message, response) from e
+huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6a257c2f-7111470f4009f68c23a2547b;350e122f-3aeb-4fec-8aff-e207d12edc9f)
+    raise OSError(
+OSError: You are trying to access a gated repo.
+401 Client Error. (Request ID: Root=1-6a257c2f-7111470f4009f68c23a2547b;350e122f-3aeb-4fec-8aff-e207d12edc9f)
+########## Qwen/Qwen2.5-VL-32B-Instruct ##########

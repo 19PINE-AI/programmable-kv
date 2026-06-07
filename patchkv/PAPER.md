@@ -55,7 +55,7 @@ faster at 32k skill tokens** (3× at 2k, 9.8× at 8k on 8B), and a **skill libra
 skills, decisions preserved). (10) **Keystone — both operations on one cache:** editing a field
 *inside a transplanted skill* reproduces the editable mechanism verbatim (in_place weak, selective
 recovers, erratum strongest; composed ≈ recomputed), showing edit and compose act on a single
-substrate. We position this against Prompt Cache / CacheBlend / EPIC: our contribution is the
+substrate. We position this against Prompt Cache / CacheBlend / EPIC / CacheSlide / MPIC (the composable-caching prior art): our contribution is the
 **instruction-following-correctness** lens and the **mechanistic unification** with editing.
 Transplantation generalizes across **content type** (rules *and* facts/RAG), **insertion point**
 (system-area *and* end-of-trajectory tool-results), and **actual agentic tool-calling** (N=108+CIs:
@@ -81,15 +81,17 @@ reuse the rest? Our contributions:
 1. **A regime map** of when the cheap edit (refresh-field-only, leave-rest-stale) is safe, and its
    **reasoning-vs-non-reasoning** and **scale** dependence (§4).
 2. **A causal mechanistic account** — *attention-mediated memoized inference* — established by four
-   independent methods (§5), generalized across 7 models and validated against architecture (§7).
+   independent methods (§5), generalized across 9 models (§3) and validated against architecture (§7).
 3. **A robust in-place fix** (the erratum / field+erratum) and a **rigorous baseline frontier** that
    honestly positions it against hoist-to-end and prior selective-recompute work (§6).
 4. **End-to-end evidence** on the real τ²-bench env, single-decision and multi-turn agentic (§8), a
    **cost/latency frontier and a closed vLLM integration** (§9), and a **production library** with a
    per-edit diagnostic (§6.3).
 5. **The composable axis** (§10): precompile a SKILL's KV once and transplant it (RoPE-reposition +
-   splice) — behaviorally lossless across 8 families and 8 diverse domains, **13.9× lower TTFT**, with a
-   seam-repair knob and a skill library — positioned honestly against Prompt Cache/CacheBlend/EPIC.
+   splice) — behaviorally lossless across the **full model family** (Qwen3 0.6–32B incl. FP8 & 30B-A3B MoE,
+   Gemma-2/3, Mistral, Llama-3.1-8B/70B, DeepSeek; MLA via a decoupled-`k_pe` adapter) and **8 diverse
+   domains**, **13.9× lower TTFT**, with a seam-repair knob, a skill library, and image-KV reuse (both
+   M-RoPE layouts) — positioned honestly against the composable-caching prior art (Prompt Cache, CacheBlend, EPIC, CacheSlide, MPIC), claiming none of the caching mechanism as novel.
 6. **The unification** (§10.6–10.7): a **keystone** experiment editing a field *inside* a transplanted
    skill (editable mechanism preserved; composed ≈ recomputed across families) and a **unified
    `edit()`+`compose()` API**, establishing that both operations act on one substrate whose information
@@ -104,15 +106,34 @@ cross-attention when assembling *independent* chunks; selection methods (InfoFlo
 affected downstream. We study a *temporal edit of one already-jointly-encoded context*, and ask the
 opposite question — when can the downstream be left **stale**? We also show prior work implicitly
 assumes **single-pass (instruction) decoding**; reasoning models change the picture, and the robust
-fix is a salience injection, not recomputation. For our **composable** axis (§10), Prompt Cache (Gim
-et al., MLSys 2024) precomputes attention states for reusable prompt modules with position placeholders
-and splices them; CacheBlend/EPIC handle the boundary recompute. We do not claim a new caching system
-there: our additions are an **instruction-following-correctness** evaluation (does the transplanted
-skill still govern the decision?) and the **mechanistic unification** with editing — both editing a
-field and transplanting a skill are operations on one substrate whose information is localized,
-position-portable, and context-robust. Our mechanism analysis adapts causal tracing
-(ROME/MEMIT) and circuit knockout (IOI) to the *KV cache* — the object an editor manipulates. We
-compare against CacheBlend directly (§6).
+fix is a salience injection, not recomputation.
+
+**Composable / position-independent caching (our §10 is built on this line, and we do not claim a new
+caching system).** A substantial body of work already does cross-position KV reuse and is the direct prior
+art for our composable machinery: **Prompt Cache** (Gim et al., MLSys 2024) precomputes reusable prompt
+modules with position placeholders and splices them; **CacheBlend** (Yao et al., EuroSys 2025) reuses
+non-prefix chunk KV and selectively recomputes ~15% of tokens to restore cross-attention (2.2–3.3× TTFT);
+**EPIC** (Hu et al., ICML 2025) introduces Position-Independent Caching with **AttnLink**, recomputing only
+*k<20 chunk-boundary tokens* (exploiting attention-sink) for O(kN) recompute and ~7× throughput;
+**CacheSlide** (Liu, Hu et al., FAST 2026) reuses KV in a **position-aware** way via Relative-Position-
+Dependent Caching (RPDC), repositioning segments that keep relative order (3.1–4.3×); and **MPIC** (2025)
+extends position-independent caching to the **multimodal** setting, reusing image KV at any position by
+recomputing all text + *k* image-start tokens. **KVLink** and **CaR** are further KV-reuse systems.
+Mapped onto our terms: our **RoPE-reposition** is CacheSlide's RPDC (re-rotate vs their relative-position
+handling); our **seam-repair** is precisely CacheBlend / EPIC-AttnLink / MPIC boundary recompute; and our
+**image-KV transplant** is MPIC's idea — except MPIC *recomputes* to absorb position whereas we *re-rotate*
+M-RoPE (sectioned **and** interleaved), the only methodological delta there. **We therefore claim none of
+the caching mechanism as novel.** Our contributions are orthogonal to all of the above: (1) the **editable
+axis** — in-place editing of a *mutable field* in an already-jointly-encoded context (none of these edit;
+they reuse static context), and the mechanistic question of when the downstream can be left **stale**;
+(2) the **unification / keystone** — editing a field *inside* a transplanted skill, showing edit and
+compose act on one substrate; (3) an **instruction-following-correctness / agentic-decision-governance**
+evaluation (does the transplanted skill still *govern the tool decision*?) rather than perplexity / F1 /
+throughput; (4) a causal **mechanism** (attention-mediated memoized inference) that *explains why* boundary
+recompute and salience injection work; and (5) an **attention-variant scope map with new adapters** (MLA
+decoupled-`k_pe`; interleaved-M-RoPE image transplant) and a 2026-frontier analysis (DSA, DeepSeek-V4
+CSA/HCA). Our mechanism analysis adapts causal tracing (ROME/MEMIT) and circuit knockout (IOI) to the
+*KV cache*. We compare against CacheBlend directly (§6).
 
 ## 3. Method
 
@@ -450,12 +471,19 @@ axis (insert a precompiled chunk), and §10.6 shows the two are one substrate. A
 dominated by long, reusable, loosely-coupled SKILLs/tool-specs (often tens of thousands of tokens);
 §9 showed full reprefill is the bottleneck. We precompile a skill's KV **once** and transplant it.
 
-**Relation to prior work.** Precomputing attention states for reusable prompt modules and splicing
-them is studied by **Prompt Cache** (Gim et al., MLSys 2024), **CacheBlend** (EuroSys 2025), and
-**position-independent caching** (EPIC, etc.). We do **not** claim a new caching system. Our
-contributions are (i) an **instruction-following-correctness** evaluation — does the transplanted skill
-still *govern the decision* (those works report perplexity/throughput) — and (ii) a **mechanistic
-unification** with the editable axis (§10.6).
+**Relation to prior work (we claim none of the caching mechanism as novel).** Precomputing attention states
+for reusable modules and splicing them at arbitrary positions is well established: **Prompt Cache** (Gim
+et al., MLSys 2024), **CacheBlend** (Yao et al., EuroSys 2025, selective ~15% recompute), **EPIC** (Hu
+et al., ICML 2025, Position-Independent Caching + AttnLink boundary recompute), **CacheSlide** (Liu, Hu
+et al., FAST 2026, position-*aware* RPDC repositioning), and **MPIC** (2025, *multimodal* position-
+independent image-KV reuse). Our `reposition`≈CacheSlide's RPDC, our `seam-repair`≈CacheBlend/EPIC-AttnLink/
+MPIC boundary recompute, and our image transplant is MPIC's idea (we *re-rotate* M-RoPE instead of
+recomputing — the only delta). Our genuinely new contributions are orthogonal: (i) the **editable axis**
+and the **keystone unification** (editing a mutable field *inside* a transplanted skill — none of the above
+edit); (ii) an **instruction-following-correctness / agentic-decision-governance** evaluation — does the
+transplanted skill still *govern the tool decision* (those works report perplexity/F1/throughput); (iii) a
+causal **mechanism** explaining *why* boundary recompute works; and (iv) an **attention-variant scope map +
+adapters** (MLA decoupled-`k_pe`, interleaved-M-RoPE) and a 2026-frontier analysis.
 
 **10.1 Machinery (`esys/composable_kv.py`).** HF caches *post-RoPE* keys, so transplanting a chunk to
 a new position requires re-rotating the keys (un-rotate from source positions, re-rotate to target;
@@ -594,7 +622,10 @@ a useful-when-it-lands tool, never universal, which is why the erratum remains t
 **10.10 Composable KV for IMAGES (multimodal, `esys/composable_vision.py`).** In an agent trajectory an
 image costs a full prefill — the vision tower *plus* prefilling the image's >1k soft-tokens through the
 LM. We **cache the image's LM KV once and splice it in**, re-running only text, so later turns skip that
-prefill entirely (the image analogue of facts/RAG transplant). Across **N=120 diverse VQA tasks per
+prefill entirely (the image analogue of facts/RAG transplant). **Prior art: MPIC** (2025) already does
+multimodal position-independent image-KV reuse on LLaVA models by *recomputing* text + k image-start tokens
+to absorb position; our delta is to **re-rotate M-RoPE** instead (no recompute) and to test the
+*decision-governance* lens (agentic image→tool) across the Qwen2.5/Qwen3-VL families and both mrope layouts. Across **N=120 diverse VQA tasks per
 model** spanning **perception** (read digit / name colour), **visual reasoning** (count, shape, spatial,
 size), and **agentic** (the image governs a *tool* decision — status-light → halt/proceed, gauge →
 scale_up/down), with **>1000-token images** (1024–1296 image tokens) and bootstrap CIs, the spliced
@@ -775,3 +806,27 @@ the full model family) at up to 13.9× lower TTFT. The **keystone** ties them to
 *transplanted* skill reproduces the editable mechanism verbatim — edit and compose are two operations
 on one substrate. We give a causal, multi-method mechanistic account of *why* throughout, and release a
 production library and a closed vLLM integration.
+
+## References
+
+**Composable / position-independent KV caching (prior art for §10 — we claim none of the mechanism as novel):**
+- Gim et al. *Prompt Cache: Modular Attention Reuse for Low-Latency Inference.* MLSys 2024. arXiv:2311.04934.
+- Yao, Li, Liu, Ray, Cheng, Zhang, Du, Lu, Jiang. *CacheBlend: Fast LLM Serving for RAG with Cached Knowledge Fusion.* EuroSys 2025. arXiv:2405.16444.
+- Hu et al. *EPIC: Efficient Position-Independent Caching for Serving Large Language Models* (PIC + AttnLink). ICML 2025. arXiv:2410.15332.
+- Liu, Hu, Gu et al. *CacheSlide: Unlocking Cross Position-Aware KV Cache Reuse for Accelerating LLM Serving* (RPDC). USENIX FAST 2026.
+- *MPIC: Position-Independent Multimodal Context Caching for Efficient MLLM Serving.* 2025. arXiv:2502.01960.
+- Yang et al. *KVLink: Accelerating LLMs via Efficient KV Cache Reuse.* 2025. arXiv:2502.16002.
+
+**Attention mechanisms / 2026 frontier (§10.13–10.14):**
+- DeepSeek-AI. *DeepSeek-V3.2: Pushing the Frontier of Open LLMs* (DeepSeek Sparse Attention, lightning indexer). 2025. arXiv:2512.02556.
+- DeepSeek-AI. *DeepSeek-V4* preview (Compressed Sparse Attention + Heavily Compressed Attention). 2026.
+- DeepSeek-AI. *DeepSeek-V2* (Multi-head Latent Attention). 2024. arXiv:2405.04434.
+- *SparseVLM: Visual Token Sparsification for Efficient VLM Inference.* arXiv:2410.04417. *AKVQ-VL: Attention-Aware KV Cache 2-bit Quantization for VLMs.* arXiv:2501.15021.
+
+**Mechanism / interpretability methods we adapt to the KV cache (§5):**
+- Meng et al. *Locating and Editing Factual Associations in GPT* (ROME). NeurIPS 2022. arXiv:2202.05262.
+- Meng et al. *Mass-Editing Memory in a Transformer* (MEMIT). ICLR 2023. arXiv:2210.07229.
+- Wang et al. *Interpretability in the Wild: a Circuit for Indirect Object Identification* (IOI). ICLR 2023. arXiv:2211.00593.
+- Lindsey et al. *On the Biology of a Large Language Model.* Anthropic, 2025.
+
+**Agentic evaluation:** τ²-bench (retail/airline tool-use environment).

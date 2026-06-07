@@ -1,0 +1,50 @@
+{
+  "model": "Qwen/Qwen2-VL-7B-Instruct",
+  "n": 120,
+  "img_tokens": 1296,
+  "by_category": {
+    "agentic": {
+      "n": 36,
+      "full": 0.694,
+      "precompiled": 0.472,
+      "precompiled_ci": [
+        0.306,
+        0.639
+      ],
+      "agreement": 0.778
+    },
+    "perception": {
+      "n": 24,
+      "full": 1.0,
+      "precompiled": 1.0,
+      "precompiled_ci": [
+        1.0,
+        1.0
+      ],
+      "agreement": 1.0
+    },
+    "reasoning": {
+      "n": 60,
+      "full": 0.983,
+      "precompiled": 0.95,
+      "precompiled_ci": [
+        0.883,
+        1.0
+      ],
+      "agreement": 0.967
+    }
+  },
+  "overall": {
+    "full": 0.9,
+    "precompiled": 0.817,
+    "precompiled_ci": [
+      0.742,
+      0.883
+    ],
+    "agreement": 0.917,
+    "agreement_ci": [
+      0.867,
+      0.958
+    ]
+  }
+}
