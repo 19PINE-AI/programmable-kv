@@ -95,7 +95,7 @@ def main():
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    model = load_lm(args.model, attn="eager")
+    model = load_lm(args.model, attn="sdpa")
 
     tasks = gen_tasks(args.n)
     full_ok, pre_ok, agree = [], [], []

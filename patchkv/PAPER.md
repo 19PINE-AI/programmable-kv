@@ -586,9 +586,12 @@ information) holds for images too.
 feasibility 7/8 (cos 0.91) + agentic tool-calling preserved (0.95→**0.97**); **Qwen3-30B-A3B** — a
 *Mixture-of-Experts* (30B total / 3B active) — feasibility 7/8 (cos 0.90), keystone sel@32 0.83/0.80
 (composed≈recomputed), agentic 1.0→**0.972** preserved. So composable KV works on **FP8-quantized** and
-**MoE** backbones at 30B-class scale, not just dense bf16. (Llama-3.1-70B-FP8 is at the edge of the 96 GB
-GPU — the 70 GB FP8 weights plus per-case forwards/cache-clones OOM; a memory-leaner rerun is in
-progress. Facts/RAG is degenerate full≈0 on the Qwen3 family in this non-reasoning QA format, as in §10.8.)
+**MoE** backbones at 30B-class scale, not just dense bf16. (**Llama-3.1-70B-FP8** does not fit the *experiment* on a single 96 GB GPU: the FP8 checkpoint **loads at
+~93 GB** — well above the nominal 70 GB, because compressed-tensors keeps embeddings/lm_head/scales in
+higher precision — leaving ~3 GB, so the transplant's cache-clone forwards OOM even with sdpa +
+`expandable_segments`. 8-bit 70B suffices for *inference* but not for the cache-manipulating experiment
+on one GPU; a **4-bit 70B** rerun, which fits with headroom, is in progress. Facts/RAG is degenerate
+full≈0 on the Qwen3 family in this non-reasoning QA format, as in §10.8.)
 
 ## 11. Limitations
 

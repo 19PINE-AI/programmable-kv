@@ -101,7 +101,7 @@ def main():
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    model = load_lm(args.model, attn="eager")
+    model = load_lm(args.model, attn="sdpa")
 
     items = gen_items(args.n)
     acc = {p: {"full": [], "pre": [], "agree": []} for p in ["early", "late"]}

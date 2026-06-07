@@ -1,0 +1,3 @@
+/home/ubuntu/.local/lib/python3.10/site-packages/transformers/quantizers/auto.py:239: UserWarning: You passed `quantization_config` or equivalent parameters to `from_pretrained` but the model you're loading already has a `quantization_config` attribute. The `quantization_config` from the model will be used.
+  warnings.warn(warning_msg)
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]
