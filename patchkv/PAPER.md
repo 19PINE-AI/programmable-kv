@@ -637,6 +637,7 @@ image KV is **near-lossless vs full re-encode** (agreement = precompiled==full):
 | Qwen2.5-VL-3B | ~1296 | **1.00 [1.0,1.0]** | 1.00 | 1.00 |
 | Qwen2.5-VL-7B | ~1296 | **0.958 [.92,.99]** | 1.00 | 0.97 |
 | Qwen3-VL-8B | ~1024 | **0.992 [.98,1.0]** | 1.00 | 0.98 |
+| Qwen2.5-VL-32B | ~1296 | **0.992 [.975,1.0]** | 1.00 | — |
 
 **Agentic tool-decisions from a transplanted image agree 1.00 on all three** — an agent can reuse a
 cached image instead of re-prefilling it, including when the image drives a tool call. (Where the VLM's
@@ -653,7 +654,9 @@ uses *sectioned* mrope (re-rotate contiguous t/h/w sections) and **Qwen3-VL uses
 giving **Qwen3-VL-8B agreement 0.992 [0.975,1.0]** at Δ=161 (N=120). So images are *position-portable*,
 not just same-position-reusable: encode once, splice anywhere in the trajectory, across diverse tasks and
 both mrope layouts. **Qwen3-VL-30B-A3B is excluded** (degenerate:
-full-accuracy ≈0 on this synthetic VQA format, so agreement is uninformative). So composable KV extends
+full-accuracy ≈0 on this synthetic VQA format, so agreement is uninformative). (We also attempted
+Gemma-3-4B/12B and Qwen2-VL-7B but they are gated checkpoints requiring license acceptance; Qwen2.5-VL-32B
+above is the added large VL data point.) So composable KV extends
 from text to **vision tokens**: the substrate property (localized, position-portable, context-robust
 information) holds for images too. **TTFT win (`esys/vision_ttft.py`):** reusing a cached image (skip the
 vision tower + image-token prefill, recompute only text) is **2.4–8.4× faster first-token** than
