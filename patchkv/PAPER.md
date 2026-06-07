@@ -693,10 +693,16 @@ changes (empirically mapped here):
   **PagedAttention/vLLM** (we ship the closed vLLM integration, §9). No change needed.
 - **Head-sharing — already covered:** **GQA/MQA** is in every model we ran (Qwen3, Llama, Mistral);
   `reposition` is head-count-agnostic.
-- **Sliding-window (Gemma-2/3):** two regimes — *short* contexts: transplant degrades on fine-grained
-  retrieval, **seam-repair fixes it** (§10.8); *long* multi-turn: the fixed-window cache (4096) is
-  **structurally incompatible** with a growing splice (`H5` errored on both Gemma generations,
-  `size 4095≠4555`). So sliding-window needs either seam-repair (short) or a window-aware cache (long).
+- **Sliding-window (Gemma-2/3) — root cause pinpointed:** two regimes. *Within the window* (sequence/chunk
+  ≤ 4096): transplant works (verified a composed splice at 3283 tokens is fine; the only residual is the
+  fine-grained-retrieval degradation that **seam-repair fixes**, §10.8). *Beyond the window*: Gemma's
+  sliding-window layers retain only a **windowed KV (≤4095 keys)** while global layers keep all, so per-layer
+  KV lengths diverge and the uniform `reposition`/splice breaks (reproduced exactly: `size 4095 ≠ 6354` in
+  `repositioned_chunk_cache` for a 6354-token chunk; same root cause as the `4095≠4555` H5 error). The fix
+  is a **window-aware adapter** that re-rotates each layer's *present* keys (windowed vs full) — feasible
+  *because the windowed KV is itself correct* (sliding layers only attend within-window) but it must track
+  per-layer-type lengths/offsets. Practically the common case (skills ≤ 4096 tokens) already works; only a
+  single chunk exceeding the window needs the adapter.
 - **MLA (DeepSeek-V2/Coder-V2) — adapter implemented & validated (`esys/mla_composable.py`):** MLA caches
   full reconstructed K/V but RoPE touches **only the last `qk_rope_head_dim`=64 dims of the key (`k_pe`,
   shared across heads)**; `k_nope` and value are position-free. Our **decoupled-`k_pe` reposition**
