@@ -535,6 +535,10 @@ lossless on Mistral-7B and Llama-3.1-8B (1.00 [1.0,1.0], agreement 1.00)** but *
 Gemma-2-9B (0.44 [0.34,0.53])**. **Gemma-2-9B is the consistent outlier on both facts and tool-calling**
 — and it is the one model with **alternating sliding-window/global attention**, whose local layers
 expect context the isolation-precompiled chunk never saw (a seam-repair / anchored-precompute target).
+**This replicates on a second generation: Gemma-3-27B** also collapses under transplant (facts
+0.91→**0.02**, agentic 1.0→**0.48**) despite its skill-feasibility (8/8) and keystone (7/7 clean) being
+fine — so it is specifically *fine-grained retrieval from the transplanted chunk* that sliding-window
+attention breaks, confirmed across both Gemma generations.
 **Takeaway:** transplantation generalizes across *content type* (rules and facts) and *insertion point*
 (system and tool-result) and preserves *agentic tool-calling* on **standard-attention** models with
 tight CIs, but **sliding-window attention (Gemma-2) breaks it** — an architectural caveat, statistically
@@ -576,6 +580,15 @@ temporal mrope-section — same-position reuse needs none. **Qwen3-VL-30B-A3B is
 full-accuracy ≈0 on this synthetic VQA format, so agreement is uninformative). So composable KV extends
 from text to **vision tokens**: the substrate property (localized, position-portable, context-robust
 information) holds for images too.
+
+**10.11 Scale: composable at 27–32B and on MoE.** The transplant holds at large scale (`results/g5.log`):
+**Gemma-3-27B** (text) feasibility 8/8 (cos 0.955) + keystone 7/7 clean (composed≈recomputed); **Qwen3-32B-FP8**
+feasibility 7/8 (cos 0.91) + agentic tool-calling preserved (0.95→**0.97**); **Qwen3-30B-A3B** — a
+*Mixture-of-Experts* (30B total / 3B active) — feasibility 7/8 (cos 0.90), keystone sel@32 0.83/0.80
+(composed≈recomputed), agentic 1.0→**0.972** preserved. So composable KV works on **FP8-quantized** and
+**MoE** backbones at 30B-class scale, not just dense bf16. (Llama-3.1-70B-FP8 is at the edge of the 96 GB
+GPU — the 70 GB FP8 weights plus per-case forwards/cache-clones OOM; a memory-leaner rerun is in
+progress. Facts/RAG is degenerate full≈0 on the Qwen3 family in this non-reasoning QA format, as in §10.8.)
 
 ## 11. Limitations
 

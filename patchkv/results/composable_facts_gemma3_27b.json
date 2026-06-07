@@ -1,0 +1,40 @@
+{
+  "model": "unsloth/gemma-3-27b-it",
+  "n": 104,
+  "results": {
+    "early": {
+      "full_acc": 0.913,
+      "full_ci": [
+        0.856,
+        0.962
+      ],
+      "precompiled_acc": 0.019,
+      "precompiled_ci": [
+        0.0,
+        0.048
+      ],
+      "agreement": 0.106,
+      "agreement_ci": [
+        0.048,
+        0.173
+      ]
+    },
+    "late": {
+      "full_acc": 0.923,
+      "full_ci": [
+        0.865,
+        0.971
+      ],
+      "precompiled_acc": 0.029,
+      "precompiled_ci": [
+        0.0,
+        0.067
+      ],
+      "agreement": 0.106,
+      "agreement_ci": [
+        0.048,
+        0.173
+      ]
+    }
+  }
+}

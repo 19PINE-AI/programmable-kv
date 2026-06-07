@@ -1,0 +1,19 @@
+{
+  "model": "unsloth/gemma-3-27b-it",
+  "n": 108,
+  "full_acc": 1.0,
+  "full_ci": [
+    1.0,
+    1.0
+  ],
+  "precompiled_acc": 0.481,
+  "precompiled_ci": [
+    0.389,
+    0.574
+  ],
+  "toolcall_agreement": 0.481,
+  "agreement_ci": [
+    0.389,
+    0.574
+  ]
+}

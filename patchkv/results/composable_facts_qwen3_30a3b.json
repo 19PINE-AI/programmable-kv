@@ -1,0 +1,40 @@
+{
+  "model": "Qwen/Qwen3-30B-A3B",
+  "n": 104,
+  "results": {
+    "early": {
+      "full_acc": 0.0,
+      "full_ci": [
+        0.0,
+        0.0
+      ],
+      "precompiled_acc": 0.0,
+      "precompiled_ci": [
+        0.0,
+        0.0
+      ],
+      "agreement": 1.0,
+      "agreement_ci": [
+        1.0,
+        1.0
+      ]
+    },
+    "late": {
+      "full_acc": 0.0,
+      "full_ci": [
+        0.0,
+        0.0
+      ],
+      "precompiled_acc": 0.0,
+      "precompiled_ci": [
+        0.0,
+        0.0
+      ],
+      "agreement": 1.0,
+      "agreement_ci": [
+        1.0,
+        1.0
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "model": "Qwen/Qwen3-32B-FP8",
+  "n_instances": 8,
+  "clean_flips": 2,
+  "agg": {
+    "in_place": {
+      "recomputed": 0.166,
+      "composed": -0.298
+    },
+    "sel@8": {
+      "recomputed": 0.855,
+      "composed": 0.298
+    },
+    "sel@32": {
+      "recomputed": 0.784,
+      "composed": 0.48
+    },
+    "erratum": {
+      "recomputed": 1.528,
+      "composed": -0.107
+    }
+  }
+}
