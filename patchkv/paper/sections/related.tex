@@ -30,8 +30,26 @@ transplanted skill still \emph{govern the tool decision}, rather than only prese
 throughput; (iii) the \emph{editing} axis and the keystone unification; and (iv) adapters that extend the
 operations to new attention representations (MLA, interleaved M-RoPE, sliding-window).
 
-\paragraph{Prefix caching and KV compression.} Production prefix caching (vLLM Automatic Prefix Caching,
-SGLang RadixAttention) reuses exact prefixes. StreamingLLM \citep{xiao2024streamingllm} keeps attention
-sinks; eviction/compression methods (H2O, SnapKV, and others) drop or compress tokens. These change
-\emph{which} tokens are retained, and compose with our operations only over retained tokens; we treat
-them, and the 2026 sparse/compressed-attention designs, as scope boundaries in \Cref{sec:reach}.
+\paragraph{Prefix caching, KV compression, and reuse systems.} Production prefix caching (vLLM Automatic
+Prefix Caching, SGLang RadixAttention) reuses exact prefixes. A large literature instead \emph{compresses}
+or \emph{evicts} the cache: StreamingLLM keeps attention sinks \citep{xiao2024streamingllm}; H2O
+\citep{zhang2023h2o}, Scissorhands \citep{liu2023scissorhands}, and SnapKV \citep{li2024snapkv} evict
+low-importance tokens; Quest \citep{tang2024quest} keeps all tokens but attends sparsely. Serving systems
+stream or share cached KV across requests---CacheGen \citep{liu2024cachegen} for fast loading and RAGCache
+\citep{jin2024ragcache} for retrieval reuse. These change \emph{which} tokens are present, and compose with
+our edit/transplant operations only over retained tokens; we treat them, the latent/decoupled-RoPE
+representation of Multi-head Latent Attention \citep{deepseekv2,deepseekv3}, and the 2026
+sparse/compressed-attention designs as scope boundaries in \Cref{sec:reach}. Our repositioning relies on
+rotary position embeddings \citep{su2024rope} and their extensions \citep{peng2024yarn}.
+
+\paragraph{Activation-level interventions.} Beyond weight editing, a body of work intervenes on
+\emph{activations}: steering and inference-time interventions \citep{li2023iti}, task and function vectors
+\citep{ilharco2023taskvectors,todd2024functionvectors}, and the causal-mediation/activation-patching
+methodology we adapt \citep{vig2020causal}. These edit residual-stream directions to change behavior; we
+instead read and write the \emph{KV cache} itself---the per-token activations a serving system already
+persists---which is what makes the intervention both interpretable and deployable.
+
+\paragraph{Agents and tool use.} Our evaluation targets tool-using agents in the style of ReAct
+\citep{yao2023react} and Toolformer \citep{schick2023toolformer}, and we measure end-to-end task success on
+the $\tau$-bench tool-agent-user benchmark \citep{yao2024taubench}, where state changes mid-trajectory make
+cache staleness a first-class correctness problem.

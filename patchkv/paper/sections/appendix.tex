@@ -1,0 +1,120 @@
+\appendix
+\section{Models evaluated}
+\label{app:models}
+\Cref{tab:zoo} lists the models used across the paper. All runs are on a single RTX PRO 6000 (Blackwell,
+96\,GB); FP8 and 4-bit checkpoints are the official quantized releases.
+
+\begin{table}[h]
+\centering\small
+\caption{Model zoo. ``role'' indicates the experiments a model appears in.}
+\label{tab:zoo}
+\begin{tabular}{@{}llll@{}}
+\toprule
+model & family / attention & precision & role \\
+\midrule
+Qwen3-0.6B/1.7B/4B/8B/14B & Qwen3 (GQA) & bf16 & mechanism, edit, compose, agent \\
+Qwen3-32B & Qwen3 (GQA) & FP8 & compose, agent, scale \\
+Qwen3-30B-A3B & Qwen3 MoE (GQA) & bf16 & compose, agent, MoE \\
+Llama-3.1-8B / 70B & Llama (GQA) & bf16 / 4-bit & mechanism, edit, compose, agent \\
+Mistral-7B & Mistral (GQA) & bf16 & mechanism, compose, agent \\
+Gemma-2-9B / Gemma-3-27B & Gemma (sliding-window) & bf16 & compose, agent, sliding-window fix \\
+DeepSeek-R1-Distill-Llama-8B & Llama (GQA), reasoning & bf16 & edit, compose, agent \\
+DeepSeek-V2-Lite / Coder-V2-Lite & DeepSeek (MLA) & bf16 & MLA adapter \\
+Falcon-H1, Falcon-Mamba & hybrid / pure SSM & bf16 & architecture boundary \\
+Qwen2.5-VL-3B/7B/32B, Qwen3-VL-8B & VL (M-RoPE) & bf16 & multimodal image-KV \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Editing: the baseline frontier and the K-sweep}
+\label{app:edit}
+\Cref{fig:frontier} plots the cost/correctness frontier behind \Cref{sec:editable}: there is no single
+dominant method. \texttt{field+erratum} and the bare \erratum{} reach full correctness at ${\sim}5$--$13\%$
+recompute with no prompt surgery; hoist-to-end matches them but rewrites the prompt; the in-place edit and a
+KV-deviation-ranked CacheBlend-style recompute are cheap but incorrect on these gated decisions. Numeric
+values are in \Cref{tab:frontier}. \Cref{fig:ksweepheat} gives the full \fieldsel{}@$K$ sweep across seven
+models, making the model-dependence of the minimal recompute explicit: small $K$ suffices for the Qwen3
+family but not for several others---the tool is effective but unreliable.
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{0.5\linewidth}\centering
+\includegraphics[width=\linewidth]{figA1_frontier}
+\caption{Cost/correctness frontier.}
+\label{fig:frontier}
+\end{minipage}\hfill
+\begin{minipage}{0.47\linewidth}\centering
+\includegraphics[width=\linewidth]{figA2_ksweep}
+\caption{\texttt{field+selective}@$K$ across models.}
+\label{fig:ksweepheat}
+\end{minipage}
+\end{figure}
+
+\begin{table}[h]
+\centering\small
+\caption{Baseline frontier (Qwen3-8B, 8 gated tasks). ``surgery'' = requires rewriting the prompt.}
+\label{tab:frontier}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+method & P(correct) & recompute & prompt surgery \\
+\midrule
+full reprefill & 1.00 & 100\% & no \\
+hoist-to-end & 1.00 & 5.2\% & \textbf{yes} \\
+\fielderr{} & 1.00 & 12.6\% & no \\
+\erratum{} & 1.00 & 12.0\% & no \\
+CacheBlend@15\% & 0.13 & 14.5\% & no \\
+\inplace{} edit & 0.00 & 0.6\% & no \\
+stale (reuse) & 0.00 & 0\% & no \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Cref{fig:archbar} shows that the editing fix is an \emph{attention-architecture} method: the erratum
+recovers the decision under reasoning on attention (GQA) and sliding-window backbones, partially on a
+hybrid attention+SSM model, and weakly on a pure SSM whose recurrent state has no per-token look-back.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.62\linewidth]{figA4_architecture}
+\caption{Erratum recovery under reasoning across attention, sliding-window, hybrid, and pure-SSM
+backbones.}
+\label{fig:archbar}
+\end{figure}
+
+\section{Composing: per-domain scorecards, multimodal, and the MLA adapter}
+\label{app:compose}
+\Cref{fig:scorecard} is the composable scorecard: decision agreement between a transplanted skill and full
+recompute, by model and content type (facts in two insertion points, and agentic tool-calling). Standard
+attention models are at or near $1.0$; the sliding-window Gemma models are the consistent exception
+(addressed in \Cref{sec:reach}). \Cref{fig:mmcat} breaks the multimodal result down by task category, and
+\Cref{fig:mlascale} reports the MLA decoupled-\kpe{} adapter fidelity and the transplant TTFT speedup
+across models.
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{0.46\linewidth}\centering
+\includegraphics[width=\linewidth]{figA3_scorecard}
+\caption{Composable agreement by model $\times$ content type.}
+\label{fig:scorecard}
+\end{minipage}\hfill
+\begin{minipage}{0.52\linewidth}\centering
+\includegraphics[width=\linewidth]{figA6_mla_scaling}
+\caption{MLA adapter fidelity (a) and transplant TTFT speedup across models (b).}
+\label{fig:mlascale}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figA5_multimodal}
+\caption{Image-KV transplant by task category (perception / reasoning / agentic), full re-encode vs.\
+transplant, across four vision-language models. The transplant tracks full accuracy category-by-category.}
+\label{fig:mmcat}
+\end{figure}
+
+\section{Reproducibility}
+\label{app:repro}
+All numbers are from local runs; result records and figure-generation scripts are released with the code.
+Bootstrap confidence intervals use $10^4$ resamples. The unified-agent study uses $10$ domains $\times$
+$10$ instances ($300$ decisions) per model; the multimodal and agentic studies use $N{=}120$ and $N{=}108$
+respectively with bootstrap CIs.
