@@ -547,7 +547,12 @@ expect context the isolation-precompiled chunk never saw (a seam-repair / anchor
 **This replicates on a second generation: Gemma-3-27B** also collapses under transplant (facts
 0.91→**0.02**, agentic 1.0→**0.48**) despite its skill-feasibility (8/8) and keystone (7/7 clean) being
 fine — so it is specifically *fine-grained retrieval from the transplanted chunk* that sliding-window
-attention breaks, confirmed across both Gemma generations.
+attention breaks, confirmed across both Gemma generations. **Seam-repair fixes it
+(`composable_facts.py --repair`):** recomputing the first K tokens of the transplanted chunk *with the
+real prefix* recovers Gemma-2-9B facts accuracy from **0.69 (K=0) → 0.885 (K=32) → 0.913 (K=64)** ≈ the
+0.952 full level — but it needs **more tokens (~32–64) than a standard-attention seam (~2–4)**, with a
+threshold near K=32, consistent with sliding-window local layers needing enough nearby context
+restored. So the caveat is not fatal: sliding-window models just require a larger boundary recompute.
 **Takeaway:** transplantation generalizes across *content type* (rules and facts) and *insertion point*
 (system and tool-result) and preserves *agentic tool-calling* on **standard-attention** models with
 tight CIs, but **sliding-window attention (Gemma-2) breaks it** — an architectural caveat, statistically
