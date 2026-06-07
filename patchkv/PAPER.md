@@ -539,11 +539,15 @@ on ONE evolving cache — the long POLICY is **composed once** (precompiled+spli
 the mutable `order_status`/VIP state is **edited by appended errata** across turns, and each turn makes a
 governed tool decision; we reuse the longest cached prefix and prefill only the per-turn delta. Versus a
 **reprefill-every-turn** baseline. **Rigorous: 10 agent domains × 10 instances = 100 trajectories
-(300 decisions) per model** with bootstrap CIs (`esys/editkv_agent_rigorous.py`): the unified path's
-decisions match full almost exactly — **agreement 0.963 [0.94,0.98] (Llama-3.1-8B) / 0.983 [0.97,1.0]
-(Mistral-7B)**, unified-correct 0.96/0.98 vs full 1.0 — at **2.83× / 3.19× lower cumulative TTFT**
-(CIs ±0.02/0.04). The gap grows with policy length × turns (cf. §10.5's 13.9× at 32k). This is editable
-*and* composable operating together in a live agent loop, lossless and faster, across ten domains.
+(300 decisions) per model, across the full attention model zoo** with bootstrap CIs
+(`esys/editkv_agent_rigorous.py`). Unified-vs-full agreement and cumulative-TTFT speedup:
+Qwen3-0.6B 0.99/0.7×, 1.7B 0.96/1.1×, 4B 0.97/2.0×, 8B 0.93/3.0×, 14B 0.85/4.2×, **32B-FP8 0.81/14.9×**,
+30B-A3B(MoE) 0.88/1.4×, DeepSeek-R1-8B 0.95/2.9×, Mistral-7B 0.98/3.2×, Llama-3.1-8B 0.96/2.8×,
+**Llama-3.1-70B(4bit) 1.00/5.3×**. So across **12 models** agreement is **0.81–1.00** and speedup scales
+with model size × policy length (up to 14.9×). **Caveat:** Gemma-2-9B/Gemma-3-27B **error** in this
+multi-turn setting — their fixed-window sliding cache is structurally incompatible with a growing splice
+(`size 4095≠4555`), see §10.13. This is editable *and* composable operating together in a live agent
+loop, lossless and faster, across ten domains and the model family.
 
 **10.8 Composable taxonomy: content × insertion point × agentic tool-calling.** §10.1–10.7 transplant
 *rules-as-skills* inserted mid-context with a decision metric. Composition has other incarnations; we
@@ -646,6 +650,40 @@ tokens (the compose overhead exceeds the saved prefill at this length; the win a
 policies / more turns, §10.5). **Honest takeaway:** composition is faithful for clean retrieval/decisions
 on a real policy, but a long buried field that must *flip* a conclusion needs the robust `field+erratum`
 edit, not transplant-plus-erratum alone — unifying the two axes' caveats.
+
+**10.13 Scope across attention variants (what the method requires).** Both operations act on the
+**per-token KV representation**, not the attention kernel, so transfer depends on what each optimization
+changes (empirically mapped here):
+- **Kernel/memory only — transfers free:** FlashAttention and fused kernels (exact same KV), and
+  **PagedAttention/vLLM** (we ship the closed vLLM integration, §9). No change needed.
+- **Head-sharing — already covered:** **GQA/MQA** is in every model we ran (Qwen3, Llama, Mistral);
+  `reposition` is head-count-agnostic.
+- **Sliding-window (Gemma-2/3):** two regimes — *short* contexts: transplant degrades on fine-grained
+  retrieval, **seam-repair fixes it** (§10.8); *long* multi-turn: the fixed-window cache (4096) is
+  **structurally incompatible** with a growing splice (`H5` errored on both Gemma generations,
+  `size 4095≠4555`). So sliding-window needs either seam-repair (short) or a window-aware cache (long).
+- **MLA (DeepSeek-V2/Coder-V2):** editing works on the editable axis (§7), but composable transplant
+  needs **MLA-specific handling**: MLA caches a **position-free compressed latent** (needs *no*
+  re-rotation — *more* portable) plus a small **decoupled-RoPE sub-vector applied per-layer** (the only
+  part needing re-rotation). Our generic model-level-rotary `reposition` does not apply; the available
+  small MLA checkpoints also ship legacy-cache custom modeling (we shimmed `get_usable_length` and
+  legacy→DynamicCache, then hit the per-layer-rotary structure). A decoupled-`k_pe` reposition is the
+  identified adapter (future work), not a method limitation.
+- **Hybrids with full-attention layers (Falcon-H1, Granite-4.0-H):** the methods live only in the
+  full-attention layers; empirically their **hybrid caches expose no uniform per-layer KV**
+  (`NoneType has no .layers`), so transplant needs a **cache adapter** that touches only attention
+  layers *and recomputes the SSM/linear path* — expected to recover only in proportion to the
+  attention fraction (dense Falcon-H1 ≫ sparse Granite-4-H/Nemotron-H).
+- **KV-eviction / sparse-KV (H2O, SnapKV, Quest, NSA):** orthogonal — if the field/chunk tokens are
+  evicted there is nothing to edit/transplant; the methods compose only over *retained* tokens.
+- **Out of scope by construction:** pure-recurrent (RWKV), pure-SSM (Mamba), and diffusion (LLaDA) have
+  **no per-token attention KV** — neither operation applies (the prompt-based erratum still works, but
+  that is not a KV method). The editable axis's SSM result (§7) is the boundary evidence.
+
+**Summary:** the substrate is *any per-token attention KV cache*. It transfers for free across the
+common throughput optimizations (FlashAttn, paged/vLLM, GQA/MQA), needs a small documented adapter for
+representation-changing ones (sliding-window→seam/window-aware; MLA→decoupled-`k_pe`; hybrids→
+attention-layer-only + SSM recompute), and does not apply where there is no per-token KV.
 
 ## 11. Limitations
 

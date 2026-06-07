@@ -1,0 +1,18 @@
+{
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "domains": 10,
+  "trajectories": 100,
+  "decisions": 300,
+  "agreement": 0.95,
+  "agreement_ci": [
+    0.923,
+    0.973
+  ],
+  "unified_correct": 0.733,
+  "full_correct": 0.717,
+  "mean_speedup": 2.92,
+  "speedup_ci": [
+    2.902,
+    2.935
+  ]
+}

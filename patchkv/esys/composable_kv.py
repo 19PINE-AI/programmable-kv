@@ -18,11 +18,17 @@ sys.path.insert(0, os.path.dirname(__file__)); sys.path.insert(0, os.path.join(o
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.cache_utils import DynamicCache
 
+# Shim legacy cache APIs that some custom modeling files (e.g. DeepSeek-V2 MLA) still call.
+if not hasattr(DynamicCache, "get_usable_length"):
+    DynamicCache.get_usable_length = lambda self, new_seq_length=None, layer_idx=0: self.get_seq_length(layer_idx)
+
 
 def load_lm(name, attn="eager"):
     """Uniform loader: bf16 default; FP8/AWQ/GPTQ quant checkpoints as-is; bnb-4bit for 70B; gemma-3 text-only."""
     from transformers import AutoModelForCausalLM as AM
     up = name.upper()
+    if any(k in up for k in ("DEEPSEEK-V2", "DEEPSEEK-CODER-V2", "JAMBA", "ZAMBA")):
+        attn = "eager"   # MLA / some hybrids lack an sdpa path in this transformers version
     kw = dict(device_map="cuda", attn_implementation=attn, trust_remote_code=True)
     if "4BIT" in up or "BNB-4" in up:
         from transformers import BitsAndBytesConfig
@@ -61,8 +67,15 @@ def reposition(model, keys, src_positions, tgt_positions):
 
 
 @torch.no_grad()
+def _as_dyn(pkv):
+    """Convert a legacy tuple cache (some custom modeling, e.g. DeepSeek-V2 MLA) to DynamicCache."""
+    if pkv is not None and not hasattr(pkv, "layers"):
+        return DynamicCache.from_legacy_cache(pkv)
+    return pkv
+
+
 def prefill(model, ids):
-    return model(input_ids=ids.to("cuda"), use_cache=True).past_key_values
+    return _as_dyn(model(input_ids=ids.to("cuda"), use_cache=True).past_key_values)
 
 
 def cache_slice(cache, lo, hi):

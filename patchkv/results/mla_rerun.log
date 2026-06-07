@@ -1,0 +1,9 @@
+########## MLA deepseek-ai/DeepSeek-V2-Lite-Chat ##########
+=== SANITY: RoPE round-trip + splice reproduces full prefill ===
+Traceback (most recent call last):
+AttributeError: 'DynamicCache' object has no attribute 'get_usable_length'. Did you mean: 'get_seq_length'?
+########## MLA deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct ##########
+=== SANITY: RoPE round-trip + splice reproduces full prefill ===
+Traceback (most recent call last):
+AttributeError: 'DynamicCache' object has no attribute 'get_usable_length'. Did you mean: 'get_seq_length'?
+===MLA_RERUN_DONE===

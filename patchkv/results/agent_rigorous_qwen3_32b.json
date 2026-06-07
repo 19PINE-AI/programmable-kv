@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3-32B-FP8",
+  "domains": 10,
+  "trajectories": 100,
+  "decisions": 300,
+  "agreement": 0.81,
+  "agreement_ci": [
+    0.763,
+    0.853
+  ],
+  "unified_correct": 0.56,
+  "full_correct": 0.483,
+  "mean_speedup": 14.88,
+  "speedup_ci": [
+    14.832,
+    14.919
+  ]
+}

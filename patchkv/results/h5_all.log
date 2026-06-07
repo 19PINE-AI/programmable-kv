@@ -7,3 +7,35 @@
   unified_correct=0.533 full_correct=0.497
   cumulative-TTFT speedup = 1.09x CI[1.084, 1.101]
 ########## H5 Qwen/Qwen3-4B ##########
+  unified==full agreement = 0.967 CI[0.947, 0.987]
+  unified_correct=0.633 full_correct=0.6
+  cumulative-TTFT speedup = 1.98x CI[1.954, 1.994]
+########## H5 Qwen/Qwen3-8B ##########
+  unified==full agreement = 0.93 CI[0.9, 0.96]
+  unified_correct=0.357 full_correct=0.367
+  cumulative-TTFT speedup = 2.97x CI[2.956, 2.984]
+########## H5 Qwen/Qwen3-14B ##########
+  unified==full agreement = 0.85 CI[0.807, 0.89]
+  unified_correct=0.517 full_correct=0.533
+  cumulative-TTFT speedup = 4.23x CI[4.213, 4.244]
+########## H5 unsloth/gemma-2-9b-it ##########
+RuntimeError: The size of tensor a (4095) must match the size of tensor b (4555) at non-singleton dimension 2
+########## H5 deepseek-ai/DeepSeek-R1-Distill-Llama-8B ##########
+  unified==full agreement = 0.95 CI[0.923, 0.973]
+  unified_correct=0.733 full_correct=0.717
+  cumulative-TTFT speedup = 2.92x CI[2.902, 2.935]
+########## H5 Qwen/Qwen3-32B-FP8 ##########
+  unified==full agreement = 0.81 CI[0.763, 0.853]
+  unified_correct=0.56 full_correct=0.483
+  cumulative-TTFT speedup = 14.88x CI[14.832, 14.919]
+########## H5 unsloth/gemma-3-27b-it ##########
+RuntimeError: The size of tensor a (1023) must match the size of tensor b (4555) at non-singleton dimension 2
+########## H5 Qwen/Qwen3-30B-A3B ##########
+  unified==full agreement = 0.877 CI[0.837, 0.913]
+  unified_correct=0.64 full_correct=0.67
+  cumulative-TTFT speedup = 1.43x CI[1.422, 1.432]
+########## H5 unsloth/Meta-Llama-3.1-70B-Instruct-bnb-4bit ##########
+  unified==full agreement = 1.0 CI[1.0, 1.0]
+  unified_correct=0.967 full_correct=0.967
+  cumulative-TTFT speedup = 5.27x CI[5.252, 5.275]
+===H5_ALL_DONE===

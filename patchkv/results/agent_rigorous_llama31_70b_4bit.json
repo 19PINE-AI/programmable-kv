@@ -1,0 +1,18 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-70B-Instruct-bnb-4bit",
+  "domains": 10,
+  "trajectories": 100,
+  "decisions": 300,
+  "agreement": 1.0,
+  "agreement_ci": [
+    1.0,
+    1.0
+  ],
+  "unified_correct": 0.967,
+  "full_correct": 0.967,
+  "mean_speedup": 5.27,
+  "speedup_ci": [
+    5.252,
+    5.275
+  ]
+}
