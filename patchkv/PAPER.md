@@ -588,9 +588,12 @@ image KV is **near-lossless vs full re-encode** (agreement = precompiled==full):
 **Agentic tool-decisions from a transplanted image agree 1.00 on all three** — an agent can reuse a
 cached image instead of re-prefilling it, including when the image drives a tool call. (Where the VLM's
 *own* accuracy is low — e.g. reading a high-res digit — precompiled still tracks full; agreement, not
-absolute accuracy, is the transplant-fidelity metric.) **M-RoPE note:** image position is `(t,h,w)`;
-moving an image shifts only the temporal `t` (h,w intrinsic), so a position change re-rotates only the
-temporal mrope-section — same-position reuse needs none. **Qwen3-VL-30B-A3B is excluded** (degenerate:
+absolute accuracy, is the transplant-fidelity metric.) **M-RoPE position-shift verified
+(`esys/composable_vision_shift.py`).** Image position is `(t,h,w)`; moving an image shifts only the
+temporal `t` (h,w intrinsic), so we re-rotate only the temporal mrope-section (first 32 of 128 head dims).
+An image **cached at position 15 and transplanted to position 176 (Δ=161)** matches a full re-encode at
+the new position **exactly — agreement 1.00** (both 0.792 acc, Qwen2.5-VL-3B, n=24). So images are
+*position-portable*, not just same-position-reusable: encode once, splice anywhere in the trajectory. **Qwen3-VL-30B-A3B is excluded** (degenerate:
 full-accuracy ≈0 on this synthetic VQA format, so agreement is uninformative). So composable KV extends
 from text to **vision tokens**: the substrate property (localized, position-portable, context-robust
 information) holds for images too. **TTFT win (`esys/vision_ttft.py`):** reusing a cached image (skip the
