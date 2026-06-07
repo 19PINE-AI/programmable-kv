@@ -675,11 +675,15 @@ changes (empirically mapped here):
   near-random competence — full_correct 0.67 — not transplant error; the logit-cos is the clean metric).
   So MLA transplant works — and most of the MLA cache is *more* portable (position-free latent needs no
   re-rotation). (We shimmed the checkpoints' legacy cache API: `get_usable_length`, legacy→DynamicCache.)
-- **Hybrids with full-attention layers (Falcon-H1, Granite-4.0-H):** the methods live only in the
-  full-attention layers; empirically their **hybrid caches expose no uniform per-layer KV**
-  (`NoneType has no .layers`), so transplant needs a **cache adapter** that touches only attention
-  layers *and recomputes the SSM/linear path* — expected to recover only in proportion to the
-  attention fraction (dense Falcon-H1 ≫ sparse Granite-4-H/Nemotron-H).
+- **Hybrids with full-attention layers (Falcon-H1, Granite-4.0-H):** inspected precisely. Falcon-H1 uses a
+  `FalconHybridMambaAttentionDynamicCache` that, per layer, holds **both** an attention KV (GQA, 12 q / 2 kv
+  heads — *transplantable*) **and** a **Mamba conv+ssm state** that is a *recurrent scan state, not a
+  per-token cache*. So even though attention is present in every layer, a correct transplant must splice the
+  attention KV **and re-scan the Mamba path over the full sequence** — it cannot skip the Mamba prefill the
+  way it skips attention prefill. Net: transplant saves only the **attention fraction** of compute and is
+  *partial by construction* (worse for interleaved hybrids like Granite-4-H/Nemotron-H, where attention is
+  ~1-in-10 layers). This is a fundamental limitation of the recurrent component, not a cache-format bug;
+  we therefore scope hybrids out of the clean prefix-skip claim.
 - **KV-eviction / sparse-KV (H2O, SnapKV, Quest, NSA):** orthogonal — if the field/chunk tokens are
   evicted there is nothing to edit/transplant; the methods compose only over *retained* tokens.
 - **Out of scope by construction:** pure-recurrent (RWKV), pure-SSM (Mamba), and diffusion (LLaDA) have
