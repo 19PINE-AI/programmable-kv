@@ -128,9 +128,10 @@ def figA4():
         nm = d.get("arch", tag).split("(")[0].strip()
         labs.append(tag.replace("arch_erratum_v2_","").replace("-Instruct","").replace("_"," ")); ys.append(rec); cs.append(col)
     fig, ax = plt.subplots(figsize=(5.0, 2.7))
-    ax.bar(range(len(labs)), ys, color=cs, width=0.66, edgecolor="black", lw=0.5)
+    bars = ax.bar(range(len(labs)), ys, color=cs, width=0.68, edgecolor="white", lw=0.6, zorder=3)
+    ax.bar_label(bars, fmt="%.2f", padding=2, fontsize=6.2)
     ax.set_xticks(range(len(labs))); ax.set_xticklabels(labs, rotation=40, ha="right")
-    ax.set_ylim(0,1.08); ax.set_ylabel("erratum recovery (CoT)"); despine(ax)
+    ax.set_ylim(0,1.18); ax.set_ylabel("erratum recovery (CoT)"); despine(ax)
     import matplotlib.patches as mp
     handles = [mp.Patch(color=C["blue"],label="attention (GQA)"), mp.Patch(color=C["sky"],label="sliding-window"),
                mp.Patch(color=C["orange"],label="hybrid attn+SSM"), mp.Patch(color=C["red"],label="pure SSM")]
@@ -150,9 +151,9 @@ def figA5():
         bc = J(f)["by_category"]; x = np.arange(len(cats)); w=0.38
         full = [bc.get(c,{}).get("full",np.nan) for c in cats]
         pre  = [bc.get(c,{}).get("precompiled",np.nan) for c in cats]
-        ax.bar(x-w/2, full, w, label="full", color=C["grey"])
-        ax.bar(x+w/2, pre, w, label="transplant", color=C["blue"])
-        ax.set_xticks(x); ax.set_xticklabels(cats, rotation=30, ha="right"); ax.set_ylim(0,1.08)
+        ax.bar(x-w/2, full, w, label="full", color=C["grey"], edgecolor="white", lw=0.4, zorder=3)
+        ax.bar(x+w/2, pre, w, label="transplant", color=C["blue"], edgecolor="white", lw=0.4, zorder=3)
+        ax.set_xticks(x); ax.set_xticklabels(cats, rotation=30, ha="right"); ax.set_ylim(0,1.12)
         ax.set_title(lab, fontsize=8); despine(ax)
     axs[0].set_ylabel("VQA accuracy"); axs[0].legend(loc="upper left", fontsize=6.8)
     fig.suptitle("Image-KV transplant by task category", fontsize=9, x=0.02, ha="left")
@@ -169,9 +170,10 @@ def figA6():
         if not has(f): continue
         d = J(f); labs.append(lab); agr.append(d["composed_vs_full_agreement"]); cos.append(d["mean_logit_cos"])
     x = np.arange(len(labs)); w=0.36
-    axs[0].bar(x-w/2, agr, w, label="decision agreement", color=C["green"])
-    axs[0].bar(x+w/2, cos, w, label="logit cosine", color=C["blue"])
-    axs[0].set_xticks(x); axs[0].set_xticklabels(labs, rotation=15, ha="right"); axs[0].set_ylim(0,1.08)
+    g1 = axs[0].bar(x-w/2, agr, w, label="decision agreement", color=C["green"], edgecolor="white", lw=0.5, zorder=3)
+    g2 = axs[0].bar(x+w/2, cos, w, label="logit cosine", color=C["blue"], edgecolor="white", lw=0.5, zorder=3)
+    axs[0].bar_label(g1, fmt="%.2f", padding=1, fontsize=5.8); axs[0].bar_label(g2, fmt="%.2f", padding=1, fontsize=5.8)
+    axs[0].set_xticks(x); axs[0].set_xticklabels(labs, rotation=15, ha="right"); axs[0].set_ylim(0,1.18)
     axs[0].legend(loc="lower left", fontsize=6.8); despine(axs[0])
     axs[0].set_title("(a) MLA transplant (decoupled-$k_{pe}$ adapter)", fontsize=8.2, loc="left")
     # scaling across models

@@ -77,8 +77,9 @@ def fig_teaser():
     axb = fig.add_subplot(gs[1])
     vals = [0.0, 0.03, 1.0]; labs = ["stale", "edit\nfield-KV", "erratum"]
     cols = [C["grey"], C["red"], C["green"]]
-    axb.bar(range(3), vals, color=cols, width=0.62)
-    axb.set_xticks(range(3)); axb.set_xticklabels(labs); axb.set_ylim(0, 1.05)
+    bb = axb.bar(range(3), vals, color=cols, width=0.64, edgecolor="white", lw=0.7, zorder=3)
+    axb.bar_label(bb, fmt="%.2f", padding=2, fontsize=6.4)
+    axb.set_xticks(range(3)); axb.set_xticklabels(labs); axb.set_ylim(0, 1.18)
     axb.set_ylabel("P(new decision)"); despine(axb)
     axb.set_title("(b) Editing the field-KV\nis ignored", fontsize=8.5, loc="left")
     axb.axhline(1.0, color=C["green"], lw=0.6, ls=":")
@@ -107,12 +108,13 @@ def fig_mechanism():
         d = J(f"mech_causal_patch_{tag}.json")["agg"]
         fo.append(d["field_only_recovery"]["mean"]); fd.append(d["full_downstream_recovery"]["mean"]); labs.append(lab)
     x = np.arange(len(labs)); w = 0.38
-    axs[0].bar(x-w/2, fo, w, label="field-KV only", color=C["red"])
-    axs[0].bar(x+w/2, fd, w, label="full downstream", color=C["green"])
+    axs[0].bar(x-w/2, fo, w, label="field-KV only", color=C["red"], edgecolor="white", lw=0.5, zorder=3)
+    axs[0].bar(x+w/2, fd, w, label="full downstream", color=C["green"], edgecolor="white", lw=0.5, zorder=3)
     axs[0].set_xticks(x); axs[0].set_xticklabels(labs, rotation=40, ha="right")
-    axs[0].set_ylabel("decision recovery"); axs[0].legend(loc="center left", bbox_to_anchor=(0.0,0.6))
-    axs[0].axhline(0, color="k", lw=0.5); despine(axs[0])
-    axs[0].set_title("(a) field-KV drives $<$1 percent", fontsize=8, loc="left")
+    axs[0].set_ylabel("decision recovery"); axs[0].set_ylim(-0.12, 1.18)
+    axs[0].legend(loc="upper center", bbox_to_anchor=(0.5,0.95), fontsize=6.6)
+    axs[0].axhline(0, color="#3a3a3a", lw=0.6); despine(axs[0])
+    axs[0].set_title("(a) field-KV drives $<$1%", fontsize=8, loc="left")
 
     # (b) locality top-k curve (effect concentrated; grows slowly with #downstream tokens)
     d = J("mech_causal_patch_llama31_8b.json")["agg"]["locality_topk_mean"]
@@ -124,9 +126,10 @@ def fig_mechanism():
 
     # (c) suffix vs field share of causal mass (bar)
     share_field = max(0.0, fo[1]) if len(fo) > 1 else 0.0
-    axs[2].bar([0,1], [0.01, 0.99], color=[C["orange"], C["blue"]], width=0.6)
+    bc = axs[2].bar([0,1], [0.01, 0.99], color=[C["orange"], C["blue"]], width=0.6, edgecolor="white", lw=0.6, zorder=3)
+    axs[2].bar_label(bc, fmt="%.2f", padding=2, fontsize=6.6)
     axs[2].set_xticks([0,1]); axs[2].set_xticklabels(["field\ntoken","downstream\nnotes"])
-    axs[2].set_ylabel("share of causal effect"); axs[2].set_ylim(0,1.05); despine(axs[2])
+    axs[2].set_ylabel("share of causal effect"); axs[2].set_ylim(0,1.15); despine(axs[2])
     axs[2].set_title("(c) where the decision reads", fontsize=8, loc="left")
 
     # (d) wording ablation (what the note contains)
@@ -142,9 +145,10 @@ def fig_mechanism():
     except Exception:
         ys = [1.0,1.0,1.0,0.97,0.81]
     cols = [C["green"]]*3 + [C["sky"], C["red"]]
-    axs[3].bar(range(5), ys, color=cols, width=0.66)
+    bd = axs[3].bar(range(5), ys, color=cols, width=0.68, edgecolor="white", lw=0.6, zorder=3)
+    axs[3].bar_label(bd, fmt="%.2f", padding=2, fontsize=6.2)
     axs[3].set_xticks(range(5)); axs[3].set_xticklabels(["none","value","tag","override","re-eval"], rotation=40, ha="right")
-    axs[3].set_ylim(0,1.05); axs[3].set_ylabel("P(safe)"); despine(axs[3])
+    axs[3].set_ylim(0,1.15); axs[3].set_ylabel("P(safe)"); despine(axs[3])
     axs[3].set_title("(d) the note is a conclusion", fontsize=8, loc="left")
     save(fig, "fig2_mechanism")
 
@@ -156,9 +160,10 @@ def fig_editable():
     # (a) naive vs erratum vs hoist (reasoning recovery), from arch_erratum_v2 (Qwen3-8B reasoning)
     d = J("arch_erratum_v2_Qwen3-8B.json")
     er = d["reasoning"]["erratum_recovery"]
-    axs[0].bar([0,1,2], [0.0, er, 1.0], color=[C["red"], C["green"], C["grey"]], width=0.6)
+    ba = axs[0].bar([0,1,2], [0.0, er, 1.0], color=[C["red"], C["green"], C["grey"]], width=0.62, edgecolor="white", lw=0.7, zorder=3)
+    axs[0].bar_label(ba, fmt="%.2f", padding=2, fontsize=6.6)
     axs[0].set_xticks([0,1,2]); axs[0].set_xticklabels(["edit\nfield-KV","field+\nerratum","hoist\n(oracle)"])
-    axs[0].set_ylim(0,1.08); axs[0].set_ylabel("oracle recovery (CoT)"); despine(axs[0])
+    axs[0].set_ylim(0,1.18); axs[0].set_ylabel("oracle recovery (CoT)"); despine(axs[0])
     axs[0].set_title("(a) erratum, not recompute", fontsize=8.5, loc="left")
 
     # (b) scale-reversal: field-only (K=0) reasoning recovery vs model size
@@ -221,9 +226,10 @@ def fig_composable():
                 ("70B-4bit",0.986)]
     rows = sorted(rows, key=lambda r: -r[1])[:10]
     labs = [r[0] for r in rows]; ys = [r[1] for r in rows]
-    axs[1].barh(range(len(labs)), ys, color=C["blue"], height=0.6)
+    bh = axs[1].barh(range(len(labs)), ys, color=C["blue"], height=0.62, edgecolor="white", lw=0.5, zorder=3)
+    axs[1].bar_label(bh, fmt="%.3f", padding=2, fontsize=6.0)
     axs[1].set_yticks(range(len(labs))); axs[1].set_yticklabels(labs); axs[1].invert_yaxis()
-    axs[1].set_xlim(0.85, 1.005); axs[1].set_xlabel("logit cosine to full recompute"); despine(axs[1])
+    axs[1].set_xlim(0.85, 1.03); axs[1].set_xlabel("logit cosine to full recompute"); despine(axs[1])
     axs[1].axvline(1.0, color=C["green"], ls=":", lw=0.7)
     axs[1].set_title("(b) transplant $\\approx$ full recompute", fontsize=8.5, loc="left")
     save(fig, "fig4_composable")
@@ -313,8 +319,9 @@ def fig_reach():
             a = sum(c["agreement"]*c["n"] for c in cats.values())/tot
         labs.append(lab); agr.append(a)
     x = np.arange(len(labs))
-    axb.bar(x, agr, color=C["blue"], width=0.6)
-    axb.set_ylim(0.9, 1.005); axb.set_xticks(x); axb.set_xticklabels(labs, rotation=40, ha="right")
+    bv = axb.bar(x, agr, color=C["blue"], width=0.62, edgecolor="white", lw=0.6, zorder=3)
+    axb.bar_label(bv, fmt="%.3f", padding=2, fontsize=6.2)
+    axb.set_ylim(0.9, 1.02); axb.set_xticks(x); axb.set_xticklabels(labs, rotation=40, ha="right")
     axb.set_ylabel("image-KV transplant agreement"); despine(axb)
     axb.axhline(1.0, color=C["green"], ls=":", lw=0.7)
     axb.set_title("(b) images are position-portable too", fontsize=8.5, loc="left")
@@ -333,11 +340,12 @@ def fig_systems():
         err = d.get("erratum",{}).get("req_per_s") or base*16
     except Exception:
         base, err = 8.24, 8.24*16
-    axs[0].bar([0,1], [base, err], color=[C["grey"], C["green"]], width=0.55)
+    bs = axs[0].bar([0,1], [base, err], color=[C["grey"], C["green"]], width=0.56, edgecolor="white", lw=0.7, zorder=3)
+    axs[0].bar_label(bs, fmt="%.0f", padding=2, fontsize=6.6, label_type="center", color="white")
     axs[0].set_xticks([0,1]); axs[0].set_xticklabels(["stale\n(full reprefill)","erratum\n(+prefix cache)"])
-    axs[0].set_ylabel("throughput (req/s)"); despine(axs[0])
-    axs[0].annotate(f"{err/base:.0f}$\\times$", (1, err), textcoords="offset points", xytext=(0,2),
-                    ha="center", fontsize=9, color=C["green"], fontweight="bold")
+    axs[0].set_ylabel("throughput (req/s)"); despine(axs[0]); axs[0].set_ylim(0, err*1.18)
+    axs[0].annotate(f"{err/base:.0f}$\\times$", (1, err), textcoords="offset points", xytext=(0,3),
+                    ha="center", fontsize=10, color=C["green"], fontweight="bold")
     axs[0].set_title("(a) closed vLLM integration", fontsize=8.5, loc="left")
 
     # (b) TTFT savings for image-KV reuse vs image tokens
