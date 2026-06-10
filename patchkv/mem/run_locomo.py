@@ -112,8 +112,9 @@ def main():
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    # flash attention is O(L) memory — essential for the long (up to 24k-token) conversation
-    # memory; sdpa falls back to the O(L^2) math backend and OOMs at this length.
+    # Long (up to 24k-token) memory needs O(L)-memory attention; plain sdpa falls back to the
+    # O(L^2) math backend and OOMs. flash is O(L) and supports bf16 (use bf16 checkpoints for the
+    # large LoCoMo points; flash rejects fp8).
     try:
         model = load_lm(args.model, attn="flash_attention_2")
     except Exception as e:
