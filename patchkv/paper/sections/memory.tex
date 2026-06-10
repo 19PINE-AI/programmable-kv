@@ -44,9 +44,9 @@ mechanism; to test real memory we run the long-conversation QA benchmark LoCoMo
 \citep{maharana2024locomo} (MemArt's setting): the multi-session dialogue (median
 ${\sim}19.7$k tokens) is the memory, precompiled and spliced before each question. Over
 \emph{all} $1{,}540$ answerable questions per model, transplant is \emph{statistically
-equivalent} to full recompute in QA accuracy on Qwen3-4B and 14B (TOST, margin $0.03$:
-$\Delta=-0.010$ and $-0.005$) and within a small $-2.7$ points on Llama-3.1-8B, with
-answer-token logit cosine $0.991$--$0.998$ throughout. The \emph{compose} axis thus holds on
+equivalent} to full recompute in QA accuracy on Qwen3-4B, 14B, and 32B (TOST, margin $0.03$:
+$|\Delta|\le0.015$) and within a small $-2.7$ points on Llama-3.1-8B, with answer-token logit
+cosine $0.991$--$0.998$ throughout. The \emph{compose} axis thus holds on
 real conversational memory, not only synthetic decisions.
 
 \paragraph{Granularity is a free knob (E4).} Splitting memory into $S$ independently-precompiled
@@ -68,8 +68,8 @@ artifact (see appendix).
 composes memory once, re-rotates it each turn, and edits it on tool-driven changes. Over
 $24$ sessions $\times$ $12$ turns with $\approx$2k-token memories, against a
 reprefill-every-turn-at-the-end baseline it cuts cumulative time-to-first-token by
-$2.3$--$4.25\times$ (growing with model size), and against front-placement reprefill-on-change
-by $1.4$--$1.9\times$, while reproducing the full-reprefill next-token logits at a
+$2.3$--$4.32\times$ (growing with model size, to 32B), and against front-placement
+reprefill-on-change by $1.4$--$3.27\times$, while reproducing the full-reprefill next-token logits at a
 token-matched oracle (cosine $0.98$--$0.99$). One honest caveat: greedy chains-of-thought are
 sensitive to sub-percent logit differences, so the exact reasoning \emph{chain} is not always
 reproduced (chain agreement $0.31$--$0.69$) even though the next-token decision is faithful

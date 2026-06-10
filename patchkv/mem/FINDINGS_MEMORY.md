@@ -106,10 +106,9 @@ n=64), the largest speedups in the study (bigger memory ⇒ more reprefill avoid
 editing** likewise recovered (in-place 0.979).
 
 *GPU-contention note: the node is shared and other jobs intermittently grab 20–60 GB, which
-OOM'd these runs mid-sweep. They were recovered by `run_retry_robust.sh` (waits for a
-free-memory window, retries with backoff). Two stragglers (E5-14B; the 32B LoCoMo point) are
-on a second pass (`run_retry2.sh`, higher thresholds; 32B LoCoMo uses the bf16 checkpoint
-since flash rejects FP8) — filled in when complete.*
+OOM'd several large runs mid-sweep. **All were recovered** via wait-for-memory + backoff
+retries (`run_retry_robust.sh`, `run_retry2.sh`); the 32B LoCoMo point uses the bf16 checkpoint
+because flash attention rejects FP8.*
 
 ## LoCoMo — external validity on real conversational memory (added on user request)
 *Real LoCoMo multi-session conversations as the memory; transplant vs full recompute; **all
@@ -120,6 +119,7 @@ no truncation); flash attention. Parity tested with TOST (δ=0.03), clustered on
 |---|---|---|---|---|---|---|
 | Qwen3-4B | 0.482 | 0.472 | −0.010 [−0.016, −0.003] | **yes** | 0.996 | 0.918 |
 | Qwen3-14B | 0.564 | 0.558 | −0.005 [−0.011, 0.001] | **yes** | 0.998 | 0.943 |
+| Qwen3-32B (bf16) | 0.545 | 0.560 | +0.015 [0.003, 0.026] | **yes** | 0.992 | — |
 | Llama-3.1-8B | 0.594 | 0.567 | −0.027 [−0.040, −0.016] | no (small −2.7pt) | 0.991 | 0.857 |
 
 **Takeaway:** on real ~20k-token conversational memory, transplanting the precompiled memory
@@ -222,6 +222,13 @@ faithfulness vs a **token-matched** full-reprefill oracle (exact same token stre
 | Qwen3-1.7B | 42.8 | 2.30× | 1.37× | 1.99× | 0.993 |
 | Qwen3-4B | 64.3 | 3.05× | 1.67× | 2.65× | 0.984 |
 | Llama-3.1-8B | 69.9 | 4.25× | 1.88× | 3.49× | 0.979 |
+| Qwen3-14B | — | 4.02× | 1.93× | — | 0.974 |
+| Qwen3-32B-FP8 | — | 4.32× | 3.27× | — | 0.975 |
+
+Speedups extend to 32B (vs end **2.3–4.32×**, vs front **1.4–3.27×**), confirming the
+amortization grows with model size. (E5-14B/32B and the 32B LoCoMo point were recovered from
+GPU-contention OOM via the wait-for-memory + backoff retries; **all originally-failed runs are
+now complete**.)
 
 Speedups grow with model size (end-reprefill re-attends the whole memory every turn; the
 proposed agent only re-rotates it). **Logit faithfulness is high (cos 0.979–0.993)** — the

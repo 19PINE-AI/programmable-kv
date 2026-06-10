@@ -2989,6 +2989,21 @@
         "cot_agree": 0.312,
         "n_cot": 48
       },
+      "Qwen/Qwen3-14B": {
+        "n_decisions": 64,
+        "n_sessions": 16,
+        "ttft_proposed_ms": 70.42,
+        "ttft_front_ms": 80.78,
+        "ttft_end_ms": 283.02,
+        "ttft_oracle_ms": 266.32,
+        "cum_speedup_vs_front": 1.93,
+        "cum_speedup_vs_end": 4.02,
+        "cum_speedup_vs_oracle": 3.73,
+        "proposed_top1_agree": 0.1094,
+        "proposed_cos": 0.9737,
+        "cot_agree": 0.75,
+        "n_cot": 32
+      },
       "Qwen/Qwen3-32B-FP8": {
         "n_decisions": 64,
         "n_sessions": 16,
@@ -3107,18 +3122,42 @@
       "answer_agree": 0.86,
       "median_mem_tok": 19750
     },
+    "Qwen/Qwen3-32B": {
+      "n": 1540,
+      "n_conv": 10,
+      "acc_full": 0.545,
+      "acc_full_ci": [
+        0.523,
+        0.568
+      ],
+      "acc_transplant": 0.56,
+      "acc_transplant_ci": [
+        0.536,
+        0.585
+      ],
+      "acc_parity_diff": 0.015,
+      "acc_parity_ci": [
+        0.003,
+        0.026
+      ],
+      "acc_parity_equivalent": true,
+      "ans_cos": 0.9917,
+      "ans_top1_agree": 0.849,
+      "answer_agree": 0.666,
+      "median_mem_tok": 19750
+    },
     "Qwen/Qwen3-4B": {
       "n": 1540,
       "n_conv": 10,
       "acc_full": 0.482,
       "acc_full_ci": [
-        0.449,
-        0.512
+        0.45,
+        0.513
       ],
       "acc_transplant": 0.472,
       "acc_transplant_ci": [
         0.443,
-        0.501
+        0.5
       ],
       "acc_parity_diff": -0.01,
       "acc_parity_ci": [
@@ -3136,12 +3175,12 @@
       "n_conv": 10,
       "acc_full": 0.594,
       "acc_full_ci": [
-        0.562,
-        0.628
+        0.561,
+        0.627
       ],
       "acc_transplant": 0.567,
       "acc_transplant_ci": [
-        0.531,
+        0.53,
         0.606
       ],
       "acc_parity_diff": -0.027,
