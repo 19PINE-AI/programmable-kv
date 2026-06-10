@@ -271,9 +271,56 @@ def analyze_locomo():
     return out
 
 
+def _by_method_vs_oracle(recs, order_k=False):
+    out = {}
+    for m in sorted(set(r["model"] for r in recs)):
+        mr = [r for r in recs if r["model"] == m]
+        oracle = {r["persona"]: r["pred"] for r in mr if r["method"] == "full_recompute"}
+        meths = sorted(set(r["method"] for r in mr),
+                       key=(lambda x: (("@" in x), int(x.split("@")[1]) if "@" in x else -1)) if order_k else None)
+        d = {}
+        for meth in meths:
+            sub = [r for r in mr if r["method"] == meth]
+            for r in sub:
+                r["_ao"] = int(r["pred"] == oracle.get(r["persona"], r["pred"]))
+            d[meth] = dict(correct=round(rate(sub, "correct"), 3), correct_lo=round(boot_rate(sub, "correct")[1], 3),
+                           agree_oracle=round(rate(sub, "_ao"), 3),
+                           recompute_tok=round(float(np.median([r["recompute_tok"] for r in sub])), 1), n=len(sub))
+        out[m] = d
+    return out
+
+
+def analyze_keystone():
+    recs = load("keystone")
+    return _by_method_vs_oracle(recs) if recs else {}
+
+
+def analyze_ksweep():
+    recs = load("ksweep")
+    return _by_method_vs_oracle(recs, order_k=True) if recs else {}
+
+
+def analyze_crossblock():
+    recs = load("e4cb")
+    if not recs:
+        return {}
+    out = {}
+    for lay in sorted(set(r["layout"] for r in recs)):
+        for m in sorted(set(r["model"] for r in recs if r["layout"] == lay)):
+            key = f"{m.split('/')[-1]}|{lay}"
+            d = {}
+            for Sv in sorted(set(r["S"] for r in recs if r["model"] == m and r["layout"] == lay)):
+                sub = [r for r in recs if r["model"] == m and r["layout"] == lay and r["S"] == Sv]
+                d[Sv] = dict(dec_agree=round(rate(sub, "dec_agree"), 3), dec_agree_lo=round(boot_rate(sub, "dec_agree")[1], 3),
+                             cos=round(rate(sub, "cos"), 4), n=len(sub))
+            out[key] = d
+    return out
+
+
 def main():
     summary = dict(e1=analyze_e1(), e2=analyze_e2(), e3=analyze_e3(), e4=analyze_e4(),
-                   e5=analyze_e5(), negctrl=analyze_negctrl(), locomo=analyze_locomo())
+                   e5=analyze_e5(), negctrl=analyze_negctrl(), locomo=analyze_locomo(),
+                   keystone=analyze_keystone(), ksweep=analyze_ksweep(), crossblock=analyze_crossblock())
     json.dump(summary, open(os.path.join(R, "summary.json"), "w"), indent=2)
     print(json.dumps(summary, indent=2))
     print("ANALYZE_DONE")

@@ -39,6 +39,17 @@ have no in-place memory \emph{update}; our additions are the editing operation, 
 decision-governance lens, and the mechanism (\Cref{sec:mechanism}) that explains why boundary
 recompute suffices.
 
+\paragraph{Keystone: editing inside transplanted memory reproduces the mechanism.} Editing a
+field \emph{inside a transplanted memory chunk} in direct mode (Llama-3.1-70B, whose decisions
+vary so recovery is measurable) reproduces \Cref{sec:mechanism}'s memoization verbatim:
+refreshing the field's KV alone recovers only $0.55$ of the flipped decision (the conclusion was
+memoized \emph{downstream}, not in the field), and recovery climbs monotonically as more
+downstream tokens are recomputed ($0.55\rightarrow0.84$ at $K{=}16\rightarrow0.94$ full),
+exactly as for a normally-prefilled context. Under chain-of-thought this stickiness
+\emph{dissolves}---a selective@$K$ sweep is flat at ${\approx}0.98$ for all $K$ (the chain
+re-reads the field, so $K^\star{\approx}1$). Edit and compose thus act on one substrate, and the
+direct/CoT dissociation matches the editing law of \Cref{sec:editable}.
+
 \paragraph{Real memory: LoCoMo external validity.} The synthetic gated decisions isolate the
 mechanism; to test real memory we run the long-conversation QA benchmark LoCoMo
 \citep{maharana2024locomo} (MemArt's setting): the multi-session dialogue (median
@@ -52,17 +63,24 @@ real conversational memory, not only synthetic decisions.
 \paragraph{Granularity is a free knob (E4).} Splitting memory into $S$ independently-precompiled
 blocks makes a localized edit $S\times$ cheaper (recompute one block) and is
 \emph{decision-lossless} up to $S{=}16$ (agreement flat at $1.00$ on Qwen3-4B), because the
-independent facts are integrated at read time, not within memory; logit cosine degrades with
-$S$, bounding the regime for genuinely cross-referential facts.
+independent facts are integrated at read time, not within memory. Logit cosine degrades with $S$
+($0.998\rightarrow0.953$) but \emph{identically whether the gating facts are contiguous in one
+block or split across blocks}---splitting relevant facts across independently-precompiled blocks
+does not specifically hurt; only genuinely cross-\emph{referential} facts (untested) should.
 
-\paragraph{Placement and the pre-digestion question (E1).} Under full recompute, late
-placement is essentially as accurate as early under chain-of-thought (Qwen3: within
-$\pm0.05$ across integration depth $n{=}1$--$4$), i.e.\ the CoT re-derives the conclusion at
-read time, so forgoing prefill-time pre-digestion is nearly free---which is what makes late,
-precompiled memory viable. Direct one-shot memory-gated decisions are at chance for the
-reasoning-native Qwen3 family \emph{up to 32B} (the floor breaks only at Llama-3.1-70B,
-direct accuracy $0.81$), so CoT is the operative regime across scale, not a small-model
-artifact (see appendix).
+\paragraph{Placement and the pre-digestion cost (E1).} Pre-digestion is real, and we quantify
+it. Under full recompute and chain-of-thought, reading memory \emph{late} carries a small but
+\emph{statistically significant} accuracy cost vs.\ \emph{early} (Qwen3-4B, $N{=}192$:
+GEE-logistic $\beta_{\text{late}}=-0.44$, $p=0.018$), and the cost \emph{grows with memory
+length}: the early$-$late gap is ${\approx}0$ at $2$k tokens but ${+}0.09$ at $16$k and ${+}0.16$
+at $32$k. The mechanism explains it---late placement forgoes prefill-time pre-digestion and
+relies on the decode/CoT to integrate raw memory. This is a \emph{tradeoff, not free}: late
+placement is still preferred because it enables $O(L)$ editing/transplant and $2.3$--$4.3\times$
+TTFT (below) and the transplant is faithful at a fixed placement (above), so the net is small
+accuracy for large efficiency---with early placement preferable when memory is very long and
+accuracy-critical. (Direct one-shot decisions are at chance for the reasoning-native Qwen3 family
+\emph{to 32B}, breaking only at Llama-3.1-70B, direct $0.81$; CoT is the operative regime across
+scale---see appendix.)
 
 \paragraph{End-to-end agent (E5).} We implement a live agent (\Cref{app:memory-agent}) that
 composes memory once, re-rotates it each turn, and edits it on tool-driven changes. Over

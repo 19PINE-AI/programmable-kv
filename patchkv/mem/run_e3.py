@@ -28,8 +28,12 @@ def main():
     ap.add_argument("--traj_turns", type=int, default=4)
     ap.add_argument("--regime", default="cot")   # cot or direct
     ap.add_argument("--max_new", type=int, default=420)
+    ap.add_argument("--methods", default=None)    # comma list to override METHODS (e.g. K-sweep)
     ap.add_argument("--tag", default=None)
     args = ap.parse_args()
+    global METHODS
+    if args.methods:
+        METHODS = args.methods.split(",")
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     model = load_lm(args.model, attn="sdpa")

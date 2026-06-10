@@ -48,13 +48,15 @@ def main():
     ap.add_argument("--mtotal", type=int, default=60)
     ap.add_argument("--S", default="1,2,4,8,16")
     ap.add_argument("--traj_turns", type=int, default=4)
+    ap.add_argument("--layout", default="spread")   # spread | contiguous : relevant-fact placement
     ap.add_argument("--tag", default=None)
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     model = load_lm(args.model, attn="sdpa")
     Ss = [int(x) for x in args.S.split(",")]
-    ds = make_dataset(args.n, args.mtotal, args.nfacts, seed0=9000)
+    contig = {"spread": False, "contiguous": True}.get(args.layout, None)
+    ds = make_dataset(args.n, args.mtotal, args.nfacts, seed0=9000, contiguous=contig)
     path = os.path.join(os.path.dirname(__file__), "results", f"e4_{tag}.jsonl")
     f = open(path, "w"); t0 = time.time()
     for k, p in enumerate(ds):
@@ -66,7 +68,7 @@ def main():
         for S in Ss:
             sl, edit_cost = subchunk_transplant(model, tok, ids, mlo, mhi, S)
             f.write(json.dumps(dict(model=args.model, persona=p.pid, S=S, n_facts=args.nfacts,
-                     mtotal=args.mtotal, L_mem=int(Lmem), top1_agree=int(int(sl.argmax()) == f_arg),
+                     mtotal=args.mtotal, layout=args.layout, L_mem=int(Lmem), top1_agree=int(int(sl.argmax()) == f_arg),
                      cos=float(F.cosine_similarity(fl, sl, 0)), dec_agree=int(decide(sl, tok) == f_dec),
                      edit_cost_tok=int(edit_cost), full_cost_tok=int(Lmem))) + "\n")
         f.flush()

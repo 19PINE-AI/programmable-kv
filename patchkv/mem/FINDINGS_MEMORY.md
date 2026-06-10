@@ -131,35 +131,37 @@ remains the edit axis + mechanism + decision-governance lens. (32B-FP8 hit GPU-c
 and is omitted; 4B/8B/14B stand.) The earlier 0.58/0.46 figure was a 24-question smoke; these
 N=1,540 numbers with CIs supersede it.
 
-## E1 — Placement × pre-digestion
-*early `[sys][MEM][traj]` vs late `[sys][traj][MEM]` under full recompute; direct/CoT × depth × length; n=40/cell.*
+## E1 — Placement × pre-digestion (POWERED — supersedes the earlier underpowered read)
+*early `[sys][MEM][traj]` vs late `[sys][traj][MEM]` under full recompute; direct/CoT × depth × length.*
+*Powered to **N=192** personas/cell on Qwen3-4B (short ≈400 tok & ≈2k tok) + **N=32** at 16k/32k.*
 
-**Regime.** Direct one-shot decisions are floored (oracle 0.50, constant "yes") at every
-placement — no placement effect because no integration happens. **CoT is competent**:
-oracle accuracy Qwen3-1.7B 0.906, Qwen3-4B 0.923 (both pass the 0.80 gate); Llama-3.1-8B
-falls to 0.537 once long (≈2k-tok) memories are included → **excluded** from the primary E1
-analysis per `PREREG.md`.
+**Regime.** Direct one-shot decisions are floored (oracle 0.50, constant "yes") — no placement
+effect because no integration happens. **CoT is competent** (Qwen3-4B oracle 0.92).
 
-**Placement effect (GEE-logistic, cluster=persona, competent CoT cells, BH-FDR).** Small and
-not significant. Qwen3-1.7B: `placement[late]` coef −0.08 (p=0.89), interaction p=0.88.
-Qwen3-4B: `placement[late]` coef +0.45 (p=0.31), **`placement×n_facts` coef −0.32 (p=0.067)**
-— a *marginal* trend that late placement degrades more as integration depth grows (the
-direction the pre-digestion hypothesis predicts), but it does not survive FDR.
+**Placement effect is real and significant once powered (correction).** At the original n=40
+the effect was n.s.; at **N=192**, GEE-logistic (cluster=persona) gives `placement[late]` coef
+**−0.436, p=0.018** — i.e., **late placement is significantly *worse* than early** under CoT
+(the pre-digestion cost the mechanism predicts). The `placement×n_facts` interaction is n.s.
+(p=0.34) at short memory.
 
-**By length (Qwen3-4B, CoT, early/late accuracy):** short memory (≈400 tok) early 1.00 vs
-late 0.975 across depth; long memory (≈2k tok) both fall to 0.80–0.90 with a small, mixed
-gap. **Memory length, not placement, is the dominant factor.**
+**The cost grows with memory length.** Long-memory sweep (Qwen3-4B, CoT, early−late accuracy
+gap): ≈2k tok ≈0; **16k: +0.09 (nf=1)**; **32k: +0.16 (nf=1)**, +0.06 (nf=8). So the
+pre-digestion penalty for reading memory late is small at short memory but **rises to ~0.1–0.16
+at 16–32k**. (Noisy at n=32, not monotonic in depth; Llama-8B is below the 0.80 competence gate
+at these lengths and excluded.)
 
-**Takeaway.** Under reasoning, **late placement is nearly as accurate as early** (gap ≤0.05
-on short memory; marginal depth-dependent trend at most), because the CoT re-derives the
-conclusion at read time rather than relying on prefill-time pre-digestion. This is the
-*enabling* result for the method: precompiling memory and reading it late costs little
-quality while removing the staleness/recompute burden of front placement. The pre-digestion
-cost predicted by the mechanism is real in direction but small and only marginally detectable
-at ≤8B/2k-token scale; characterizing it at larger scale/length is future work.
+**Takeaway (honest tradeoff, not "free").** Reading memory late costs a **small but real**
+accuracy decrement vs. early (significant; ~a few points short-context, ~0.1–0.16 at 16–32k),
+because late placement forgoes prefill-time pre-digestion and relies on the decode/CoT to
+integrate raw memory. The method still favors late placement: it buys $O(L)$ editing/transplant
+and 2.3–4.3× TTFT (E5) and the transplant itself is faithful at a *fixed* placement (E2/LoCoMo),
+so the net is **small accuracy for large efficiency** — a quantified tradeoff, and a reason to
+prefer early placement when memory is very long and accuracy-critical.
 
 ## E3 — Editing memory mid-session
-*A relevant fact is toggled mid-session; each edit method vs the full-recompute oracle (CoT, n=64/model).*
+*A relevant fact is toggled mid-session; each edit method vs the full-recompute oracle (CoT).*
+*Powered: **Qwen3-4B at N=480** — in_place 0.994 [0.985], erratum 0.981 [0.969], recompile 0.996
+[0.990], stale 0.006; McNemar in_place-vs-erratum n.s. (p=0.11). Smaller-N rows below stand.*
 
 **The edit is necessary and cheap.** Reusing the **stale** memory recovers the flipped
 decision essentially never (correct: Qwen3-1.7B 0.03, 4B 0.00, Llama-8B 0.00). Every real
@@ -206,10 +208,49 @@ within memory. Logit cosine *does* degrade with S (esp. Llama), so for facts wit
 **cross-block dependencies** finer S would eventually bite; characterizing that boundary is
 future work. Practical knob: choose S to match edit-locality; decisions are robust.
 
-## E4 — Edit granularity / sub-chunking
-*Memory split into S independently-precompiled blocks; fidelity vs localized-edit cost.*
+## P3 — Keystone / locality-knockout on transplanted memory (Llama-70B, DIRECT)
+*Edit a gating field **inside a transplanted memory chunk**, direct mode on Llama-70B (the one
+model whose direct decisions vary, so recovery is measurable); n=64. This is the §3 mechanism
+probe reproduced on memory — and the keystone (edit acts the same inside a transplant).*
 
-<!-- FILL_E4 -->
+| method | recompute | correct | agree w/ oracle |
+|---|---|---|---|
+| stale | 0 | 0.203 | 0.27 |
+| in-place (field only) | 1 | 0.547 | 0.61 |
+| selective@4 | 5 | 0.578 | 0.64 |
+| selective@16 | 17 | **0.844** | 0.91 |
+| recompile chunk | 407 | 0.875 | 0.94 |
+| full | 674 | 0.938 | 1.00 |
+
+**Textbook memoization result on memory:** refreshing the field's KV alone (in-place) recovers
+only ~0.55 — the flipped conclusion was memoized **downstream**, not in the field — and recovery
+**climbs monotonically as more downstream tokens are recomputed** (0.55→0.84 at @16→0.94 full).
+Reproduced *inside a transplanted chunk*, this is the keystone for memory: edit and compose act
+on one substrate. (Contrast P5: under CoT this stickiness disappears.)
+
+## P5 — selective@K sweep (minimal recompute / stickiness, Qwen3-4B, CoT)
+selective@{1,2,4,8,16,32,64} correctness is **flat at ≈0.97–0.98** (in-place 0.984; stale 0.000;
+full 0.906) — under CoT the **minimal recompute is K*≈1** (the field refresh alone suffices,
+because the chain re-reads it). So stickiness is a **direct-mode** phenomenon (P3, where K
+matters: @1=0.55 → @16=0.84) that **dissolves under reasoning** (P5, K irrelevant). Clean
+direct-vs-CoT dissociation of the memoization mechanism.
+
+## P4 — Cross-block dependency (gating facts within one block vs split across blocks)
+*Qwen3-4B, n=200/layout, S∈{1,4,16}. Decision agreement is the constant-answer artifact in
+direct mode (Qwen3-4B), so logit cosine is the discriminating metric.*
+
+| S | contiguous cos | spread cos |
+|---|---|---|
+| 1 | 0.998 | 0.998 |
+| 4 | 0.991 | 0.991 |
+| 16 | 0.953 | 0.953 |
+
+Logit cosine degrades with S **identically whether the gating facts are contiguous (one block)
+or spread across blocks** — so splitting the relevant facts across independently-precompiled
+blocks does **not** specifically hurt fidelity (the decision token reads each block directly at
+integration time). Earlier I hedged that cross-referential facts would bite finer S; for
+independent AND-gated facts that is **not observed** — sub-chunking is robust to fact placement.
+(A task with genuine inter-fact *reference* — fact A's meaning depends on B — remains untested.)
 
 ## E5 — End-to-end systems + working agent
 *`MemoryAgent` vs front/end reprefill; 24 sessions × 12 turns, edit-rate 0.25, ≈2k-tok memory;

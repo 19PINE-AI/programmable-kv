@@ -29,11 +29,12 @@ def main():
     ap.add_argument("--regimes", default="direct,cot")
     ap.add_argument("--traj_turns", type=int, default=4)
     ap.add_argument("--max_new", type=int, default=420)
+    ap.add_argument("--attn", default="sdpa")   # use flash_attention_2 for long (>=8k) memory
     ap.add_argument("--tag", default=None)
     args = ap.parse_args()
     tag = args.tag or args.model.split("/")[-1].replace(".", "_")
     tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    model = load_lm(args.model, attn="sdpa")
+    model = load_lm(args.model, attn=args.attn)
     facts = [int(x) for x in args.facts.split(",")]
     mtotals = [int(x) for x in args.mtotals.split(",")]
     regimes = args.regimes.split(",")

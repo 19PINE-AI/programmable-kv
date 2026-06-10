@@ -108,7 +108,8 @@ class Persona:
         return p
 
 
-def make_persona(seed: int, n_total: int, n_relevant: int, gold_yes: bool) -> Persona:
+def make_persona(seed: int, n_total: int, n_relevant: int, gold_yes: bool,
+                 contiguous: bool = None) -> Persona:
     """Generate a persona with n_total settings (padded/truncated catalog, repeated with
     distinct attr names if n_total > catalog) and n_relevant gating settings.
 
@@ -130,8 +131,16 @@ def make_persona(seed: int, n_total: int, n_relevant: int, gold_yes: bool) -> Pe
     # default: random ~60% enabled for irrelevant ones (realistic mix), but relevant handled below
     for s in pool:
         s["enabled"] = rng.random() < 0.6
-    # choose relevant gating settings (spread across the doc)
-    relevant = rng.sample(range(n_total), n_relevant)
+    # choose relevant gating settings: contiguous (one block) or spread across the doc.
+    # contiguous=None -> default spread (random); True -> adjacent; False -> evenly spread.
+    if contiguous is True:
+        start = rng.randint(0, max(0, n_total - n_relevant))
+        relevant = list(range(start, start + n_relevant))
+    elif contiguous is False:
+        step = max(1, n_total // n_relevant)
+        relevant = [min(n_total - 1, i * step) for i in range(n_relevant)]
+    else:
+        relevant = rng.sample(range(n_total), n_relevant)
     for i in relevant:
         pool[i]["enabled"] = True            # start all relevant enabled
     if gold_yes:
@@ -148,11 +157,13 @@ def make_persona(seed: int, n_total: int, n_relevant: int, gold_yes: bool) -> Pe
                    action=action, gold_yes=gold, irrelevant_idx=irrelevant_idx)
 
 
-def make_dataset(n_personas: int, n_total: int, n_relevant: int, seed0: int = 0) -> List[Persona]:
+def make_dataset(n_personas: int, n_total: int, n_relevant: int, seed0: int = 0,
+                 contiguous: bool = None) -> List[Persona]:
     """Balanced dataset: half gold_yes, half gold_no."""
     out = []
     for k in range(n_personas):
-        out.append(make_persona(seed0 + k, n_total, n_relevant, gold_yes=(k % 2 == 0)))
+        out.append(make_persona(seed0 + k, n_total, n_relevant, gold_yes=(k % 2 == 0),
+                                contiguous=contiguous))
     return out
 
 

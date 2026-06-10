@@ -78,8 +78,14 @@ def prefill(model, ids):
     # Pass an explicit DynamicCache so sliding-window models (Gemma-2/3) keep the FULL per-layer KV
     # (the window is enforced by the attention mask, not by truncating the cache) — this makes the
     # uniform reposition/slice/concat ops work for sequences/chunks beyond the window.
-    return _as_dyn(model(input_ids=ids.to("cuda"), past_key_values=DynamicCache(),
-                         use_cache=True).past_key_values)
+    # logits_to_keep=1: callers only need the cache (they read decision logits via a separate
+    # 1-token forward), so skip materializing the O(L*vocab) all-position logits (7-15GB at 16-32k).
+    try:
+        out = model(input_ids=ids.to("cuda"), past_key_values=DynamicCache(),
+                    use_cache=True, logits_to_keep=1)
+    except TypeError:
+        out = model(input_ids=ids.to("cuda"), past_key_values=DynamicCache(), use_cache=True)
+    return _as_dyn(out.past_key_values)
 
 
 def cache_slice(cache, lo, hi):
