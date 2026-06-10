@@ -1,0 +1,26 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "mtotal": 24,
+  "calib": {
+    "1": {
+      "acc": 0.5,
+      "n": 40,
+      "median_margin": 0.78
+    },
+    "2": {
+      "acc": 0.5,
+      "n": 40,
+      "median_margin": 0.77
+    },
+    "4": {
+      "acc": 0.5,
+      "n": 40,
+      "median_margin": 0.88
+    },
+    "8": {
+      "acc": 0.5,
+      "n": 40,
+      "median_margin": 0.58
+    }
+  }
+}

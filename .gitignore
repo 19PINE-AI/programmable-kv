@@ -6,3 +6,17 @@ __pycache__/
 *.swp
 *.swo
 *~
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.toc
+# page-render PNGs (throwaway previews)
+patchkv/paper/pg-*.png
+# third-party dataset (downloadable; not redistributed)
+patchkv/mem/results/locomo10.json
+# transient run logs
+patchkv/mem/results/*_run.log

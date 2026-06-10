@@ -8,6 +8,7 @@
 \centering\small
 \caption{Model zoo. ``role'' indicates the experiments a model appears in.}
 \label{tab:zoo}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{@{}llll@{}}
 \toprule
 model & family / attention & precision & role \\
@@ -23,7 +24,8 @@ DeepSeek-V2-Lite / Coder-V2-Lite & DeepSeek (MLA) & bf16 & MLA adapter \\
 Falcon-H1, Falcon-Mamba & hybrid / pure SSM & bf16 & architecture boundary \\
 Qwen2.5-VL-3B/7B/32B, Qwen3-VL-8B & VL (M-RoPE) & bf16 & multimodal image-KV \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \section{Editing: the baseline frontier and the K-sweep}
@@ -111,6 +113,22 @@ across models.
 transplant, across four vision-language models. The transplant tracks full accuracy category-by-category.}
 \label{fig:mmcat}
 \end{figure}
+
+\section{The user-memory agent}
+\label{app:memory-agent}
+The agent of \Cref{sec:memory} keeps the layout \texttt{[system][trajectory][MEMORY][query]}.
+The system prompt is prefilled once; the trajectory grows by cached deltas; the user-memory
+chunk is precompiled once in isolation and RoPE-repositioned to float just before the query
+each turn (an $O(L_\text{mem})$ re-rotation, no re-prefill) with one boundary token repaired;
+a memory change is applied either by recompiling the isolated chunk ($O(L_\text{mem})$, once)
+or by appending a salient erratum into the cached trajectory stream (append-only, composes
+with prefix caching). Confirmatory protocol: gated decisions whose governing facts live in a
+Markdown memory, balanced labels, chain-of-thought as the competent regime (direct one-shot
+memory-gated decisions are at chance for $\le$8B models), with cluster-bootstrap CIs
+($10^4$, persona-level), TOST equivalence ($\delta{=}0.03$; cosine $\ge0.98$), GEE-logistic
+(cluster-robust), McNemar, and BH-FDR. Faithfulness is read against a token-matched
+full-reprefill oracle. Pre-registered hypotheses, margins, and the inclusion gate (oracle
+accuracy $\ge0.80$) are released with the code.
 
 \section{Reproducibility}
 \label{app:repro}

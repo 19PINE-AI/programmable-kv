@@ -1,0 +1,78 @@
+\section{Application: editable and composable user memory}
+\label{sec:memory}
+
+A concrete, high-value instance of the edit+compose substrate is \emph{user memory}: the
+large, dynamically-summarized profile of facts an assistant re-reads every turn. Memory is
+big (thousands--tens of thousands of tokens), reused across turns, and \emph{mutated mid-session}
+by tool calls---so where it lives in the prompt is a dilemma the mechanism of
+\Cref{sec:mechanism} explains. Placed at the \emph{front} (\note{[sys][MEM][traj]}), the
+trajectory memoizes memory-conditioned conclusions downstream, so a memory change forces a
+costly downstream reprefill (and an in-place edit is ignored). Placed at the \emph{end}
+(\note{[sys][traj][MEM]}), memory's KV depends on the whole trajectory and must be re-attended
+every turn. We resolve this by treating memory as a \emph{skill that is also edited}:
+precompile it once in isolation, place it late (\note{[sys][traj][MEM][query]} so the decode
+reads it directly), RoPE-reposition it each turn, repair one boundary token, and edit it in
+place when it changes.
+
+\paragraph{Memory transplant is faithful, to 70B (E2).} Across ten models from $0.6$B to
+$70$B, a precompiled+repositioned memory chunk reproduces the full-recompute decision logits
+with cosine $0.94$--$0.9996$; a \emph{single} seam-repair token closes the start-of-chunk
+boundary gap (Llama-3.1-8B late: cos $0.94\rightarrow0.994$). The cleanest decision-governance
+test is Llama-3.1-70B, whose decisions \emph{genuinely vary} (so agreement is non-trivial,
+unlike the constant-answer regime of smaller models): the late, seam-repaired transplant
+reproduces the full-recompute decision $0.93$ of the time at logit cosine $0.997$, and
+\emph{late placement beats early} ($0.93$ vs.\ $0.83$) exactly as the mechanism predicts
+(the decode reads memory directly rather than through pre-digested notes across the transplant
+boundary). The no-rotation control collapses (late decision agreement $0.18$ vs.\ $0.78$
+rotated), confirming the re-rotation is necessary.
+
+\paragraph{Memory is editable mid-session (E3).} When a stored fact is toggled, reusing the
+\emph{stale} memory recovers the flipped decision essentially never ($\le0.03$). Every real
+edit recovers it, and---consistent with \Cref{sec:editable}---under chain-of-thought the
+\emph{near-free in-place edit} (one token recomputed) suffices, and \emph{strengthens with
+scale}: correctness $0.92\rightarrow0.98\rightarrow1.00$ across Qwen3-1.7B/4B/14B (and $0.98$
+at 32B). On models where the chain does not re-read the field, the append-only \erratum{} is
+the robust fallback (McNemar \erratum{}$>$\inplace{} on Llama-3.1-8B, $p=0.031$). This is the editing axis
+that concurrent KV-cache memory systems lack: MemArt \citep{memart2026} and EPIC
+\citep{hu2025epic} retrieve and splice \emph{static} memory blocks position-independently but
+have no in-place memory \emph{update}; our additions are the editing operation, the
+decision-governance lens, and the mechanism (\Cref{sec:mechanism}) that explains why boundary
+recompute suffices.
+
+\paragraph{Real memory: LoCoMo external validity.} The synthetic gated decisions isolate the
+mechanism; to test real memory we run the long-conversation QA benchmark LoCoMo
+\citep{maharana2024locomo} (MemArt's setting): the multi-session dialogue (median
+${\sim}19.7$k tokens) is the memory, precompiled and spliced before each question. Over
+\emph{all} $1{,}540$ answerable questions per model, transplant is \emph{statistically
+equivalent} to full recompute in QA accuracy on Qwen3-4B and 14B (TOST, margin $0.03$:
+$\Delta=-0.010$ and $-0.005$) and within a small $-2.7$ points on Llama-3.1-8B, with
+answer-token logit cosine $0.991$--$0.998$ throughout. The \emph{compose} axis thus holds on
+real conversational memory, not only synthetic decisions.
+
+\paragraph{Granularity is a free knob (E4).} Splitting memory into $S$ independently-precompiled
+blocks makes a localized edit $S\times$ cheaper (recompute one block) and is
+\emph{decision-lossless} up to $S{=}16$ (agreement flat at $1.00$ on Qwen3-4B), because the
+independent facts are integrated at read time, not within memory; logit cosine degrades with
+$S$, bounding the regime for genuinely cross-referential facts.
+
+\paragraph{Placement and the pre-digestion question (E1).} Under full recompute, late
+placement is essentially as accurate as early under chain-of-thought (Qwen3: within
+$\pm0.05$ across integration depth $n{=}1$--$4$), i.e.\ the CoT re-derives the conclusion at
+read time, so forgoing prefill-time pre-digestion is nearly free---which is what makes late,
+precompiled memory viable. Direct one-shot memory-gated decisions are at chance for the
+reasoning-native Qwen3 family \emph{up to 32B} (the floor breaks only at Llama-3.1-70B,
+direct accuracy $0.81$), so CoT is the operative regime across scale, not a small-model
+artifact (see appendix).
+
+\paragraph{End-to-end agent (E5).} We implement a live agent (\Cref{app:memory-agent}) that
+composes memory once, re-rotates it each turn, and edits it on tool-driven changes. Over
+$24$ sessions $\times$ $12$ turns with $\approx$2k-token memories, against a
+reprefill-every-turn-at-the-end baseline it cuts cumulative time-to-first-token by
+$2.3$--$4.25\times$ (growing with model size), and against front-placement reprefill-on-change
+by $1.4$--$1.9\times$, while reproducing the full-reprefill next-token logits at a
+token-matched oracle (cosine $0.98$--$0.99$). One honest caveat: greedy chains-of-thought are
+sensitive to sub-percent logit differences, so the exact reasoning \emph{chain} is not always
+reproduced (chain agreement $0.31$--$0.69$) even though the next-token decision is faithful
+and CoT \emph{accuracy} is comparable; the clean decision-governance equivalence is the
+short-context editing result above (\Cref{sec:editable}-style, agreement $0.89$--$0.95$). User
+memory is thus a second instance of one substrate that is both editable and composable.
