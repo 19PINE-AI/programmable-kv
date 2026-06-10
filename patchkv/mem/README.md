@@ -39,6 +39,17 @@ change is applied by recompiling the chunk (O(L_mem), once) or appending a salie
 ```bash
 bash run_e2_all.sh        # faithfulness/equivalence across models
 bash run_rest.sh          # E1, E3, E4, E5, then analyze + figures (waits for E2)
+bash run_large.sh         # 14B-70B sweep (competence, E2, E3, E5)
+bash run_locomo_full.sh   # LoCoMo external validity: all 1,540 Q, full ~20k-token memory (flash)
+bash run_retry_robust.sh  # re-run any GPU-contention OOM failures (waits for free memory, backoff)
 python analyze.py && python make_figs.py
 ```
-All runs are local on one RTX PRO 6000 (shared); models ≤8B (GPU-budget note in DESIGN.md).
+Runs are local on one RTX PRO 6000 (96 GB, **shared/intermittently contended** — see below).
+LoCoMo needs `results/locomo10.json` (download: snap-research/locomo `data/locomo10.json`).
+
+**GPU notes (important for large/long-context runs):**
+- Long-context (LoCoMo, ≥16k tokens) requires **flash attention 2** (sdpa falls back to an
+  O(L²) math backend and OOMs) and **`logits_to_keep=1`** in prefills (the all-position logit
+  tensor is 7–15 GB of pure waste — only the KV cache is needed). Both are wired into `run_locomo.py`.
+- The node is shared; other jobs grab/free 20–60 GB unpredictably. Use `run_retry_robust.sh`,
+  which waits for a free-memory window before each launch and retries on OOM with backoff.

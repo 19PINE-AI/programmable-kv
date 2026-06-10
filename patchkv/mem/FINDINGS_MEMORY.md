@@ -100,8 +100,10 @@ models (0.95–0.997).
 artifact, not an editing failure — its agreement-with-oracle is 0.89). The near-free in-place
 edit becomes *more* reliable as models get larger.
 
-*(E5 on 14B/32B and one E3-32B run hit GPU-contention OOM mid-sweep and are omitted; scale
-coverage is E5 to 8B, E3 to 32B, E2/competence to 70B.)*
+*GPU-contention note: the node is shared and other jobs intermittently grab 20–60 GB, which
+OOM'd E5 on 14B/32B and the 32B LoCoMo/E3 runs mid-sweep. These are re-run by
+`run_retry_robust.sh`, which waits for a free-memory window before each launch and retries on
+OOM with backoff; their results are filled in when complete.*
 
 ## LoCoMo — external validity on real conversational memory (added on user request)
 *Real LoCoMo multi-session conversations as the memory; transplant vs full recompute; **all
