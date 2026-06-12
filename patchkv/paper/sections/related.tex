@@ -5,7 +5,10 @@
 stored \emph{knowledge} in transformer weights and edits it there: ROME and MEMIT \citep{meng2022rome,
 meng2023memit} locate and rewrite factual associations in MLP weights, while circuit analyses such as the
 indirect-object-identification study \citep{wang2023ioi} trace how specific computations are carried by
-attention heads. Closest in spirit, \citet{lindsey2025biology} find models commit \emph{plans} to
+attention heads. Weight editing targets \emph{durable, global} facts; we compare against a faithful ROME
+and a LoRA fine-tune empirically (\Cref{tab:weight}) and find them ill-suited to \emph{mutable per-request}
+state---a global edit contaminates concurrent requests and damages unrelated decisions---which is exactly
+the niche the editable KV cache fills. Closest in spirit, \citet{lindsey2025biology} find models commit \emph{plans} to
 specific tokens (e.g.\ a planned rhyme stored on a line-break token) during the forward pass. We study a
 complementary object: not weights and not decode-time computation, but the \emph{KV cache}---the
 activations an inference system already stores and an editor can directly manipulate---and show it holds

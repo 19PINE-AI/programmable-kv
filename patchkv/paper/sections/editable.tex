@@ -46,6 +46,39 @@ chases changed keys rather than the tokens that \emph{memoized the conclusion}. 
 recommendation is \texttt{field+erratum} as the robust default, with \inplace{} as a free fast-path for
 reasoning models.
 
+\paragraph{Why not edit the weights?} A natural objection: to act on a changed field, why not edit
+the model's \emph{weights} (ROME/MEMIT) or fine-tune, rather than the cache? We compare on the paper's
+gated task (status \texttt{pending}$\rightarrow$\texttt{shipped}, so \emph{cancel}$\rightarrow$\emph{deny})
+against a faithful rank-one ROME---validated on the canonical factual edit first (``the Eiffel Tower is
+in'' \emph{Paris}$\rightarrow$\emph{Rome}, locality intact), so the baseline is not crippled---and a LoRA
+fine-tune (\Cref{tab:weight}). All of \fielderr{}, ROME, and LoRA \emph{succeed} at flipping the target
+decision. But a weight edit is \emph{global}: the same model instance can no longer hold
+\texttt{status=shipped} for one request and \texttt{pending} for another, so \emph{all} concurrent orders
+that are genuinely still pending are wrongly flipped (cross-request contamination $1.0$), and half of an
+unrelated decision battery drifts ($0.5$)---the ROME/fine-tune specificity tax---at $3$--$6$\,s per edit
+(plus a one-time covariance pass for ROME). The append-only erratum lives in a \emph{per-sequence} cache:
+zero cross-request contamination, zero collateral, $114$\,ms, and it composes with prefix caching
+(\Cref{sec:systems}). Weight editing targets \emph{durable, global facts}; mutable per-request, per-turn
+state is the wrong job for it---which is precisely the niche the editable KV cache fills.
+
+\begin{table}[t]
+\centering\small
+\caption{\textbf{KV editing vs.\ weight editing} for mutable per-request state (Llama-3.1-8B). Weight edits
+succeed at the target yet are global (contaminate concurrent requests), damage unrelated decisions, and are
+$30$--$50\times$ slower per edit.}
+\label{tab:weight}
+\begin{tabular}{lcccc}
+\toprule
+method & flips decision? & edit latency & cross-req.\ contamination & collateral (unrelated) \\
+\midrule
+\fielderr{} (KV) & \ding{51} & $114$\,ms & $\mathbf{0}$ & $\mathbf{0}$ \\
+\inplace{} (KV) & \ding{55}\,(no CoT) & $71$\,ms & $0$ & $0$ \\
+ROME (rank-one) & \ding{51} & $5.6$\,s\,$+\,11.6$\,s cov & $1.0$ & $0.5$ \\
+LoRA fine-tune & \ding{51} & $3.1$\,s & $1.0$ & $0.5$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig3_editable}

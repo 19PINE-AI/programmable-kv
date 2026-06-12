@@ -1,0 +1,40 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "rome_layer": 6,
+  "pre_edit": {
+    "target_decides_cancel": true,
+    "gap": 7.38,
+    "other_pending_wrong_deny_rate": 0.0
+  },
+  "methods": {
+    "kv_erratum": {
+      "efficacy_deny": true,
+      "gap_deny_cancel": 2.62,
+      "latency_ms": 114.4,
+      "isolation_contamination": 0.0,
+      "collateral_drift": 0.0
+    },
+    "kv_inplace": {
+      "efficacy_deny": false,
+      "gap_deny_cancel": -7.44,
+      "latency_ms": 71.2,
+      "isolation_contamination": 0.0,
+      "collateral_drift": 0.0
+    },
+    "rome": {
+      "efficacy_deny": true,
+      "gap_deny_cancel": 19.55,
+      "latency_ms": 5643.9,
+      "cov_estimate_s": 11.6,
+      "isolation_contamination": 1.0,
+      "collateral_drift": 0.5
+    },
+    "lora_ft": {
+      "efficacy_deny": true,
+      "gap_deny_cancel": 22.06,
+      "latency_ms": 3103.3,
+      "isolation_contamination": 1.0,
+      "collateral_drift": 0.5
+    }
+  }
+}
