@@ -332,21 +332,25 @@ def fig_reach():
 # =====================================================================================
 def fig_systems():
     fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.1))
-    # (a) vLLM throughput: baseline vs erratum (16x) — read serving json
+    # (a) ONLINE vLLM serving: throughput speedup grows with offered load (erratum vs in-prefix baseline)
     try:
-        d = J("vllm_serving_qwen3_8b.json")
-        base = d["baseline"]["req_per_s"]
-        # erratum throughput: prefer an explicit field, else illustrate the 16x headline
-        err = d.get("erratum",{}).get("req_per_s") or base*16
+        d = J("vllm_online_qwen3_8b.json")["rows"]
+        rates = ["2","4","8","16","sat"]
+        tspd = [r["throughput_speedup"] for r in d]
+        ttft = [r["ttft_p90_speedup"] for r in d]
+        hit_e = d[0]["erratum"]["prefix_hit_rate"]; hit_b = d[0]["baseline"]["prefix_hit_rate"]
     except Exception:
-        base, err = 8.24, 8.24*16
-    bs = axs[0].bar([0,1], [base, err], color=[C["grey"], C["green"]], width=0.56, edgecolor="white", lw=0.7, zorder=3)
-    axs[0].bar_label(bs, fmt="%.0f", padding=2, fontsize=6.6, label_type="center", color="white")
-    axs[0].set_xticks([0,1]); axs[0].set_xticklabels(["stale\n(full reprefill)","erratum\n(+prefix cache)"])
-    axs[0].set_ylabel("throughput (req/s)"); despine(axs[0]); axs[0].set_ylim(0, err*1.18)
-    axs[0].annotate(f"{err/base:.0f}$\\times$", (1, err), textcoords="offset points", xytext=(0,3),
-                    ha="center", fontsize=10, color=C["green"], fontweight="bold")
-    axs[0].set_title("(a) closed vLLM integration", fontsize=8.5, loc="left")
+        rates = ["2","4","8","16","sat"]; tspd = [1.58,2.68,5.07,7.93,14.53]; ttft=[263,388,398,187,53]
+        hit_e, hit_b = 0.985, 0.010
+    x = range(len(rates))
+    bs = axs[0].bar(x, tspd, color=C["green"], width=0.6, edgecolor="white", lw=0.7, zorder=3)
+    axs[0].bar_label(bs, fmt="%.1f$\\times$", padding=1.5, fontsize=6.3, color=C["green"])
+    axs[0].set_xticks(list(x)); axs[0].set_xticklabels(rates)
+    axs[0].set_xlabel("offered load (req/s)"); axs[0].set_ylabel("throughput speedup ($\\times$)")
+    despine(axs[0]); axs[0].set_ylim(0, max(tspd)*1.22)
+    axs[0].set_title("(a) online vLLM serving", fontsize=8.5, loc="left")
+    axs[0].annotate(f"APC hit-rate: erratum {hit_e:.0%} vs baseline {hit_b:.0%}\nTTFT $p90$ {min(ttft):.0f}--{max(ttft):.0f}$\\times$ lower",
+                    (0.02, 0.97), xycoords="axes fraction", va="top", ha="left", fontsize=5.6, color="#333")
 
     # (b) TTFT savings for image-KV reuse vs image tokens
     try:

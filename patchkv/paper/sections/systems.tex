@@ -9,19 +9,29 @@ decision (composed $=$ full on Llama-3.1 and Mistral); the one hard case, a long
 \emph{flip} a conclusion, requires the robust \texttt{field+erratum} edit rather than transplant-plus-bare-
 erratum---the same long-context lesson the editing axis predicts, now in a real environment.
 
-\paragraph{A closed serving integration.} Because the erratum is append-only, it composes with standard
-prefix caching: the static prefix stays cache-aligned and only the short erratum (and the decode) is new
-work. In a vLLM integration this yields up to $16\times$ higher throughput than reprefilling on each state
-change (\Cref{fig:sys}a), and an online load study shows the gap widening under load. The image-KV reuse of
-\Cref{sec:reach} contributes a complementary serving win---$2.4$--$8.4\times$ faster first-token as image
-size grows (\Cref{fig:sys}b)---by skipping the vision tower and image-token prefill entirely.
+\paragraph{A comprehensive online serving benchmark.} Because the erratum is append-only, it composes
+with standard automatic prefix caching (APC): the static prefix stays cache-aligned and only the short
+erratum (and the decode) is new work, whereas writing the new value \emph{into} the prefix changes a cached
+block's content hash and invalidates every downstream block. We test this on vLLM's V1 engine as a real
+online server---\texttt{AsyncLLMEngine} with CUDA graphs, continuous batching, APC, and \emph{Poisson}
+request arrivals at controlled offered load (not an offline batch)---over a shared ${\sim}8$k-token agent
+policy with one mutable field, measuring TTFT percentiles, throughput, and the engine's own APC hit-rate
+(\Cref{fig:sys}a). The append-only edit keeps the prefix a cache hit (\textbf{$98.5\%$ vs.\ $1.0\%$ APC
+hit-rate}); the in-prefix baseline is prefill-bound and \emph{saturates at ${\approx}1.5$ req/s}, so its
+$p90$ time-to-first-token collapses under load ($22$--$55$\,s) while the erratum stays $86$\,ms--$1$\,s
+($53$--$398\times$ lower TTFT). The throughput advantage \emph{grows with offered load}---$1.6\times$ at
+$2$ req/s up to $\mathbf{14.5\times}$ at saturation---exactly as predicted for a compute-bound vs.\
+cache-bound regime. The image-KV reuse of \Cref{sec:reach} contributes a complementary serving
+win---$2.4$--$8.4\times$ faster first-token as image size grows (\Cref{fig:sys}b)---by skipping the vision
+tower and image-token prefill entirely.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.86\linewidth]{fig7_systems}
-\caption{\textbf{Systems payoff.} (a) The append-only erratum composes with prefix caching for up to
-$16\times$ higher serving throughput than full reprefill on each state change. (b) Reusing a cached image
-(skipping the vision tower and image-token prefill) accelerates time-to-first-token, more so for larger
-images.}
+\caption{\textbf{Systems payoff.} (a) Online vLLM serving (V1 engine, CUDA graphs, continuous batching,
+APC, Poisson arrivals): the append-only erratum keeps the prefix cache-aligned ($98.5\%$ vs.\ $1\%$ APC
+hit-rate), so its throughput advantage grows with offered load---up to $14.5\times$ at saturation---while
+$p90$ TTFT is $53$--$398\times$ lower. (b) Reusing a cached image (skipping the vision tower and
+image-token prefill) accelerates time-to-first-token, more so for larger images.}
 \label{fig:sys}
 \end{figure}
