@@ -41,6 +41,29 @@ conclusion that a late, salient correction can overwrite---but that confrontatio
 destabilize. We name the phenomenon \textbf{attention-mediated memoized inference}, and the rest of the
 paper shows it makes the cache both editable (\Cref{sec:editable}) and composable (\Cref{sec:composable}).
 
+\paragraph{Separating conclusion from content---causal, temporal, and writable.} Four further
+controls (three models each: Qwen3-8B/4B, Llama-3.1-8B; \Cref{app:deepmech}) close the gap
+between ``the conclusion is \emph{decodable} downstream'' and ``the decision \emph{uses} a
+memoized conclusion.'' \textbf{(i) Dissociation.} We hold the field value byte-identical and
+flip a single rule token (a polarity \emph{trigger}) so the \emph{conclusion} inverts while
+the \emph{content} does not; transplanting the downstream notes alone then carries the whole
+flipped conclusion (recovery $0.998$--$1.009$) while patching the differing rule token carries
+none ($-0.007$ to $+0.007$)---the decision cannot be re-encoding field content, since the
+content is constant. (A linear probe finds \emph{both} conclusion and field identity decodable
+downstream, so decodability alone cannot separate them: the causal patch is the necessary
+instrument.) \textbf{(ii) Timing.} Within the single prefill pass, the conclusion becomes
+linearly decodable on the downstream aggregator at depth $0.31$--$0.39$, roughly twelve layers
+\emph{before} the decision token's logit-lens commit (depth $0.73$--$0.77$): the note is
+written at prefill, before it is read. \textbf{(iii) Specificity.} Transplanting the eight
+highest-effect downstream positions recovers $0.74$--$0.79$ of the decision; eight \emph{random}
+downstream positions recover ${\le}0.035$---a few specific aggregator tokens, not a diffuse
+code. \textbf{(iv) Writability.} Injecting a \emph{false} note (the opposite conclusion's
+downstream KV) over an otherwise-consistent cache makes the decision follow the written note
+\emph{against its own live field} (recovery $\approx 1.0$); a handful of note tokens suffice.
+The account also holds off the synthetic template---field-only recovery stays ${\approx}0$ for
+multi-hop reasoning and free-form conversational phrasing, bounded only for near-verbatim
+attribute lookup, where the field is partly a copy (\Cref{app:deepmech}).
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig2_mechanism}

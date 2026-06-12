@@ -1,0 +1,367 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "agg": {
+    "multihop": {
+      "n": 6,
+      "field_only_recovery": {
+        "mean": 0.002,
+        "ci": [
+          0.0,
+          0.004
+        ]
+      },
+      "full_downstream_recovery": {
+        "mean": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "suffix_mean": {
+        "0.05": 0.271,
+        "0.1": 0.339,
+        "0.25": 0.751,
+        "0.5": 0.735,
+        "1.0": 1.0
+      }
+    },
+    "rag_lookup": {
+      "n": 6,
+      "field_only_recovery": {
+        "mean": 0.377,
+        "ci": [
+          0.363,
+          0.392
+        ]
+      },
+      "full_downstream_recovery": {
+        "mean": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "suffix_mean": {
+        "0.05": 0.023,
+        "0.1": 0.081,
+        "0.25": 0.157,
+        "0.5": 0.453,
+        "1.0": 1.0
+      }
+    },
+    "natural": {
+      "n": 6,
+      "field_only_recovery": {
+        "mean": -0.012,
+        "ci": [
+          -0.018,
+          -0.009
+        ]
+      },
+      "full_downstream_recovery": {
+        "mean": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "suffix_mean": {
+        "0.05": 0.681,
+        "0.1": 0.792,
+        "0.25": 0.854,
+        "0.5": 0.952,
+        "1.0": 1.0
+      }
+    }
+  },
+  "instances": [
+    {
+      "family": "multihop",
+      "oid": "A4471",
+      "L": 135,
+      "s_old": -12.56,
+      "s_new": 14.94,
+      "field_only_recovery": 0.002,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.275,
+        "0.1": 0.348,
+        "0.25": 0.761,
+        "0.5": 0.752,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "multihop",
+      "oid": "B8820",
+      "L": 135,
+      "s_old": -12.12,
+      "s_new": 15.19,
+      "field_only_recovery": -0.002,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.288,
+        "0.1": 0.348,
+        "0.25": 0.751,
+        "0.5": 0.732,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "multihop",
+      "oid": "C1093",
+      "L": 135,
+      "s_old": -12.25,
+      "s_new": 14.94,
+      "field_only_recovery": 0.0,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.28,
+        "0.1": 0.345,
+        "0.25": 0.763,
+        "0.5": 0.74,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "multihop",
+      "oid": "D5567",
+      "L": 135,
+      "s_old": -12.44,
+      "s_new": 15.31,
+      "field_only_recovery": 0.002,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.268,
+        "0.1": 0.336,
+        "0.25": 0.755,
+        "0.5": 0.736,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "multihop",
+      "oid": "E2025",
+      "L": 135,
+      "s_old": -12.69,
+      "s_new": 15.25,
+      "field_only_recovery": 0.002,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.239,
+        "0.1": 0.315,
+        "0.25": 0.727,
+        "0.5": 0.709,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "multihop",
+      "oid": "F7311",
+      "L": 135,
+      "s_old": -12.5,
+      "s_new": 15.19,
+      "field_only_recovery": 0.007,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.275,
+        "0.1": 0.343,
+        "0.25": 0.749,
+        "0.5": 0.74,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "rag_lookup",
+      "oid": "A4471",
+      "L": 141,
+      "s_old": -10.88,
+      "s_new": 9.38,
+      "field_only_recovery": 0.414,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.022,
+        "0.1": 0.046,
+        "0.25": 0.123,
+        "0.5": 0.389,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "rag_lookup",
+      "oid": "B8820",
+      "L": 141,
+      "s_old": -11.5,
+      "s_new": 9.88,
+      "field_only_recovery": 0.392,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.026,
+        "0.1": 0.076,
+        "0.25": 0.152,
+        "0.5": 0.456,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "rag_lookup",
+      "oid": "C1093",
+      "L": 141,
+      "s_old": -11.31,
+      "s_new": 9.75,
+      "field_only_recovery": 0.377,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.024,
+        "0.1": 0.086,
+        "0.25": 0.157,
+        "0.5": 0.46,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "rag_lookup",
+      "oid": "D5567",
+      "L": 141,
+      "s_old": -11.56,
+      "s_new": 9.88,
+      "field_only_recovery": 0.37,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.026,
+        "0.1": 0.09,
+        "0.25": 0.166,
+        "0.5": 0.469,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "rag_lookup",
+      "oid": "E2025",
+      "L": 141,
+      "s_old": -11.69,
+      "s_new": 9.75,
+      "field_only_recovery": 0.335,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.023,
+        "0.1": 0.102,
+        "0.25": 0.178,
+        "0.5": 0.487,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "rag_lookup",
+      "oid": "F7311",
+      "L": 141,
+      "s_old": -11.31,
+      "s_new": 9.25,
+      "field_only_recovery": 0.374,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.018,
+        "0.1": 0.088,
+        "0.25": 0.167,
+        "0.5": 0.459,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "natural",
+      "oid": "A4471",
+      "L": 130,
+      "s_old": -3.0,
+      "s_new": 4.12,
+      "field_only_recovery": -0.035,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.684,
+        "0.1": 0.789,
+        "0.25": 0.86,
+        "0.5": 0.947,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "natural",
+      "oid": "B8820",
+      "L": 130,
+      "s_old": -3.5,
+      "s_new": 4.12,
+      "field_only_recovery": 0.0,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.689,
+        "0.1": 0.803,
+        "0.25": 0.869,
+        "0.5": 0.934,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "natural",
+      "oid": "C1093",
+      "L": 130,
+      "s_old": -3.0,
+      "s_new": 4.38,
+      "field_only_recovery": -0.017,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.661,
+        "0.1": 0.78,
+        "0.25": 0.847,
+        "0.5": 0.966,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "natural",
+      "oid": "D5567",
+      "L": 130,
+      "s_old": -3.75,
+      "s_new": 4.25,
+      "field_only_recovery": 0.0,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.688,
+        "0.1": 0.797,
+        "0.25": 0.859,
+        "0.5": 0.953,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "natural",
+      "oid": "E2025",
+      "L": 130,
+      "s_old": -2.75,
+      "s_new": 4.12,
+      "field_only_recovery": -0.018,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.673,
+        "0.1": 0.782,
+        "0.25": 0.855,
+        "0.5": 0.964,
+        "1.0": 1.0
+      }
+    },
+    {
+      "family": "natural",
+      "oid": "F7311",
+      "L": 130,
+      "s_old": -3.38,
+      "s_new": 4.25,
+      "field_only_recovery": 0.0,
+      "full_downstream_recovery": 1.0,
+      "suffix": {
+        "0.05": 0.689,
+        "0.1": 0.803,
+        "0.25": 0.836,
+        "0.5": 0.951,
+        "1.0": 1.0
+      }
+    }
+  ]
+}

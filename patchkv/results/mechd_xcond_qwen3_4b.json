@@ -1,0 +1,453 @@
+{
+  "model": "Qwen/Qwen3-4B",
+  "patch": {
+    "n": 36,
+    "trigger_only_recovery": {
+      "mean": -0.007,
+      "ci": [
+        -0.012,
+        -0.003
+      ]
+    },
+    "notes_recovery": {
+      "mean": 1.009,
+      "ci": [
+        1.004,
+        1.014
+      ]
+    },
+    "full_downstream_recovery": {
+      "mean": 1.0,
+      "ci": [
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "patch_instances": [
+    {
+      "scn": "account_role",
+      "oid": "A4471",
+      "field": "verified_admin",
+      "L": 779,
+      "s_base": 13.688,
+      "s_src": -11.75,
+      "trigger_only_recovery": -0.005,
+      "notes_recovery": 1.002,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "A4471",
+      "field": "suspended_user",
+      "L": 779,
+      "s_base": 13.125,
+      "s_src": -8.562,
+      "trigger_only_recovery": -0.0,
+      "notes_recovery": 1.0,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "B8820",
+      "field": "verified_admin",
+      "L": 779,
+      "s_base": 13.562,
+      "s_src": -13.062,
+      "trigger_only_recovery": 0.009,
+      "notes_recovery": 1.007,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "B8820",
+      "field": "suspended_user",
+      "L": 779,
+      "s_base": 12.438,
+      "s_src": -9.938,
+      "trigger_only_recovery": -0.011,
+      "notes_recovery": 1.003,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "C1093",
+      "field": "verified_admin",
+      "L": 779,
+      "s_base": 13.938,
+      "s_src": -13.188,
+      "trigger_only_recovery": 0.005,
+      "notes_recovery": 0.993,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "C1093",
+      "field": "suspended_user",
+      "L": 779,
+      "s_base": 12.875,
+      "s_src": -9.438,
+      "trigger_only_recovery": 0.008,
+      "notes_recovery": 1.006,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "D5567",
+      "field": "verified_admin",
+      "L": 779,
+      "s_base": 13.688,
+      "s_src": -12.812,
+      "trigger_only_recovery": -0.005,
+      "notes_recovery": 1.0,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "D5567",
+      "field": "suspended_user",
+      "L": 779,
+      "s_base": 12.938,
+      "s_src": -9.25,
+      "trigger_only_recovery": -0.008,
+      "notes_recovery": 1.0,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "E2025",
+      "field": "verified_admin",
+      "L": 779,
+      "s_base": 13.812,
+      "s_src": -12.438,
+      "trigger_only_recovery": 0.002,
+      "notes_recovery": 0.998,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "E2025",
+      "field": "suspended_user",
+      "L": 779,
+      "s_base": 12.875,
+      "s_src": -8.938,
+      "trigger_only_recovery": -0.011,
+      "notes_recovery": 1.003,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "F7311",
+      "field": "verified_admin",
+      "L": 779,
+      "s_base": 13.562,
+      "s_src": -13.188,
+      "trigger_only_recovery": -0.002,
+      "notes_recovery": 0.991,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "account_role",
+      "oid": "F7311",
+      "field": "suspended_user",
+      "L": 779,
+      "s_base": 12.75,
+      "s_src": -10.0,
+      "trigger_only_recovery": -0.016,
+      "notes_recovery": 1.003,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "A4471",
+      "field": "standard",
+      "L": 774,
+      "s_base": 2.875,
+      "s_src": -16.312,
+      "trigger_only_recovery": -0.007,
+      "notes_recovery": 1.033,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "A4471",
+      "field": "restricted",
+      "L": 774,
+      "s_base": 2.75,
+      "s_src": -7.375,
+      "trigger_only_recovery": -0.037,
+      "notes_recovery": 1.025,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "B8820",
+      "field": "standard",
+      "L": 774,
+      "s_base": 2.5,
+      "s_src": -19.562,
+      "trigger_only_recovery": -0.006,
+      "notes_recovery": 0.997,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "B8820",
+      "field": "restricted",
+      "L": 774,
+      "s_base": 2.125,
+      "s_src": -8.125,
+      "trigger_only_recovery": -0.049,
+      "notes_recovery": 1.049,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "C1093",
+      "field": "standard",
+      "L": 774,
+      "s_base": 2.25,
+      "s_src": -17.812,
+      "trigger_only_recovery": -0.012,
+      "notes_recovery": 1.003,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "C1093",
+      "field": "restricted",
+      "L": 774,
+      "s_base": 2.625,
+      "s_src": -7.875,
+      "trigger_only_recovery": -0.036,
+      "notes_recovery": 1.0,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "D5567",
+      "field": "standard",
+      "L": 774,
+      "s_base": 2.625,
+      "s_src": -17.562,
+      "trigger_only_recovery": -0.0,
+      "notes_recovery": 1.04,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "D5567",
+      "field": "restricted",
+      "L": 774,
+      "s_base": 2.5,
+      "s_src": -7.25,
+      "trigger_only_recovery": -0.013,
+      "notes_recovery": 1.051,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "E2025",
+      "field": "standard",
+      "L": 774,
+      "s_base": 4.0,
+      "s_src": -15.188,
+      "trigger_only_recovery": -0.007,
+      "notes_recovery": 1.003,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "E2025",
+      "field": "restricted",
+      "L": 774,
+      "s_base": 4.375,
+      "s_src": -6.125,
+      "trigger_only_recovery": -0.036,
+      "notes_recovery": 1.024,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "F7311",
+      "field": "standard",
+      "L": 774,
+      "s_base": 3.25,
+      "s_src": -17.25,
+      "trigger_only_recovery": -0.0,
+      "notes_recovery": 1.015,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "F7311",
+      "field": "restricted",
+      "L": 774,
+      "s_base": 3.25,
+      "s_src": -7.25,
+      "trigger_only_recovery": -0.024,
+      "notes_recovery": 1.0,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "A4471",
+      "field": "enterprise",
+      "L": 768,
+      "s_base": 4.75,
+      "s_src": -5.562,
+      "trigger_only_recovery": -0.024,
+      "notes_recovery": 0.982,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "A4471",
+      "field": "standard",
+      "L": 768,
+      "s_base": 6.625,
+      "s_src": -8.875,
+      "trigger_only_recovery": 0.008,
+      "notes_recovery": 1.012,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "B8820",
+      "field": "enterprise",
+      "L": 768,
+      "s_base": 4.875,
+      "s_src": -6.125,
+      "trigger_only_recovery": -0.006,
+      "notes_recovery": 1.023,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "B8820",
+      "field": "standard",
+      "L": 768,
+      "s_base": 6.25,
+      "s_src": -10.25,
+      "trigger_only_recovery": -0.004,
+      "notes_recovery": 0.989,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "C1093",
+      "field": "enterprise",
+      "L": 768,
+      "s_base": 5.312,
+      "s_src": -5.812,
+      "trigger_only_recovery": 0.006,
+      "notes_recovery": 1.0,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "C1093",
+      "field": "standard",
+      "L": 768,
+      "s_base": 6.5,
+      "s_src": -8.5,
+      "trigger_only_recovery": 0.004,
+      "notes_recovery": 1.004,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "D5567",
+      "field": "enterprise",
+      "L": 768,
+      "s_base": 5.188,
+      "s_src": -5.875,
+      "trigger_only_recovery": 0.006,
+      "notes_recovery": 1.034,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "D5567",
+      "field": "standard",
+      "L": 768,
+      "s_base": 6.688,
+      "s_src": -9.125,
+      "trigger_only_recovery": 0.012,
+      "notes_recovery": 1.012,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "E2025",
+      "field": "enterprise",
+      "L": 768,
+      "s_base": 5.0,
+      "s_src": -6.312,
+      "trigger_only_recovery": 0.006,
+      "notes_recovery": 1.022,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "E2025",
+      "field": "standard",
+      "L": 768,
+      "s_base": 6.188,
+      "s_src": -9.188,
+      "trigger_only_recovery": 0.004,
+      "notes_recovery": 1.004,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "F7311",
+      "field": "enterprise",
+      "L": 768,
+      "s_base": 5.375,
+      "s_src": -5.938,
+      "trigger_only_recovery": 0.006,
+      "notes_recovery": 1.006,
+      "full_downstream_recovery": 1.0
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "F7311",
+      "field": "standard",
+      "L": 768,
+      "s_base": 6.688,
+      "s_src": -8.938,
+      "trigger_only_recovery": 0.004,
+      "notes_recovery": 0.984,
+      "full_downstream_recovery": 1.0
+    }
+  ],
+  "probe": {
+    "14": {
+      "concl_acc": 0.742,
+      "field_acc": 0.988,
+      "depth": 0.39
+    },
+    "18": {
+      "concl_acc": 0.825,
+      "field_acc": 0.975,
+      "depth": 0.5
+    },
+    "21": {
+      "concl_acc": 1.0,
+      "field_acc": 0.988,
+      "depth": 0.58
+    },
+    "25": {
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+    },
+    "28": {
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+    }
+  },
+  "n_probe_samples": 72
+}

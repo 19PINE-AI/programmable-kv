@@ -130,6 +130,66 @@ memory-gated decisions are at chance for $\le$8B models), with cluster-bootstrap
 full-reprefill oracle. Pre-registered hypotheses, margins, and the inclusion gate (oracle
 accuracy $\ge0.80$) are released with the code.
 
+\section{Deep mechanism controls: conclusion vs.\ content, timing, specificity, writability}
+\label{app:deepmech}
+These four controls (and an off-template generalization) tighten \Cref{sec:mechanism} from
+\emph{decodability} to \emph{causation, timing, and write-access}. Each runs on three models
+(Qwen3-8B, Qwen3-4B, Llama-3.1-8B); scripts \texttt{esys/mechd\_*.py}, records
+\texttt{results/mechd\_*}.
+
+\paragraph{(i) Dissociation (\Cref{tab:deepmech}, left).} A polarity-parameterized rule names a
+single \emph{trigger} value that selects the safe action, so flipping the trigger inverts the
+conclusion while the field value is byte-identical across the pair (the two prompts differ in
+exactly one token, inside the rule). Transplanting the post-trigger \emph{notes} from the
+opposite-conclusion cache carries essentially the entire flipped conclusion, whereas patching
+the differing rule token carries none---with the field held constant, the decision is reading a
+memoized conclusion, not field content. A logit-probe finds both the conclusion and the field
+identity linearly decodable from the same downstream delimiter, so decodability cannot itself
+adjudicate; the causal transplant is required.
+
+\paragraph{(ii) Timing.} Using \texttt{output\_hidden\_states} on the prefill, the conclusion
+becomes linearly decodable (group-CV logistic probe, conclusion $\perp$ field by the $2{\times}2$
+design) on the downstream aggregator at layer-depth $0.39/0.39/0.31$ (Qwen3-8B/4B,
+Llama-3.1-8B), while the decision token's logit-lens margin reaches its final sign only at depth
+$0.75/0.77/0.73$---the note is written ${\sim}12$ layers before it is read, within one prefill.
+
+\paragraph{(iii) Specificity (\Cref{tab:deepmech}, right).} Ranking downstream positions by
+individual transplant effect, the top-$8$ recover $0.74$--$0.79$ of the decision; $8$ random
+downstream positions recover ${\le}0.035$. The conclusion sits on a few specific
+aggregator/delimiter tokens, not diffusely.
+
+\paragraph{(iv) Writability.} Overwriting an otherwise-consistent cache's downstream notes with
+the \emph{opposite} conclusion's notes (the field token and prefix left intact and still
+implying the original answer) drives the decision to the injected conclusion: continuous
+recovery $0.99/0.98/1.02$, with the top-$8$ note positions already flipping the belief in most
+instances. Editing (\Cref{sec:editable}) is the benign use of this same write-access.
+
+\paragraph{Off-template generalization.} Re-running field-only vs.\ full-downstream recovery on
+(a) a 2-hop lookup, (b) free-form conversational phrasing, and (c) attribute lookup: field-only
+recovery is ${\approx}0$ for (a) and (b) across models (multi-hop $-0.012$ to $+0.006$; natural
+$-0.012$ to $+0.054$) with full-downstream $1.00$, confirming the mechanism is not a template
+artifact; for near-verbatim attribute lookup (c) the field is partly a copy and carries
+$0.25$--$0.63$, bounding the claim to \emph{derived} conclusions.
+
+\begin{table}[h]
+\centering\small
+\caption{Deep mechanism controls (recovery toward the target conclusion; three models).
+Left: dissociation---patching the differing rule token vs.\ the downstream notes, field held
+identical. Right: specificity---top-$k$ vs.\ random-$k$ downstream positions, matched count.}
+\label{tab:deepmech}
+\begin{tabular}{@{}lcc@{\hspace{2em}}lcccc@{}}
+\toprule
+\multicolumn{3}{c}{\textbf{(i) Dissociation}} & \multicolumn{5}{c}{\textbf{(iii) Specificity}} \\
+\cmidrule(r){1-3}\cmidrule(l){4-8}
+model & trigger only & notes & model & top-8 & rand-8 & top-16 & rand-16 \\
+\midrule
+Qwen3-8B    & $-0.007$ & $1.004$ & Qwen3-8B    & $0.78$ & $0.009$ & $0.92$ & $0.06$ \\
+Qwen3-4B    & $-0.007$ & $1.009$ & Qwen3-4B    & $0.74$ & $0.035$ & $0.86$ & $0.04$ \\
+Llama-3.1-8B& $+0.007$ & $0.998$ & Llama-3.1-8B& $0.79$ & $0.005$ & $0.86$ & $0.04$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Reproducibility}
 \label{app:repro}
 All numbers are from local runs; result records and figure-generation scripts are released with the code.

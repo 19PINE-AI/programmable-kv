@@ -1,0 +1,523 @@
+{
+  "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+  "nlayers": 32,
+  "n_samples": 72,
+  "curves": {
+    "lets_check": {
+      "0": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.0
+      },
+      "1": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.03
+      },
+      "2": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.06
+      },
+      "3": {
+        "concl_acc": 0.554,
+        "field_acc": 0.671,
+        "depth": 0.09
+      },
+      "4": {
+        "concl_acc": 0.517,
+        "field_acc": 0.675,
+        "depth": 0.12
+      },
+      "5": {
+        "concl_acc": 0.525,
+        "field_acc": 0.583,
+        "depth": 0.16
+      },
+      "6": {
+        "concl_acc": 0.654,
+        "field_acc": 0.558,
+        "depth": 0.19
+      },
+      "7": {
+        "concl_acc": 0.642,
+        "field_acc": 0.613,
+        "depth": 0.22
+      },
+      "8": {
+        "concl_acc": 0.65,
+        "field_acc": 0.6,
+        "depth": 0.25
+      },
+      "9": {
+        "concl_acc": 0.704,
+        "field_acc": 0.887,
+        "depth": 0.28
+      },
+      "10": {
+        "concl_acc": 0.929,
+        "field_acc": 0.975,
+        "depth": 0.31
+      },
+      "11": {
+        "concl_acc": 1.0,
+        "field_acc": 0.917,
+        "depth": 0.34
+      },
+      "12": {
+        "concl_acc": 1.0,
+        "field_acc": 0.887,
+        "depth": 0.38
+      },
+      "13": {
+        "concl_acc": 1.0,
+        "field_acc": 0.958,
+        "depth": 0.41
+      },
+      "14": {
+        "concl_acc": 1.0,
+        "field_acc": 0.917,
+        "depth": 0.44
+      },
+      "15": {
+        "concl_acc": 1.0,
+        "field_acc": 0.946,
+        "depth": 0.47
+      },
+      "16": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.5
+      },
+      "17": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.53
+      },
+      "18": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.56
+      },
+      "19": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.59
+      },
+      "20": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.62
+      },
+      "21": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.66
+      },
+      "22": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.69
+      },
+      "23": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.72
+      },
+      "24": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.75
+      },
+      "25": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.78
+      },
+      "26": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.81
+      },
+      "27": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.84
+      },
+      "28": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.88
+      },
+      "29": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.91
+      },
+      "30": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.94
+      },
+      "31": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.97
+      },
+      "32": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 1.0
+      }
+    },
+    "task_hdr": {
+      "0": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.0
+      },
+      "1": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.03
+      },
+      "2": {
+        "concl_acc": 0.5,
+        "field_acc": 0.533,
+        "depth": 0.06
+      },
+      "3": {
+        "concl_acc": 0.467,
+        "field_acc": 0.833,
+        "depth": 0.09
+      },
+      "4": {
+        "concl_acc": 0.529,
+        "field_acc": 0.833,
+        "depth": 0.12
+      },
+      "5": {
+        "concl_acc": 0.487,
+        "field_acc": 0.846,
+        "depth": 0.16
+      },
+      "6": {
+        "concl_acc": 0.55,
+        "field_acc": 0.596,
+        "depth": 0.19
+      },
+      "7": {
+        "concl_acc": 0.496,
+        "field_acc": 0.525,
+        "depth": 0.22
+      },
+      "8": {
+        "concl_acc": 0.529,
+        "field_acc": 0.642,
+        "depth": 0.25
+      },
+      "9": {
+        "concl_acc": 0.575,
+        "field_acc": 0.588,
+        "depth": 0.28
+      },
+      "10": {
+        "concl_acc": 0.675,
+        "field_acc": 0.713,
+        "depth": 0.31
+      },
+      "11": {
+        "concl_acc": 0.796,
+        "field_acc": 0.804,
+        "depth": 0.34
+      },
+      "12": {
+        "concl_acc": 0.858,
+        "field_acc": 0.875,
+        "depth": 0.38
+      },
+      "13": {
+        "concl_acc": 0.917,
+        "field_acc": 0.95,
+        "depth": 0.41
+      },
+      "14": {
+        "concl_acc": 1.0,
+        "field_acc": 0.933,
+        "depth": 0.44
+      },
+      "15": {
+        "concl_acc": 1.0,
+        "field_acc": 0.904,
+        "depth": 0.47
+      },
+      "16": {
+        "concl_acc": 1.0,
+        "field_acc": 0.942,
+        "depth": 0.5
+      },
+      "17": {
+        "concl_acc": 1.0,
+        "field_acc": 0.821,
+        "depth": 0.53
+      },
+      "18": {
+        "concl_acc": 1.0,
+        "field_acc": 0.971,
+        "depth": 0.56
+      },
+      "19": {
+        "concl_acc": 1.0,
+        "field_acc": 0.971,
+        "depth": 0.59
+      },
+      "20": {
+        "concl_acc": 1.0,
+        "field_acc": 0.988,
+        "depth": 0.62
+      },
+      "21": {
+        "concl_acc": 1.0,
+        "field_acc": 0.988,
+        "depth": 0.66
+      },
+      "22": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.69
+      },
+      "23": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.72
+      },
+      "24": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.75
+      },
+      "25": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.78
+      },
+      "26": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.81
+      },
+      "27": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.84
+      },
+      "28": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.88
+      },
+      "29": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.91
+      },
+      "30": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.94
+      },
+      "31": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.97
+      },
+      "32": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 1.0
+      }
+    },
+    "decision": {
+      "0": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.0
+      },
+      "1": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.03
+      },
+      "2": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.06
+      },
+      "3": {
+        "concl_acc": 0.508,
+        "field_acc": 0.733,
+        "depth": 0.09
+      },
+      "4": {
+        "concl_acc": 0.525,
+        "field_acc": 0.733,
+        "depth": 0.12
+      },
+      "5": {
+        "concl_acc": 0.596,
+        "field_acc": 0.55,
+        "depth": 0.16
+      },
+      "6": {
+        "concl_acc": 0.588,
+        "field_acc": 0.704,
+        "depth": 0.19
+      },
+      "7": {
+        "concl_acc": 0.512,
+        "field_acc": 0.667,
+        "depth": 0.22
+      },
+      "8": {
+        "concl_acc": 0.5,
+        "field_acc": 0.667,
+        "depth": 0.25
+      },
+      "9": {
+        "concl_acc": 0.558,
+        "field_acc": 0.667,
+        "depth": 0.28
+      },
+      "10": {
+        "concl_acc": 0.671,
+        "field_acc": 0.667,
+        "depth": 0.31
+      },
+      "11": {
+        "concl_acc": 0.908,
+        "field_acc": 0.667,
+        "depth": 0.34
+      },
+      "12": {
+        "concl_acc": 1.0,
+        "field_acc": 0.821,
+        "depth": 0.38
+      },
+      "13": {
+        "concl_acc": 1.0,
+        "field_acc": 0.808,
+        "depth": 0.41
+      },
+      "14": {
+        "concl_acc": 1.0,
+        "field_acc": 0.904,
+        "depth": 0.44
+      },
+      "15": {
+        "concl_acc": 1.0,
+        "field_acc": 0.863,
+        "depth": 0.47
+      },
+      "16": {
+        "concl_acc": 1.0,
+        "field_acc": 0.963,
+        "depth": 0.5
+      },
+      "17": {
+        "concl_acc": 1.0,
+        "field_acc": 0.963,
+        "depth": 0.53
+      },
+      "18": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.56
+      },
+      "19": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.59
+      },
+      "20": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.62
+      },
+      "21": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.66
+      },
+      "22": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.69
+      },
+      "23": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.72
+      },
+      "24": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.75
+      },
+      "25": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.78
+      },
+      "26": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.81
+      },
+      "27": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.84
+      },
+      "28": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.88
+      },
+      "29": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.91
+      },
+      "30": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.94
+      },
+      "31": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.97
+      },
+      "32": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 1.0
+      }
+    }
+  },
+  "write_depth": {
+    "lets_check": {
+      "layer": 10,
+      "depth": 0.31
+    },
+    "task_hdr": {
+      "layer": 13,
+      "depth": 0.41
+    }
+  },
+  "commit_depth": {
+    "layer_mean": 23.5,
+    "depth_mean": 0.73,
+    "n": 48
+  }
+}

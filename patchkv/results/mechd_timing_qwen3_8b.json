@@ -1,0 +1,583 @@
+{
+  "model": "Qwen/Qwen3-8B",
+  "nlayers": 36,
+  "n_samples": 72,
+  "curves": {
+    "lets_check": {
+      "0": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.0
+      },
+      "1": {
+        "concl_acc": 0.5,
+        "field_acc": 0.542,
+        "depth": 0.03
+      },
+      "2": {
+        "concl_acc": 0.525,
+        "field_acc": 0.617,
+        "depth": 0.06
+      },
+      "3": {
+        "concl_acc": 0.575,
+        "field_acc": 0.604,
+        "depth": 0.08
+      },
+      "4": {
+        "concl_acc": 0.675,
+        "field_acc": 0.742,
+        "depth": 0.11
+      },
+      "5": {
+        "concl_acc": 0.758,
+        "field_acc": 0.904,
+        "depth": 0.14
+      },
+      "6": {
+        "concl_acc": 0.713,
+        "field_acc": 0.912,
+        "depth": 0.17
+      },
+      "7": {
+        "concl_acc": 0.792,
+        "field_acc": 0.908,
+        "depth": 0.19
+      },
+      "8": {
+        "concl_acc": 0.75,
+        "field_acc": 0.825,
+        "depth": 0.22
+      },
+      "9": {
+        "concl_acc": 0.696,
+        "field_acc": 0.871,
+        "depth": 0.25
+      },
+      "10": {
+        "concl_acc": 0.775,
+        "field_acc": 0.8,
+        "depth": 0.28
+      },
+      "11": {
+        "concl_acc": 0.821,
+        "field_acc": 0.804,
+        "depth": 0.31
+      },
+      "12": {
+        "concl_acc": 0.875,
+        "field_acc": 0.833,
+        "depth": 0.33
+      },
+      "13": {
+        "concl_acc": 0.867,
+        "field_acc": 0.921,
+        "depth": 0.36
+      },
+      "14": {
+        "concl_acc": 0.975,
+        "field_acc": 0.988,
+        "depth": 0.39
+      },
+      "15": {
+        "concl_acc": 0.971,
+        "field_acc": 1.0,
+        "depth": 0.42
+      },
+      "16": {
+        "concl_acc": 0.988,
+        "field_acc": 0.988,
+        "depth": 0.44
+      },
+      "17": {
+        "concl_acc": 0.988,
+        "field_acc": 1.0,
+        "depth": 0.47
+      },
+      "18": {
+        "concl_acc": 0.988,
+        "field_acc": 1.0,
+        "depth": 0.5
+      },
+      "19": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.53
+      },
+      "20": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.56
+      },
+      "21": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.58
+      },
+      "22": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.61
+      },
+      "23": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.64
+      },
+      "24": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.67
+      },
+      "25": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.69
+      },
+      "26": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.72
+      },
+      "27": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.75
+      },
+      "28": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.78
+      },
+      "29": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.81
+      },
+      "30": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.83
+      },
+      "31": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.86
+      },
+      "32": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.89
+      },
+      "33": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.92
+      },
+      "34": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.94
+      },
+      "35": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.97
+      },
+      "36": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 1.0
+      }
+    },
+    "task_hdr": {
+      "0": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.0
+      },
+      "1": {
+        "concl_acc": 0.487,
+        "field_acc": 0.554,
+        "depth": 0.03
+      },
+      "2": {
+        "concl_acc": 0.529,
+        "field_acc": 0.608,
+        "depth": 0.06
+      },
+      "3": {
+        "concl_acc": 0.525,
+        "field_acc": 0.629,
+        "depth": 0.08
+      },
+      "4": {
+        "concl_acc": 0.592,
+        "field_acc": 0.771,
+        "depth": 0.11
+      },
+      "5": {
+        "concl_acc": 0.667,
+        "field_acc": 0.846,
+        "depth": 0.14
+      },
+      "6": {
+        "concl_acc": 0.608,
+        "field_acc": 0.854,
+        "depth": 0.17
+      },
+      "7": {
+        "concl_acc": 0.742,
+        "field_acc": 0.833,
+        "depth": 0.19
+      },
+      "8": {
+        "concl_acc": 0.767,
+        "field_acc": 0.817,
+        "depth": 0.22
+      },
+      "9": {
+        "concl_acc": 0.671,
+        "field_acc": 0.829,
+        "depth": 0.25
+      },
+      "10": {
+        "concl_acc": 0.679,
+        "field_acc": 0.879,
+        "depth": 0.28
+      },
+      "11": {
+        "concl_acc": 0.808,
+        "field_acc": 0.812,
+        "depth": 0.31
+      },
+      "12": {
+        "concl_acc": 0.787,
+        "field_acc": 0.908,
+        "depth": 0.33
+      },
+      "13": {
+        "concl_acc": 0.746,
+        "field_acc": 0.917,
+        "depth": 0.36
+      },
+      "14": {
+        "concl_acc": 0.792,
+        "field_acc": 0.917,
+        "depth": 0.39
+      },
+      "15": {
+        "concl_acc": 0.796,
+        "field_acc": 0.958,
+        "depth": 0.42
+      },
+      "16": {
+        "concl_acc": 0.833,
+        "field_acc": 0.971,
+        "depth": 0.44
+      },
+      "17": {
+        "concl_acc": 0.917,
+        "field_acc": 0.971,
+        "depth": 0.47
+      },
+      "18": {
+        "concl_acc": 0.983,
+        "field_acc": 1.0,
+        "depth": 0.5
+      },
+      "19": {
+        "concl_acc": 1.0,
+        "field_acc": 0.983,
+        "depth": 0.53
+      },
+      "20": {
+        "concl_acc": 0.983,
+        "field_acc": 0.983,
+        "depth": 0.56
+      },
+      "21": {
+        "concl_acc": 0.983,
+        "field_acc": 0.983,
+        "depth": 0.58
+      },
+      "22": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.61
+      },
+      "23": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.64
+      },
+      "24": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.67
+      },
+      "25": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.69
+      },
+      "26": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.72
+      },
+      "27": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.75
+      },
+      "28": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.78
+      },
+      "29": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.81
+      },
+      "30": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.83
+      },
+      "31": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.86
+      },
+      "32": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.89
+      },
+      "33": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.92
+      },
+      "34": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.94
+      },
+      "35": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.97
+      },
+      "36": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 1.0
+      }
+    },
+    "decision": {
+      "0": {
+        "concl_acc": 0.5,
+        "field_acc": 0.5,
+        "depth": 0.0
+      },
+      "1": {
+        "concl_acc": 0.504,
+        "field_acc": 0.525,
+        "depth": 0.03
+      },
+      "2": {
+        "concl_acc": 0.512,
+        "field_acc": 0.667,
+        "depth": 0.06
+      },
+      "3": {
+        "concl_acc": 0.517,
+        "field_acc": 0.562,
+        "depth": 0.08
+      },
+      "4": {
+        "concl_acc": 0.55,
+        "field_acc": 0.812,
+        "depth": 0.11
+      },
+      "5": {
+        "concl_acc": 0.633,
+        "field_acc": 0.85,
+        "depth": 0.14
+      },
+      "6": {
+        "concl_acc": 0.713,
+        "field_acc": 0.846,
+        "depth": 0.17
+      },
+      "7": {
+        "concl_acc": 0.733,
+        "field_acc": 0.833,
+        "depth": 0.19
+      },
+      "8": {
+        "concl_acc": 0.696,
+        "field_acc": 0.875,
+        "depth": 0.22
+      },
+      "9": {
+        "concl_acc": 0.767,
+        "field_acc": 0.983,
+        "depth": 0.25
+      },
+      "10": {
+        "concl_acc": 0.725,
+        "field_acc": 0.988,
+        "depth": 0.28
+      },
+      "11": {
+        "concl_acc": 0.758,
+        "field_acc": 0.975,
+        "depth": 0.31
+      },
+      "12": {
+        "concl_acc": 0.733,
+        "field_acc": 0.975,
+        "depth": 0.33
+      },
+      "13": {
+        "concl_acc": 0.725,
+        "field_acc": 1.0,
+        "depth": 0.36
+      },
+      "14": {
+        "concl_acc": 0.783,
+        "field_acc": 0.988,
+        "depth": 0.39
+      },
+      "15": {
+        "concl_acc": 0.787,
+        "field_acc": 1.0,
+        "depth": 0.42
+      },
+      "16": {
+        "concl_acc": 0.812,
+        "field_acc": 1.0,
+        "depth": 0.44
+      },
+      "17": {
+        "concl_acc": 0.875,
+        "field_acc": 1.0,
+        "depth": 0.47
+      },
+      "18": {
+        "concl_acc": 0.904,
+        "field_acc": 1.0,
+        "depth": 0.5
+      },
+      "19": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.53
+      },
+      "20": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.56
+      },
+      "21": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.58
+      },
+      "22": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.61
+      },
+      "23": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.64
+      },
+      "24": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.67
+      },
+      "25": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.69
+      },
+      "26": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.72
+      },
+      "27": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.75
+      },
+      "28": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.78
+      },
+      "29": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.81
+      },
+      "30": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.83
+      },
+      "31": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.86
+      },
+      "32": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.89
+      },
+      "33": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.92
+      },
+      "34": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.94
+      },
+      "35": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 0.97
+      },
+      "36": {
+        "concl_acc": 1.0,
+        "field_acc": 1.0,
+        "depth": 1.0
+      }
+    }
+  },
+  "write_depth": {
+    "lets_check": {
+      "layer": 14,
+      "depth": 0.39
+    },
+    "task_hdr": {
+      "layer": 17,
+      "depth": 0.47
+    }
+  },
+  "commit_depth": {
+    "layer_mean": 26.9,
+    "depth_mean": 0.75,
+    "n": 66
+  }
+}

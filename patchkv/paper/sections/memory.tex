@@ -30,7 +30,7 @@ rotated), confirming the re-rotation is necessary.
 \emph{stale} memory recovers the flipped decision essentially never ($\le0.03$). Every real
 edit recovers it, and---consistent with \Cref{sec:editable}---under chain-of-thought the
 \emph{near-free in-place edit} (one token recomputed) suffices, and \emph{strengthens with
-scale}: correctness $0.92\rightarrow0.98\rightarrow1.00$ across Qwen3-1.7B/4B/14B (and $0.98$
+scale}: correctness $0.92\rightarrow0.99\rightarrow1.00$ across Qwen3-1.7B/4B/14B (and $0.98$
 at 32B). On models where the chain does not re-read the field, the append-only \erratum{} is
 the robust fallback (McNemar \erratum{}$>$\inplace{} on Llama-3.1-8B, $p=0.031$). This is the editing axis
 that concurrent KV-cache memory systems lack: MemArt \citep{memart2026} and EPIC
