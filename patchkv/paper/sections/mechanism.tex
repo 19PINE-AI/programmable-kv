@@ -64,6 +64,16 @@ The account also holds off the synthetic template---field-only recovery stays ${
 multi-hop reasoning and free-form conversational phrasing, bounded only for near-verbatim
 attribute lookup, where the field is partly a copy (\Cref{app:deepmech}).
 
+\paragraph{Not a model-family artifact: five families.} To rule out the aggregator-token account being
+a Qwen3/Llama tokenizer artifact, we replicate all five probes on two further architecture families,
+\textbf{Gemma-2-9B} and \textbf{Mistral-7B} (a tokenizer-robust readout; for Gemma-2 we keep its
+attention/logit soft-capping intact). Every result holds: field-only recovery $0.005$/$0.137$ vs.\
+full-downstream $1.0$; the conclusion/content dissociation (trigger-only $\approx0$ with the field held
+identical vs.\ notes $\approx1.0$); top-$8$ vs.\ random-$8$ specificity ($0.95$ vs.\ $0.48$); false-note
+injection ($0.98$--$1.0$, follow-rate $1.0$); and write-before-read timing (write depth $0.19$--$0.26$ vs.\
+decision commit $0.47$--$0.48$). The mechanism is consistent across \emph{five} families (Qwen3, Llama-3.1,
+Gemma-2, Mistral; \Cref{app:deepmech}).
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig2_mechanism}

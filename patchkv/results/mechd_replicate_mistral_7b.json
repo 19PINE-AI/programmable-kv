@@ -1,0 +1,102 @@
+{
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "primary": {
+    "field_only": {
+      "mean": 0.137,
+      "ci": [
+        0.119,
+        0.155
+      ],
+      "n": 18
+    },
+    "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+        1.0,
+        1.0
+      ],
+      "n": 18
+    }
+  },
+  "dissoc": {
+    "trigger_only": {
+      "mean": 0.001,
+      "ci": [
+        -0.003,
+        0.005
+      ],
+      "n": 18
+    },
+    "notes": {
+      "mean": 0.995,
+      "ci": [
+        0.993,
+        0.998
+      ],
+      "n": 18
+    }
+  },
+  "specificity": {
+    "top_k": {
+      "mean": 0.942,
+      "ci": [
+        0.927,
+        0.953
+      ],
+      "n": 4
+    },
+    "random_k": {
+      "mean": 0.528,
+      "ci": [
+        0.361,
+        0.69
+      ],
+      "n": 4
+    },
+    "K": 8
+  },
+  "injection": {
+    "recovery": {
+      "mean": 0.983,
+      "ci": [
+        0.978,
+        0.986
+      ],
+      "n": 4
+    },
+    "follow_rate": {
+      "mean": 1.0,
+      "ci": [
+        1.0,
+        1.0
+      ],
+      "n": 4
+    }
+  },
+  "timing": {
+    "nlayers": 32,
+    "concl_acc_by_layer": {
+      "2": 0.5,
+      "4": 0.625,
+      "6": 0.906,
+      "8": 1.0,
+      "10": 1.0,
+      "12": 1.0,
+      "14": 1.0,
+      "16": 1.0,
+      "18": 1.0,
+      "20": 1.0,
+      "22": 1.0,
+      "24": 1.0,
+      "26": 1.0,
+      "28": 1.0,
+      "30": 1.0
+    },
+    "write_layer": 6,
+    "write_depth": 0.19,
+    "commit_layer_mean": 15.0,
+    "commit_depth_mean": 0.47
+  },
+  "n_primary": 18,
+  "n_dissoc": 18
+}

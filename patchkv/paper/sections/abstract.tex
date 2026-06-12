@@ -3,7 +3,8 @@ field---a clock tick, a session id, an account-status flip---invalidates the ent
 We begin from a puzzle: the cache region \emph{before} a field is provably reusable (key/value deviation
 $0.0$), yet surgically overwriting only the field's own key/value vectors and reusing the rest leaves the
 model acting on the \emph{old} value. We explain why, and turn the explanation into two capabilities.
-Through four independent causal probes we show that at prefill the model computes the
+Through four independent causal probes (replicated across five model families) we show that at prefill
+the model computes the
 \emph{field-conditioned conclusion} and stores it on downstream aggregator/delimiter tokens: the field's
 own key/value drives less than $1\%$ of the decision, while the downstream ``notes'' drive essentially
 all of it. The KV cache is thus a notebook of memoized conclusions, and two consequences follow.

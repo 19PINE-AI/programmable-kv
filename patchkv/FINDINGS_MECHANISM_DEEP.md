@@ -159,3 +159,42 @@ conclusion (EXP1 probe) — the causal patch is required; (ii) direct attribute-
 partly field-readable (EXP3 rag); (iii) Llama direct-mode argmax is degenerate, so EXP5
 uses the continuous metric there. None of these weaken the core account; they sharpen its
 scope.
+
+---
+
+## Cross-family replication: Gemma-2 and Mistral (added 2026-06-12)
+
+*Harness: `esys/mechd_replicate.py`. Results: `results/mechd_replicate_{gemma2_9b,mistral_7b}.json`.*
+
+To rule out the "aggregator-token memoization" story being a Qwen3/Llama tokenizer artifact, we
+replicated all five deep probes on **Gemma-2-9B-it** and **Mistral-7B-Instruct-v0.3** — two new
+architecture families. Two harness details had to be fixed (no science changed):
+
+1. **Readout.** The tool-call action vocabulary is multi-token in these tokenizers (e.g. Gemma
+   splits `refuse`→2 tokens), and both models emit a leading space before the answer word. We read
+   **space-prefixed single-token actions** (`␣cancel`/`␣deny`) at a trailing-space decision suffix.
+2. **Soft-capping.** Gemma-2 needs attention + final-logit soft-capping; `mech_suite.install()`
+   (the attention-knockout hook, used only by the *original* circuit-knockout probe, which none of
+   the five deep probes use) bypasses it and corrupts Gemma-2. We load with stock eager attention.
+
+**All five deep-mechanism results replicate cleanly on both new families** (n=18 primary, 18 dissoc):
+
+| probe | Qwen3/Llama (orig) | Gemma-2-9B | Mistral-7B |
+|---|---|---|---|
+| (P) field-only recovery (~0) | ≈0 | **0.005** [0.002,0.008] | **0.137** [0.119,0.155] |
+| (P) full-downstream (~1) | 1.0 | **1.0** | **1.0** |
+| (D) trigger-only (field fixed; ~0) | −0.007..+0.007 | **−0.00** [−0.002,0.001] | **0.001** [−0.003,0.005] |
+| (D) downstream notes (~1) | 0.998..1.009 | **1.0** [0.998,1.002] | **0.995** [0.993,0.998] |
+| (S) top-8 vs random-8 | 0.74–0.79 vs ≤0.035 | **0.955 vs 0.484** | **0.942 vs 0.528** |
+| (I) false-note injection recovery | ~1.0 | **0.999**, follow 1.0 | **0.983**, follow 1.0 |
+| (T) write depth vs commit depth | 0.31–0.39 vs 0.73–0.77 | **0.26 vs 0.48** | **0.19 vs 0.47** |
+
+**Conclusion.** The dissociation (conclusion ⟂ content), the localization to specific downstream
+tokens, the writability, and the write-before-read timing all hold across **five** model families
+(Qwen3, Llama-3.1, Gemma-2, Mistral). The mechanism is not a family artifact.
+
+**Two honest cross-family notes.** (i) Mistral field-only recovery is 0.137 (vs ≈0 for the others) —
+slightly above zero but far below full-downstream's 1.0; the conclusion is still overwhelmingly
+downstream. (ii) On the cancel/deny task, random-8 specificity runs higher (~0.48–0.53) than on the
+Qwen/Llama tool-call task (~0.02) — the notes are a bit more distributed here — but top-8 (~0.95)
+still dominates random-8 decisively, preserving the localization claim.
