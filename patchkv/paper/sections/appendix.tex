@@ -222,21 +222,22 @@ Llama-3.1-8B& $+0.007$ & $0.998$ & Llama-3.1-8B& $0.79$ & $0.005$ & $0.86$ & $0.
 appendix pushes from \emph{localization} to a \emph{component-level} account---which attention heads, which
 direction, attention vs.\ MLP---with five interventions on the polarity 2$\times$2 task, where the field is
 held \emph{byte-identical} across the conclusion flip (only one rule-trigger token differs), so every
-``conclusion'' signal we attribute cannot be field content. Primary model Llama-3.1-8B, replicated on
-Qwen3-8B; all numbers are causal-intervention recoveries with bootstrap CIs over $n{=}12$ instances
-(\Cref{fig:circuit}; scripts \texttt{esys/circ\_*.py}, records \texttt{results/circ\_*}).
+``conclusion'' signal we attribute cannot be field content. Primary model Llama-3.1-8B, replicated across
+\emph{four families}---Qwen3-8B, Gemma-2-9B, Mistral-7B (\Cref{tab:circuit})---all numbers are
+causal-intervention recoveries with bootstrap CIs over $n{=}12$ instances (\Cref{fig:circuit}; scripts
+\texttt{esys/circ\_*.py}, records \texttt{results/circ\_*}).
 
 \paragraph{(1) Named read and write heads (\Cref{fig:circuit}a,f).} We rank heads by direct attribution
 and confirm causally by patching a single head's output (clean$\leftrightarrow$corrupt) and re-reading the
 decision. \emph{Read heads}---at the decision token---form a concentrated, nameable set: patching the top
-$k$ jointly recovers $0.19/0.45/0.59/0.70/0.78$ of the decision at $k{=}1/3/5/8/12$ on Llama-3.1-8B and
-$0.17/0.36/0.50/0.64/0.77$ on Qwen3-8B (random-head control $\approx 0$). The strongest read heads sit in
-late layers (Llama L25--31, e.g.\ \texttt{26.3} attends decision$\to$aggregator at $0.46$; Qwen L24--35,
-e.g.\ \texttt{26.25} at $0.43$) and carry high direct-logit attribution. \emph{Write heads}---at the
-aggregator, at prefill---are more distributed: single-aggregator patching of the top heads saturates at
-$0.28$ (Llama; heads \texttt{17.24}, \texttt{18.20}) and only $0.08$ (Qwen), because the write is spread
-over \emph{many} aggregator tokens (the suffix-concentration of \Cref{sec:mechanism}), so patching one
-position under-counts it. The decision-side read is thus a tight bottleneck; the write is diffuse.
+$k$ jointly recovers $0.19/0.45/0.59/0.70/0.78$ of the decision at $k{=}1/3/5/8/12$ on Llama-3.1-8B, and
+the top-$12$ reach $0.77/0.72/0.82$ on Qwen3-8B/Gemma-2-9B/Mistral-7B (random-head control $\approx 0$ on all
+four). The strongest read heads sit in late layers and attend decision$\to$aggregator (Llama \texttt{26.3} at
+$0.46$, Qwen \texttt{26.25} at $0.43$, Gemma \texttt{26.9} at $0.47$, Mistral \texttt{20.21} at $0.31$).
+\emph{Write heads}---at the aggregator, at prefill---are more distributed: single-aggregator patching of the
+top heads saturates at $0.28/0.08/0.24/0.11$ (Llama/Qwen/Gemma/Mistral), because the write is spread over
+\emph{many} aggregator tokens (the suffix-concentration of \Cref{sec:mechanism}), so patching one position
+under-counts it. The decision-side read is thus a tight bottleneck; the write is diffuse.
 
 \paragraph{(2) A causal conclusion direction (\Cref{fig:circuit}b).} A single difference-of-means direction
 $\hat d$ on the aggregator residual (fit \emph{leave-one-scenario-out}, field-balanced) transfers the
@@ -244,10 +245,12 @@ conclusion: injecting the $\hat d$-component of the clean$-$corrupt residual int
 $0.22$--$0.23$ of the decision at Llama L12--14---$\approx 39\%$ of the full single-site residual patch and
 ${\sim}25{\times}$ a random 1-D direction ($0.01$); the difference-of-means direction beats a logistic-probe
 direction ($0.02$), a known DAS phenomenon. So the conclusion has a real shared linear component, but it is
-\emph{redundantly} coded (projecting $\hat d$ out of a clean run drops the decision only ${\sim}0.17$). On
-Qwen3-8B the conclusion is committed so strongly (logit gap ${\approx}22$ vs.\ ${\approx}4$) that single-site
-directional recovery is near zero in relative terms---the read-side circuit, which acts at the decision
-bottleneck, is the robust cross-family result.
+\emph{redundantly} coded (projecting $\hat d$ out of a clean run drops the decision only ${\sim}0.17$). The
+direction is causal but similarly redundant on Gemma-2-9B (along $0.10$ vs.\ random $0.00$, of full $0.61$)
+and Mistral-7B (along $0.07$ vs.\ random $0.00$, of full $0.36$). On Qwen3-8B the conclusion is committed so
+strongly (logit gap ${\approx}22$ vs.\ ${\approx}4$) that single-site directional recovery is near zero in
+relative terms---the read-side circuit, which acts at the decision bottleneck, is the robust cross-family
+result.
 
 \paragraph{(3) A sparse SAE feature: decode $\neq$ cause (\Cref{fig:circuit}e).} We train a TopK SAE
 ($16$k dict, $k{=}32$, FVU ${\approx}0.001$) on layer-$14$ residuals over diverse prompts. The conclusion is
@@ -264,15 +267,15 @@ from inputs that agree with that labelling (position-aligned KV transplants from
 \emph{Faithfulness}: resampling the entire downstream from a \emph{same-conclusion} different-input donor
 preserves the decision (drift $0.02$--$0.04$ of the gap; decision-logit cosine $0.999$--$1.000$) on both
 models. \emph{Necessity}: resampling only the \emph{note} from an \emph{opposite-conclusion} donor flips the
-decision $0.79$ (Llama) / $0.68$ (Qwen), whereas resampling the rest of the downstream moves it only
-$0.19$ / $0.32$. The note governs; everything else is interchangeable.
+decision $0.79/0.68/0.82/0.71$ (Llama/Qwen/Gemma/Mistral), whereas resampling the rest of the downstream
+moves it only $0.19/0.32/0.18/0.30$. The note governs; everything else is interchangeable.
 
 \paragraph{(5) Attention writes the note (\Cref{fig:circuit}c).} Decomposing the SAFE$-$UNSAFE aggregator
 residual into per-layer attention- and MLP-block contributions (exact: the embedding is identical across
 the pair), attention contributes the majority of the write at the causal conclusion layer---$0.62/0.60$ at
-Llama L12/L14---falling toward parity by L20 as later MLPs add magnitude; on Qwen3-8B the split is
-$0.44$--$0.56$ across L14--22. Attention is the primary or co-primary writer that routes the field/rule
-information onto the aggregator, with the MLPs contributing a substantial minority.
+Llama L12/L14, and a striking $0.82$--$0.92$ on Gemma-2-9B---with Qwen3-8B ($0.44$--$0.56$) and Mistral-7B
+($0.42$--$0.66$) closer to parity. Attention is the primary or co-primary writer that routes the field/rule
+information onto the aggregator in every family, with the MLPs contributing the remainder.
 
 \paragraph{Summary.} The picture is a \emph{distributed write, concentrated read}: attention routes the
 field-conditioned conclusion onto aggregator tokens at mid layers (Exp.\ 5), in a redundant code that is
@@ -283,10 +286,31 @@ causal scrubbing confirms the note alone governs the decision (Exp.\ 4). This co
 aggregation \citep{lindsey2025biology}, while remaining a statement about the \emph{KV cache} an inference
 system already stores.
 
+\begin{table}[t]
+\centering\small
+\caption{\textbf{The circuit replicates across four families.} Read = decision recovery from jointly
+patching the top-$12$ named read heads (control in parens). Write = top-$k$ write-head recovery at the single
+top aggregator (distributed, so a floor). Scrub: faithfulness drift under same-conclusion resampling
+(want ${\approx}0$) and note-vs-rest interchange recovery. Attn = attention share of the write at the causal
+layer. Dir = 1-D conclusion-direction recovery (along $\hat d$ vs.\ random).}
+\label{tab:circuit}
+\begin{tabular}{lccccc}
+\toprule
+model & read (top-12) & write & scrub: drift / note / rest & attn share & dir: along / rand \\
+\midrule
+Llama-3.1-8B & $0.78$ ($0.00$) & $0.28$ & $0.04$ / $0.79$ / $0.19$ & $0.60$--$0.62$ & $0.22$ / $0.01$ \\
+Qwen3-8B     & $0.77$ ($0.00$) & $0.08$ & $0.04$ / $0.68$ / $0.32$ & $0.44$--$0.56$ & ---\,(over-committed) \\
+Gemma-2-9B   & $0.72$ ($0.00$) & $0.24$ & $0.02$ / $0.82$ / $0.18$ & $0.82$--$0.92$ & $0.10$ / $0.00$ \\
+Mistral-7B   & $0.82$ ($0.00$) & $0.11$ & $0.03$ / $0.71$ / $0.30$ & $0.42$--$0.66$ & $0.07$ / $0.00$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig8_circuit}
-\caption{\textbf{A component-level circuit for memoized inference} (Llama-3.1-8B, replicated on Qwen3-8B).
+\caption{\textbf{A component-level circuit for memoized inference} (deep dives Llama-3.1-8B; head, write,
+and scrubbing panels show all four families).
 (a) Cumulative decision recovery from jointly patching the top-$k$ named \emph{read} heads (concentrated,
 ${\sim}0.78$) vs.\ \emph{write} heads (distributed). (b) A leave-scenario-out difference-of-means
 \emph{conclusion direction} causally transfers the decision far above a random 1-D direction. (c) At the
@@ -296,6 +320,51 @@ conclusion flips the decision while swapping the rest does not. (e) An SAE featu
 conclusion perfectly (AUC$=1.0$) yet is not causally sufficient alone---the cause is spread over ${\sim}10$--$30$
 features. (f) Read heads with the largest causal effect are those that attend decision$\to$aggregator.}
 \label{fig:circuit}
+\end{figure}
+
+\section{Long-horizon robustness and the cross-referential memory test}
+\label{app:robustness}
+
+\paragraph{No compounding error over a long trajectory (\Cref{fig:horizon}).} A standing risk for any
+leave-stale scheme is that small per-edit errors \emph{compound} over a long agent trajectory. We test it
+directly. A single gated field (a clearance level) toggles between a granting and a denying value every turn
+over a $28$-turn trajectory; we maintain ONE evolving KV cache---reuse the static prefix forever, apply each
+state change as an appended erratum, never recompute the downstream---and compare its per-turn decision to a
+\emph{full reprefill of the byte-identical token sequence} (errata included). The only difference between the
+two is whether downstream KV was recomputed after each change, so per-turn agreement isolates exactly the
+cost of leaving KV stale as a function of trajectory length. Across three families (Qwen3-8B, Llama-3.1-8B,
+Mistral-7B) the next-token \emph{decision logits stay faithful}---cosine $0.987$--$0.999$ with a flat
+first-third$\to$last-third profile (e.g.\ $0.992\to0.996$ on Llama)---and the agreement-vs-turn slope is
+within $\pm0.01$/turn (no systematic decline). Discrete decision agreement is high in aggregate
+($0.79$--$0.99$) but noisier than the cosine, because these gated decisions sit near the action boundary
+(oracle accuracy $0.52$--$0.82$), where a sub-percent logit difference can flip a discrete choice---the same
+boundary sensitivity noted for greedy CoT in \Cref{sec:memory}. The leave-stale$+$erratum cache does not
+degrade with trajectory length: there is no compounding drift, only boundary noise.
+
+\paragraph{Cross-referential facts (the \Cref{sec:memory} E4 test).} E4 found splitting \emph{independent}
+relevant facts across independently-precompiled blocks decision-lossless. We test the case it left open---a
+genuinely \emph{cross-referential} chain. A memory contains a \texttt{DEFINITION} line~$A$ naming which
+setting governs the request, whose value~$B$ lives elsewhere; the decision needs the two-hop resolution
+$A\!\to\!B$. We lay $A$ and $B$ so they straddle a block boundary and compare a transplant that \emph{splits}
+them (boundary between $A$ and $B$) against one that keeps them \emph{colocated} (boundary moved past both),
+holding everything else fixed. On Llama-3.1-8B---which performs this two-hop decision at full-recompute
+accuracy $0.85$ ($n{=}80$, balanced)---splitting drops agreement with full recompute to $0.46$ versus $0.76$
+colocated, a $0.30$ penalty ($25$ vs.\ $1$ discordant instances, McNemar $p{=}8\times10^{-7}$); an
+\emph{independent} fact pair split the same way costs only $0.04$ (Mistral-7B). The mechanism explains it:
+block~$B$ precompiled in isolation never attended to its referent~$A$, so the chain is not memoized and the
+splice cannot restore it. (Qwen3-8B is at chance on the direct two-hop decision---consistent with
+\Cref{sec:memory}'s observation that direct gated decisions are at chance for the reasoning-native family
+$\le$32B---so it is uninformative here.) The guidance is simple: keep cross-referential facts within one
+precompiled block; independent facts may be split freely.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{fig9_horizon}
+\caption{\textbf{No compounding error over a long trajectory.} A gated field toggles every turn for $28$
+turns; one evolving leave-stale$+$erratum cache vs.\ full reprefill of the identical text. (a) Per-turn
+decision agreement stays high with boundary noise (no downward trend). (b) The decision-logit cosine stays
+flat at $0.99{+}$---no drift with trajectory length.}
+\label{fig:horizon}
 \end{figure}
 
 \section{Online serving and weight-editing methodology}

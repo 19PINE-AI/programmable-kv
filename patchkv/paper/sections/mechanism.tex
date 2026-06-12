@@ -75,7 +75,8 @@ decision commit $0.47$--$0.48$). The mechanism is consistent across \emph{four} 
 Gemma-2, Mistral; \Cref{app:deepmech}).
 
 \paragraph{A component-level circuit.} The probes above localize the memoized conclusion; a further five
-interventions (\Cref{app:circuit}, replicated on Llama-3.1-8B and Qwen3-8B) resolve it to \emph{components}.
+interventions (\Cref{app:circuit}, replicated across four families: Llama-3.1, Qwen3, Gemma-2, Mistral)
+resolve it to \emph{components}.
 The picture is a \emph{distributed write, concentrated read}: at mid layers \emph{attention} writes the
 field-conditioned conclusion onto aggregator tokens ($\approx 0.6$ of the write on Llama), in a redundant
 code that is sparsely \emph{decodable}---a trained SAE feature reaches AUC $1.0$---yet causally spread over

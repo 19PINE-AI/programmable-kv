@@ -65,8 +65,15 @@ blocks makes a localized edit $S\times$ cheaper (recompute one block) and is
 \emph{decision-lossless} up to $S{=}16$ (agreement flat at $1.00$ on Qwen3-4B), because the
 independent facts are integrated at read time, not within memory. Logit cosine degrades with $S$
 ($0.998\rightarrow0.953$) but \emph{identically whether the gating facts are contiguous in one
-block or split across blocks}---splitting relevant facts across independently-precompiled blocks
-does not specifically hurt; only genuinely cross-\emph{referential} facts (untested) should.
+block or split across blocks}---splitting \emph{independent} relevant facts across
+independently-precompiled blocks does not specifically hurt. Genuinely cross-\emph{referential}
+facts, however, do: in a controlled test (\Cref{app:robustness}) where a decision needs a two-hop
+chain (a \texttt{DEFINITION} line names which setting gates, whose value lives elsewhere), splitting
+the linked pair across a block boundary drops decision agreement with full recompute to $0.46$ vs.\
+$0.76$ when the pair stays in one block---a $0.30$ penalty (Llama-3.1-8B, $n{=}80$, full-recompute
+accuracy $0.85$; McNemar $p{<}10^{-6}$), because block~$B$'s isolated precompute never attended to
+its referent~$A$. The same split costs an independent fact pair only $0.04$. Practical guidance:
+keep cross-referential facts in one block.
 
 \paragraph{Placement and the pre-digestion cost (E1).} Pre-digestion is real, and we quantify
 it. Under full recompute and chain-of-thought, reading memory \emph{late} carries a small but

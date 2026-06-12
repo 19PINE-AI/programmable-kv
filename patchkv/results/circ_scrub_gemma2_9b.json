@@ -1,0 +1,349 @@
+{
+  "summary": {
+    "model": "unsloth/gemma-2-9b-it",
+    "n": 24,
+    "k_note": 8,
+    "faithfulness_drift": {
+      "drift_rest_same": {
+        "mean": 0.016,
+        "ci": [
+          0.014,
+          0.019
+        ],
+        "n": 24
+      },
+      "drift_note_same": {
+        "mean": 0.019,
+        "ci": [
+          0.015,
+          0.022
+        ],
+        "n": 24
+      },
+      "drift_all_same": {
+        "mean": 0.023,
+        "ci": [
+          0.018,
+          0.031
+        ],
+        "n": 24
+      }
+    },
+    "cos_all_same": {
+      "mean": 1.0,
+      "ci": [
+        1.0,
+        1.0
+      ],
+      "n": 24
+    },
+    "interchange_recovery": {
+      "rec_note_opp": {
+        "mean": 0.815,
+        "ci": [
+          0.803,
+          0.823
+        ],
+        "n": 24
+      },
+      "rec_rest_opp": {
+        "mean": 0.179,
+        "ci": [
+          0.164,
+          0.191
+        ],
+        "n": 24
+      }
+    }
+  },
+  "instances": [
+    {
+      "scn": "account_role",
+      "oid": "A4471",
+      "p_safe": true,
+      "denom": 8.223,
+      "drift_rest_same": 0.00665083135391924,
+      "drift_note_same": 0.011163895486935867,
+      "drift_all_same": 0.018052256532066508,
+      "cos_all_same": 0.999803900718689,
+      "rec_note_opp": 0.7377672209026128,
+      "rec_rest_opp": 0.1320665083135392
+    },
+    {
+      "scn": "account_role",
+      "oid": "B8820",
+      "p_safe": true,
+      "denom": 7.949,
+      "drift_rest_same": 0.006633906633906634,
+      "drift_note_same": 0.0017199017199017199,
+      "drift_all_same": 0.018058968058968058,
+      "cos_all_same": 0.9997785687446594,
+      "rec_note_opp": 0.7228501228501228,
+      "rec_rest_opp": 0.14471744471744472
+    },
+    {
+      "scn": "account_role",
+      "oid": "C1093",
+      "p_safe": true,
+      "denom": 7.999,
+      "drift_rest_same": 0.01672567452081553,
+      "drift_note_same": 0.006348431204981077,
+      "drift_all_same": 0.010743498962275668,
+      "cos_all_same": 0.9999542236328125,
+      "rec_note_opp": 0.6855084849224758,
+      "rec_rest_opp": 0.13270662922720058
+    },
+    {
+      "scn": "account_role",
+      "oid": "D5567",
+      "p_safe": true,
+      "denom": 7.976,
+      "drift_rest_same": 0.002326435655687523,
+      "drift_note_same": 0.006734419003305988,
+      "drift_all_same": 0.011387290314681034,
+      "cos_all_same": 0.9994329214096069,
+      "rec_note_opp": 0.6982980286518917,
+      "rec_rest_opp": 0.1536671972572548
+    },
+    {
+      "scn": "account_role",
+      "oid": "A4471",
+      "p_safe": false,
+      "denom": 8.223,
+      "drift_rest_same": 0.01140142517814727,
+      "drift_note_same": 0.02280285035629454,
+      "drift_all_same": 0.015201900237529691,
+      "cos_all_same": 0.999964714050293,
+      "rec_note_opp": 0.8703087885985749,
+      "rec_rest_opp": 0.2641330166270784
+    },
+    {
+      "scn": "account_role",
+      "oid": "B8820",
+      "p_safe": false,
+      "denom": 7.949,
+      "drift_rest_same": 0.015724815724815724,
+      "drift_note_same": 0.0019656019656019656,
+      "drift_all_same": 0.011793611793611793,
+      "cos_all_same": 0.9999669790267944,
+      "rec_note_opp": 0.8695331695331695,
+      "rec_rest_opp": 0.3144963144963145
+    },
+    {
+      "scn": "account_role",
+      "oid": "C1093",
+      "p_safe": false,
+      "denom": 7.999,
+      "drift_rest_same": 0.01953363447686485,
+      "drift_note_same": 0.011720180686118912,
+      "drift_all_same": 0.00781345379074594,
+      "cos_all_same": 0.9999688267707825,
+      "rec_note_opp": 0.8599682578439751,
+      "rec_rest_opp": 0.3164448785252106
+    },
+    {
+      "scn": "account_role",
+      "oid": "D5567",
+      "p_safe": false,
+      "denom": 7.976,
+      "drift_rest_same": 0.0,
+      "drift_note_same": 0.011754622260315905,
+      "drift_all_same": 0.01959103710052651,
+      "cos_all_same": 0.9999607801437378,
+      "rec_note_opp": 0.8355577323374556,
+      "rec_rest_opp": 0.28994734908779235
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "A4471",
+      "p_safe": true,
+      "denom": 11.68,
+      "drift_rest_same": 0.016053511705685617,
+      "drift_note_same": 0.013377926421404682,
+      "drift_all_same": 0.0026755852842809363,
+      "cos_all_same": 0.9995472431182861,
+      "rec_note_opp": 0.7759197324414716,
+      "rec_rest_opp": 0.024080267558528427
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "B8820",
+      "p_safe": true,
+      "denom": 11.534,
+      "drift_rest_same": 0.03793074252815172,
+      "drift_note_same": 0.010837355008043349,
+      "drift_all_same": 0.0,
+      "cos_all_same": 0.9997274279594421,
+      "rec_note_opp": 0.8033189399712133,
+      "rec_rest_opp": 0.054186775040216746
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "C1093",
+      "p_safe": true,
+      "denom": 11.383,
+      "drift_rest_same": 0.032944406314344546,
+      "drift_note_same": 0.002745367192862045,
+      "drift_all_same": 0.019217570350034317,
+      "cos_all_same": 0.999967098236084,
+      "rec_note_opp": 0.8043925875085792,
+      "rec_rest_opp": 0.03568977350720659
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "D5567",
+      "p_safe": true,
+      "denom": 11.625,
+      "drift_rest_same": 0.016129032258064516,
+      "drift_note_same": 0.013440860215053764,
+      "drift_all_same": 0.021505376344086023,
+      "cos_all_same": 0.9999012351036072,
+      "rec_note_opp": 0.7795698924731183,
+      "rec_rest_opp": 0.04838709677419355
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "A4471",
+      "p_safe": false,
+      "denom": 11.68,
+      "drift_rest_same": 0.027591973244147156,
+      "drift_note_same": 0.0026755852842809363,
+      "drift_all_same": 0.015133779264214046,
+      "cos_all_same": 0.9997711181640625,
+      "rec_note_opp": 0.959866220735786,
+      "rec_rest_opp": 0.21337792642140468
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "B8820",
+      "p_safe": false,
+      "denom": 11.534,
+      "drift_rest_same": 0.008043349420032174,
+      "drift_note_same": 0.014139361612056558,
+      "drift_all_same": 0.013123359580052493,
+      "cos_all_same": 0.9998288750648499,
+      "rec_note_opp": 0.9349758699517399,
+      "rec_rest_opp": 0.18855304377275423
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "C1093",
+      "p_safe": false,
+      "denom": 11.383,
+      "drift_rest_same": 0.004804392587508579,
+      "drift_note_same": 0.016815374056280027,
+      "drift_all_same": 0.002059025394646534,
+      "cos_all_same": 0.9999643564224243,
+      "rec_note_opp": 0.9670555936856554,
+      "rec_rest_opp": 0.1928620452985587
+    },
+    {
+      "scn": "safety_mode",
+      "oid": "D5567",
+      "p_safe": false,
+      "denom": 11.625,
+      "drift_rest_same": 0.02956989247311828,
+      "drift_note_same": 0.005376344086021506,
+      "drift_all_same": 0.02620967741935484,
+      "cos_all_same": 0.9999529123306274,
+      "rec_note_opp": 0.9301075268817204,
+      "rec_rest_opp": 0.20833333333333334
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "A4471",
+      "p_safe": true,
+      "denom": 10.01,
+      "drift_rest_same": 0.0027317073170731706,
+      "drift_note_same": 0.0464390243902439,
+      "drift_all_same": 0.04175609756097561,
+      "cos_all_same": 0.9998756051063538,
+      "rec_note_opp": 0.8105365853658537,
+      "rec_rest_opp": 0.18507317073170731
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "B8820",
+      "p_safe": true,
+      "denom": 10.441,
+      "drift_rest_same": 0.04152637485970819,
+      "drift_note_same": 0.09670781893004116,
+      "drift_all_same": 0.11349607182940516,
+      "cos_all_same": 0.9984300136566162,
+      "rec_note_opp": 0.8028432472876917,
+      "rec_rest_opp": 0.205761316872428
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "C1093",
+      "p_safe": true,
+      "denom": 11.899,
+      "drift_rest_same": 0.01801469079568304,
+      "drift_note_same": 0.04444170872830235,
+      "drift_all_same": 0.03533177397513234,
+      "cos_all_same": 0.9998570680618286,
+      "rec_note_opp": 0.809758299478846,
+      "rec_rest_opp": 0.19315523821248307
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "D5567",
+      "p_safe": true,
+      "denom": 11.287,
+      "drift_rest_same": 0.02863941163746485,
+      "drift_note_same": 0.06255678131083713,
+      "drift_all_same": 0.10478044559809647,
+      "cos_all_same": 0.9984868168830872,
+      "rec_note_opp": 0.7940298507462686,
+      "rec_rest_opp": 0.2382435647847718
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "A4471",
+      "p_safe": false,
+      "denom": 10.01,
+      "drift_rest_same": 0.0033170731707317072,
+      "drift_note_same": 0.0001951219512195122,
+      "drift_all_same": 0.0013658536585365853,
+      "cos_all_same": 0.9999576210975647,
+      "rec_note_opp": 0.7873658536585366,
+      "rec_rest_opp": 0.19570731707317074
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "B8820",
+      "p_safe": false,
+      "denom": 10.441,
+      "drift_rest_same": 0.012532734754956977,
+      "drift_note_same": 0.024036662925551816,
+      "drift_all_same": 0.026094276094276093,
+      "cos_all_same": 0.9997909069061279,
+      "rec_note_opp": 0.7813318368873925,
+      "rec_rest_opp": 0.186307519640853
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "C1093",
+      "p_safe": false,
+      "denom": 11.899,
+      "drift_rest_same": 0.019789486642865936,
+      "drift_note_same": 0.012803151544995691,
+      "drift_all_same": 0.016127046657638804,
+      "cos_all_same": 0.9998794794082642,
+      "rec_note_opp": 0.7887890352497025,
+      "rec_rest_opp": 0.1835118388116049
+    },
+    {
+      "scn": "subscription_tier",
+      "oid": "D5567",
+      "p_safe": false,
+      "denom": 11.287,
+      "drift_rest_same": 0.010447761194029851,
+      "drift_note_same": 0.010945273631840797,
+      "drift_all_same": 0.008349556565001082,
+      "cos_all_same": 0.9999229907989502,
+      "rec_note_opp": 0.7562621674237509,
+      "rec_rest_opp": 0.19558728098637249
+    }
+  ]
+}

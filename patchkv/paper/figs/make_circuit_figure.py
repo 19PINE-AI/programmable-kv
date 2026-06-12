@@ -31,22 +31,25 @@ C = {"blue": "#0072B2", "orange": "#E69F00", "green": "#009E73", "red": "#D55E00
      "purple": "#CC79A7", "sky": "#56B4E9", "grey": "#9a9a9a"}
 
 
+FAM = [("llama31_8b", "Llama-3.1-8B", C["blue"]), ("qwen3_8b", "Qwen3-8B", C["orange"]),
+       ("gemma2_9b", "Gemma-2-9B", C["green"]), ("mistral_7b", "Mistral-7B", C["purple"])]
+
+
 def panel_heads(ax):
-    for tag, name, c, ls in [("llama31_8b", "Llama-3.1-8B", C["blue"], "-"),
-                             ("qwen3_8b", "Qwen3-8B", C["orange"], "--")]:
+    for tag, name, c in FAM:
         d = J(f"circ_heads_{tag}.json")
         if not d:
             continue
         s = d["summary"]
         rk = sorted(int(k) for k in s["read_cumk"])
-        ax.plot(rk, [s["read_cumk"][str(k)]["mean"] for k in rk], "o" + ls, color=c, label=f"read · {name}")
+        ax.plot(rk, [s["read_cumk"][str(k)]["mean"] for k in rk], "o-", color=c, label=name)
         wk = sorted(int(k) for k in s["write_cumk"])
-        ax.plot(wk, [s["write_cumk"][str(k)]["mean"] for k in wk], "s:", color=c, alpha=0.65,
-                label=f"write · {name}", markersize=3.5)
+        ax.plot(wk, [s["write_cumk"][str(k)]["mean"] for k in wk], "s:", color=c, alpha=0.55, markersize=3)
+    ax.plot([], [], "ko-", label="read (solid)"); ax.plot([], [], "ks:", alpha=0.6, label="write (dotted)")
     ax.set_xlabel("# named heads patched jointly (top-$k$)")
     ax.set_ylabel("decision recovery")
     ax.set_title("(a) read & write head circuit")
-    ax.set_ylim(-0.05, 0.85); ax.legend(loc="upper left", fontsize=6.2)
+    ax.set_ylim(-0.05, 0.9); ax.legend(loc="upper left", fontsize=5.6, ncol=2)
 
 
 def panel_direction(ax):
@@ -67,9 +70,9 @@ def panel_direction(ax):
 
 
 def panel_components(ax):
-    for tag, name, c in [("llama31_8b", "Llama-3.1-8B", C["blue"]), ("qwen3_8b", "Qwen3-8B", C["orange"])]:
+    for tag, name, c in FAM:
         Ts, attn = [], []
-        for T in [12, 14, 18, 20, 22]:
+        for T in [12, 14, 16, 18, 20, 22, 28]:
             d = J(f"circ_components_{tag}_T{T}.json")
             if not d:
                 continue
@@ -78,30 +81,25 @@ def panel_components(ax):
             ax.plot(Ts, attn, "o-", color=c, label=name)
     ax.axhline(0.5, color="#bbbbbb", ls=":", lw=1)
     ax.set_xlabel("readout layer $T$"); ax.set_ylabel("attention share of write")
-    ax.set_title("(c) attention writes the note"); ax.set_ylim(0.3, 0.75)
-    ax.legend(loc="upper right", fontsize=6.6)
+    ax.set_title("(c) attention writes the note"); ax.set_ylim(0.3, 0.95)
+    ax.legend(loc="lower left", fontsize=6.0)
 
 
 def panel_scrub(ax):
-    tags = [("llama31_8b", "Llama-3.1-8B", C["blue"]), ("qwen3_8b", "Qwen3-8B", C["orange"])]
-    labels = ["resample\nrest (same)", "resample\nnote (same)", "swap note\n(opposite)", "swap rest\n(opposite)"]
-    x = np.arange(len(labels)); w = 0.38
-    for i, (tag, name, c) in enumerate(tags):
+    labels = ["faithful drift\n(same concl.)", "swap note\n(opposite)", "swap rest\n(opposite)"]
+    x = np.arange(len(labels)); nF = len(FAM); w = 0.8 / nF
+    for i, (tag, name, c) in enumerate(FAM):
         d = J(f"circ_scrub_{tag}.json")
         if not d:
             continue
         s = d["summary"]
-        vals = [s["faithfulness_drift"]["drift_rest_same"]["mean"],
-                s["faithfulness_drift"]["drift_note_same"]["mean"],
+        vals = [s["faithfulness_drift"]["drift_all_same"]["mean"],
                 s["interchange_recovery"]["rec_note_opp"]["mean"],
                 s["interchange_recovery"]["rec_rest_opp"]["mean"]]
-        b = ax.bar(x + (i - 0.5) * w, vals, w, color=c, label=name)
-        for bi, v in zip(b, vals):
-            ax.annotate(f"{v:.2f}", (bi.get_x() + bi.get_width() / 2, v), textcoords="offset points",
-                        xytext=(0, 2), ha="center", fontsize=5.8, color="#222")
-    ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=6.2)
-    ax.set_ylabel("drift (faithful≈0) / recovery"); ax.set_title("(d) causal scrubbing")
-    ax.set_ylim(0, 1.0); ax.legend(loc="upper left", fontsize=6.6)
+        ax.bar(x + (i - (nF - 1) / 2) * w, vals, w, color=c, label=name)
+    ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=6.0)
+    ax.set_ylabel("drift (faithful≈0) / recovery"); ax.set_title("(d) causal scrubbing (4 families)")
+    ax.set_ylim(0, 1.0); ax.legend(loc="upper center", fontsize=5.6, ncol=2)
 
 
 def panel_sae(ax):
