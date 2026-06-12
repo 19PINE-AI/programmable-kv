@@ -216,6 +216,88 @@ Llama-3.1-8B& $+0.007$ & $0.998$ & Llama-3.1-8B& $0.79$ & $0.005$ & $0.86$ & $0.
 \end{tabular}
 \end{table}
 
+\section{A component-level circuit for memoized inference}
+\label{app:circuit}
+\Cref{sec:mechanism} localizes the memoized conclusion (which tokens, which layers, a linear probe). This
+appendix pushes from \emph{localization} to a \emph{component-level} account---which attention heads, which
+direction, attention vs.\ MLP---with five interventions on the polarity 2$\times$2 task, where the field is
+held \emph{byte-identical} across the conclusion flip (only one rule-trigger token differs), so every
+``conclusion'' signal we attribute cannot be field content. Primary model Llama-3.1-8B, replicated on
+Qwen3-8B; all numbers are causal-intervention recoveries with bootstrap CIs over $n{=}12$ instances
+(\Cref{fig:circuit}; scripts \texttt{esys/circ\_*.py}, records \texttt{results/circ\_*}).
+
+\paragraph{(1) Named read and write heads (\Cref{fig:circuit}a,f).} We rank heads by direct attribution
+and confirm causally by patching a single head's output (clean$\leftrightarrow$corrupt) and re-reading the
+decision. \emph{Read heads}---at the decision token---form a concentrated, nameable set: patching the top
+$k$ jointly recovers $0.19/0.45/0.59/0.70/0.78$ of the decision at $k{=}1/3/5/8/12$ on Llama-3.1-8B and
+$0.17/0.36/0.50/0.64/0.77$ on Qwen3-8B (random-head control $\approx 0$). The strongest read heads sit in
+late layers (Llama L25--31, e.g.\ \texttt{26.3} attends decision$\to$aggregator at $0.46$; Qwen L24--35,
+e.g.\ \texttt{26.25} at $0.43$) and carry high direct-logit attribution. \emph{Write heads}---at the
+aggregator, at prefill---are more distributed: single-aggregator patching of the top heads saturates at
+$0.28$ (Llama; heads \texttt{17.24}, \texttt{18.20}) and only $0.08$ (Qwen), because the write is spread
+over \emph{many} aggregator tokens (the suffix-concentration of \Cref{sec:mechanism}), so patching one
+position under-counts it. The decision-side read is thus a tight bottleneck; the write is diffuse.
+
+\paragraph{(2) A causal conclusion direction (\Cref{fig:circuit}b).} A single difference-of-means direction
+$\hat d$ on the aggregator residual (fit \emph{leave-one-scenario-out}, field-balanced) transfers the
+conclusion: injecting the $\hat d$-component of the clean$-$corrupt residual into a corrupt run recovers
+$0.22$--$0.23$ of the decision at Llama L12--14---$\approx 39\%$ of the full single-site residual patch and
+${\sim}25{\times}$ a random 1-D direction ($0.01$); the difference-of-means direction beats a logistic-probe
+direction ($0.02$), a known DAS phenomenon. So the conclusion has a real shared linear component, but it is
+\emph{redundantly} coded (projecting $\hat d$ out of a clean run drops the decision only ${\sim}0.17$). On
+Qwen3-8B the conclusion is committed so strongly (logit gap ${\approx}22$ vs.\ ${\approx}4$) that single-site
+directional recovery is near zero in relative terms---the read-side circuit, which acts at the decision
+bottleneck, is the robust cross-family result.
+
+\paragraph{(3) A sparse SAE feature: decode $\neq$ cause (\Cref{fig:circuit}e).} We train a TopK SAE
+($16$k dict, $k{=}32$, FVU ${\approx}0.001$) on layer-$14$ residuals over diverse prompts. The conclusion is
+\emph{sparsely decodable}: two features reach AUC $=1.00$ at separating SAFE from UNSAFE on the aggregator
+(field-controlled), with ${\sim}5$ features above $0.95$. Yet it is \emph{causally distributed}: clamping the
+single best feature to its SAFE level in a UNSAFE run recovers $\approx 0$, while clamping the top
+$3/10/30$ jointly recovers $0.30/0.50/0.54$ (random-feature control $\approx 0$; necessity $0.30$--$0.33$).
+A feature can read the conclusion out perfectly without being causally sufficient alone---the feature-level
+echo of the decodability-vs-causation dissociation in \Cref{sec:mechanism}.
+
+\paragraph{(4) Causal scrubbing of write$\to$note$\to$read (\Cref{fig:circuit}d).} We test the hypothesis
+``the decision is a function of the conclusion carried by the aggregator note'' by resampling activations
+from inputs that agree with that labelling (position-aligned KV transplants from same-scenario donors).
+\emph{Faithfulness}: resampling the entire downstream from a \emph{same-conclusion} different-input donor
+preserves the decision (drift $0.02$--$0.04$ of the gap; decision-logit cosine $0.999$--$1.000$) on both
+models. \emph{Necessity}: resampling only the \emph{note} from an \emph{opposite-conclusion} donor flips the
+decision $0.79$ (Llama) / $0.68$ (Qwen), whereas resampling the rest of the downstream moves it only
+$0.19$ / $0.32$. The note governs; everything else is interchangeable.
+
+\paragraph{(5) Attention writes the note (\Cref{fig:circuit}c).} Decomposing the SAFE$-$UNSAFE aggregator
+residual into per-layer attention- and MLP-block contributions (exact: the embedding is identical across
+the pair), attention contributes the majority of the write at the causal conclusion layer---$0.62/0.60$ at
+Llama L12/L14---falling toward parity by L20 as later MLPs add magnitude; on Qwen3-8B the split is
+$0.44$--$0.56$ across L14--22. Attention is the primary or co-primary writer that routes the field/rule
+information onto the aggregator, with the MLPs contributing a substantial minority.
+
+\paragraph{Summary.} The picture is a \emph{distributed write, concentrated read}: attention routes the
+field-conditioned conclusion onto aggregator tokens at mid layers (Exp.\ 5), in a redundant code that is
+sparsely decodable but causally spread over ${\sim}10$--$30$ features / a shared low-rank direction (Exp.\
+2--3); a small, nameable set of late read heads then funnels it into the decision logit (Exp.\ 1), and
+causal scrubbing confirms the note alone governs the decision (Exp.\ 4). This connects the
+``models take notes'' account to the head-level circuits of \citet{wang2023ioi} and to delimiter-token
+aggregation \citep{lindsey2025biology}, while remaining a statement about the \emph{KV cache} an inference
+system already stores.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig8_circuit}
+\caption{\textbf{A component-level circuit for memoized inference} (Llama-3.1-8B, replicated on Qwen3-8B).
+(a) Cumulative decision recovery from jointly patching the top-$k$ named \emph{read} heads (concentrated,
+${\sim}0.78$) vs.\ \emph{write} heads (distributed). (b) A leave-scenario-out difference-of-means
+\emph{conclusion direction} causally transfers the decision far above a random 1-D direction. (c) At the
+causal conclusion layer, \emph{attention} writes the majority of the note. (d) Causal scrubbing:
+same-conclusion resampling is faithful (drift${\approx}0$); swapping the \emph{note} to the opposite
+conclusion flips the decision while swapping the rest does not. (e) An SAE feature \emph{decodes} the
+conclusion perfectly (AUC$=1.0$) yet is not causally sufficient alone---the cause is spread over ${\sim}10$--$30$
+features. (f) Read heads with the largest causal effect are those that attend decision$\to$aggregator.}
+\label{fig:circuit}
+\end{figure}
+
 \section{Online serving and weight-editing methodology}
 \label{app:systems}
 \paragraph{Online vLLM serving (\Cref{fig:sys}a).} vLLM V1 \texttt{AsyncLLMEngine}, CUDA graphs enabled

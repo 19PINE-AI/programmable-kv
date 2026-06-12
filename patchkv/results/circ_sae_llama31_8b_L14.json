@@ -1,0 +1,158 @@
+{
+  "summary": {
+    "model": "unsloth/Meta-Llama-3.1-8B-Instruct",
+    "layer": 14,
+    "dict": 16384,
+    "k": 32,
+    "n_active_features": 56,
+    "auc_counts": {
+      "|AUC-.5|>0.2": 17,
+      ">0.3": 10,
+      ">0.4": 6,
+      ">0.45": 5
+    },
+    "best_single_auc": 1.0,
+    "top_features_auc": [
+      [
+        1483,
+        1.0
+      ],
+      [
+        11992,
+        1.0
+      ],
+      [
+        3667,
+        0.025
+      ],
+      [
+        10252,
+        0.028
+      ],
+      [
+        1396,
+        0.954
+      ],
+      [
+        13408,
+        0.093
+      ],
+      [
+        14486,
+        0.833
+      ],
+      [
+        15229,
+        0.824
+      ],
+      [
+        16112,
+        0.821
+      ],
+      [
+        3069,
+        0.802
+      ],
+      [
+        5204,
+        0.75
+      ],
+      [
+        12405,
+        0.75
+      ],
+      [
+        4612,
+        0.747
+      ],
+      [
+        9995,
+        0.736
+      ],
+      [
+        7449,
+        0.722
+      ]
+    ],
+    "sufficiency_recovery_byK": {
+      "1": {
+        "mean": -0.01,
+        "n": 3
+      },
+      "3": {
+        "mean": 0.297,
+        "n": 3
+      },
+      "10": {
+        "mean": 0.503,
+        "n": 3
+      },
+      "30": {
+        "mean": 0.537,
+        "n": 3
+      }
+    },
+    "sufficiency_control_byK": {
+      "1": {
+        "mean": -0.001,
+        "n": 3
+      },
+      "3": {
+        "mean": -0.003,
+        "n": 3
+      },
+      "10": {
+        "mean": -0.015,
+        "n": 3
+      },
+      "30": {
+        "mean": -0.048,
+        "n": 3
+      }
+    },
+    "necessity_drop_byK": {
+      "1": {
+        "mean": 0.016,
+        "n": 3
+      },
+      "3": {
+        "mean": 0.166,
+        "n": 3
+      },
+      "10": {
+        "mean": 0.299,
+        "n": 3
+      },
+      "30": {
+        "mean": 0.327,
+        "n": 3
+      }
+    },
+    "erratum_link": [
+      {
+        "scn": "account_role",
+        "feat": 1483,
+        "safe_level": 0.02,
+        "unsafe_level": 0.001,
+        "stale_act": 0.042,
+        "erratum_act": 0.025
+      },
+      {
+        "scn": "safety_mode",
+        "feat": 1483,
+        "safe_level": 0.02,
+        "unsafe_level": 0.001,
+        "stale_act": 0.041,
+        "erratum_act": 0.017
+      },
+      {
+        "scn": "subscription_tier",
+        "feat": 1483,
+        "safe_level": 0.02,
+        "unsafe_level": 0.001,
+        "stale_act": 0.041,
+        "erratum_act": 0.021
+      }
+    ]
+  }
+}

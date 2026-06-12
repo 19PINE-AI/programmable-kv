@@ -1,26 +1,28 @@
-Prefix caching reuses a transformer's prefill only across an exact shared prefix, so a single changed
-field---a clock tick, a session id, an account-status flip---invalidates the entire downstream cache.
-We begin from a puzzle: the cache region \emph{before} a field is provably reusable (key/value deviation
-$0.0$), yet surgically overwriting only the field's own key/value vectors and reusing the rest leaves the
-model acting on the \emph{old} value. We explain why, and turn the explanation into two capabilities.
-Through four independent causal probes (replicated across five model families) we show that at prefill
-the model computes the
-\emph{field-conditioned conclusion} and stores it on downstream aggregator/delimiter tokens: the field's
-own key/value drives less than $1\%$ of the decision, while the downstream ``notes'' drive essentially
-all of it. The KV cache is thus a notebook of memoized conclusions, and two consequences follow.
-\textbf{(i) It is editable:} because the conclusion is already written downstream, the right fix is not
-recomputation but a salient \emph{erratum} that amends the notes; \texttt{field+erratum} matches the
-strong hoist-to-end baseline without rewriting the prompt, and under chain-of-thought the cheap in-place
-edit alone recovers the oracle decision ($0.94$ at $8$B) at ${\sim}1\%$ of the compute.
-\textbf{(ii) It is composable:} the notes are localized, position-portable, and context-robust, so a
-precompiled skill can be RoPE-repositioned and spliced into any context---behaviorally indistinguishable
-from full recompute (logit cosine $0.90$--$0.999$ across twelve models) at $O(L)$ rather than $O(L^2)$
-time-to-first-token ($13.9\times$ at $32$k tokens). A keystone experiment---editing a field \emph{inside}
-a transplanted skill---reproduces the editing mechanism verbatim, showing edit and compose act on one
-substrate; a unified agent over $10$ domains $\times$ $10$ instances ($300$ decisions) is decision-identical to full
-recompute (agreement $0.81$--$1.0$) at up to $14.9\times$ lower latency. The substrate is any per-token
-attention KV cache: we validate it across scale, quantization, Mixture-of-Experts, multimodal image
-caches, and---via small adapters---Multi-head Latent Attention and sliding-window and interleaved-M-RoPE
-models, and we map exactly where it holds up to the 2026 sparse-attention frontier. The caching
-machinery itself is prior art; our contributions are the mechanism, the unification, a decision-governance
-evaluation, and the attention-variant adapters.
+Prefix caching reuses a transformer's prefill only across an exactly shared prefix, so a single changed
+field---a clock tick, a session id, an account-status flip---invalidates the entire downstream cache. We
+start from a puzzle: the cache \emph{before} a field is provably reusable (key/value deviation $0.0$), yet
+surgically overwriting only the field's own key/value vectors and reusing the rest leaves the model acting
+on the \emph{old} value.
+
+The reason---established causally by four probes, replicated across four model families---is that at
+prefill the model has already computed the \emph{field-conditioned conclusion} and written it onto
+downstream aggregator/delimiter tokens: the field's own key/value drives under $1\%$ of the decision,
+while the downstream \emph{notes} drive essentially all of it. The KV cache is best read as a notebook of
+memoized conclusions, and two capabilities follow.
+\textbf{It is editable.} Because the conclusion is already written downstream, the fix is not
+recomputation but a salient \emph{erratum} that amends the notes: \fielderr{} matches the strong
+hoist-to-end baseline without rewriting the prompt, and under chain-of-thought a cheap in-place edit alone
+recovers the oracle decision ($0.94$ at $8$B) at ${\sim}1\%$ of the compute.
+\textbf{It is composable.} The notes are localized and position-portable, so a precompiled skill can be
+RoPE-repositioned and spliced into any context---behaviorally indistinguishable from full recompute (logit
+cosine $0.90$--$0.999$ across twelve models) at $O(L)$ rather than $O(L^2)$ time-to-first-token
+($13.9\times$ at $32$k). A keystone experiment---editing a field \emph{inside} a transplanted skill---reproduces
+the editing mechanism verbatim, showing the two operations act on one substrate; a unified
+edit+compose agent ($300$ decisions per model) stays decision-identical to full recompute (agreement
+$0.81$--$1.0$) at up to $14.9\times$ lower latency.
+
+The substrate is any per-token attention KV cache. We validate it across scale, quantization,
+Mixture-of-Experts, and multimodal image caches; extend it to Multi-head Latent Attention, sliding-window,
+and interleaved-M-RoPE models through small adapters; and map where it holds up to the 2026 sparse-attention
+frontier. The caching machinery itself is prior art; our contributions are the mechanism, the unification, a
+decision-governance evaluation, and the attention-variant adapters.

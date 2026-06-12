@@ -1,15 +1,15 @@
 \section{Introduction}
 \label{sec:intro}
 
-Modern LLM agents re-read long, mostly-static instructions on every turn: a system policy, a tool
+Modern LLM agents re-read long, mostly-static instructions on every turn---a system policy, a tool
 specification, retrieved documents. Key/value (KV) caching makes this affordable by reusing the prefill
-computation across turns---but only across an \emph{exact} shared prefix. The moment a single token
-changes inside the reused region---a timestamp, a user id, an order's status---the keys and values of
-\emph{every} subsequent token are invalidated, because each attended to the token that changed. The
-de-facto workaround is to \emph{hoist} all mutable content to the end of the prompt so the static prefix
-stays cache-aligned. This pushes an inference-layer constraint into the application layer: fields
-referenced in several places, nested sub-agent prompts, and dynamically assembled contexts cannot all be
-cleanly hoisted, and the application must enumerate every mutable field in advance.
+across turns, but only across an \emph{exact} shared prefix. The moment one token changes inside the reused
+region---a timestamp, a user id, an order's status---the keys and values of \emph{every} later token are
+invalidated, because each attended to the token that changed. The de-facto workaround---\emph{hoisting} all
+mutable content to the end so the static prefix stays cache-aligned---pushes an inference-layer constraint
+into the application layer: fields referenced in several places, nested sub-agent prompts, and dynamically
+assembled contexts cannot all be cleanly hoisted, and the application must enumerate every mutable field in
+advance.
 
 This paper starts from a concrete puzzle. The region of the cache \emph{before} a field is, by
 construction, independent of the field's value---we measure a key/value deviation of exactly $0.0$ when
@@ -36,11 +36,13 @@ shows the two operations act on a single substrate (\Cref{fig:overview}).
 
 \paragraph{Contributions.}
 \begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
-\item \textbf{A mechanism} (\Cref{sec:mechanism}): \emph{attention-mediated memoized inference}, established
-by four independent causal probes (locality patching, suffix concentration, linear probing, circuit
-knockout), plus content/conclusion dissociation, layer-timing, specificity, and note-injection
-controls (\Cref{app:deepmech})---replicated across \emph{five model families} (Qwen3, Llama-3.1, Gemma-2,
-Mistral)---connecting to delimiter-token aggregation observed in interpretability.
+\item \textbf{A mechanism} (\Cref{sec:mechanism})---\emph{attention-mediated memoized inference}---established
+by four causal probes (locality patching, suffix concentration, linear probing, circuit knockout) and four
+further controls (content/conclusion dissociation, layer-timing, specificity, note-injection;
+\Cref{app:deepmech}), replicated across \emph{four model families} (Qwen3, Llama-3.1, Gemma-2, Mistral),
+resolved to a \emph{component-level circuit}---named read/write heads, a causal conclusion direction, an SAE
+feature, attention-vs-MLP, and causal scrubbing (\Cref{app:circuit})---and connected to the delimiter-token
+aggregation seen in interpretability.
 \item \textbf{An editing capability} (\Cref{sec:editable}): naive KV editing fails; the erratum /
 \texttt{field+erratum} fix matches the hoist-to-end oracle without prompt surgery; a reasoning/scale
 analysis of when the ${\sim}1\%$-compute in-place edit suffices; and a head-to-head with \emph{weight}

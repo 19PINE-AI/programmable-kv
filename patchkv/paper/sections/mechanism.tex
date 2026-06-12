@@ -64,15 +64,28 @@ The account also holds off the synthetic template---field-only recovery stays ${
 multi-hop reasoning and free-form conversational phrasing, bounded only for near-verbatim
 attribute lookup, where the field is partly a copy (\Cref{app:deepmech}).
 
-\paragraph{Not a model-family artifact: five families.} To rule out the aggregator-token account being
+\paragraph{Not a model-family artifact: four families.} To rule out the aggregator-token account being
 a Qwen3/Llama tokenizer artifact, we replicate all five probes on two further architecture families,
 \textbf{Gemma-2-9B} and \textbf{Mistral-7B} (a tokenizer-robust readout; for Gemma-2 we keep its
 attention/logit soft-capping intact). Every result holds: field-only recovery $0.005$/$0.137$ vs.\
 full-downstream $1.0$; the conclusion/content dissociation (trigger-only $\approx0$ with the field held
 identical vs.\ notes $\approx1.0$); top-$8$ vs.\ random-$8$ specificity ($0.95$ vs.\ $0.48$); false-note
 injection ($0.98$--$1.0$, follow-rate $1.0$); and write-before-read timing (write depth $0.19$--$0.26$ vs.\
-decision commit $0.47$--$0.48$). The mechanism is consistent across \emph{five} families (Qwen3, Llama-3.1,
+decision commit $0.47$--$0.48$). The mechanism is consistent across \emph{four} families (Qwen3, Llama-3.1,
 Gemma-2, Mistral; \Cref{app:deepmech}).
+
+\paragraph{A component-level circuit.} The probes above localize the memoized conclusion; a further five
+interventions (\Cref{app:circuit}, replicated on Llama-3.1-8B and Qwen3-8B) resolve it to \emph{components}.
+The picture is a \emph{distributed write, concentrated read}: at mid layers \emph{attention} writes the
+field-conditioned conclusion onto aggregator tokens ($\approx 0.6$ of the write on Llama), in a redundant
+code that is sparsely \emph{decodable}---a trained SAE feature reaches AUC $1.0$---yet causally spread over
+${\sim}10$--$30$ features and a shared low-rank direction ($\approx25\times$ a random direction); a small,
+nameable set of late \emph{read heads} (e.g.\ those attending decision$\to$aggregator) then funnels it into
+the decision logit ($12$ heads recover $0.78$ of the decision, random heads $\approx 0$); and causal
+scrubbing confirms the note alone governs the decision (resampling it to the opposite conclusion flips the
+decision; resampling everything else does not). The feature that \emph{decodes} the conclusion is not
+causally sufficient alone---the same decodability-vs-causation split we control for above, now at the level
+of single features.
 
 \begin{figure}[t]
 \centering
