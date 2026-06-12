@@ -270,7 +270,7 @@ def fig_keystone():
     axs[1].set_xticks(x); axs[1].set_xticklabels(labs, rotation=55, ha="right"); despine(axs[1])
     ax2 = axs[1].twinx(); ax2.plot(x, spd, "D", color=C["red"], ms=4, label="TTFT speedup")
     ax2.set_ylabel("speedup ($\\times$)", color=C["red"]); ax2.spines["top"].set_visible(False); ax2.grid(False)
-    axs[1].set_title("(b) unified edit+compose agent, 12 models\n(10 domains $\\times$ 100 trajectories)", fontsize=8.2, loc="left")
+    axs[1].set_title("(b) unified edit+compose agent, 13 models\n(10 domains $\\times$ 10 instances; Gemma: 40 traj.)", fontsize=8.2, loc="left")
     save(fig, "fig5_keystone")
 
 # =====================================================================================

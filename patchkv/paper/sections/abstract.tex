@@ -18,8 +18,8 @@ RoPE-repositioned and spliced into any context---behaviorally indistinguishable 
 cosine $0.90$--$0.999$ across twelve models) at $O(L)$ rather than $O(L^2)$ time-to-first-token
 ($13.9\times$ at $32$k). A keystone experiment---editing a field \emph{inside} a transplanted skill---reproduces
 the editing mechanism verbatim, showing the two operations act on one substrate; a unified
-edit+compose agent ($300$ decisions per model) stays decision-identical to full recompute (agreement
-$0.81$--$1.0$) at up to $14.9\times$ lower latency.
+edit+compose agent (thirteen models, up to $300$ decisions each) stays decision-identical to full
+recompute (agreement $0.81$--$1.0$) at up to $14.9\times$ lower latency.
 
 The substrate is any per-token attention KV cache. We validate it across scale, quantization,
 Mixture-of-Experts, and multimodal image caches; extend it to Multi-head Latent Attention, sliding-window,

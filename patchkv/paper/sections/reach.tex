@@ -3,7 +3,7 @@
 
 \paragraph{Scale, quantization, MoE.} The transplant is faithful from $0.6$B to $32$B, on FP8 checkpoints,
 on a 30B-A3B Mixture-of-Experts, and on a $4$-bit $70$B model (feasibility $8/8$, logit cosine $0.986$);
-the unified agent of \Cref{sec:keystone} likewise spans all twelve.
+the unified agent of \Cref{sec:keystone} likewise spans all thirteen.
 
 \paragraph{Multimodal: images take notes too.} In an agent trajectory an image costs a full prefill---the
 vision tower \emph{plus} prefilling its ${>}1$k soft-tokens through the LM. Because image notes are also
@@ -19,8 +19,8 @@ boundary-recompute with exact re-rotation.
 \paragraph{The substrate is any per-token attention KV.} The operations depend on the cache
 \emph{representation}, not the attention kernel, so we map exactly where they hold (\Cref{fig:reach}a):
 \begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
-\item \textbf{Free}---throughput optimizations that keep per-token KV: FlashAttention, paged attention /
-vLLM, and GQA/MQA (already used by every model we ran).
+\item \textbf{Free}---throughput optimizations that keep per-token KV: FlashAttention, paged
+attention/vLLM, and GQA/MQA (already used by every model we ran).
 \item \textbf{Adapter (implemented, validated)}---representation changes. \emph{MLA} (DeepSeek-V2/Coder-V2)
 caches a position-free latent plus a small decoupled-RoPE sub-vector; our decoupled-\kpe{} reposition
 re-rotates only that sub-vector, giving logit cosine $0.98$ and composed-vs-full agreement $1.00$ on

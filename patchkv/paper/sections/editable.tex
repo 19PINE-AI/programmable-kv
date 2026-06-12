@@ -27,13 +27,13 @@ field (\texttt{field+erratum}), this matches the strong \emph{hoist-to-end} base
 $0.97$ on Qwen3-8B (\Cref{fig:edit}a), and the edit is append-only, so it composes with prefix caching
 (\Cref{sec:systems}).
 
-\paragraph{When the ${\sim}1\%$-compute edit alone suffices: a reasoning/scale law.} Surprisingly, under
-explicit reasoning the cheap in-place edit \emph{by itself} can recover the decision, because the
-chain re-reads the (now-refreshed) field and re-derives the conclusion rather than trusting the stale
-notes. This recovery is strongly model-size dependent (\Cref{fig:edit}b): field-only reasoning recovery
-falls as the memoized conclusion becomes ``stickier'' with scale, so the minimal amount of selective
-recomputation needed, \fieldsel{}@$K$ (refresh the field plus the $K$ highest-effect downstream tokens),
-varies from $K^\star\approx 4$ at $8$B to $>64$ at $4$B (\Cref{fig:edit}c). Without reasoning, no small
+\paragraph{When the ${\sim}1\%$-compute edit alone suffices: reasoning-gated and model-dependent.}
+Surprisingly, under explicit reasoning the cheap in-place edit \emph{by itself} can recover the decision,
+because the chain re-reads the (now-refreshed) field and re-derives the conclusion rather than trusting
+the stale notes. This recovery is strongly model-dependent (\Cref{fig:edit}b): how ``sticky'' the memoized
+conclusion is varies non-monotonically across model sizes rather than tracking scale, so the minimal
+amount of selective recomputation needed, \fieldsel{}@$K$ (refresh the field plus the $K$ highest-effect
+downstream tokens), varies from $K^\star\approx 4$ at $8$B to $>64$ at $4$B (\Cref{fig:edit}c). Without reasoning, no small
 $K$ helps ($0.00$ recovery at every scale). \fieldsel{}@$K$ is therefore a genuine but
 \emph{unreliable} surgical tool---effective when the conclusion is not sticky, model-dependent otherwise;
 we report it honestly rather than as a default.
@@ -69,7 +69,7 @@ $30$--$50\times$ slower per edit.}
 \label{tab:weight}
 \begin{tabular}{lcccc}
 \toprule
-method & flips decision? & edit latency & cross-req.\ contamination & collateral (unrelated) \\
+method & flips decision? & edit latency & cross-req.\ contamination & collateral \\
 \midrule
 \fielderr{} (KV) & \ding{51} & $114$\,ms & $\mathbf{0}$ & $\mathbf{0}$ \\
 \inplace{} (KV) & \ding{55}\,(no CoT) & $71$\,ms & $0$ & $0$ \\
@@ -83,8 +83,8 @@ LoRA fine-tune & \ding{51} & $3.1$\,s & $1.0$ & $0.5$ \\
 \centering
 \includegraphics[width=\linewidth]{fig3_editable}
 \caption{\textbf{Editing the cache.} (a) Editing the field's KV is ignored; \texttt{field+erratum} reaches
-the hoist-to-end oracle under CoT. (b) The memoized conclusion grows stickier with scale, so field-only
-reasoning recovery varies non-monotonically across model sizes. (c) \texttt{field+selective}@$K$: the
+the hoist-to-end oracle under CoT. (b) The stickiness of the memoized conclusion is model-dependent, so
+field-only reasoning recovery varies non-monotonically across model sizes. (c) \texttt{field+selective}@$K$: the
 minimal recompute $K^\star$ to reach full quality is model-dependent.}
 \label{fig:edit}
 \end{figure}

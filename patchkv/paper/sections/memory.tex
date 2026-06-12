@@ -2,7 +2,7 @@
 \label{sec:memory}
 
 A concrete, high-value instance of the edit+compose substrate is \emph{user memory}: the
-large, dynamically-summarized profile of facts an assistant re-reads every turn. Memory is
+large, dynamically summarized profile of facts an assistant re-reads every turn. Memory is
 big (thousands--tens of thousands of tokens), reused across turns, and \emph{mutated mid-session}
 by tool calls---so where it lives in the prompt is a dilemma the mechanism of
 \Cref{sec:mechanism} explains. Placed at the \emph{front} (\note{[sys][MEM][traj]}), the
@@ -77,8 +77,8 @@ keep cross-referential facts in one block.
 
 \paragraph{Placement and the pre-digestion cost (E1).} Pre-digestion is real, and we quantify
 it. Under full recompute and chain-of-thought, reading memory \emph{late} carries a small but
-\emph{statistically significant} accuracy cost vs.\ \emph{early} (Qwen3-4B, $N{=}192$:
-GEE-logistic $\beta_{\text{late}}=-0.44$, $p=0.018$), and the cost \emph{grows with memory
+\emph{statistically significant} accuracy cost vs.\ \emph{early} (Qwen3-4B, $192$ personas per
+cell: GEE-logistic $\beta_{\text{late}}=-0.44$, $p=0.018$), and the cost \emph{grows with memory
 length}: the early$-$late gap is ${\approx}0$ at $2$k tokens but ${+}0.09$ at $16$k and ${+}0.16$
 at $32$k. The mechanism explains it---late placement forgoes prefill-time pre-digestion and
 relies on the decode/CoT to integrate raw memory. This is a \emph{tradeoff, not free}: late
@@ -91,13 +91,13 @@ scale---see appendix.)
 
 \paragraph{End-to-end agent (E5).} We implement a live agent (\Cref{app:memory-agent}) that
 composes memory once, re-rotates it each turn, and edits it on tool-driven changes. Over
-$24$ sessions $\times$ $12$ turns with $\approx$2k-token memories, against a
+$12$-turn sessions ($16$--$120$ sessions per model) with $\approx$2k-token memories, against a
 reprefill-every-turn-at-the-end baseline it cuts cumulative time-to-first-token by
-$2.3$--$4.32\times$ (growing with model size, to 32B), and against front-placement
-reprefill-on-change by $1.4$--$3.27\times$, while reproducing the full-reprefill next-token logits at a
-token-matched oracle (cosine $0.98$--$0.99$). One honest caveat: greedy chains-of-thought are
+$2.3$--$4.3\times$ (growing with model size, to 32B), and against front-placement
+reprefill-on-change by $1.4$--$3.3\times$, while reproducing the full-reprefill next-token logits at a
+token-matched oracle (cosine $0.97$--$0.99$). One honest caveat: greedy chains-of-thought are
 sensitive to sub-percent logit differences, so the exact reasoning \emph{chain} is not always
-reproduced (chain agreement $0.31$--$0.69$) even though the next-token decision is faithful
+reproduced (chain agreement $0.31$--$0.78$) even though the next-token decision is faithful
 and CoT \emph{accuracy} is comparable; the clean decision-governance equivalence is the
 short-context editing result above (\Cref{sec:editable}-style, agreement $0.89$--$0.95$). User
 memory is thus a second instance of one substrate that is both editable and composable.

@@ -130,7 +130,7 @@ memory-gated decisions are at chance for $\le$8B models), with cluster-bootstrap
 full-reprefill oracle. Pre-registered hypotheses, margins, and the inclusion gate (oracle
 accuracy $\ge0.80$) are released with the code.
 
-\section{Deep mechanism controls: conclusion vs.\ content, timing, specificity, writability}
+\section{Deep mechanism controls: dissociation, timing, specificity, writability}
 \label{app:deepmech}
 These four controls (and an off-template generalization) tighten \Cref{sec:mechanism} from
 \emph{decodability} to \emph{causation, timing, and write-access}. Each runs on three models
@@ -172,7 +172,8 @@ artifact; for near-verbatim attribute lookup (c) the field is partly a copy and 
 $0.25$--$0.63$, bounding the claim to \emph{derived} conclusions.
 
 \paragraph{Cross-family replication (Gemma-2, Mistral).} To rule out a Qwen3/Llama tokenizer artifact
-we re-ran all five probes on \textbf{Gemma-2-9B} and \textbf{Mistral-7B} with a tokenizer-robust readout
+we re-ran five probes (the locality probe and the four controls above) on \textbf{Gemma-2-9B} and
+\textbf{Mistral-7B} with a tokenizer-robust readout
 (space-prefixed single-token \texttt{cancel}/\texttt{deny}; Gemma-2's soft-capping kept intact, as the
 attention-knockout hook used only by the original circuit-knockout probe otherwise corrupts it), on the
 gated cancel/deny task ($n{=}18$ primary, $18$ dissociation each; \Cref{tab:xfamily}). All five replicate:
@@ -277,8 +278,8 @@ Llama L12/L14, and a striking $0.82$--$0.92$ on Gemma-2-9B---with Qwen3-8B ($0.4
 ($0.42$--$0.66$) closer to parity. Attention is the primary or co-primary writer that routes the field/rule
 information onto the aggregator in every family, with the MLPs contributing the remainder.
 
-\paragraph{Summary.} The picture is a \emph{distributed write, concentrated read}: attention routes the
-field-conditioned conclusion onto aggregator tokens at mid layers (Exp.\ 5), in a redundant code that is
+\paragraph{Summary.} The picture is a \emph{distributed write, concentrated read}: at mid layers,
+attention routes the field-conditioned conclusion onto aggregator tokens (Exp.\ 5), in a redundant code that is
 sparsely decodable but causally spread over ${\sim}10$--$30$ features / a shared low-rank direction (Exp.\
 2--3); a small, nameable set of late read heads then funnels it into the decision logit (Exp.\ 1), and
 causal scrubbing confirms the note alone governs the decision (Exp.\ 4). This connects the
@@ -371,12 +372,13 @@ flat at $0.99{+}$---no drift with trajectory length.}
 \label{app:systems}
 \paragraph{Online vLLM serving (\Cref{fig:sys}a).} vLLM V1 \texttt{AsyncLLMEngine}, CUDA graphs enabled
 (\emph{not} \texttt{enforce\_eager}), continuous batching, automatic prefix caching on, \texttt{bfloat16},
-\texttt{gpu\_memory\_utilization}$=0.85$. Workload: a shared ${\sim}8{,}066$-token policy (real
+GPU memory utilization $0.85$. Workload: a shared ${\sim}8{,}066$-token policy (real
 $\tau^2$-bench retail policy plus neutral padding) with one mutable field; $96$ requests per arm, $64$
 output tokens each. Requests arrive as a \emph{Poisson} process at offered rates $\{2,4,8,16\}$ req/s and
 unthrottled (saturation). We timestamp first-token and completion per request in the client loop (TTFT,
-TPOT, end-to-end) and read the APC hit-rate per arm from the engine's Prometheus counters
-(\texttt{vllm:gpu\_prefix\_cache\_\{hits,queries\}}). The in-prefix baseline writes the new field value
+TPOT, end-to-end) and read each arm's APC hit-rate from the engine's Prometheus counters
+(\texttt{vllm:gpu\_prefix\_cache\_hits}, \texttt{\ldots\_queries}). The in-prefix
+baseline writes the new field value
 early (invalidating downstream APC blocks); the erratum keeps the old prefix and appends the update.
 Headline: throughput speedup grows $1.6\times{\to}14.5\times$ as load rises to saturation; $p90$ TTFT
 $53$--$398\times$ lower; APC hit-rate $98.5\%$ vs.\ $1.0\%$.
@@ -394,8 +396,9 @@ battery of unrelated single-token gated decisions.
 \label{app:repro}
 All numbers are from local runs; result records and figure-generation scripts are released with the code.
 Bootstrap confidence intervals use $10^4$ resamples. The unified-agent study uses $10$ domains $\times$
-$10$ instances ($300$ decisions) per model; the multimodal and agentic studies use $N{=}120$ and $N{=}108$
-respectively with bootstrap CIs. Mechanism cross-family replication
-(\texttt{esys/mechd\_replicate.py}), online serving (\texttt{esys/vllm\_serving\_online.py}), and weight
-editing (\texttt{esys/rome.py}, \texttt{esys/weight\_editing\_compare.py}) are released with their result
-JSONs.
+$10$ instances ($300$ decisions) per model, except the two Gemma models ($40$ instances, $120$
+decisions); the multimodal and agentic studies use $N{=}120$ and $N{=}108$. The
+cross-family replication, online serving, and weight-editing studies ship with their result JSONs
+(scripts under \texttt{esys/}: \texttt{mechd\_\allowbreak replicate.py},
+\texttt{vllm\_serving\_\allowbreak online.py}, \texttt{rome.py},
+\texttt{weight\_editing\_\allowbreak compare.py}).

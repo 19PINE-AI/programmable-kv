@@ -65,7 +65,8 @@ multi-hop reasoning and free-form conversational phrasing, bounded only for near
 attribute lookup, where the field is partly a copy (\Cref{app:deepmech}).
 
 \paragraph{Not a model-family artifact: four families.} To rule out the aggregator-token account being
-a Qwen3/Llama tokenizer artifact, we replicate all five probes on two further architecture families,
+a Qwen3/Llama tokenizer artifact, we replicate five probes (the locality probe and the four deep
+controls) on two further architecture families,
 \textbf{Gemma-2-9B} and \textbf{Mistral-7B} (a tokenizer-robust readout; for Gemma-2 we keep its
 attention/logit soft-capping intact). Every result holds: field-only recovery $0.005$/$0.137$ vs.\
 full-downstream $1.0$; the conclusion/content dissociation (trigger-only $\approx0$ with the field held

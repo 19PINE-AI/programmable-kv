@@ -44,15 +44,16 @@ resolved to a \emph{component-level circuit}---named read/write heads, a causal 
 feature, attention-vs-MLP, and causal scrubbing (\Cref{app:circuit})---and connected to the delimiter-token
 aggregation seen in interpretability.
 \item \textbf{An editing capability} (\Cref{sec:editable}): naive KV editing fails; the erratum /
-\texttt{field+erratum} fix matches the hoist-to-end oracle without prompt surgery; a reasoning/scale
-analysis of when the ${\sim}1\%$-compute in-place edit suffices; and a head-to-head with \emph{weight}
+\texttt{field+erratum} fix matches the hoist-to-end oracle without prompt surgery; an analysis of when
+the ${\sim}1\%$-compute in-place edit suffices (it requires reasoning and is strongly
+model-dependent); and a head-to-head with \emph{weight}
 editing (ROME, LoRA) showing it is the wrong tool for mutable per-request state (global contamination,
 collateral, $30$--$50\times$ slower).
 \item \textbf{A composing capability} (\Cref{sec:composable}): position-portable transplant of precompiled
 skills, $O(L)$ vs.\ $O(L^2)$ TTFT ($13.9\times$ at $32$k), with a seam-repair knob---honestly credited to
 prior caching work, with our addition being the mechanism that explains it and a correctness lens.
 \item \textbf{The unification} (\Cref{sec:keystone}): the keystone and a unified edit+compose agent over
-twelve models.
+thirteen models.
 \item \textbf{Reach and scope} (\Cref{sec:reach}): validation across scale, MoE, quantization, and
 multimodal image caches; small adapters for MLA and interleaved M-RoPE; a fix for sliding-window; and an
 analysis of where the substrate holds up to the 2026 sparse/compressed-attention frontier.

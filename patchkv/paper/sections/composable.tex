@@ -12,7 +12,7 @@ are position-free) before concatenating (\Cref{fig:ops}b). This is the position-
 \paragraph{Transplant is behaviorally indistinguishable from full recompute.} It does. The spliced skill
 matches a full reprefill in next-token logits with cosine $0.90$--$0.999$ across the full model family---
 Qwen3-1.7B through 32B (including FP8 and the 30B-A3B Mixture-of-Experts), Gemma-2/3, Mistral-7B,
-Llama-3.1-8B and 70B, and DeepSeek-R1 (\Cref{fig:comp}b)---and on the models competent at the task it
+Llama-3.1-8B and 70B, and DeepSeek-R1-Distill-Llama-8B (\Cref{fig:comp}b)---and on the models competent at the task it
 preserves \emph{correct} skill-following across $8$ diverse domains and $3$ families ($24/24$, cosine
 $0.98$--$0.999$), including $16/16$ under chain-of-thought.
 
@@ -32,7 +32,8 @@ skills composes (decisions preserved for $N=1$--$4$ concurrent skills).
 skills. It preserves decisions for \emph{facts/RAG} passages as well as rules; for chunks inserted in the
 system area \emph{and} mid-trajectory as tool results; and---measured with actual function calls rather
 than a proxy---it preserves \emph{agentic tool-calling} ($N{=}108$ with bootstrap CIs: function-call
-accuracy $1.00\,[1.0,1.0]$ on Mistral, Llama-3.1, Qwen3-8B/32B-FP8/30B-A3B). The one consistent exception
+accuracy $1.00$ on Mistral-7B, Llama-3.1-8B/70B, and Qwen3-8B; $0.97\,[0.94,1.0]$ on Qwen3-32B-FP8 and
+30B-A3B, whose transplanted-vs-full tool-call \emph{agreement} is $1.00$). The one consistent exception
 is sliding-window attention (Gemma), which we diagnose and fix in \Cref{sec:reach}. Full per-domain
 scorecards are in the appendix.
 
