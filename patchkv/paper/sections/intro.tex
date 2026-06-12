@@ -39,10 +39,13 @@ shows the two operations act on a single substrate (\Cref{fig:overview}).
 \item \textbf{A mechanism} (\Cref{sec:mechanism}): \emph{attention-mediated memoized inference}, established
 by four independent causal probes (locality patching, suffix concentration, linear probing, circuit
 knockout), plus content/conclusion dissociation, layer-timing, specificity, and note-injection
-controls (\Cref{app:deepmech}), connecting to delimiter-token aggregation observed in interpretability.
+controls (\Cref{app:deepmech})---replicated across \emph{five model families} (Qwen3, Llama-3.1, Gemma-2,
+Mistral)---connecting to delimiter-token aggregation observed in interpretability.
 \item \textbf{An editing capability} (\Cref{sec:editable}): naive KV editing fails; the erratum /
 \texttt{field+erratum} fix matches the hoist-to-end oracle without prompt surgery; a reasoning/scale
-analysis of when the ${\sim}1\%$-compute in-place edit suffices.
+analysis of when the ${\sim}1\%$-compute in-place edit suffices; and a head-to-head with \emph{weight}
+editing (ROME, LoRA) showing it is the wrong tool for mutable per-request state (global contamination,
+collateral, $30$--$50\times$ slower).
 \item \textbf{A composing capability} (\Cref{sec:composable}): position-portable transplant of precompiled
 skills, $O(L)$ vs.\ $O(L^2)$ TTFT ($13.9\times$ at $32$k), with a seam-repair knob---honestly credited to
 prior caching work, with our addition being the mechanism that explains it and a correctness lens.
@@ -51,8 +54,9 @@ twelve models.
 \item \textbf{Reach and scope} (\Cref{sec:reach}): validation across scale, MoE, quantization, and
 multimodal image caches; small adapters for MLA and interleaved M-RoPE; a fix for sliding-window; and an
 analysis of where the substrate holds up to the 2026 sparse/compressed-attention frontier.
-\item \textbf{Systems payoff} (\Cref{sec:systems}): a real agentic environment and a closed vLLM
-integration ($16\times$ throughput).
+\item \textbf{Systems payoff} (\Cref{sec:systems}): a real agentic environment and a comprehensive online
+vLLM serving benchmark (V1 engine, continuous batching, Poisson load)---$98.5\%$ vs.\ $1\%$ prefix-cache
+hit-rate, $53$--$398\times$ lower $p90$ TTFT, and throughput gains that grow with load to $14.5\times$.
 \item \textbf{An application: user memory} (\Cref{sec:memory}): the large, mutable user-memory
 document is both composed (precompiled, repositioned, spliced) and edited (in-place / erratum)
 as one substrate---decision-faithful to full recompute at $2.3$--$4.3\times$ lower

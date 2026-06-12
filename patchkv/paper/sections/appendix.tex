@@ -18,7 +18,7 @@ Qwen3-32B & Qwen3 (GQA) & FP8 & compose, agent, scale \\
 Qwen3-30B-A3B & Qwen3 MoE (GQA) & bf16 & compose, agent, MoE \\
 Llama-3.1-8B / 70B & Llama (GQA) & bf16 / 4-bit & mechanism, edit, compose, agent \\
 Mistral-7B & Mistral (GQA) & bf16 & mechanism, compose, agent \\
-Gemma-2-9B / Gemma-3-27B & Gemma (sliding-window) & bf16 & compose, agent, sliding-window fix \\
+Gemma-2-9B / Gemma-3-27B & Gemma (sliding-window) & bf16 & mechanism, compose, agent, sliding-window fix \\
 DeepSeek-R1-Distill-Llama-8B & Llama (GQA), reasoning & bf16 & edit, compose, agent \\
 DeepSeek-V2-Lite / Coder-V2-Lite & DeepSeek (MLA) & bf16 & MLA adapter \\
 Falcon-H1, Falcon-Mamba & hybrid / pure SSM & bf16 & architecture boundary \\
@@ -171,6 +171,32 @@ $-0.012$ to $+0.054$) with full-downstream $1.00$, confirming the mechanism is n
 artifact; for near-verbatim attribute lookup (c) the field is partly a copy and carries
 $0.25$--$0.63$, bounding the claim to \emph{derived} conclusions.
 
+\paragraph{Cross-family replication (Gemma-2, Mistral).} To rule out a Qwen3/Llama tokenizer artifact
+we re-ran all five probes on \textbf{Gemma-2-9B} and \textbf{Mistral-7B} with a tokenizer-robust readout
+(space-prefixed single-token \texttt{cancel}/\texttt{deny}; Gemma-2's soft-capping kept intact, as the
+attention-knockout hook used only by the original circuit-knockout probe otherwise corrupts it), on the
+gated cancel/deny task ($n{=}18$ primary, $18$ dissociation each; \Cref{tab:xfamily}). All five replicate:
+field-only $\approx0$ vs.\ full-downstream $1.0$; dissociation trigger-only $\approx0$ vs.\ notes
+$\approx1.0$; top-$8 \gg$ random-$8$; injection $\approx1.0$; and write-before-read timing. Two honest
+notes: Mistral's field-only recovery ($0.137$) is slightly above zero (still far below full-downstream
+$1.0$), and random-$8$ specificity runs higher on this task ($0.48$--$0.53$ vs.\ ${\approx}0.02$ on the
+Qwen/Llama tool-call task) though top-$8$ ($\approx0.95$) still dominates.
+
+\begin{table}[h]
+\centering\small
+\caption{Cross-family replication of the five deep-mechanism probes (Gemma-2-9B, Mistral-7B).
+Recovery toward the target conclusion; bootstrap means.}
+\label{tab:xfamily}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+model & field-only & full-down & trigger-only & notes & top-8 / rand-8 & write/commit depth \\
+\midrule
+Gemma-2-9B  & $0.005$ & $1.0$ & $-0.00$ & $1.0$   & $0.96 / 0.48$ & $0.26 / 0.48$ \\
+Mistral-7B  & $0.137$ & $1.0$ & $0.001$ & $0.995$ & $0.94 / 0.53$ & $0.19 / 0.47$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{table}[h]
 \centering\small
 \caption{Deep mechanism controls (recovery toward the target conclusion; three models).
@@ -190,9 +216,35 @@ Llama-3.1-8B& $+0.007$ & $0.998$ & Llama-3.1-8B& $0.79$ & $0.005$ & $0.86$ & $0.
 \end{tabular}
 \end{table}
 
+\section{Online serving and weight-editing methodology}
+\label{app:systems}
+\paragraph{Online vLLM serving (\Cref{fig:sys}a).} vLLM V1 \texttt{AsyncLLMEngine}, CUDA graphs enabled
+(\emph{not} \texttt{enforce\_eager}), continuous batching, automatic prefix caching on, \texttt{bfloat16},
+\texttt{gpu\_memory\_utilization}$=0.85$. Workload: a shared ${\sim}8{,}066$-token policy (real
+$\tau^2$-bench retail policy plus neutral padding) with one mutable field; $96$ requests per arm, $64$
+output tokens each. Requests arrive as a \emph{Poisson} process at offered rates $\{2,4,8,16\}$ req/s and
+unthrottled (saturation). We timestamp first-token and completion per request in the client loop (TTFT,
+TPOT, end-to-end) and read the APC hit-rate per arm from the engine's Prometheus counters
+(\texttt{vllm:gpu\_prefix\_cache\_\{hits,queries\}}). The in-prefix baseline writes the new field value
+early (invalidating downstream APC blocks); the erratum keeps the old prefix and appends the update.
+Headline: throughput speedup grows $1.6\times{\to}14.5\times$ as load rises to saturation; $p90$ TTFT
+$53$--$398\times$ lower; APC hit-rate $98.5\%$ vs.\ $1.0\%$.
+
+\paragraph{Weight editing (\Cref{tab:weight}).} ROME is implemented from scratch (uncentered key covariance
+$C{=}\mathbb{E}[kk^\top]$ at a mid MLP layer over a text sample, an optimized value $v^\star$, and the
+closed-form rank-one update of \texttt{down\_proj}) and \emph{validated on the canonical factual edit}
+(``the Eiffel Tower is in'' \emph{Paris}$\to$\emph{Rome}, locality preserved) before use, so the baseline
+is faithful. LoRA fine-tunes ($r{=}8$, \texttt{q,v,down} projections) on the stale-context decision until it
+flips. All methods are evaluated on the same gated decision; cross-request contamination is measured over
+$8$ held-out orders that are genuinely still pending (correct $=$ cancel), and collateral over a $10$-item
+battery of unrelated single-token gated decisions.
+
 \section{Reproducibility}
 \label{app:repro}
 All numbers are from local runs; result records and figure-generation scripts are released with the code.
 Bootstrap confidence intervals use $10^4$ resamples. The unified-agent study uses $10$ domains $\times$
 $10$ instances ($300$ decisions) per model; the multimodal and agentic studies use $N{=}120$ and $N{=}108$
-respectively with bootstrap CIs.
+respectively with bootstrap CIs. Mechanism cross-family replication
+(\texttt{esys/mechd\_replicate.py}), online serving (\texttt{esys/vllm\_serving\_online.py}), and weight
+editing (\texttt{esys/rome.py}, \texttt{esys/weight\_editing\_compare.py}) are released with their result
+JSONs.
