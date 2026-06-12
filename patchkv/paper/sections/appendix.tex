@@ -28,6 +28,117 @@ Qwen2.5-VL-3B/7B/32B, Qwen3-VL-8B & VL (M-RoPE) & bf16 & multimodal image-KV \\
 }
 \end{table}
 
+\section{Worked examples: prompts, errata, and responses}
+\label{app:examples}
+
+\paragraph{The gated decision (the paper's running example).} The mechanism and editing
+experiments use prompts of the following shape (scenario \texttt{account\_role}, the verbatim
+template from the released harness; the thirty neutral filler rules are abridged and long lines
+re-wrapped for display). The prompt is wrapped in each model's chat template and the decision is
+read at the final position:
+
+{\footnotesize\begin{verbatim}
+You are a customer-support agent for an online retailer.
+
+SESSION CONTEXT
+account_role: verified_admin     <-- the mutable FIELD (new value: suspended_user)
+channel: web
+agent_id: agent-7
+
+POLICY DOCUMENT (read carefully; rules are binding)
+ACCESS RULE (binding): If account_role is verified_admin, perform requested write
+actions normally. If account_role is suspended_user, you MUST NOT perform any
+refund/cancel/modify; instead call escalate(queue="trust", ...) and nothing else.
+R1. Always confirm the customer's identity by order number before discussing
+account details.
+[... R2-R30: twenty-nine more neutral filler rules ...]
+
+AVAILABLE TOOLS
+- lookup_order(order_id)         - issue_refund(order_id, amount, reason_code)
+- cancel_order(order_id)         - share_payment_method(order_id)
+- expedite_shipping(order_id)    - escalate(queue, summary)
+- refuse(reason)
+
+CONVERSATION SO FAR
+user: Please refund 40.00 to my order A4471 for the shipping delay.
+assistant: Let me check the account and policy before acting.
+
+TASK
+Decide the single next tool call. Respond with exactly one line:
+tool_call: <name>(<args>)
+Next action:
+\end{verbatim}}
+
+\noindent The four cache states of \Cref{sec:mechanism} are built from this prompt: \emph{stale}
+prefills the old value, \emph{oracle} the new, \emph{field-only} overwrites the KV of the
+\texttt{account\_role} value span (two tokens of a ${\sim}958$-token templated prompt, $0.2\%$
+recompute), and \emph{full-downstream} recomputes everything after it. In the position-resolved
+causal patch (\Cref{fig:mech}b,c), the highest-effect downstream positions for a representative
+instance sit not on the field span but on aggregator/delimiter tokens---the end-of-rule
+punctuation (around ``\texttt{...nothing else.}'') and the TASK-block instruction tokens (around
+``\texttt{tool\_call: <}'') that the decision attends through.
+
+\paragraph{The erratum, verbatim.} The editing fix appends one salient line ahead of the decision
+prompt (the \fielderr{} arm of \Cref{sec:editable}):
+{\footnotesize\begin{verbatim}
+[STATE UPDATE] account_role has just changed to suspended_user; this overrides
+any earlier value. Apply the current value.
+\end{verbatim}}
+\noindent The wording ablation of \Cref{fig:mech}d varies this line from a bare restatement of
+the value to the aggressive ``disregard your earlier conclusion and re-evaluate'', which
+underperforms.
+
+\paragraph{Recorded responses (Qwen3-8B, reasoning mode; one released instance).} From the record
+\texttt{thinking\_\allowbreak qwen3\_\allowbreak 8b\_\allowbreak think.json} (in \texttt{results/}),
+abridged to the answer head:
+{\footnotesize\begin{verbatim}
+oracle (clean prefill of suspended_user), 249 thinking tokens:
+  tool_call: escalate(queue="trust", summary="Request to refund $40.00...")
+stale (old cache reused), 269 thinking tokens:
+  tool_call: lookup_order(order_id="A4471")    <-- acts as if still verified
+field-only in-place edit under CoT, 926 thinking tokens:
+  tool_call: escalate(...)                     <-- chain re-reads the field
+\end{verbatim}}
+\noindent The in-place edit recovers the oracle decision under reasoning, but the recomputation
+has moved from prefill into the chain ($926$ vs.\ $249$ thinking tokens, ${\sim}3.7\times$);
+without reasoning, the same edit is simply ignored (\Cref{fig:mech}a).
+
+\paragraph{The dissociation pair (\Cref{app:deepmech}).} The conclusion/content control holds the
+field byte-identical and flips one trigger token inside the rule:
+{\footnotesize\begin{verbatim}
+ACCESS RULE (binding): If account_role is {trigger}, you MUST NOT perform any
+refund, cancel, or modify action and must instead call escalate(queue="trust",
+summary=...). For any other account_role, perform the requested write action
+normally.
+\end{verbatim}}
+\noindent With the field fixed at \texttt{verified\_admin}, setting
+\texttt{trigger=verified\_admin} makes escalation correct, while
+\texttt{trigger=suspended\_user} (field unchanged) makes the write action correct: the two
+prompts differ in exactly one token, the field is constant, and only the \emph{conclusion} flips.
+
+\paragraph{A transplanted skill (\Cref{sec:composable}).} A representative precompiled skill (the
+$20$ neutral guidelines abridged):
+{\footnotesize\begin{verbatim}
+# SKILL: REFUND_POLICY
+You handle refund requests. Core rule:
+RULE R1: A refund may be issued ONLY if order_status is "delivered". For any
+other status (pending, shipped, cancelled, returned) you MUST refuse the refund
+and escalate to a human.
+- General guideline 1: maintain a professional tone, log the interaction, and
+follow standard operating procedure for routine matters not otherwise specified.
+[... general guidelines 2-20 ...]
+End of REFUND_POLICY skill.
+\end{verbatim}}
+\noindent The skill is prefilled once in isolation (positions $0..L{-}1$), its keys re-rotated to
+the target offset, and spliced after the system prompt; the task suffix
+{\footnotesize\begin{verbatim}
+Order #7731 has order_status = "pending". The customer requests a refund. Per the
+REFUND_POLICY skill, respond with exactly one word -- refund or escalate.
+Decision:
+\end{verbatim}}
+\noindent then reads the spliced notes, and the decision (\texttt{escalate}) matches a full
+reprefill (\Cref{fig:comp}).
+
 \section{Editing: the baseline frontier and the K-sweep}
 \label{app:edit}
 \Cref{fig:frontier} plots the cost/correctness frontier behind \Cref{sec:editable}: there is no single
@@ -90,7 +201,8 @@ recompute, by model and content type (facts in two insertion points, and agentic
 attention models are at or near $1.0$; the sliding-window Gemma models are the consistent exception
 (addressed in \Cref{sec:reach}). \Cref{fig:mmcat} breaks the multimodal result down by task category, and
 \Cref{fig:mlascale} reports the MLA decoupled-\kpe{} adapter fidelity and the transplant TTFT speedup
-across models.
+across models. \Cref{fig:adapters} diagrams the three attention-variant adapters of \Cref{sec:reach}: what
+each representation caches, and exactly which slice of it the reposition touches.
 
 \begin{figure}[h]
 \centering
@@ -112,6 +224,19 @@ across models.
 \caption{Image-KV transplant by task category (perception / reasoning / agentic), full re-encode vs.\
 transplant, across four vision-language models. The transplant tracks full accuracy category-by-category.}
 \label{fig:mmcat}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figA7_adapters}
+\caption{\textbf{The attention-variant adapters.} (a) MLA caches a position-free latent $c_t$ plus a small
+decoupled-RoPE sub-vector \kpe{}; repositioning re-rotates only \kpe{} and copies the latent as-is. (b)
+M-RoPE factors the rotary channels into temporal/height/width axes---sectioned (Qwen2.5-VL) or interleaved
+(Qwen3-VL); moving an image within a trajectory re-rotates only the temporal channels, since the spatial
+axes are intrinsic to the image. (c) Sliding-window layers default to a window-truncated cache, which
+breaks any splice past $W$; keeping the full per-token KV and letting the attention mask enforce the
+window restores uniform edit/splice semantics.}
+\label{fig:adapters}
 \end{figure}
 
 \section{The user-memory agent}

@@ -434,6 +434,71 @@ def fig_operations():
         cell(ax, xs, lab, col, tc=tc); xs += 1.0
     save(fig, "fig_operations")
 
+
+
+def fig_adapters():
+    """figA7: the three attention-variant adapters (MLA, M-RoPE, sliding-window)."""
+    fig, axs = plt.subplots(3, 1, figsize=(7.2, 4.6))
+    def cell(ax, x, lab, col, w=0.9, y=0.0, h=0.8, tc="black", fs=6.4, ec="#3a3a3a", lw=0.7, ls="-"):
+        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.01,rounding_size=0.05",
+                     fc=col, ec=ec, lw=lw, linestyle=ls))
+        ax.text(x+w/2, y+h/2, lab, ha="center", va="center", fontsize=fs, color=tc)
+    # ---- (a) MLA: decoupled-RoPE reposition ----
+    ax = axs[0]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.55, 1.7)
+    ax.text(0.2, 1.42, "(a) MLA adapter: re-rotate only the decoupled RoPE sub-vector $k^{pe}$;"
+                       " the latent $c_t$ is position-free", fontsize=8.2, fontweight="bold")
+    ax.text(0.2, 0.4, "per-token\nMLA cache", fontsize=6.6, ha="left", va="center")
+    cell(ax, 1.7, "latent $c_t$  (e.g. 512-d)  — position-free: copy as-is", "#E8E8E8", w=5.2)
+    cell(ax, 7.0, "$k^{pe}$ (64-d)", C["orange"], w=1.6, tc="white")
+    ax.add_patch(FancyArrowPatch((8.75,0.4),(10.0,0.4), arrowstyle="-|>", mutation_scale=11, lw=1.6, color=C["orange"]))
+    ax.text(9.38, 0.62, "re-rotate by $\\Delta$", fontsize=6.4, ha="center", color=C["orange"])
+    cell(ax, 10.0, "$k^{pe}\\,@$ target", C["orange"], w=1.7, tc="white")
+    ax.text(1.7, -0.35, "values are latent too: the splice touches only the small $k^{pe}$ strip", fontsize=6.4, color="#5a5a5a")
+    # ---- (b) M-RoPE: temporal-axis re-rotation ----
+    ax = axs[1]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.55, 1.95)
+    ax.text(0.2, 1.68, "(b) M-RoPE adapter (vision): re-rotate only the temporal axis $t$;"
+                       " spatial $h,w$ are intrinsic to the image", fontsize=8.2, fontweight="bold")
+    ax.text(0.2, 0.92, "sectioned\n(Qwen2.5-VL)", fontsize=6.4, ha="left", va="center")
+    xs = 1.7
+    for lab, col, w, tc in [("$t$ channels", C["orange"], 2.0, "white"), ("$h$ channels", "#E8E8E8", 1.6, "black"),
+                            ("$w$ channels", "#E8E8E8", 1.6, "black")]:
+        cell(ax, xs, lab, col, w=w, y=0.62, h=0.62, tc=tc); xs += w
+    ax.text(0.2, -0.05, "interleaved\n(Qwen3-VL)", fontsize=6.4, ha="left", va="center")
+    xs = 1.7
+    import itertools
+    pat = ["$t$", "$h$", "$w$"]; cols = {"$t$": C["orange"], "$h$": "#E8E8E8", "$w$": "#E8E8E8"}
+    for i in range(9):
+        lab = pat[i % 3]
+        cell(ax, xs, lab, cols[lab], w=0.56, y=-0.35, h=0.62, tc=("white" if lab=="$t$" else "black"), fs=6.0)
+        xs += 0.58
+    ax.add_patch(FancyArrowPatch((7.3,0.6),(8.6,0.6), arrowstyle="-|>", mutation_scale=11, lw=1.6, color=C["orange"]))
+    ax.text(7.95, 0.84, "re-rotate $t$ by $\\Delta$", fontsize=6.4, ha="center", color=C["orange"])
+    ax.text(8.75, 0.42, "orange channels only;\ngray copied as-is", fontsize=6.4, ha="left", color="#5a5a5a")
+    # ---- (c) sliding window: keep full KV, mask enforces the window ----
+    ax = axs[2]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.7, 1.95)
+    ax.text(0.2, 1.68, "(c) Sliding-window fix (Gemma): keep full per-token KV; let the attention mask"
+                       " enforce the window", fontsize=8.2, fontweight="bold")
+    ax.text(0.2, 0.92, "default cache\n(truncated)", fontsize=6.4, ha="left", va="center")
+    xs = 1.7
+    for i in range(8):
+        gone = i < 3
+        cell(ax, xs, "" if gone else "kv", "#FFFFFF" if gone else C["sky"], w=0.56, y=0.62, h=0.62,
+             tc="white", fs=6.0, ec="#b0b0b0" if gone else "#3a3a3a", ls=":" if gone else "-")
+        if gone: ax.text(xs+0.28, 0.93, "x", ha="center", va="center", fontsize=7, color="#b06060")
+        xs += 0.58
+    ax.text(xs+0.15, 0.93, "evicted beyond window W  ->  a splice past W is wrong", fontsize=6.4,
+            va="center", color="#7a4a4a")
+    ax.text(0.2, -0.05, "fixed cache\n(full + mask)", fontsize=6.4, ha="left", va="center")
+    xs = 1.7
+    for i in range(8):
+        cell(ax, xs, "kv", C["sky"], w=0.56, y=-0.35, h=0.62, tc="white", fs=6.0)
+        xs += 0.58
+    ax.plot([1.7+0.58*4, 1.7+0.58*8-0.02], [-0.52, -0.52], lw=1.8, color=C["green"])
+    ax.text(1.7+0.58*6, -0.68, "mask window W (per layer)", fontsize=6.2, ha="center", color=C["green"])
+    ax.text(xs+0.15, -0.04, "uniform per-token splice/edit;\nagent agreement 0.93-0.94", fontsize=6.4,
+            va="center", color="#5a5a5a")
+    save(fig, "figA7_adapters")
+
 if __name__ == "__main__":
     fig_overview(); fig_operations()
     fig_teaser(); fig_mechanism(); fig_editable(); fig_composable()

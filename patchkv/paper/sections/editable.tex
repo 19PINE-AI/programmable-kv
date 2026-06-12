@@ -21,7 +21,8 @@ KV in isolation, RoPE-reposition it to the target positions, and splice it in ($
 \paragraph{The robust fix is an erratum, not recomputation.} If the stale notes carry an old conclusion,
 the cheapest correct intervention is to append a \emph{salient erratum} that supplies the corrected state
 late in the context---``\texttt{[STATE UPDATE] field $\rightarrow$ new; overrides any earlier value and
-conclusion}''---so the decision token attends to a fresh, authoritative note. Appended after the original
+conclusion}''---so the decision token attends to a fresh, authoritative note (verbatim template in
+\Cref{app:examples}). Appended after the original
 field (\texttt{field+erratum}), this matches the strong \emph{hoist-to-end} baseline's oracle correctness
 \emph{without rewriting the prompt}: under chain-of-thought the erratum recovers the flipped decision at
 $0.97$ on Qwen3-8B (\Cref{fig:edit}a), and the edit is append-only, so it composes with prefix caching

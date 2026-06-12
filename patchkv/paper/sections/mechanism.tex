@@ -9,7 +9,8 @@ is \texttt{pending}''; with \texttt{status=shipped} the correct action flips fro
 stale), \emph{full-downstream} (recompute everything after the field), and \emph{oracle} (a clean prefill
 of the new value). We report \emph{decision recovery}: the fraction of the oracle's flip that a cache
 state reproduces ($0$ = behaves like stale, $1$ = behaves like oracle). Four independent probes converge
-on one account (\Cref{fig:mech}).
+on one account (\Cref{fig:mech}); \Cref{app:examples} gives a complete worked example---the verbatim
+prompt, the erratum, and recorded model responses.
 
 \paragraph{(1) Locality: the field's own KV barely matters.} Refreshing only the field's KV recovers
 essentially none of the decision---field-only recovery is $-0.028$ on Llama-3.1-8B and near zero across

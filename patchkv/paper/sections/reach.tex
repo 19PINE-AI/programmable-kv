@@ -21,14 +21,15 @@ boundary-recompute with exact re-rotation.
 \begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
 \item \textbf{Free}---throughput optimizations that keep per-token KV: FlashAttention, paged
 attention/vLLM, and GQA/MQA (already used by every model we ran).
-\item \textbf{Adapter (implemented, validated)}---representation changes. \emph{MLA} (DeepSeek-V2/Coder-V2)
-caches a position-free latent plus a small decoupled-RoPE sub-vector; our decoupled-\kpe{} reposition
+\item \textbf{Adapter (implemented, validated)}---representation changes (diagrammed in
+\Cref{fig:adapters}). \emph{MLA} (DeepSeek-V2/Coder-V2)
+caches a position-free latent plus a small decoupled-RoPE sub-vector; our decoupled \kpe{} reposition
 re-rotates only that sub-vector, giving logit cosine $0.98$ and composed-vs-full agreement $1.00$ on
 DeepSeek-Coder-V2-Lite. \emph{Interleaved M-RoPE} (above) is the other adapter.
 \item \textbf{Fixed}---sliding-window (Gemma): the default cache truncates sliding layers to the window,
 breaking uniform splices beyond it; keeping the \emph{full} per-token KV and letting the attention
 \emph{mask} enforce the window restores correctness (the previously-failing unified agent now runs at
-agreement $0.93$--$0.94$).
+agreement $0.93$--$0.94$; \Cref{fig:adapters}c).
 \item \textbf{Partial}---hybrids with full-attention layers (Falcon-H1): the attention KV is transplantable
 but the per-layer Mamba scan-state is recurrent, not per-token, so a correct transplant must re-scan the
 Mamba path and saves only the attention fraction.
