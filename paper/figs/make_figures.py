@@ -157,41 +157,35 @@ def fig_mechanism():
 # FIG 3 — editable
 # =====================================================================================
 def fig_editable():
-    fig, axs = plt.subplots(1, 3, figsize=(7.2, 2.0))
-    # (a) naive vs erratum vs hoist (reasoning recovery), from arch_erratum_v2 (Qwen3-8B reasoning)
-    d = J("arch_erratum_v2_Qwen3-8B.json")
-    er = d["reasoning"]["erratum_recovery"]
-    ba = axs[0].bar([0,1,2], [0.0, er, 1.0], color=[C["red"], C["green"], C["grey"]], width=0.62, edgecolor="white", lw=0.7, zorder=3)
-    axs[0].bar_label(ba, fmt="%.2f", padding=2, fontsize=6.6)
-    axs[0].set_xticks([0,1,2]); axs[0].set_xticklabels(["edit\nfield-KV","field+\nerratum","hoist\n(oracle)"])
-    axs[0].set_ylim(0,1.18); axs[0].set_ylabel("oracle recovery (CoT)"); despine(axs[0])
-    axs[0].set_title("(a) erratum, not recompute", fontsize=8.5, loc="left")
+    # Two panels of model-dependence detail (the editing landscape and the reasoning/instruct
+    # split are previewed in Fig. fig:overview; we do not repeat them here).
+    fig, axs = plt.subplots(1, 2, figsize=(5.6, 2.1))
 
-    # (b) scale-reversal: field-only (K=0) reasoning recovery vs model size
-    order = [("qwen3_1p7b","1.7B",1.7),("qwen3_4b","4B",4),("qwen3_8b","8B",8),("qwen3_14b","14B",14)]
+    # (a) scale-reversal: field-only (K=0) reasoning recovery vs model size
+    order = [("qwen3_1p7b", "1.7B", 1.7), ("qwen3_4b", "4B", 4), ("qwen3_8b", "8B", 8), ("qwen3_14b", "14B", 14)]
     xs, ys, labs = [], [], []
     for tag, lab, sz in order:
         f = os.path.join(R, f"ksweep_diverse_{tag}.json")
         if not os.path.exists(f): continue
         d = J(f"ksweep_diverse_{tag}.json")
         ys.append(d["K_correct"]["0"]["P_correct"]); xs.append(sz); labs.append(lab)
-    axs[1].plot(xs, ys, "-o", color=C["purple"])
-    for xi, yi, li in zip(xs, ys, labs): axs[1].annotate(li, (xi, yi), textcoords="offset points", xytext=(3,4), fontsize=6.5)
-    axs[1].set_xscale("log"); axs[1].set_xlabel("model size (B params)")
-    axs[1].set_ylabel("field-only recovery (CoT)"); axs[1].set_ylim(0,1.08); despine(axs[1])
-    axs[1].set_title("(b) stickiness is scale-dependent", fontsize=8.5, loc="left")
+    axs[0].plot(xs, ys, "-o", color=C["purple"])
+    for xi, yi, li in zip(xs, ys, labs): axs[0].annotate(li, (xi, yi), textcoords="offset points", xytext=(3, 4), fontsize=6.5)
+    axs[0].set_xscale("log"); axs[0].set_xlabel("model size (B params)")
+    axs[0].set_ylabel("field-only recovery (CoT)"); axs[0].set_ylim(0, 1.08); despine(axs[0])
+    axs[0].set_title("(a) stickiness is scale-dependent", fontsize=8.5, loc="left")
 
-    # (c) K-sweep: P_correct vs K, several models
-    for tag, lab, col in [("qwen3_8b","8B",C["blue"]),("qwen3_4b","4B",C["red"]),
-                          ("qwen3_14b","14B",C["green"]),("qwen3_1p7b","1.7B",C["orange"])]:
+    # (b) K-sweep: P_correct vs K, several models
+    for tag, lab, col in [("qwen3_8b", "8B", C["blue"]), ("qwen3_4b", "4B", C["red"]),
+                          ("qwen3_14b", "14B", C["green"]), ("qwen3_1p7b", "1.7B", C["orange"])]:
         f = os.path.join(R, f"ksweep_diverse_{tag}.json")
         if not os.path.exists(f): continue
         d = J(f"ksweep_diverse_{tag}.json")["K_correct"]
         ks = sorted(int(k) for k in d); ys = [d[str(k)]["P_correct"] for k in ks]
-        axs[2].plot(ks, ys, "-o", label=lab, color=col)
-    axs[2].set_xscale("symlog"); axs[2].set_xlabel("$K$ (selective-recompute tokens)")
-    axs[2].set_ylabel("P(correct), CoT"); axs[2].legend(ncol=2, loc="lower right"); despine(axs[2])
-    axs[2].set_title("(c) field+selective@$K$", fontsize=8.5, loc="left")
+        axs[1].plot(ks, ys, "-o", label=lab, color=col)
+    axs[1].set_xscale("symlog"); axs[1].set_xlabel("$K$ (selective-recompute tokens)")
+    axs[1].set_ylabel("P(correct), CoT"); axs[1].legend(ncol=2, loc="lower right", fontsize=6.0); despine(axs[1])
+    axs[1].set_title("(b) field+selective@$K$", fontsize=8.5, loc="left")
     save(fig, "fig3_editable")
 
 # =====================================================================================

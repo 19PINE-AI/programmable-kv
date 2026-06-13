@@ -3,11 +3,11 @@
 ### Models Take Notes at Prefill: KV Cache Can Be Editable and Composable
 
 > 🔎 **Interactive companion (recommended starting point):**
-> **https://ring0.me/research/programmable-kv/**
+> **https://01.me/research/programmable-kv/**
 > — every figure is driven by the released result records; walk the mechanism, the
 > circuit, and every experiment interactively.
 >
-> 📄 **Paper:** [`paper/main.pdf`](paper/main.pdf) (28 pp., preprint — under review)
+> 📄 **Paper:** [`paper/main.pdf`](paper/main.pdf) (32 pp., preprint — under review)
 > · 🧑‍🏫 **Gentle intro:** [`EXPLAINER.md`](EXPLAINER.md)
 
 ---

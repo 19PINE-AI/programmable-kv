@@ -26,7 +26,7 @@ context---``\texttt{[STATE UPDATE] field $\rightarrow$ new; overrides any earlie
 conclusion}''---so the decision token attends to a fresh, authoritative note (verbatim template in
 \Cref{app:examples}). The erratum is the robust default: appended after the field (\texttt{field+erratum})
 it matches the strong \emph{hoist-to-end} oracle \emph{without rewriting the prompt} ($0.97$ under
-chain-of-thought on Qwen3-8B, \Cref{fig:edit}a), and being append-only it composes with prefix caching
+chain-of-thought on Qwen3-8B, \Cref{fig:overview}a), and being append-only it composes with prefix caching
 (\Cref{sec:systems}).
 
 \paragraph{Reasoning vs.\ instruction-tuned: a stark split.} Which fix you \emph{need} depends sharply on
@@ -38,7 +38,7 @@ re-derive, the decision commits to the memoized note (\Cref{fig:overview}c). Ins
 therefore require one of the two real fixes above. The mechanics are simple---an in-place edit only helps
 if some later computation actually re-reads the field---and we keep them brief here; the per-model
 stickiness, the \fieldsel{}@$K$ sweep ($K^\star\approx 4$ at $8$B but $>64$ at $4$B, varying
-non-monotonically with scale; \Cref{fig:edit}b,c), and the layer-wise account are detailed in
+non-monotonically with scale; \Cref{fig:edit}a,b), and the layer-wise account are detailed in
 \Cref{app:edit,app:deepmech}. We report \fieldsel{}@$K$ honestly as a genuine but \emph{unreliable}
 surgical tool, not a default.
 
@@ -86,9 +86,10 @@ LoRA fine-tune & \ding{51} & $3.1$\,s & $1.0$ & $0.5$ \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig3_editable}
-\caption{\textbf{Editing the cache.} (a) Editing the field's KV is ignored; \texttt{field+erratum} reaches
-the hoist-to-end oracle under CoT. (b) The stickiness of the memoized conclusion is model-dependent, so
-field-only reasoning recovery varies non-monotonically across model sizes. (c) \texttt{field+selective}@$K$: the
-minimal recompute $K^\star$ to reach full quality is model-dependent.}
+\caption{\textbf{Editing is model-dependent} (the editing landscape and the reasoning-vs-instruct split are
+previewed in \Cref{fig:overview}). (a) The stickiness of the memoized conclusion is model-dependent: the
+near-free field-only reasoning recovery varies non-monotonically across model sizes. (b)
+\texttt{field+selective}@$K$: the minimal recompute $K^\star$ to reach full quality is likewise
+model-dependent.}
 \label{fig:edit}
 \end{figure}
