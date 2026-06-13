@@ -1,7 +1,5 @@
-import { useState } from 'react'
 import { Section, P, Aside, PaperConst } from '../components/ui/Section'
 import { Figure } from '../components/ui/Figure'
-import { Controls, ControlGroup, Seg } from '../components/ui/Controls'
 import { ChartSvg, COLORS } from '../components/charts/core'
 import { fmtPct } from '../lib/format'
 import constants from '../data/constants.json'
@@ -9,17 +7,16 @@ import constants from '../data/constants.json'
 const META = { id: 'attention', num: '3', title: 'How attention reads the notes' }
 
 /**
- * Attention-flow diagram on a schematic token strip: where the decision token's
- * attention mass actually goes, and what happens if you knock out its edges to
- * the stale downstream notes.
+ * One panel of the attention-flow comparison: where the decision token's
+ * attention mass goes, with (`masked`) or without the knockout of its edges to
+ * the stale downstream notes. Static — the two panels are shown stacked.
  */
-function AttentionFlow() {
+function FlowPanel({ masked, heading }: { masked: boolean; heading: string }) {
   const shares = constants.attention_shares
   const ko = constants.attention_knockout
-  const [masked, setMasked] = useState(false)
 
   const W = 720
-  const y = 150
+  const y = 96
   const cells = [
     { id: 'sink', label: '⟨bos⟩ sink', x: 24, w: 76 },
     { id: 'field', label: 'FIELD (fresh)', x: 116, w: 104, field: true },
@@ -31,13 +28,11 @@ function AttentionFlow() {
   const cx = (id: string) => pos[id].x + pos[id].w / 2
 
   function arc(x1: number, x2: number, lift = 1) {
-    return `M ${x1} ${y - 14} Q ${(x1 + x2) / 2} ${y - 60 - 30 * lift} ${x2} ${y - 14}`
+    return `M ${x1} ${y - 14} Q ${(x1 + x2) / 2} ${y - 56 - 26 * lift} ${x2} ${y - 14}`
   }
 
-  // attention mass with/without the knockout (renormalized toward field+sink when masked)
   const flows = masked
     ? [
-        { to: 'notes', share: 0, w: 0 },
         { to: 'field', share: 0.42, w: 7 },
         { to: 'sink', share: 0.5, w: 8 },
       ]
@@ -50,71 +45,66 @@ function AttentionFlow() {
   const pSafe = masked ? ko.non_reasoning.masked_P_safe : ko.non_reasoning.baseline_P_safe
 
   return (
-    <div>
-      <Controls>
-        <ControlGroup label="intervention">
-          <Seg
-            options={['live', 'knockout'] as const}
-            value={masked ? 'knockout' : 'live'}
-            onChange={(v) => setMasked(v === 'knockout')}
-            labels={{ live: 'attention as-is', knockout: 'mask edges to stale notes' }}
-            accent="blue"
-          />
-        </ControlGroup>
-      </Controls>
+    <ChartSvg width={W} height={210}>
+      <text x={24} y={18} style={{ fontFamily: 'var(--sans)', fontSize: 12.5, fontWeight: 700 }} fill={masked ? COLORS.red : COLORS.blue}>
+        {heading}
+      </text>
 
-      <ChartSvg width={W} height={236}>
-        {/* arcs from decision to sources */}
-        {flows.map((f) =>
-          f.share <= 0 ? null : (
-            <g key={f.to}>
-              <path d={arc(cx('dec'), cx(f.to), f.to === 'sink' ? 1.5 : f.to === 'field' ? 1.15 : 0.8)} fill="none"
-                stroke={f.to === 'notes' ? COLORS.orange : f.to === 'field' ? COLORS.green : COLORS.gray}
-                strokeWidth={f.w} opacity={0.75} strokeLinecap="round" style={{ transition: 'stroke-width .5s' }} />
-              <text x={(cx('dec') + cx(f.to)) / 2}
-                y={y - 66 - 30 * (f.to === 'sink' ? 1.5 : f.to === 'field' ? 1.15 : 0.8)}
-                textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 11.5, fontWeight: 700 }}
-                fill={f.to === 'notes' ? COLORS.orange : f.to === 'field' ? COLORS.green : 'var(--ink-faint)'}>
-                {f.to === 'notes' ? `notes ${fmtPct(f.share, 0)}` : f.to === 'field' ? `field ${masked ? '↑' : fmtPct(f.share, 1)}` : `sink ${fmtPct(f.share, 0)}`}
-              </text>
-            </g>
-          ),
-        )}
-        {masked && (
-          <g>
-            <path d={arc(cx('dec'), cx('notes'), 0.8)} fill="none" stroke={COLORS.red} strokeWidth={1.6} strokeDasharray="4 4" />
-            <text x={(cx('dec') + cx('notes')) / 2} y={y - 66 - 24} textAnchor="middle"
-              style={{ fontFamily: 'var(--sans)', fontSize: 12, fontWeight: 700 }} fill={COLORS.red}>
-              ✕ masked
-            </text>
-          </g>
-        )}
-
-        {/* cells */}
-        {cells.map((c: any) => (
-          <g key={c.id}>
-            <rect x={c.x} y={y - 14} width={c.w} height={44} rx={6}
-              fill={c.field ? '#e7f3e9' : c.note ? (masked ? '#f0eee6' : 'var(--orange-faint)') : c.dec ? 'var(--blue-faint)' : '#fff'}
-              stroke={c.field ? COLORS.green : c.note ? COLORS.orange : c.dec ? COLORS.blue : 'var(--rule-strong)'}
-              strokeWidth={1.5} style={{ transition: 'fill .5s' }} />
-            <text x={c.x + c.w / 2} y={y + 12} textAnchor="middle"
-              style={{ fontFamily: 'var(--sans)', fontSize: 10.5, fontWeight: c.field || c.dec ? 600 : 400 }} fill="var(--ink-soft)">
-              {c.label}
-            </text>
-          </g>
-        ))}
-
-        {/* outcome */}
-        <g transform={`translate(24,${y + 58})`}>
-          <text style={{ fontFamily: 'var(--sans)', fontSize: 12 }} fill="var(--ink-soft)">
-            field-only edit, no chain-of-thought:&nbsp;&nbsp;P(safe decision) =
-          </text>
-          <text x={392} style={{ fontFamily: 'var(--sans)', fontSize: 15, fontWeight: 700 }}
-            fill={pSafe > 0.5 ? COLORS.green : COLORS.red}>
-            {pSafe.toFixed(2)} {pSafe > 0.5 ? '✓ follows the fresh field' : '✗ follows the stale notes'}
+      {flows.map((f) => (
+        <g key={f.to}>
+          <path d={arc(cx('dec'), cx(f.to), f.to === 'sink' ? 1.5 : f.to === 'field' ? 1.15 : 0.8)} fill="none"
+            stroke={f.to === 'notes' ? COLORS.orange : f.to === 'field' ? COLORS.green : COLORS.gray}
+            strokeWidth={f.w} opacity={0.75} strokeLinecap="round" />
+          <text x={(cx('dec') + cx(f.to)) / 2}
+            y={y - 62 - 26 * (f.to === 'sink' ? 1.5 : f.to === 'field' ? 1.15 : 0.8)}
+            textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 11.5, fontWeight: 700 }}
+            fill={f.to === 'notes' ? COLORS.orange : f.to === 'field' ? COLORS.green : 'var(--ink-faint)'}>
+            {f.to === 'notes' ? `notes ${fmtPct(f.share, 0)}` : f.to === 'field' ? (masked ? 'field re-derived' : `field ${fmtPct(f.share, 1)}`) : `sink ${fmtPct(f.share, 0)}`}
           </text>
         </g>
-      </ChartSvg>
+      ))}
+      {masked && (
+        <g>
+          <path d={arc(cx('dec'), cx('notes'), 0.8)} fill="none" stroke={COLORS.red} strokeWidth={1.6} strokeDasharray="4 4" />
+          <text x={(cx('dec') + cx('notes')) / 2} y={y - 62 - 20} textAnchor="middle"
+            style={{ fontFamily: 'var(--sans)', fontSize: 12, fontWeight: 700 }} fill={COLORS.red}>
+            ✕ masked
+          </text>
+        </g>
+      )}
+
+      {cells.map((c: any) => (
+        <g key={c.id}>
+          <rect x={c.x} y={y - 14} width={c.w} height={44} rx={6}
+            fill={c.field ? '#e7f3e9' : c.note ? (masked ? '#f0eee6' : 'var(--orange-faint)') : c.dec ? 'var(--blue-faint)' : '#fff'}
+            stroke={c.field ? COLORS.green : c.note ? COLORS.orange : c.dec ? COLORS.blue : 'var(--rule-strong)'}
+            strokeWidth={1.5} />
+          <text x={c.x + c.w / 2} y={y + 12} textAnchor="middle"
+            style={{ fontFamily: 'var(--sans)', fontSize: 10.5, fontWeight: c.field || c.dec ? 600 : 400 }} fill="var(--ink-soft)">
+            {c.label}
+          </text>
+        </g>
+      ))}
+
+      <g transform={`translate(24,${y + 64})`}>
+        <text style={{ fontFamily: 'var(--sans)', fontSize: 12 }} fill="var(--ink-soft)">
+          field-only edit, no chain-of-thought:&nbsp;&nbsp;P(safe decision) =
+        </text>
+        <text x={392} style={{ fontFamily: 'var(--sans)', fontSize: 15, fontWeight: 700 }}
+          fill={pSafe > 0.5 ? COLORS.green : COLORS.red}>
+          {pSafe.toFixed(2)} {pSafe > 0.5 ? '✓ follows the fresh field' : '✗ follows the stale notes'}
+        </text>
+      </g>
+    </ChartSvg>
+  )
+}
+
+function AttentionFlow() {
+  return (
+    <div style={{ display: 'grid', gap: 6 }}>
+      <FlowPanel masked={false} heading="① attention as-is — the decision reads the stale notes" />
+      <div style={{ borderTop: '1px dashed var(--rule-strong)' }} />
+      <FlowPanel masked heading="② mask the decision’s edges to the stale notes — it flips" />
     </div>
   )
 }
@@ -137,7 +127,7 @@ export function Attention() {
       <Figure
         label="Attention knockout."
         title="The decision reads the notes — cut the edges and it stops"
-        sub="Toggle the intervention: mask the decision token's attention to the stale downstream positions"
+        sub="Top: attention as-is. Bottom: the decision token's attention to the stale downstream positions is masked."
         caption={
           <>
             With attention intact, a field-only edit is ignored (P(safe) ={' '}

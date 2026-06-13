@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Section, P, H3, Aside } from '../components/ui/Section'
 import { Figure } from '../components/ui/Figure'
-import { Controls, ControlGroup, Seg, ModelPicker } from '../components/ui/Controls'
+import { Controls, ControlGroup, ModelPicker } from '../components/ui/Controls'
 import { LineChart } from '../components/charts/LineChart'
 import { BarsH } from '../components/charts/BarCI'
 import { ChartSvg, COLORS, Legend } from '../components/charts/core'
@@ -10,51 +10,42 @@ import mechanism from '../data/mechanism.json'
 
 const META = { id: 'mechanism', num: '2', title: 'The discovery: memoized inference, in four causal probes' }
 
-type CacheState = 'stale' | 'field_only' | 'full_downstream' | 'oracle'
-
-const STATES: { key: CacheState; label: string }[] = [
-  { key: 'stale', label: 'stale' },
-  { key: 'field_only', label: 'field-only' },
-  { key: 'full_downstream', label: 'full-downstream' },
-  { key: 'oracle', label: 'oracle' },
-]
-
 function CachePatchLab() {
   const models = mechanism.models as any[]
   const [tag, setTag] = useState('qwen3_8b')
-  const [state, setState] = useState<CacheState>('field_only')
   const m = models.find((x) => x.tag === tag)!
 
-  const recovery: number =
-    state === 'stale' ? 0 : state === 'oracle' ? 1 :
-    state === 'field_only' ? m.field_only.mean : m.full_downstream.mean
-  const ci: [number, number] | null =
-    state === 'field_only' ? m.field_only.ci : state === 'full_downstream' ? m.full_downstream.ci : null
+  const rows = [
+    { label: 'stale', sub: 'reuse everything', prefix: false, field: false, down: false, rec: 0, ci: null as [number, number] | null, byDef: true },
+    { label: 'field-only', sub: 'refresh field KV only (~0.2%)', prefix: false, field: true, down: false, rec: m.field_only.mean as number, ci: m.field_only.ci as [number, number] | null },
+    { label: 'full-downstream', sub: 'field stale; recompute after it', prefix: false, field: false, down: true, rec: m.full_downstream.mean as number, ci: m.full_downstream.ci as [number, number] | null },
+    { label: 'oracle', sub: 'clean prefill of the new value', prefix: true, field: true, down: true, rec: 1, ci: null, byDef: true },
+  ]
 
-  const fieldFresh = state !== 'stale'
-  const downFresh = state === 'full_downstream' || state === 'oracle'
-  const prefixFresh = state === 'oracle'
+  const W = 720
+  const headH = 30
+  const rowH = 62
+  const H = headH + rows.length * rowH + 4
+  const stripX = 132
+  const pW = 138 // prefix cell
+  const fW = 62 // field cell
+  const dW = 150 // downstream cell
+  const barX0 = 556
+  const barW = 108
 
-  const W = 700
-  const cellY = 60
-  const cellH = 52
-
-  function region(x: number, w: number, label: string, fresh: boolean, kind: 'prefix' | 'field' | 'down') {
+  function cell(x: number, w: number, yc: number, fresh: boolean, kind: 'prefix' | 'field' | 'down', label: string) {
     const fill = fresh ? '#e7f3e9' : kind === 'field' ? 'var(--orange-faint)' : '#f0eee6'
     const stroke = fresh ? COLORS.green : kind === 'field' ? COLORS.orange : 'var(--rule-strong)'
     return (
       <g>
-        <rect x={x} y={cellY} width={w} height={cellH} rx={6} fill={fill} stroke={stroke} strokeWidth={1.6} style={{ transition: 'fill .4s, stroke .4s' }} />
-        <text x={x + w / 2} y={cellY + 22} textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 11.5, fontWeight: 600 }} fill="var(--ink)">
+        <rect x={x} y={yc - 17} width={w} height={34} rx={5} fill={fill} stroke={stroke} strokeWidth={1.4} />
+        <text x={x + w / 2} y={yc + 1} textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 10, fontWeight: 600 }} fill="var(--ink-soft)">
           {label}
-        </text>
-        <text x={x + w / 2} y={cellY + 38} textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 10 }} fill={fresh ? COLORS.green : 'var(--ink-faint)'}>
-          {fresh ? '↻ recomputed with NEW value' : kind === 'prefix' ? 'reused (deviation 0.0)' : 'stale (attended to OLD value)'}
         </text>
         {kind === 'down' && !fresh && (
           <g fill={COLORS.orange}>
-            {[0.18, 0.46, 0.8].map((f) => (
-              <text key={f} x={x + w * f} y={cellY - 6} textAnchor="middle" style={{ fontSize: 11 }}>✎</text>
+            {[0.28, 0.72].map((f) => (
+              <text key={f} x={x + w * f} y={yc - 21} textAnchor="middle" style={{ fontSize: 10 }}>✎</text>
             ))}
           </g>
         )}
@@ -62,74 +53,64 @@ function CachePatchLab() {
     )
   }
 
-  const followsNew = recovery > 0.5
   return (
     <div>
       <Controls>
         <ControlGroup label="model">
           <ModelPicker models={models.map((x) => ({ id: x.tag, label: x.label }))} value={tag} onChange={setTag} />
         </ControlGroup>
-        <ControlGroup label="cache state">
-          <Seg options={STATES.map((s) => s.key) as any} value={state} onChange={(v) => setState(v as CacheState)}
-            labels={Object.fromEntries(STATES.map((s) => [s.key, s.label])) as any} />
-        </ControlGroup>
       </Controls>
 
-      <ChartSvg width={W} height={172}>
-        {region(10, 200, 'prefix (before the field)', prefixFresh, 'prefix')}
-        {region(218, 96, 'FIELD', fieldFresh, 'field')}
-        {region(322, 240, 'downstream tokens', downFresh, 'down')}
-        {/* decision readout */}
-        <g>
-          <rect x={584} y={cellY - 6} width={106} height={cellH + 12} rx={8} fill="var(--blue-faint)" stroke={COLORS.blue} strokeWidth={1.6} />
-          <text x={637} y={cellY + 14} textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 11, fontWeight: 600 }} fill={COLORS.blue}>
-            decision
-          </text>
-          <text x={637} y={cellY + 33} textAnchor="middle" style={{ fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 700 }}
-            fill={followsNew ? COLORS.green : COLORS.red}>
-            {followsNew ? 'NEW value' : 'OLD value'}
-          </text>
-          <text x={637} y={cellY + 48} textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 9.5 }} fill="var(--ink-faint)">
-            {followsNew ? 'follows the edit' : 'as if nothing changed'}
-          </text>
-        </g>
-        <path d={`M 568 ${cellY + cellH / 2} L 580 ${cellY + cellH / 2}`} stroke={COLORS.blue} strokeWidth={2} markerEnd="none" />
+      <ChartSvg width={W} height={H}>
+        {/* column headers */}
+        <text x={8} y={16} style={{ fontFamily: 'var(--sans)', fontSize: 10.5, fontWeight: 600 }} fill="var(--ink-faint)">cache state</text>
+        <text x={stripX} y={16} style={{ fontFamily: 'var(--sans)', fontSize: 10.5, fontWeight: 600 }} fill="var(--ink-faint)">
+          prefix · field · downstream  (green = recomputed)
+        </text>
+        <text x={barX0} y={16} style={{ fontFamily: 'var(--sans)', fontSize: 10.5, fontWeight: 600 }} fill="var(--ink-faint)">decision · recovery</text>
 
-        {/* recovery gauge */}
-        <g transform="translate(10,138)">
-          <text x={0} y={4} style={{ fontFamily: 'var(--sans)', fontSize: 11, fontWeight: 600 }} fill="var(--ink-soft)">
-            decision recovery
-          </text>
-          <rect x={130} y={-7} width={420} height={14} rx={7} fill="#eceadf" />
-          <rect x={130 + Math.min(Math.max(recovery, 0), 1) * 0 } y={-7} width={Math.min(Math.max(recovery, 0), 1) * 420} height={14} rx={7}
-            fill={followsNew ? COLORS.green : COLORS.orange} style={{ transition: 'width .5s' }} />
-          {ci && (
-            <g stroke="var(--ink)" strokeWidth={1.2} opacity={0.55}>
-              <line x1={130 + Math.max(0, ci[0]) * 420} x2={130 + Math.min(1, ci[1]) * 420} y1={0} y2={0} />
+        {rows.map((r, i) => {
+          const yc = headH + i * rowH + rowH / 2 - 4
+          const followsNew = r.rec > 0.5
+          const fdW = Math.max(0, Math.min(r.rec, 1)) * barW
+          const fieldX = stripX + pW + 4
+          const downX = fieldX + fW + 4
+          return (
+            <g key={r.label}>
+              {i > 0 && <line x1={8} x2={W - 8} y1={headH + i * rowH} y2={headH + i * rowH} stroke="var(--rule)" />}
+              {/* state label */}
+              <text x={8} y={yc - 2} style={{ fontFamily: 'var(--sans)', fontSize: 12.5, fontWeight: 700 }} fill="var(--ink)">{r.label}</text>
+              <text x={8} y={yc + 13} style={{ fontFamily: 'var(--sans)', fontSize: 9.5 }} fill="var(--ink-faint)">{r.sub}</text>
+              {/* cache strip */}
+              {cell(stripX, pW, yc, r.prefix, 'prefix', r.prefix ? 'fresh' : 'reused (dev 0.0)')}
+              {cell(fieldX, fW, yc, r.field, 'field', 'FIELD')}
+              {cell(downX, dW, yc, r.down, 'down', r.down ? 'recomputed' : 'stale notes')}
+              {/* decision chip */}
+              <text x={downX + dW + 30} y={yc + 4} textAnchor="middle" style={{ fontFamily: 'var(--mono)', fontSize: 11, fontWeight: 700 }} fill={followsNew ? COLORS.green : COLORS.red}>
+                {followsNew ? 'NEW' : 'OLD'}
+              </text>
+              {/* recovery bar */}
+              <rect x={barX0} y={yc - 7} width={barW} height={14} rx={7} fill="#eceadf" />
+              <rect x={barX0} y={yc - 7} width={fdW} height={14} rx={7} fill={followsNew ? COLORS.green : COLORS.orange} />
+              {r.ci && (
+                <g stroke="var(--ink)" strokeWidth={1.1} opacity={0.5}>
+                  <line x1={barX0 + Math.max(0, Math.min(r.ci[0], 1)) * barW} x2={barX0 + Math.max(0, Math.min(r.ci[1], 1)) * barW} y1={yc} y2={yc} />
+                </g>
+              )}
+              <text x={barX0 + barW + 8} y={yc + 4} style={{ fontFamily: 'var(--sans)', fontSize: 12, fontWeight: 700 }} fill="var(--ink)">
+                {fmt(r.rec, r.byDef ? 0 : 3)}
+              </text>
             </g>
-          )}
-          <text x={562} y={4} style={{ fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 700 }} fill="var(--ink)">
-            {fmt(recovery, 3)}
-          </text>
-        </g>
+          )
+        })}
       </ChartSvg>
 
-      <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', lineHeight: 1.6 }}>
-        {state === 'stale' && <>Reuse everything: the decision behaves like the old world — recovery 0 by definition.</>}
-        {state === 'field_only' && (
-          <>
-            Refresh the field&rsquo;s own KV and reuse the rest: recovery{' '}
-            <b>{fmt(m.field_only.mean, 3)}</b>{m.field_only.ci && <> (CI {fmt(m.field_only.ci[0], 3)}…{fmt(m.field_only.ci[1], 3)})</>} on {m.label} —
-            essentially none of the oracle&rsquo;s decision flip. The fresh field is ignored.
-          </>
-        )}
-        {state === 'full_downstream' && (
-          <>
-            Keep the field <em>stale</em> but recompute everything after it: recovery{' '}
-            <b>{fmt(m.full_downstream.mean, 3)}</b>. The information the decision needs lives downstream.
-          </>
-        )}
-        {state === 'oracle' && <>Clean prefill of the new value — recovery 1 by definition.</>}
+      <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', lineHeight: 1.6, marginTop: 4 }}>
+        On {m.label}: refreshing the field&rsquo;s own KV recovers{' '}
+        <b>{fmt(m.field_only.mean, 3)}</b> of the decision&rsquo;s flip — essentially nothing —
+        while keeping the field <em>stale</em> and recomputing the downstream recovers{' '}
+        <b>{fmt(m.full_downstream.mean, 3)}</b>. The fresh field is ignored; the conclusion lives in
+        the downstream notes. (stale and oracle are 0 and 1 by definition.)
       </div>
     </div>
   )
@@ -256,7 +237,7 @@ export function Mechanism() {
       <Figure
         label="Probe 1 — locality."
         title="Patch the cache, read the decision"
-        sub="Interactive: pick a model and a cache state; the recovery numbers are the released causal-patching records"
+        sub="Four cache states compared side by side; pick a model. Recovery numbers are the released causal-patching records."
         caption={
           <>
             Refreshing the field&rsquo;s own KV recovers essentially none of the decision

@@ -38,8 +38,8 @@ running the Python step.
 - `build_data.py` exits non-zero if any extracted headline number drifts from the
   paper's claimed value.
 
-## Anonymity
+## Attribution
 
-The site carries no author names, repository links, or other identifying strings
-(checked against the built `dist/` output); safe to share as review-time supplementary
-material.
+Author: **Bojie Li** (Pine AI). Code and result records:
+<https://github.com/bojieli/programmable-kv>. Deployed at
+<https://ring0.me/research/programmable-kv/>.

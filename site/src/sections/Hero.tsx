@@ -14,9 +14,14 @@ export function Hero() {
           <b style={{ color: 'var(--blue)' }}>composable</b>.
         </div>
         <div className="byline">
-          <span><b>Authors</b> Anonymous · under review</span>
+          <span><b>Author</b> {(constants.paper_meta as any).author} · {(constants.paper_meta as any).affiliation}</span>
           <span><b>Status</b> {constants.paper_meta.status}</span>
-          <span><b>This page</b> every figure is driven by the released result records</span>
+          <span>
+            <b>Code</b>{' '}
+            <a href={(constants.paper_meta as any).github} target="_blank" rel="noreferrer">
+              github.com/bojieli/programmable-kv
+            </a>
+          </span>
         </div>
       </header>
 

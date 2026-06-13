@@ -1040,7 +1040,10 @@ def build_constants():
         },
         "paper_meta": {
             "title": "Models Take Notes at Prefill: KV Cache Can Be Editable and Composable",
-            "status": "Preprint. Under review. Anonymous author(s).",
+            "status": "Preprint. Under review.",
+            "author": "Bojie Li",
+            "affiliation": "Pine AI",
+            "github": "https://github.com/bojieli/programmable-kv",
         },
     })
 
