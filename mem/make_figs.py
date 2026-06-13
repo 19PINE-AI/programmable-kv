@@ -6,13 +6,26 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({"font.family": "serif", "font.size": 10, "axes.grid": True,
-                     "grid.alpha": 0.3, "axes.spines.top": False, "axes.spines.right": False,
-                     "figure.dpi": 130})
+# Style matched to paper/figs/make_figures.py so the memory figures are visually
+# consistent with the rest of the paper (STIX serif, Wong palette, same sizes).
+plt.rcParams.update({
+    "font.family": "serif", "font.serif": ["STIXGeneral"], "mathtext.fontset": "stix",
+    "font.size": 8.5, "axes.titlesize": 9, "axes.titleweight": "bold", "axes.titlelocation": "left",
+    "axes.titlepad": 4, "axes.labelsize": 8.5, "legend.fontsize": 7.5,
+    "xtick.labelsize": 7.5, "ytick.labelsize": 7.5,
+    "axes.linewidth": 0.8, "axes.edgecolor": "#3a3a3a",
+    "xtick.color": "#3a3a3a", "ytick.color": "#3a3a3a",
+    "xtick.major.width": 0.7, "ytick.major.width": 0.7,
+    "lines.linewidth": 1.9, "lines.markersize": 4.5, "figure.dpi": 150,
+    "axes.grid": True, "grid.alpha": 0.16, "grid.linewidth": 0.6, "grid.color": "#8a8a8a",
+    "axes.spines.top": False, "axes.spines.right": False, "legend.frameon": False,
+    "axes.axisbelow": True, "figure.facecolor": "white", "savefig.facecolor": "white",
+})
 R = os.path.join(os.path.dirname(__file__), "results")
 F = os.path.join(os.path.dirname(__file__), "figs")
 os.makedirs(F, exist_ok=True)
-C = dict(blue="#2c6fbb", orange="#e07b39", green="#3a9d6e", red="#c0392b", gray="#7f8c8d", purple="#8e44ad")
+# colorblind-friendly (Wong), matching the paper palette
+C = dict(blue="#0072B2", orange="#E69F00", green="#009E73", red="#D55E00", gray="#9a9a9a", purple="#CC79A7")
 
 
 def load(prefix):
@@ -37,7 +50,7 @@ def fig_e2_seam():
     if not recs:
         return
     models = sorted(set(r["model"] for r in recs))
-    fig, axes = plt.subplots(1, 2, figsize=(9, 3.4))
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
     # (a) seam dose-response: dec_agree vs seam, late placement, per model
     ax = axes[0]
     for i, m in enumerate(models):
@@ -71,7 +84,7 @@ def fig_e3_editing():
         return
     models = sorted(set(r["model"] for r in recs))
     methods = ["stale", "in_place", "selective@4", "selective@16", "erratum", "recompile_chunk", "full_recompute"]
-    fig, axes = plt.subplots(1, 2, figsize=(9, 3.4))
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
     ax = axes[0]
     x = np.arange(len(methods)); w = 0.8 / max(1, len(models))
     for i, m in enumerate(models):
@@ -98,7 +111,7 @@ def fig_e1_placement():
     recs = load("e1")
     if not recs:
         return
-    fig, axes = plt.subplots(1, 2, figsize=(9, 3.4))
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
     models = sorted(set(r["model"] for r in recs))
     for ax, reg in zip(axes, ["direct", "cot"]):
         for m in models:
@@ -117,7 +130,7 @@ def fig_e4_granularity():
     if not recs:
         return
     models = sorted(set(r["model"] for r in recs))
-    fig, ax = plt.subplots(figsize=(5, 3.4))
+    fig, ax = plt.subplots(figsize=(4.4, 2.6))
     ax2 = ax.twinx()
     for m in models:
         Ss = sorted(set(r["S"] for r in recs if r["model"] == m))
@@ -137,7 +150,7 @@ def fig_e5_systems():
     if not recs:
         return
     models = sorted(set(r["model"] for r in recs))
-    fig, axes = plt.subplots(1, 2, figsize=(9, 3.4))
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
     ax = axes[0]
     x = np.arange(len(models)); w = 0.2
     for j, (meth, col) in enumerate([("oracle", "#000"), ("front", C["gray"]), ("end", C["red"]), ("proposed", C["green"])]):
@@ -146,17 +159,22 @@ def fig_e5_systems():
     ax.set_xticks(x); ax.set_xticklabels([short(m) for m in models], rotation=25, ha="right", fontsize=7)
     ax.set_ylabel("median TTFT (ms)"); ax.set_title("(a) Per-decision TTFT"); ax.legend(fontsize=7)
     ax = axes[1]
+    xb = np.arange(len(models)); wb = 0.36
+    sf_all, se_all = [], []
     for m in models:
         mr = [r for r in recs if r["model"] == m]
         sess = defaultdict(lambda: defaultdict(float))
         for r in mr:
             for meth in ("front", "end", "proposed"):
                 sess[r["session"]][meth] += r[f"ttft_{meth}"]
-        sf = np.median([sess[s]["front"] / sess[s]["proposed"] for s in sess])
-        se = np.median([sess[s]["end"] / sess[s]["proposed"] for s in sess])
-        ax.bar(short(m) + "\nvs front", sf, color=C["gray"]); ax.bar(short(m) + "\nvs end", se, color=C["red"])
-    ax.axhline(1, ls="--", c="#000", lw=1); ax.set_ylabel("cumulative TTFT speedup (×)")
-    ax.set_title("(b) Cumulative speedup"); plt.setp(ax.get_xticklabels(), fontsize=6, rotation=20)
+        sf_all.append(np.median([sess[s]["front"] / sess[s]["proposed"] for s in sess]))
+        se_all.append(np.median([sess[s]["end"] / sess[s]["proposed"] for s in sess]))
+    ax.bar(xb - wb / 2, sf_all, wb, color=C["gray"], label="vs front placement")
+    ax.bar(xb + wb / 2, se_all, wb, color=C["red"], label="vs end placement")
+    ax.axhline(1, ls="--", c="#000", lw=1)
+    ax.set_xticks(xb); ax.set_xticklabels([short(m) for m in models], rotation=25, ha="right", fontsize=7)
+    ax.set_ylabel("cumulative TTFT speedup (×)")
+    ax.set_title("(b) Cumulative speedup"); ax.legend(fontsize=7)
     plt.tight_layout(); plt.savefig(os.path.join(F, "fig_e5_systems.pdf")); plt.close()
     print("wrote fig_e5_systems.pdf")
 
@@ -166,7 +184,7 @@ def fig_locomo():
     if not recs:
         return
     models = sorted(set(r["model"] for r in recs))
-    fig, axes = plt.subplots(1, 2, figsize=(9, 3.4))
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
     ax = axes[0]; x = np.arange(len(models)); w = 0.38
     af = [np.mean([r["correct_full"] for r in recs if r["model"] == m]) for m in models]
     at = [np.mean([r["correct_transplant"] for r in recs if r["model"] == m]) for m in models]
