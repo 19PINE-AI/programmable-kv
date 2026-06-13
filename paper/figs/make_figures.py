@@ -98,7 +98,7 @@ def fig_teaser():
 # FIG 2 — mechanism: causal evidence
 # =====================================================================================
 def fig_mechanism():
-    fig, axs = plt.subplots(1, 4, figsize=(7.2, 1.95))
+    fig, axs = plt.subplots(1, 4, figsize=(7.4, 2.5))
     # (a) field-only vs full-downstream recovery across models
     models = [("qwen3_4b","Qwen3-4B"),("llama31_8b","Llama-8B"),("qwen3_14b","Qwen3-14B"),
               ("mistral7b","Mistral-7B"),("gemma2_9b","Gemma-9B")]
@@ -112,8 +112,8 @@ def fig_mechanism():
     axs[0].bar(x-w/2, fo, w, label="field-KV only", color=C["red"], edgecolor="white", lw=0.5, zorder=3)
     axs[0].bar(x+w/2, fd, w, label="full downstream", color=C["green"], edgecolor="white", lw=0.5, zorder=3)
     axs[0].set_xticks(x); axs[0].set_xticklabels(labs, rotation=40, ha="right")
-    axs[0].set_ylabel("decision recovery"); axs[0].set_ylim(-0.12, 1.18)
-    axs[0].legend(loc="upper center", bbox_to_anchor=(0.5,0.95), fontsize=6.6)
+    axs[0].set_ylabel("decision recovery"); axs[0].set_ylim(-0.12, 1.38)
+    axs[0].legend(loc="upper center", ncol=2, fontsize=6.2, columnspacing=1.0, handlelength=1.2)
     axs[0].axhline(0, color="#3a3a3a", lw=0.6); despine(axs[0])
     axs[0].set_title("(a) field-KV drives $<$1%", fontsize=8, loc="left")
 
@@ -159,7 +159,7 @@ def fig_mechanism():
 def fig_editable():
     # Two panels of model-dependence detail (the editing landscape and the reasoning/instruct
     # split are previewed in Fig. fig:overview; we do not repeat them here).
-    fig, axs = plt.subplots(1, 2, figsize=(5.6, 2.1))
+    fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.8))
 
     # (a) scale-reversal: field-only (K=0) reasoning recovery vs model size
     order = [("qwen3_1p7b", "1.7B", 1.7), ("qwen3_4b", "4B", 4), ("qwen3_8b", "8B", 8), ("qwen3_14b", "14B", 14)]
@@ -184,7 +184,9 @@ def fig_editable():
         ks = sorted(int(k) for k in d); ys = [d[str(k)]["P_correct"] for k in ks]
         axs[1].plot(ks, ys, "-o", label=lab, color=col)
     axs[1].set_xscale("symlog"); axs[1].set_xlabel("$K$ (selective-recompute tokens)")
-    axs[1].set_ylabel("P(correct), CoT"); axs[1].legend(ncol=2, loc="lower right", fontsize=6.0); despine(axs[1])
+    axs[1].set_ylim(0.0, 1.06)
+    axs[1].set_ylabel("P(correct), CoT")
+    axs[1].legend(ncol=4, loc="lower center", fontsize=6.0, columnspacing=1.0, handlelength=1.2); despine(axs[1])
     axs[1].set_title("(b) field+selective@$K$", fontsize=8.5, loc="left")
     save(fig, "fig3_editable")
 
@@ -192,7 +194,7 @@ def fig_editable():
 # FIG 4 — composable
 # =====================================================================================
 def fig_composable():
-    fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.2))
+    fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.7))
     sc = J("composable_scaling_qwen3_8b.json")["scaling"]
     xs = sorted(int(k) for k in sc)
     full = [sc[str(x)]["full_ms"] for x in xs]; pre = [sc[str(x)]["precomp_ms"] for x in xs]
@@ -233,7 +235,7 @@ def fig_composable():
 # FIG 5 — keystone + unified agent
 # =====================================================================================
 def fig_keystone():
-    fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.2))
+    fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.7))
     # (a) keystone: composed vs recomputed for in_place/sel@8/sel@32/erratum (Gemma + Llama)
     methods = ["in_place","sel@8","sel@32","erratum"]
     for tag, lab, mark in [("gemma2_9b","Gemma-9B","o"),("llama31_8b_8inst","Llama-8B","s")]:
@@ -272,7 +274,7 @@ def fig_keystone():
 # FIG 6 — reach: scope matrix + multimodal
 # =====================================================================================
 def fig_reach():
-    fig = plt.figure(figsize=(7.2, 2.6))
+    fig = plt.figure(figsize=(7.2, 2.9))
     gs = fig.add_gridspec(1, 2, width_ratios=[1.35, 1.0], wspace=0.3)
     # (a) attention-variant scope matrix
     ax = fig.add_subplot(gs[0]); ax.axis("off")
@@ -326,7 +328,7 @@ def fig_reach():
 # FIG 7 — systems
 # =====================================================================================
 def fig_systems():
-    fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.1))
+    fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.7))
     # (a) ONLINE vLLM serving: throughput speedup grows with offered load (erratum vs in-prefix baseline)
     try:
         d = J("vllm_online_qwen3_8b.json")["rows"]

@@ -9,7 +9,7 @@ does: refreshing the field's KV while reusing the stale downstream leaves the de
 (\Cref{fig:teaser}b). The prefix before the field is genuinely reusable (deviation $0.0$); the problem is
 that the conclusion was already memoized after it.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_operations}
 \caption{\textbf{Two cache operations.} (a) \emph{Editable}: append a salient erratum that amends the
@@ -65,7 +65,7 @@ zero cross-request contamination, zero collateral, $114$\,ms, and it composes wi
 (\Cref{sec:systems}). Weight editing targets \emph{durable, global facts}; mutable per-request, per-turn
 state is the wrong job for it---which is precisely the niche the editable KV cache fills.
 
-\begin{table}[t]
+\begin{table}[H]
 \centering\small
 \caption{\textbf{KV editing vs.\ weight editing} for mutable per-request state (Llama-3.1-8B). Weight edits
 succeed at the target yet are global (contaminate concurrent requests), damage unrelated decisions, and are
@@ -83,7 +83,7 @@ LoRA fine-tune & \ding{51} & $3.1$\,s & $1.0$ & $0.5$ \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig3_editable}
 \caption{\textbf{Editing is model-dependent} (the editing landscape and the chain-of-thought split are

@@ -5,7 +5,7 @@
 \Cref{tab:zoo} lists the models used across the paper. All runs are on a single RTX PRO 6000 (Blackwell,
 96\,GB); FP8 and 4-bit checkpoints are the official quantized releases.
 
-\begin{table}[h]
+\begin{table}[H]
 \centering\small
 \caption{Model zoo. ``role'' indicates the experiments a model appears in.}
 \label{tab:zoo}
@@ -193,7 +193,7 @@ notes: Mistral's field-only recovery ($0.137$) is slightly above zero (still far
 $1.0$), and random-$8$ specificity runs higher on this task ($0.48$--$0.53$ vs.\ ${\approx}0.02$ on the
 Qwen/Llama tool-call task) though top-$8$ ($\approx0.95$) still dominates.
 
-\begin{table}[h]
+\begin{table}[H]
 \centering\small
 \caption{Cross-family replication of the five deep-mechanism probes (Gemma-2-9B, Mistral-7B).
 Recovery toward the target conclusion; bootstrap means.}
@@ -208,7 +208,7 @@ Mistral-7B  & $0.137$ & $1.0$ & $0.001$ & $0.995$ & $0.94 / 0.53$ & $0.19 / 0.47
 \end{tabular}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering\small
 \caption{Deep mechanism controls (recovery toward the target conclusion; three models).
 Left: dissociation---patching the differing rule token vs.\ the downstream notes, field held
@@ -297,7 +297,7 @@ causal scrubbing confirms the note alone governs the decision (Exp.\ 4). This co
 aggregation \citep{lindsey2025biology}, while remaining a statement about the \emph{KV cache} an inference
 system already stores.
 
-\begin{table}[t]
+\begin{table}[H]
 \centering\small
 \caption{\textbf{The circuit replicates across four families.} Read = decision recovery from jointly
 patching the top-$12$ named read heads (control in parens). Write = top-$k$ write-head recovery at the single
@@ -317,7 +317,7 @@ Mistral-7B   & $0.82$ ($0.00$) & $0.11$ & $0.03$ / $0.71$ / $0.30$ & $0.42$--$0.
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig8_circuit}
 \caption{\textbf{A component-level circuit for memoized inference} (deep dives Llama-3.1-8B; head, write,
@@ -343,7 +343,7 @@ values are in \Cref{tab:frontier}. \Cref{fig:ksweepheat} gives the full \fieldse
 models, making the model-dependence of the minimal recompute explicit: small $K$ suffices for the Qwen3
 family but not for several others---the tool is effective but unreliable.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.5\linewidth}\centering
 \includegraphics[width=\linewidth]{figA1_frontier}
@@ -357,7 +357,7 @@ family but not for several others---the tool is effective but unreliable.
 \end{minipage}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering\small
 \caption{Baseline frontier (Qwen3-8B, 8 gated tasks). ``surgery'' = requires rewriting the prompt.}
 \label{tab:frontier}
@@ -380,7 +380,7 @@ stale (reuse) & 0.00 & 0\% & no \\
 recovers the decision under reasoning on attention (GQA) and sliding-window backbones, partially on a
 hybrid attention+SSM model, and weakly on a pure SSM whose recurrent state has no per-token look-back.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.62\linewidth]{figA4_architecture}
 \caption{Erratum recovery under reasoning across attention, sliding-window, hybrid, and pure-SSM
@@ -398,7 +398,7 @@ attention models are at or near $1.0$; the sliding-window Gemma models are the c
 across models. \Cref{fig:adapters} diagrams the three attention-variant adapters of \Cref{sec:reach}: what
 each representation caches, and exactly which slice of it the reposition touches.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.46\linewidth}\centering
 \includegraphics[width=\linewidth]{figA3_scorecard}
@@ -412,7 +412,7 @@ each representation caches, and exactly which slice of it the reposition touches
 \end{minipage}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{figA5_multimodal}
 \caption{Image-KV transplant by task category (perception / reasoning / agentic), full re-encode vs.\
@@ -420,7 +420,7 @@ transplant, across four vision-language models. The transplant tracks full accur
 \label{fig:mmcat}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{figA7_adapters}
 \caption{\textbf{The attention-variant adapters.} (a) MLA caches a position-free latent $c_t$ plus a small
@@ -468,7 +468,7 @@ splice cannot restore it. (Qwen3-8B is at chance on the direct two-hop decision-
 $\le$32B---so it is uninformative here.) The guidance is simple: keep cross-referential facts within one
 precompiled block; independent facts may be split freely.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.92\linewidth]{fig9_horizon}
 \caption{\textbf{No compounding error over a long trajectory.} A gated field toggles every turn for $28$

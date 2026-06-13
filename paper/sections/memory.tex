@@ -28,7 +28,7 @@ and accuracy-critical. (Direct one-shot decisions are at chance for the reasonin
 family \emph{to 32B}, breaking only at Llama-3.1-70B, direct $0.81$; CoT is the operative regime
 across scale---see \Cref{app:memory-agent}.)
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_e1_placement}
 \caption{\textbf{E1 --- placement and the pre-digestion cost (Qwen3-4B, CoT).} Reading memory \emph{late} carries a small, statistically significant accuracy cost vs.\ \emph{early} that \emph{grows with memory length}; late placement is still preferred because it enables $O(L)$ editing/transplant (efficiency quantified in E5).}
@@ -47,7 +47,7 @@ reproduces the full-recompute decision $0.93$ of the time at logit cosine $0.997
 boundary). The no-rotation control collapses (late decision agreement $0.18$ vs.\ $0.78$
 rotated), confirming the re-rotation is necessary.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_e2_faithfulness}
 \caption{\textbf{E2 --- memory transplant is faithful, to 70B.} (a) Decision agreement with full recompute under late placement; a single seam-repair token closes the start-of-chunk gap across ten models. (b) The re-rotation is necessary---the naive no-rotate control collapses, while rotated$+$1 seam token matches full recompute.}
@@ -67,7 +67,7 @@ have no in-place memory \emph{update}; our additions are the editing operation, 
 decision-governance lens, and the mechanism (\Cref{sec:mechanism}) that explains why boundary
 recompute suffices.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_e3_editing}
 \caption{\textbf{E3 --- memory is editable mid-session.} Reusing stale memory recovers a toggled fact essentially never; every real edit recovers it. Consistent with \Cref{sec:editable}, the near-free in-place edit suffices under chain-of-thought and \emph{strengthens with scale}, with the append-only erratum as the robust fallback.}
@@ -95,7 +95,7 @@ $|\Delta|\le0.015$) and within a small $-2.7$ points on Llama-3.1-8B, with answe
 cosine $0.991$--$0.998$ throughout. The \emph{compose} axis thus holds on
 real conversational memory, not only synthetic decisions.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_locomo}
 \caption{\textbf{LoCoMo --- external validity on real conversations.} Over all $1{,}540$ answerable questions per model, transplanting the multi-session dialogue memory is statistically equivalent to full recompute in QA accuracy (TOST) on the Qwen3 models and within $2.7$ points on Llama-3.1-8B.}
@@ -117,7 +117,7 @@ accuracy $0.85$; McNemar $p{<}10^{-6}$), because block~$B$'s isolated precompute
 its referent~$A$. The same split costs an independent fact pair only $0.04$. Practical guidance:
 keep cross-referential facts in one block.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_e4_granularity}
 \caption{\textbf{E4 --- granularity is a free knob.} Splitting memory into $S$ independently-precompiled blocks makes a localized edit $S\times$ cheaper and stays decision-lossless to $S{=}16$; only genuinely cross-referential facts must be kept in one block (\Cref{app:robustness}).}
@@ -138,7 +138,7 @@ short-context editing result above (\Cref{sec:editable}-style, agreement $0.89$-
 memory is thus a second instance of one substrate that is both editable and composable.
 
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_e5_systems}
 \caption{\textbf{E5 --- end-to-end agent.} (a) Per-decision median TTFT for the proposed compose$+$edit agent vs.\ oracle, front, and end-placement baselines. (b) Cumulative TTFT speedup of $2.3$--$4.3\times$ over reprefill-every-turn, growing with model size, at faithful next-token decisions.}
