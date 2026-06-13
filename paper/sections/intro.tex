@@ -81,7 +81,7 @@ and the end-to-end systems payoff.
 \caption{\textbf{Models take notes at prefill.} (a) At prefill the model memoizes the field-conditioned
 conclusion onto downstream aggregator tokens (orange); at decode the decision reads those notes (blue).
 (b) Consequently, surgically editing the field's own KV is ignored (without a reasoning chain), but the
-decision is recovered cheaply: recompute the \emph{affected} downstream notes, or---cheaper and robust---
+decision is recovered cheaply: recompute the \emph{affected} downstream suffix, or---cheaper and robust---
 append a salient \emph{erratum} (P(new decision), no-CoT model; with chain-of-thought the field-only
 refresh alone also works, \Cref{fig:overview}c). (c) Because the notes are position-portable, a precompiled
 skill can be pasted into a new context in $O(L)$ rather than $O(L^2)$ time.}

@@ -27,8 +27,8 @@ one salient line late in the context---``\texttt{[STATE UPDATE] field $\rightarr
 earlier value and conclusion}''---so the decision token attends to a fresh, authoritative note (verbatim
 template in \Cref{app:examples}). The erratum is the cheap, robust default: appended after the field
 (\texttt{field+erratum}) it matches the strong \emph{hoist-to-end} oracle \emph{without rewriting the
-prompt} ($0.97$ under chain-of-thought on Qwen3-8B, \Cref{fig:overview}a), and being append-only it composes
-with prefix caching (\Cref{sec:systems}).
+prompt} (P(correct) $1.00$ on the gated-task frontier, \Cref{fig:overview}a; \Cref{tab:frontier}), and being
+append-only it composes with prefix caching (\Cref{sec:systems}).
 
 \paragraph{Chain-of-thought, not model size, gates the cheapest edit.} A third, near-free option---refresh
 the field's own KV alone (${\sim}1\%$ compute) and nothing else---works only when some later computation
@@ -86,9 +86,9 @@ LoRA fine-tune & \ding{51} & $3.1$\,s & $1.0$ & $0.5$ \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig3_editable}
-\caption{\textbf{Editing is model-dependent} (the editing landscape and the reasoning-vs-instruct split are
+\caption{\textbf{Editing is model-dependent} (the editing landscape and the chain-of-thought split are
 previewed in \Cref{fig:overview}). (a) The stickiness of the memoized conclusion is model-dependent: the
-near-free field-only reasoning recovery varies non-monotonically across model sizes. (b)
+near-free field-only recovery under chain-of-thought varies non-monotonically across model sizes. (b)
 \texttt{field+selective}@$K$: the minimal recompute $K^\star$ to reach full quality is likewise
 model-dependent.}
 \label{fig:edit}
