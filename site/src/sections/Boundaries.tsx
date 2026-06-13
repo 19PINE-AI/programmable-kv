@@ -30,7 +30,7 @@ const LIMITS = [
   },
   {
     t: 'Credit where due',
-    d: 'The caching machinery (position-independent reuse, boundary recompute, RoPE repositioning) is prior art — Prompt Cache, CacheBlend, EPIC, CacheSlide, MPIC. This editable/composable-cache direction grew directly out of EPIC and CacheSlide and out of discussions with their author Junhao Hu (see acknowledgement below). The paper claims the mechanism, the unification, the decision-governance lens, and the attention-variant adapters — not the reuse machinery itself.',
+    d: 'The caching machinery (position-independent reuse, boundary recompute, RoPE repositioning) is prior art — Prompt Cache, CacheBlend, EPIC, CacheSlide, MPIC. This editable/composable-cache direction grew directly out of EPIC and CacheSlide and out of discussions with Junhao Hu (first author of EPIC; see acknowledgement below). The paper claims the mechanism, the unification, the decision-governance lens, and the attention-variant adapters — not the reuse machinery itself.',
   },
 ]
 
@@ -59,8 +59,9 @@ export function Boundaries() {
       <div className="colophon">
         <p style={{ fontWeight: 600, marginBottom: 8 }}>Acknowledgements</p>
         <p>
-          We thank Junhao Hu, first author of EPIC (Efficient Position-Independent Caching) and
-          CacheSlide, for discussions on editable KV cache that inspired this research project.
+          We thank Junhao Hu, first author of EPIC (Efficient Position-Independent Caching) and a
+          co-author of CacheSlide, for discussions on editable KV cache that inspired this research
+          project.
         </p>
         <p style={{ fontWeight: 600, marginBottom: 8 }}>Colophon</p>
         <p>
