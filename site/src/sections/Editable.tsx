@@ -4,13 +4,34 @@ import { Section, P, H3, Aside } from '../components/ui/Section'
 import { Figure } from '../components/ui/Figure'
 import { Controls, ControlGroup, Seg, ModelPicker } from '../components/ui/Controls'
 import { Heatmap, ramp } from '../components/charts/Heatmap'
-import { BarsH } from '../components/charts/BarCI'
+import { BarsH, BarsV } from '../components/charts/BarCI'
 import { AxisBottom, AxisLeft, ChartSvg, COLORS } from '../components/charts/core'
 import { fmt, fmtPct, fmtMs } from '../lib/format'
 import editing from '../data/editing.json'
 import prompts from '../data/prompts.json'
+import mechanism from '../data/mechanism.json'
 
 const META = { id: 'editable', num: '3', title: 'Mutate in place: the editable cache' }
+
+function ReasoningGap() {
+  const dv = (mechanism.diverse as any[]).find((x) => x.tag === 'qwen3_8b')!
+  const nonr = dv.modes.nonreasoning
+  const reas = dv.modes.reasoning
+  return (
+    <BarsV
+      groups={[
+        { label: 'field-only refresh', values: [{ v: nonr.field_only.P_correct }, { v: reas.field_only.P_correct }] },
+        { label: 'recompute affected', values: [{ v: 1.0 }, { v: 1.0 }] },
+        { label: 'erratum', values: [{ v: nonr.erratum.P_correct }, { v: reas.erratum.P_correct }] },
+      ]}
+      seriesLabels={['instruction-tuned', 'reasoning']}
+      colors={[COLORS.gray, COLORS.blue]}
+      yDomain={[0, 1.12]}
+      yLabel="P(correct decision)"
+      height={250}
+    />
+  )
+}
 
 const METHOD_INFO: Record<string, { label: string; desc: string; color: string }> = {
   full_reprefill: { label: 'full reprefill', color: COLORS.gray, desc: 'recompute the whole context — correct but pays the full quadratic prefill' },
@@ -175,14 +196,45 @@ export function Editable() {
     <Section meta={META}>
       <P>
         The second challenge was <strong>mutation</strong>: when a field changes mid-session you
-        should not have to recompute the cache. The naive fix — surgically refreshing the
-        field&rsquo;s own keys and values — is silently ignored (we show exactly why in §7). The
-        cheap intervention that <em>does</em> work is to <strong>amend the cache</strong>: append a
-        one-line, salient <em>erratum</em> late in the context, where the decision token attends to
-        it as a fresh, authoritative note. The edit is append-only, so the entire cached prefix
-        stays byte-identical and cache-aligned (which is what makes §5&rsquo;s serving numbers
-        possible). Click through the frontier:
+        should not have to recompute the cache. The naive shortcut — surgically refreshing the
+        field&rsquo;s own keys and values — is silently ignored (we show exactly why in §7). There
+        are <strong>two real fixes</strong>, and they work for any model:{' '}
+        <strong>(1) recompute the affected notes</strong> — the few downstream tokens that memoized
+        the old conclusion (field + selective@K) — or{' '}
+        <strong>(2) append an erratum</strong>, a one-line salient correction the decision reads as
+        a fresh, authoritative note. The erratum is append-only, so the prefix stays cache-aligned
+        (which is what makes §5&rsquo;s serving numbers possible).
       </P>
+
+      <H3>The stark split: reasoning vs. instruction-tuned models</H3>
+      <P>
+        Whether you <em>need</em> one of those fixes depends sharply on the model class. A{' '}
+        <strong>reasoning</strong> model gets a near-free third option — refresh the field&rsquo;s
+        KV alone (~1% compute) and nothing else — because its chain re-reads the fresh field and
+        re-derives the conclusion. An <strong>instruction-tuned</strong> model running the{' '}
+        <em>identical</em> edit simply ignores it: with no chain to re-derive, the decision commits
+        to the stale note. The mechanics are that simple — an in-place edit helps only if some later
+        computation actually re-reads the field — so we keep them brief here and put the detail under
+        the hood (§12).
+      </P>
+
+      <Figure
+        narrow
+        label="Reasoning vs. instruction-tuned."
+        title="The same field-only edit: recovered under reasoning, ignored without it"
+        sub="Qwen3-8B, P(correct decision) after each fix; ‘recompute affected’ = full downstream recompute"
+        caption={
+          <>
+            Both real fixes — recompute the affected notes, or append an erratum — recover the
+            decision for either model class. The cheap field-only refresh is the divider: it reaches{' '}
+            <b>1.00</b> on the reasoning model but <b>0.00</b> on the instruction-tuned one.
+          </>
+        }
+      >
+        <ReasoningGap />
+      </Figure>
+
+      <P>Where the methods land on the cost/correctness frontier:</P>
 
       <Figure
         label="The editing frontier."

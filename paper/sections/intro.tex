@@ -27,12 +27,16 @@ the decision, while the downstream notes drive essentially all of it. The KV cac
 as a frozen byproduct of prefill but as a \emph{notebook of memoized conclusions} (\Cref{fig:teaser}a).
 
 \paragraph{Two capabilities from one mechanism.} This reframing is generative. (1) If the conclusion is
-already written downstream, then \emph{editing} a field means amending the notes, not recomputing them:
-a one-line salient \emph{erratum} suffices, and we map exactly when the cheap in-place edit alone is
-enough (under reasoning) versus when it is not. (2) If the notes are localized and position-portable,
-then a reusable skill can be \emph{composed} into a new context by repositioning and splicing its cached
-notes---no recompute. A \emph{keystone} experiment, editing a field \emph{inside} a transplanted skill,
-shows the two operations act on a single substrate (\Cref{fig:overview}).
+already written downstream, then \emph{editing} a field means amending the notes, not recomputing them.
+Two fixes work for \emph{any} model---recompute only the few \emph{affected} downstream notes (the tokens
+that memoized the old conclusion), or append a one-line salient \emph{erratum} that overrides them---while
+a third, near-free path (refresh the field's own KV alone) works \emph{only on reasoning models}, whose
+chain re-reads the field and re-derives the conclusion; instruction-tuned models simply ignore it. We
+preview these editing results---the cost/correctness frontier, the $K$-dependent-token recompute, and the
+stark reasoning-vs-instruct gap---in \Cref{fig:overview}. (2) If the notes are localized and
+position-portable, then a reusable skill can be \emph{composed} into a new context by repositioning and
+splicing its cached notes---no recompute. A \emph{keystone} experiment, editing a field \emph{inside} a
+transplanted skill, shows the two operations act on a single substrate.
 
 \paragraph{Contributions.}
 \begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
@@ -79,18 +83,23 @@ in a real agent environment and a comprehensive online serving benchmark.
 \includegraphics[width=\linewidth]{fig1_teaser}
 \caption{\textbf{Models take notes at prefill.} (a) At prefill the model memoizes the field-conditioned
 conclusion onto downstream aggregator tokens (orange); at decode the decision reads those notes (blue).
-(b) Consequently, surgically editing the field's own KV is ignored---the fix is an \emph{erratum} that
-amends the notes. (c) Because the notes are position-portable, a precompiled skill can be pasted into a
-new context in $O(L)$ rather than $O(L^2)$ time.}
+(b) Consequently, surgically editing the field's own KV is ignored, but \emph{two} fixes recover the
+decision---recompute the few \emph{affected} downstream notes, or append a salient \emph{erratum}
+(P(new decision) for an instruction-tuned model; on reasoning models the field-only refresh also works,
+\Cref{fig:overview}c). (c) Because the notes are position-portable, a precompiled skill can be pasted into
+a new context in $O(L)$ rather than $O(L^2)$ time.}
 \label{fig:teaser}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.92\linewidth]{fig0_overview}
-\caption{\textbf{One mechanism, two capabilities, one substrate.} The discovery that models memoize
-field-conditioned conclusions at prefill makes the KV cache both \emph{editable} (amend the notes with a
-salient erratum) and \emph{composable} (reposition and splice precompiled notes); a keystone experiment
-shows they act on a single substrate, which holds up to the 2026 attention frontier.}
+\caption{\textbf{The editable cache, previewed (Qwen3-8B; detail in \Cref{sec:editable,sec:mechanism}).}
+(a) \emph{KV editing}: naive edits (stale, field-only, CacheBlend) fail while \texttt{erratum},
+\texttt{field+erratum}, and hoisting reach full-reprefill correctness at a fraction of the recompute.
+(b) \emph{Recompute the $K$ most field-dependent downstream notes}: decision recovery climbs as more of the
+affected notes are recomputed, concentrated in a small suffix. (c) \emph{Reasoning vs.\ instruction-tuned}:
+the near-free field-only edit recovers the decision on a reasoning model ($1.00$) but is ignored on an
+instruction-tuned one ($0.00$); the erratum fixes both.}
 \label{fig:overview}
 \end{figure}

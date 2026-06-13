@@ -18,26 +18,29 @@ KV in isolation, RoPE-reposition it to the target positions, and splice it in ($
 \label{fig:ops}
 \end{figure}
 
-\paragraph{The robust fix is an erratum, not recomputation.} If the stale notes carry an old conclusion,
-the cheapest correct intervention is to append a \emph{salient erratum} that supplies the corrected state
-late in the context---``\texttt{[STATE UPDATE] field $\rightarrow$ new; overrides any earlier value and
+\paragraph{Two fixes, neither a full reprefill.} If the stale notes carry an old conclusion, there are
+two correct interventions. \emph{(i) Recompute the affected notes}: refresh the field plus the few
+highest-effect downstream tokens that memoized the old conclusion---\fieldsel{}@$K$, recomputing only the
+dependent suffix rather than the whole context. \emph{(ii) Append an erratum}: one salient line late in the
+context---``\texttt{[STATE UPDATE] field $\rightarrow$ new; overrides any earlier value and
 conclusion}''---so the decision token attends to a fresh, authoritative note (verbatim template in
-\Cref{app:examples}). Appended after the original
-field (\texttt{field+erratum}), this matches the strong \emph{hoist-to-end} baseline's oracle correctness
-\emph{without rewriting the prompt}: under chain-of-thought the erratum recovers the flipped decision at
-$0.97$ on Qwen3-8B (\Cref{fig:edit}a), and the edit is append-only, so it composes with prefix caching
+\Cref{app:examples}). The erratum is the robust default: appended after the field (\texttt{field+erratum})
+it matches the strong \emph{hoist-to-end} oracle \emph{without rewriting the prompt} ($0.97$ under
+chain-of-thought on Qwen3-8B, \Cref{fig:edit}a), and being append-only it composes with prefix caching
 (\Cref{sec:systems}).
 
-\paragraph{When the ${\sim}1\%$-compute edit alone suffices: reasoning-gated and model-dependent.}
-Surprisingly, under explicit reasoning the cheap in-place edit \emph{by itself} can recover the decision,
-because the chain re-reads the (now-refreshed) field and re-derives the conclusion rather than trusting
-the stale notes. This recovery is strongly model-dependent (\Cref{fig:edit}b): how ``sticky'' the memoized
-conclusion is varies non-monotonically across model sizes rather than tracking scale, so the minimal
-amount of selective recomputation needed, \fieldsel{}@$K$ (refresh the field plus the $K$ highest-effect
-downstream tokens), varies from $K^\star\approx 4$ at $8$B to $>64$ at $4$B (\Cref{fig:edit}c). Without reasoning, no small
-$K$ helps ($0.00$ recovery at every scale). \fieldsel{}@$K$ is therefore a genuine but
-\emph{unreliable} surgical tool---effective when the conclusion is not sticky, model-dependent otherwise;
-we report it honestly rather than as a default.
+\paragraph{Reasoning vs.\ instruction-tuned: a stark split.} Which fix you \emph{need} depends sharply on
+the model class. On a \emph{reasoning} model a near-free third option appears---refresh the field's own KV
+alone (${\sim}1\%$ compute) and nothing else---because the chain re-reads the refreshed field and
+re-derives the conclusion instead of trusting the stale note; field-only recovery is $1.00$ on Qwen3-8B.
+On an \emph{instruction-tuned} model the identical edit is \emph{ignored} ($0.00$): with no chain to
+re-derive, the decision commits to the memoized note (\Cref{fig:overview}c). Instruction-tuned models
+therefore require one of the two real fixes above. The mechanics are simple---an in-place edit only helps
+if some later computation actually re-reads the field---and we keep them brief here; the per-model
+stickiness, the \fieldsel{}@$K$ sweep ($K^\star\approx 4$ at $8$B but $>64$ at $4$B, varying
+non-monotonically with scale; \Cref{fig:edit}b,c), and the layer-wise account are detailed in
+\Cref{app:edit,app:deepmech}. We report \fieldsel{}@$K$ honestly as a genuine but \emph{unreliable}
+surgical tool, not a default.
 
 \paragraph{A frontier, not a winner.} A controlled comparison (full table in \Cref{app:edit}) shows no single
 dominant method. Hoist-to-end is cheapest but demands prompt surgery and pre-identification of every field;

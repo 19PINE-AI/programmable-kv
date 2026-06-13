@@ -73,15 +73,16 @@ def fig_teaser():
     ax.text(6.9, 0.55, "decode: read the notes", ha="center", fontsize=6.8, color=C["blue"])
     ax.set_title("(a) Models take notes at prefill", fontsize=9, loc="left")
 
-    # (b) edit-ignored bars (illustrative of §3/§4 result)
+    # (b) edit ignored, but two fixes recover it (illustrative of §4 result)
     axb = fig.add_subplot(gs[1])
-    vals = [0.0, 0.03, 1.0]; labs = ["stale", "edit\nfield-KV", "erratum"]
-    cols = [C["grey"], C["red"], C["green"]]
-    bb = axb.bar(range(3), vals, color=cols, width=0.64, edgecolor="white", lw=0.7, zorder=3)
-    axb.bar_label(bb, fmt="%.2f", padding=2, fontsize=6.4)
-    axb.set_xticks(range(3)); axb.set_xticklabels(labs); axb.set_ylim(0, 1.18)
+    vals = [0.0, 0.0, 1.0, 1.0]
+    labs = ["stale", "field\nonly", "recompute\naffected", "erratum"]
+    cols = [C["grey"], C["red"], C["blue"], C["green"]]
+    bb = axb.bar(range(4), vals, color=cols, width=0.74, edgecolor="white", lw=0.7, zorder=3)
+    axb.bar_label(bb, fmt="%.2f", padding=2, fontsize=5.8)
+    axb.set_xticks(range(4)); axb.set_xticklabels(labs, fontsize=6.0); axb.set_ylim(0, 1.18)
     axb.set_ylabel("P(new decision)"); despine(axb)
-    axb.set_title("(b) Editing the field-KV\nis ignored", fontsize=8.5, loc="left")
+    axb.set_title("(b) Two fixes recover\nthe ignored edit", fontsize=8.5, loc="left")
     axb.axhline(1.0, color=C["green"], lw=0.6, ls=":")
 
     # (c) compose: TTFT speedup teaser
@@ -368,33 +369,57 @@ def fig_systems():
 # FIG OVERVIEW — one mechanism -> two operations -> one substrate (the spine)
 # =====================================================================================
 def fig_overview():
-    fig, ax = plt.subplots(figsize=(7.2, 3.0)); ax.axis("off")
-    ax.set_xlim(0, 12); ax.set_ylim(0, 8)
-    def card(x, y, w, h, title, body, fc, ec, tc="white", chip=None):
-        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.05,rounding_size=0.16",
-                     fc=fc, ec=ec, lw=1.3))
-        ax.text(x+w/2, y+h-0.32, title, ha="center", va="center", fontsize=8.8, fontweight="bold", color=tc)
-        chip_top = y + 0.58
-        ax.text(x+w/2, (chip_top + (y+h-0.55))/2, body, ha="center", va="center", fontsize=7.0, color=tc)
-        if chip:
-            ax.add_patch(FancyBboxPatch((x+0.18, y+0.13), w-0.36, 0.40, boxstyle="round,pad=0.02,rounding_size=0.1",
-                         fc="white", ec="none", alpha=0.95))
-            ax.text(x+w/2, y+0.33, chip, ha="center", va="center", fontsize=6.5, color=ec, fontstyle="italic")
-    def arrow(x1,y1,x2,y2,col):
-        ax.add_patch(FancyArrowPatch((x1,y1),(x2,y2), arrowstyle="-|>", mutation_scale=13, lw=2.0,
-                     color=col, connectionstyle="arc3,rad=0.0"))
-    card(3.3, 5.9, 5.4, 1.8, "Discovery: memoized inference",
-         "conclusion memoized onto aggregator tokens at prefill",
-         "#1b2a41", "#1b2a41", chip="field's own KV drives $<$1\\% of the decision")
-    card(0.3, 2.9, 5.1, 1.9, "EDITABLE", "amend the notes with a salient erratum",
-         C["blue"], "#04568a", chip="field+erratum $=$ hoist oracle, no surgery")
-    card(6.6, 2.9, 5.1, 1.9, "COMPOSABLE", "reposition + splice precompiled notes",
-         C["green"], "#066b50", chip="$O(L)$ TTFT, up to 13.9$\\times$")
-    card(3.3, 0.1, 5.4, 1.7, "One substrate (keystone)",
-         "edit a field inside a transplant: composed $\\approx$ recomputed",
-         C["orange"], "#9a6a00", tc="#1b1b1b", chip="holds to the 2026 attention frontier")
-    arrow(5.1, 5.9, 2.95, 4.85, C["blue"]); arrow(6.9, 5.9, 9.05, 4.85, C["green"])
-    arrow(2.95, 2.85, 5.1, 1.85, "#04568a"); arrow(9.05, 2.85, 6.9, 1.85, "#066b50")
+    """Results preview: KV editing landscape, recompute-K-dependent-tokens, and the
+    stark reasoning-vs-instruct contrast. (All Qwen3-8B; detail in Secs. 4 / 3.)"""
+    fig, axs = plt.subplots(1, 3, figsize=(7.4, 2.5))
+
+    # (a) KV editing: cost vs. correctness frontier
+    bt = J("baseline_table_qwen3_8b.json")["methods"]
+    order = [("stale", "stale"), ("in_place", "field-only"), ("cacheblend@15%", "CacheBlend"),
+             ("hoist_to_end", "hoist"), ("erratum", "erratum"), ("field+erratum", "field+err"),
+             ("full_reprefill", "full")]
+    ax = axs[0]
+    off = {"stale": (0, -11, "center"), "field-only": (10, 5, "left"),
+           "CacheBlend": (0, -11, "center"), "hoist": (0, 8, "center"),
+           "erratum": (-3, -12, "right"), "field+err": (6, 8, "left"), "full": (0, -12, "center")}
+    for k, lab in order:
+        x = max(bt[k]["recompute_frac"], 0.004); y = bt[k]["P_correct"]
+        ok = y >= 0.99
+        ax.scatter([x], [y], s=32, color=(C["green"] if ok else C["red"]), zorder=3,
+                   edgecolor="white", lw=0.6)
+        dx, dy, ha = off.get(lab, (0, 6, "center"))
+        ax.annotate(lab, (x, y), textcoords="offset points", xytext=(dx, dy), fontsize=5.2, ha=ha)
+    ax.set_xscale("log"); ax.set_xlim(0.003, 1.6); ax.set_ylim(-0.12, 1.22)
+    ax.set_xlabel("fraction recomputed"); ax.set_ylabel("P(correct decision)")
+    ax.axhline(1.0, color=C["green"], lw=0.5, ls=":"); despine(ax)
+    ax.set_title("(a) KV editing", fontsize=8.8, loc="left")
+
+    # (b) recompute the K most field-dependent downstream notes (suffix concentration)
+    cs = J("mech_causal_patch_qwen3_8b.json")["agg"]["cum_suffix_mean"]
+    items = sorted((float(k), v["mean"]) for k, v in cs.items())
+    ax = axs[1]
+    ax.plot([a * 100 for a, _ in items], [b for _, b in items], "-o", color=C["orange"], ms=3, lw=1.4)
+    ax.axhline(1.0, color=C["green"], lw=0.5, ls=":")
+    ax.set_ylim(0, 1.1); ax.set_xlabel("% dependent notes recomputed")
+    ax.set_ylabel("decision recovery"); despine(ax)
+    ax.set_title("(b) Recompute $K$ notes", fontsize=8.8, loc="left")
+
+    # (c) reasoning vs. instruct: the field-only edit flips
+    md = J("mech_diverse_qwen3_8b.json")["by_mode"]
+    def pc(mode, cond): return md[mode]["summary"][cond]["P_correct"]
+    ax = axs[2]; x = np.arange(2); w = 0.36
+    nonr = [pc("nonreasoning", "field_only"), pc("nonreasoning", "erratum")]
+    reas = [pc("reasoning", "field_only"), pc("reasoning", "erratum")]
+    b1 = ax.bar(x - w / 2, nonr, w, color=C["grey"], label="instruct", edgecolor="white", lw=0.6, zorder=3)
+    b2 = ax.bar(x + w / 2, reas, w, color=C["blue"], label="reasoning", edgecolor="white", lw=0.6, zorder=3)
+    ax.bar_label(b1, fmt="%.2f", fontsize=5.0, padding=1)
+    ax.bar_label(b2, fmt="%.2f", fontsize=5.0, padding=1)
+    ax.set_xticks(x); ax.set_xticklabels(["field-only", "erratum"], fontsize=6.5)
+    ax.set_ylim(0, 1.22); ax.set_ylabel("P(correct decision)")
+    ax.legend(fontsize=5.6, frameon=False, loc="upper left", handlelength=1.0)
+    despine(ax)
+    ax.set_title("(c) Reasoning vs instruct", fontsize=8.8, loc="left")
+
     save(fig, "fig0_overview")
 
 # =====================================================================================
