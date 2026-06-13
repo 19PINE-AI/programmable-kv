@@ -478,6 +478,22 @@ flat at $0.99{+}$---no drift with trajectory length.}
 \label{fig:horizon}
 \end{figure}
 
+\section{The user-memory agent}
+\label{app:memory-agent}
+The agent of \Cref{sec:memory} keeps the layout \texttt{[system][trajectory][MEMORY][query]}.
+The system prompt is prefilled once; the trajectory grows by cached deltas; the user-memory
+chunk is precompiled once in isolation and RoPE-repositioned to float just before the query
+each turn (an $O(L_\text{mem})$ re-rotation, no re-prefill) with one boundary token repaired;
+a memory change is applied either by recompiling the isolated chunk ($O(L_\text{mem})$, once)
+or by appending a salient erratum into the cached trajectory stream (append-only, composes
+with prefix caching). Confirmatory protocol: gated decisions whose governing facts live in a
+Markdown memory, balanced labels, chain-of-thought as the competent regime (direct one-shot
+memory-gated decisions are at chance for $\le$8B models), with cluster-bootstrap CIs
+($10^4$, persona-level), TOST equivalence ($\delta{=}0.03$; cosine $\ge0.98$), GEE-logistic
+(cluster-robust), McNemar, and BH-FDR. Faithfulness is read against a token-matched
+full-reprefill oracle. Pre-registered hypotheses, margins, and the inclusion gate (oracle
+accuracy $\ge0.80$) are released with the code.
+
 \section{Online serving and weight-editing methodology}
 \label{app:systems}
 \paragraph{Online vLLM serving (\Cref{fig:sys}a).} vLLM V1 \texttt{AsyncLLMEngine}, CUDA graphs enabled
@@ -501,22 +517,6 @@ is faithful. LoRA fine-tunes ($r{=}8$, \texttt{q,v,down} projections) on the sta
 flips. All methods are evaluated on the same gated decision; cross-request contamination is measured over
 $8$ held-out orders that are genuinely still pending (correct $=$ cancel), and collateral over a $10$-item
 battery of unrelated single-token gated decisions.
-
-\section{The user-memory agent}
-\label{app:memory-agent}
-The agent of \Cref{sec:memory} keeps the layout \texttt{[system][trajectory][MEMORY][query]}.
-The system prompt is prefilled once; the trajectory grows by cached deltas; the user-memory
-chunk is precompiled once in isolation and RoPE-repositioned to float just before the query
-each turn (an $O(L_\text{mem})$ re-rotation, no re-prefill) with one boundary token repaired;
-a memory change is applied either by recompiling the isolated chunk ($O(L_\text{mem})$, once)
-or by appending a salient erratum into the cached trajectory stream (append-only, composes
-with prefix caching). Confirmatory protocol: gated decisions whose governing facts live in a
-Markdown memory, balanced labels, chain-of-thought as the competent regime (direct one-shot
-memory-gated decisions are at chance for $\le$8B models), with cluster-bootstrap CIs
-($10^4$, persona-level), TOST equivalence ($\delta{=}0.03$; cosine $\ge0.98$), GEE-logistic
-(cluster-robust), McNemar, and BH-FDR. Faithfulness is read against a token-matched
-full-reprefill oracle. Pre-registered hypotheses, margins, and the inclusion gate (oracle
-accuracy $\ge0.80$) are released with the code.
 
 \section{Reproducibility}
 \label{app:repro}
