@@ -1,6 +1,6 @@
 """Generate NeurIPS-style figures (vector PDF) for the paper from results/*.json.
 Aesthetic: serif, small fonts, despined axes, light grids, colorblind palette, tight layout.
-Run: python paper/figs/make_figures.py   (cwd = repo patchkv/)
+Run: python paper/figs/make_figures.py   (cwd = repo root)
 """
 import json, os, glob
 import numpy as np

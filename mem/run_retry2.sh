@@ -1,7 +1,7 @@
 #!/bin/bash
 # Second retry: E5-14B (raise mem threshold so it launches with headroom against contention)
 # and the 32B LoCoMo point using the BF16 checkpoint (flash supports bf16; FP8 was rejected).
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/retry2_run.log; : > $LOG

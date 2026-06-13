@@ -1,6 +1,6 @@
 #!/bin/bash
 # Retry the runs that OOM'd under GPU contention (now that the GPU is free).
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/retry_run.log; : > $LOG

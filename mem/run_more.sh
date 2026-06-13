@@ -1,6 +1,6 @@
 #!/bin/bash
 # Remaining experiments in priority order (P1..P5), robust to intermittent GPU contention.
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/more_run.log; : > $LOG

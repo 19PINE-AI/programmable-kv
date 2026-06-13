@@ -2,7 +2,7 @@
 Panels: (a) read/write head cumulative recovery; (b) causal conclusion direction across layers;
 (c) attn-vs-MLP write share by readout layer; (d) causal-scrubbing faithfulness vs interchange;
 (e) SAE sparse-decode vs distributed-cause; (f) read-head decision->aggregator attention.
-Run: python paper/figs/make_circuit_figure.py   (cwd = repo patchkv/)
+Run: python paper/figs/make_circuit_figure.py   (cwd = repo root)
 """
 import json, os
 import numpy as np

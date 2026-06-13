@@ -1,6 +1,6 @@
 #!/bin/bash
 # E2 across models, sequential (one model in GPU at a time). Logs to results/e2_<tag>.log
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/e2_run.log; : > $LOG

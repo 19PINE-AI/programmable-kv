@@ -1,6 +1,6 @@
 #!/bin/bash
 # Re-run E5 with the matched-oracle fix (exact token stream), then final analyze + figures.
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/e5redo_run.log; : > $LOG

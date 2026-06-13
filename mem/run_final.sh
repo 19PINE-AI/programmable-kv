@@ -1,6 +1,6 @@
 #!/bin/bash
 # Runs after the master chain: negative control + LoCoMo attempt, then final analyze + figures.
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/final_run.log; : > $LOG

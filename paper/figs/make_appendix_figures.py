@@ -1,5 +1,5 @@
 """Appendix figures (NeurIPS style) for the paper — frontier, heatmaps, grouped bars.
-Run: python paper/figs/make_appendix_figures.py  (cwd = repo patchkv/)
+Run: python paper/figs/make_appendix_figures.py  (cwd = repo root)
 """
 import json, os, glob
 import numpy as np

@@ -15,8 +15,11 @@ __pycache__/
 *.out
 *.toc
 # page-render PNGs (throwaway previews)
-patchkv/paper/pg-*.png
+paper/pg-*.png
 # third-party dataset (downloadable; not redistributed)
-patchkv/mem/results/locomo10.json
+mem/results/locomo10.json
 # transient run logs
-patchkv/mem/results/*_run.log
+mem/results/*_run.log
+# node / vite build artifacts
+node_modules/
+site/dist/

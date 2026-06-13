@@ -1,6 +1,6 @@
 #!/bin/bash
 # Large-model sweep (14B-70B) + LoCoMo external validity. Full GPU. Sequential.
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/large_run.log; : > $LOG

@@ -2,7 +2,7 @@
 # Robust retry for runs that OOM under intermittent GPU contention: wait until enough GPU
 # memory is free before launching each run, and retry on failure with backoff (the node is
 # shared and other jobs grab/free 20-60GB unpredictably).
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/retry_run.log; : > $LOG

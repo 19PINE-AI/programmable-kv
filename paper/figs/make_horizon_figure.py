@@ -1,5 +1,5 @@
 """E-horizon figure (fig9_horizon.pdf): no compounding error over a long trajectory.
-Run: python paper/figs/make_horizon_figure.py   (cwd = repo patchkv/)
+Run: python paper/figs/make_horizon_figure.py   (cwd = repo root)
 """
 import json, os
 import numpy as np

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Full LoCoMo run: ALL answerable questions (all 10 conversations), 12k-token real memory.
 # Chained after the large sweep to avoid GPU contention. Supersedes the sweep's lighter LoCoMo.
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/locomo_full_run.log; : > $LOG

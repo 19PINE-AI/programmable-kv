@@ -1,6 +1,6 @@
 #!/bin/bash
 # Master chain: wait for E2 sweep, then run E1, E3, E4, E5, analyze, figures. Fully autonomous.
-cd /home/ubuntu/editable-kv/patchkv/mem
+cd "$(dirname "$0")"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TRANSFORMERS_VERBOSITY=error
 LOG=results/rest_run.log; : > $LOG
