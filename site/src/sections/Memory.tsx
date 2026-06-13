@@ -10,7 +10,7 @@ import { fmt, fmtX } from '../lib/format'
 import memory from '../data/memory.json'
 import constants from '../data/constants.json'
 
-const META = { id: 'memory', num: '11', title: 'Application: editable and composable user memory' }
+const META = { id: 'memory', num: '4', title: 'Application: editable and composable user memory' }
 
 /* ---------------- placement dilemma schematic ---------------- */
 
@@ -343,7 +343,7 @@ export function Memory() {
         The highest-value instance of the edit+compose substrate is <strong>user memory</strong>:
         the large, dynamically summarized profile an assistant re-reads every turn. Memory is big
         (10³–10⁴ tokens), reused across turns, and mutated mid-session by tool calls — so where it
-        lives in the prompt is a dilemma the mechanism explains precisely:
+        lives in the prompt is a dilemma the mechanism (§7) explains precisely:
       </P>
 
       <Figure narrow label="The placement dilemma." caption={<>Front placement pre-digests but makes every memory change expensive; end placement is cheap to change but re-attends memory every turn. The paper&rsquo;s resolution treats memory as a <em>skill that is also edited</em>.</>}>
@@ -387,7 +387,7 @@ export function Memory() {
         caption={
           <>
             When a stored fact toggles, reusing stale memory recovers the flipped decision
-            essentially never (≤0.03); every real edit recovers it. Consistent with §6, the
+            essentially never (≤0.03); every real edit recovers it. Consistent with §3, the
             near-free in-place edit suffices under CoT and strengthens with scale.
           </>
         }
@@ -401,7 +401,7 @@ export function Memory() {
         caption={
           <>
             Editing a field <em>inside a transplanted memory chunk</em> (70B, direct mode, where
-            decisions genuinely vary) reproduces §2&rsquo;s memoization verbatim: the
+            decisions genuinely vary) reproduces §7&rsquo;s memoization verbatim: the
             field&rsquo;s own KV recovers little, recovery climbs with selective recompute, and
             under CoT the stickiness dissolves (a flat selective@K sweep at ≈0.98). One substrate,
             twice over.

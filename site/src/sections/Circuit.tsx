@@ -8,7 +8,7 @@ import { ChartSvg, COLORS, Legend } from '../components/charts/core'
 import { fmt } from '../lib/format'
 import circuit from '../data/circuit.json'
 
-const META = { id: 'circuit', num: '5', title: 'The circuit: distributed write, concentrated read' }
+const META = { id: 'circuit', num: '13', title: 'Under the hood: the component circuit' }
 
 function layerOf(head: string) {
   return parseInt(head.split('.')[0], 10)
@@ -346,7 +346,7 @@ export function Circuit() {
             A trained sparse autoencoder finds features that decode the conclusion{' '}
             <em>perfectly</em> (AUC 1.0) — yet patching the top features alone recovers only about
             half the decision, spreading over ~10–30 features. The same
-            decodability-vs-causation split the controls established in §4, now at the level of
+            decodability-vs-causation split the controls established in §12, now at the level of
             single features: read the cache by its causal effect, not by what a probe can extract.
           </>
         }

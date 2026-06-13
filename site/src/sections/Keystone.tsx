@@ -6,7 +6,7 @@ import { COLORS, Legend } from '../components/charts/core'
 import { fmt, fmtX } from '../lib/format'
 import keystone from '../data/keystone.json'
 
-const META = { id: 'keystone', num: '8', title: 'One substrate: the keystone experiment' }
+const META = { id: 'keystone', num: '9', title: 'One substrate: edit and compose are the same object' }
 
 const METHOD_COLORS: Record<string, string> = {
   in_place: COLORS.orange,
@@ -79,7 +79,7 @@ export function Keystone() {
   return (
     <Section meta={META}>
       <P>
-        Editing (§6) and composing (§7) were derived from the same mechanism — but are they really
+        Editing (§3) and composing (§2) both rest on the same mechanism (§7) — but are they really
         two operations on <em>one object</em>? The keystone test: transplant a skill whose body
         contains a mutable field, then <strong>edit the field inside the transplant</strong>. If
         the notes a transplant pastes in are the same notes an edit amends, every editing method
@@ -128,7 +128,7 @@ export function Keystone() {
       <Aside>
         <b>Reading the agreement numbers.</b> Agreement is measured against full recompute on
         gated decisions that sit near the action boundary, so sub-percent logit differences can
-        flip a discrete choice — the same boundary noise quantified in §12&rsquo;s 28-turn stress
+        flip a discrete choice — the same boundary noise quantified in §10&rsquo;s 28-turn stress
         test, which shows it does <em>not</em> compound with trajectory length.
       </Aside>
     </Section>

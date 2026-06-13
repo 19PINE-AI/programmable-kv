@@ -10,7 +10,7 @@ import { fmt, fmtPct, fmtMs } from '../lib/format'
 import editing from '../data/editing.json'
 import prompts from '../data/prompts.json'
 
-const META = { id: 'editable', num: '6', title: 'Consequence I: the cache is editable' }
+const META = { id: 'editable', num: '3', title: 'Mutate in place: the editable cache' }
 
 const METHOD_INFO: Record<string, { label: string; desc: string; color: string }> = {
   full_reprefill: { label: 'full reprefill', color: COLORS.gray, desc: 'recompute the whole context — correct but pays the full quadratic prefill' },
@@ -174,11 +174,13 @@ export function Editable() {
   return (
     <Section meta={META}>
       <P>
-        If the stale notes carry an old conclusion, the cheapest correct intervention is not
-        recomputation — it is <strong>amending the notes</strong>: append a one-line, salient{' '}
-        <em>erratum</em> late in the context, where the decision token will attend to it as a
-        fresh, authoritative note. The edit is append-only, so the entire cached prefix stays
-        byte-identical and cache-aligned (which is what makes §10&rsquo;s serving numbers
+        The second challenge was <strong>mutation</strong>: when a field changes mid-session you
+        should not have to recompute the cache. The naive fix — surgically refreshing the
+        field&rsquo;s own keys and values — is silently ignored (we show exactly why in §7). The
+        cheap intervention that <em>does</em> work is to <strong>amend the cache</strong>: append a
+        one-line, salient <em>erratum</em> late in the context, where the decision token attends to
+        it as a fresh, authoritative note. The edit is append-only, so the entire cached prefix
+        stays byte-identical and cache-aligned (which is what makes §5&rsquo;s serving numbers
         possible). Click through the frontier:
       </P>
 
@@ -201,7 +203,7 @@ export function Editable() {
 
       <H3>The surgical option, mapped honestly</H3>
       <P>
-        §2&rsquo;s specificity result suggests a surgical alternative: recompute the field plus
+        §7&rsquo;s specificity result suggests a surgical alternative: recompute the field plus
         the K highest-effect downstream tokens. It works — sometimes. Under reasoning, the minimal
         K to reach full quality is wildly model-dependent, because how <em>sticky</em> the memoized
         conclusion is does not track scale:

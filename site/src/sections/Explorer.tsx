@@ -5,7 +5,7 @@ import { Controls, ControlGroup, Seg, ModelPicker } from '../components/ui/Contr
 import { SegmentedPrompt } from '../components/diagrams/SegmentedPrompt'
 import prompts from '../data/prompts.json'
 
-const META = { id: 'explorer', num: '13', title: 'The prompts and test cases, verbatim' }
+const META = { id: 'explorer', num: '14', title: 'Prompts and test cases, verbatim' }
 
 /** Plain prompt box with substring highlights (first occurrence each). */
 function HighlightedPrompt({ text, marks, maxHeight = 420 }: { text: string; marks: { substr: string; cls: string }[]; maxHeight?: number }) {
@@ -158,7 +158,7 @@ function SkillCard() {
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
         Precompiled in isolation at positions 0…L−1, keys re-rotated to the target offset, spliced
         after the system prompt. Correct decision: <b>{sk.correct}</b> — preserved by the
-        transplant (§7), including under chain-of-thought.
+        transplant (§2), including under chain-of-thought.
       </div>
     </div>
   )

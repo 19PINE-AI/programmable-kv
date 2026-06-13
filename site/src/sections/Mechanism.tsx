@@ -8,7 +8,7 @@ import { ChartSvg, COLORS, Legend } from '../components/charts/core'
 import { fmt, fmtPct } from '../lib/format'
 import mechanism from '../data/mechanism.json'
 
-const META = { id: 'mechanism', num: '2', title: 'The discovery: memoized inference, in four causal probes' }
+const META = { id: 'mechanism', num: '7', title: 'Models take notes at prefill' }
 
 function CachePatchLab() {
   const models = mechanism.models as any[]
@@ -287,7 +287,7 @@ export function Mechanism() {
       <P>
         A linear probe finds the field-conditioned conclusion decodable from downstream
         tokens&rsquo; residual streams already at prefill time — the model has computed and
-        recorded the answer before any decoding starts (per-layer curves in §4, where we also pin
+        recorded the answer before any decoding starts (per-layer curves in §12, where we also pin
         down <em>when</em> the note is written). And the dose–response below shows the memoization
         follows the field&rsquo;s position: the later the field appears, the fewer tokens sit
         after it to memoize a conclusion, and the more an in-place edit recovers.
@@ -336,8 +336,10 @@ export function Mechanism() {
       <Aside>
         <b>Naming it.</b> At prefill the model computes the field-conditioned conclusion and
         writes it onto downstream aggregator tokens; at decode the decision reads those notes, not
-        the field. The paper names this <b>attention-mediated memoized inference</b>. §4 and §5
-        stress-test the account; §6–§7 turn it into capabilities.
+        the field. The paper names this <b>attention-mediated memoized inference</b>. This is the
+        single fact behind everything in Part I — composing (§2) reuses the notes, editing (§3)
+        amends them — and the keystone (§9) confirms they are one object. For the deeper evidence,
+        §12–§13 stress-test the account down to the level of individual heads and features.
       </Aside>
     </Section>
   )

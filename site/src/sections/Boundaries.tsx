@@ -1,7 +1,7 @@
 import { Section, P } from '../components/ui/Section'
 import constants from '../data/constants.json'
 
-const META = { id: 'boundaries', num: '14', title: 'Boundaries, honestly — and colophon' }
+const META = { id: 'boundaries', num: '15', title: 'Boundaries and colophon' }
 
 const LIMITS = [
   {

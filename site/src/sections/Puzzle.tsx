@@ -6,7 +6,7 @@ import { SegmentedPrompt } from '../components/diagrams/SegmentedPrompt'
 import prompts from '../data/prompts.json'
 import editing from '../data/editing.json'
 
-const META = { id: 'puzzle', num: '1', title: 'The puzzle: a surgical edit that the model ignores' }
+const META = { id: 'puzzle', num: '6', title: 'Why it works: a surgical edit the model ignores' }
 
 type Treatment = 'stale_full' | 'field_only' | 'oracle_new'
 
@@ -26,6 +26,12 @@ export function Puzzle() {
 
   return (
     <Section meta={META}>
+      <Aside>
+        <b>Part II — why it works.</b> Everything above (§1–§5) rested on one claim: a precompiled
+        skill stays correct when you move it, and a stale cache stays correct when you amend it with
+        an erratum. The rest of the page earns that claim. It starts from the obvious optimization
+        that <em>fails</em>.
+      </Aside>
       <P>
         Here is the paper&rsquo;s running example, verbatim from the released harness: a
         customer-support agent with a policy document, a tool catalog, and one{' '}
@@ -130,7 +136,7 @@ export function Puzzle() {
             re-derives the conclusion. <b>Without reasoning, the same edit recovers nothing</b> —
             P(correct) ={' '}
             {(editing.baseline.methods.find((m: any) => m.method === 'in_place')!.P_correct as number).toFixed(2)}{' '}
-            across the editing benchmark (§6). The model simply acts on the old value, as if the
+            across the editing benchmark (§3). The model simply acts on the old value, as if the
             edit never happened.
           </div>
         )}

@@ -7,7 +7,7 @@ import { COLORS } from '../components/charts/core'
 import { fmt } from '../lib/format'
 import reach from '../data/reach.json'
 
-const META = { id: 'reach', num: '9', title: 'Reach: the substrate is any per-token attention KV' }
+const META = { id: 'reach', num: '11', title: 'Reach: where the substrate holds' }
 
 interface Card {
   status: string
@@ -86,7 +86,7 @@ function VariantMap() {
       items: 'pure-recurrent (RWKV) · pure-SSM (Mamba) · diffusion LMs',
       body: (
         <>The prompt-level erratum still applies as plain text, but there is no per-token cache to
-        edit or splice — §6&rsquo;s architecture bar shows the erratum&rsquo;s recovery decaying
+        edit or splice — §3&rsquo;s architecture bar shows the erratum&rsquo;s recovery decaying
         exactly along this axis.</>
       ),
     },
@@ -208,7 +208,7 @@ export function Reach() {
       <Aside>
         <b>Scale, quantization, MoE.</b> The transplant is faithful from 0.6B to 32B, on FP8
         checkpoints, on a 30B-A3B Mixture-of-Experts, and on a 4-bit 70B (logit cosine 0.986) —
-        the unified agent of §8 spans all thirteen. Per-token KV, not model size, is the
+        the unified agent of §9 spans all thirteen. Per-token KV, not model size, is the
         load-bearing assumption.
       </Aside>
     </Section>

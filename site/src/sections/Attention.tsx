@@ -4,7 +4,7 @@ import { ChartSvg, COLORS } from '../components/charts/core'
 import { fmtPct } from '../lib/format'
 import constants from '../data/constants.json'
 
-const META = { id: 'attention', num: '3', title: 'How attention reads the notes' }
+const META = { id: 'attention', num: '8', title: 'How attention reads the notes' }
 
 /**
  * One panel of the attention-flow comparison: where the decision token's
@@ -143,7 +143,7 @@ export function Attention() {
       </Figure>
 
       <P>
-        The same intervention explains the reasoning fast-path from §1: under chain-of-thought the
+        The same intervention explains the reasoning fast-path from §6: under chain-of-thought the
         chain itself is the corrective reader — it re-reads the fresh field and re-derives the
         conclusion (P(safe) {ko.reasoning.baseline_P_safe.toFixed(2)} with field-only editing), and
         masking the <em>chain&rsquo;s</em> attention instead drops safety to{' '}

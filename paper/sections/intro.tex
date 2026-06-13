@@ -54,18 +54,25 @@ skills, $O(L)$ vs.\ $O(L^2)$ TTFT ($13.9\times$ at $32$k), with a seam-repair kn
 prior caching work, with our addition being the mechanism that explains it and a correctness lens.
 \item \textbf{The unification} (\Cref{sec:keystone}): the keystone and a unified edit+compose agent over
 thirteen models.
+\item \textbf{An application: user memory} (\Cref{sec:memory}): the large, mutable user-memory
+document is both composed (precompiled, repositioned, spliced) and edited (in-place / erratum)
+as one substrate---decision-faithful to full recompute at $2.3$--$4.3\times$ lower
+time-to-first-token, validated to $70$B and on real long-conversation memory (LoCoMo, transplant
+$\equiv$ full recompute in QA accuracy)---with a pre-registered, statistically-controlled evaluation.
 \item \textbf{Reach and scope} (\Cref{sec:reach}): validation across scale, MoE, quantization, and
 multimodal image caches; small adapters for MLA and interleaved M-RoPE; a fix for sliding-window; and an
 analysis of where the substrate holds up to the 2026 sparse/compressed-attention frontier.
 \item \textbf{Systems payoff} (\Cref{sec:systems}): a real agentic environment and a comprehensive online
 vLLM serving benchmark (V1 engine, continuous batching, Poisson load)---$98.5\%$ vs.\ $1\%$ prefix-cache
 hit-rate, $53$--$398\times$ lower $p90$ TTFT, and throughput gains that grow with load to $14.5\times$.
-\item \textbf{An application: user memory} (\Cref{sec:memory}): the large, mutable user-memory
-document is both composed (precompiled, repositioned, spliced) and edited (in-place / erratum)
-as one substrate---decision-faithful to full recompute at $2.3$--$4.3\times$ lower
-time-to-first-token, validated to $70$B and on real long-conversation memory (LoCoMo, transplant
-$\equiv$ full recompute in QA accuracy)---with a pre-registered, statistically-controlled evaluation.
 \end{itemize}
+
+\paragraph{Roadmap.} \Cref{sec:mechanism} establishes the mechanism, attention-mediated memoized
+inference. \Cref{sec:editable,sec:composable} derive the two capabilities it implies---editing and
+composing the cache---and \Cref{sec:keystone} shows they act on one substrate. \Cref{sec:memory} applies
+both to the highest-value case, user memory; \Cref{sec:reach} maps how far the substrate reaches across
+architectures, quantization, and modalities; and \Cref{sec:systems} reports the end-to-end systems payoff
+in a real agent environment and a comprehensive online serving benchmark.
 
 \begin{figure}[t]
 \centering

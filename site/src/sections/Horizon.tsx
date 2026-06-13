@@ -7,7 +7,7 @@ import { COLORS, Legend } from '../components/charts/core'
 import { fmt } from '../lib/format'
 import horizon from '../data/horizon.json'
 
-const META = { id: 'horizon', num: '12', title: 'No compounding error over a long trajectory' }
+const META = { id: 'horizon', num: '10', title: 'No compounding error over long trajectories' }
 
 const MODEL_COLORS = [COLORS.blue, COLORS.orange, COLORS.purple]
 
@@ -63,7 +63,7 @@ export function Horizon() {
       </Figure>
 
       <Aside>
-        <b>Why this matters.</b> The unified agent (§8) and the memory agent (§11) both ride on
+        <b>Why this matters.</b> The unified agent (§9) and the memory agent (§4) both ride on
         leave-stale-plus-erratum caches for entire sessions. This is the experiment that says they
         may: the erratum is not a patch that decays — the amended notes are as stable as fresh
         ones.

@@ -7,7 +7,7 @@ import { ChartSvg, COLORS } from '../components/charts/core'
 import { fmt, fmtMs, fmtPct, fmtX } from '../lib/format'
 import systems from '../data/systems.json'
 
-const META = { id: 'systems', num: '10', title: 'Systems payoff: a real online serving benchmark' }
+const META = { id: 'systems', num: '5', title: 'Systems payoff: a real online serving benchmark' }
 
 function rateLabel(r: number) {
   return r === 0 ? 'saturation' : `${r} req/s`
@@ -158,7 +158,7 @@ export function Systems() {
           <>
             Exactly as predicted for a compute-bound vs. cache-bound regime: {fmtX(1.6, 1)} at 2
             req/s rising to <b>{fmtX(sat.throughput_speedup, 1)}</b> at saturation. This is the
-            serving translation of §6&rsquo;s append-only property — the edit is not just correct,
+            serving translation of §3&rsquo;s append-only property — the edit is not just correct,
             it is <em>cache-shaped</em>.
           </>
         }
@@ -174,7 +174,7 @@ export function Systems() {
         success at a fraction of the recompute. On the real ~1.4k-token retail policy, transplant
         reproduces the clean decision; the one hard case (a long, buried field that must flip a
         conclusion) needs the robust <code>field+erratum</code> edit — the same long-context
-        lesson §6 predicts, now in a real environment.
+        lesson §3 predicts, now in a real environment.
       </P>
 
       <Figure
@@ -193,7 +193,7 @@ export function Systems() {
       <Aside>
         <b>Why the in-prefix baseline is the right one.</b> It is what every serving stack does
         today when a templated field changes: re-render the prompt, lose the prefix match. The
-        erratum is behaviorally equivalent (§6) and turns the same update into an append — the
+        erratum is behaviorally equivalent (§3) and turns the same update into an append — the
         entire 53–398× p90 gap is downstream of that one representational choice.
       </Aside>
     </Section>

@@ -10,7 +10,7 @@ import controls from '../data/controls.json'
 import prompts from '../data/prompts.json'
 import constants from '../data/constants.json'
 
-const META = { id: 'controls', num: '4', title: 'Stress-testing the account: conclusion ≠ content' }
+const META = { id: 'controls', num: '12', title: 'Under the hood: stress-testing the mechanism' }
 
 /* ------------------------------------------------------------------ */
 /* (a) dissociation: one trigger token flips the conclusion           */
@@ -300,7 +300,7 @@ export function DeepControls() {
   return (
     <Section meta={META}>
       <P>
-        A skeptic&rsquo;s null hypothesis survives §2: maybe the downstream tokens merely{' '}
+        A skeptic&rsquo;s null hypothesis survives §7: maybe the downstream tokens merely{' '}
         <em>re-encode the field&rsquo;s content</em>, and the decision re-reads that copy. Four
         controls close the gap between &ldquo;the conclusion is <em>decodable</em>{' '}
         downstream&rdquo; and &ldquo;the decision <em>uses</em> a memoized conclusion.&rdquo;
@@ -413,7 +413,7 @@ export function DeepControls() {
         <b>Where this leaves the account.</b> The conclusion is causally separable from the
         content (Control 1), concentrated on nameable positions (Control 2), writable (Control 3),
         and written at prefill before any read (Control 4). What remains is to find the components
-        — §5 names the heads.
+        — §13 names the heads.
       </Aside>
     </Section>
   )

@@ -10,7 +10,7 @@ import { fmt, fmtX, fmtTokens } from '../lib/format'
 import composing from '../data/composing.json'
 import constants from '../data/constants.json'
 
-const META = { id: 'composable', num: '7', title: 'Consequence II: the cache is composable' }
+const META = { id: 'composable', num: '2', title: 'Load a skill once: the composable cache' }
 
 function TtftScaling() {
   const sc = composing.scaling as any[]
@@ -153,12 +153,13 @@ export function Composable() {
   return (
     <Section meta={META}>
       <P>
-        The second consequence: if a region&rsquo;s notes are localized and re-derivable from
-        context the decision can still see, they should be <strong>position-portable</strong>.
-        Compute a reusable <em>skill</em> — a policy, a tool spec — once, in isolation; then move
-        its cached KV to wherever it lands in a new context. Because attention libraries cache{' '}
+        The first challenge was <strong>loading skills</strong>: a reusable skill — a policy, a
+        tool spec — should be loadable once and reused anywhere, not re-prefilled every time it
+        lands in a new context. It can be. Compute the skill&rsquo;s KV once, in isolation, then
+        move it to wherever it sits in a new context. Because attention libraries cache{' '}
         <em>post-RoPE</em> keys, moving a chunk means re-rotating its keys to the target positions
-        (values carry no position at all):
+        (values carry no position at all). The reason this preserves behavior — a skill&rsquo;s notes
+        are re-derivable from context the decision can still see — is the mechanism we unpack in §7.
       </P>
 
       <Figure
@@ -205,7 +206,7 @@ export function Composable() {
             A precompiled, repositioned skill reproduces the full-reprefill decision domain by
             domain. The one residual error across the study is a <em>seam</em> at the
             chunk&rsquo;s start — the few tokens that would have attended to the now-missing
-            prefix — and recomputing 1–2 boundary tokens closes it. §2&rsquo;s mechanism is why it
+            prefix — and recomputing 1–2 boundary tokens closes it. §7&rsquo;s mechanism is why it
             is the boundary, specifically, that needs repair.
           </>
         }
@@ -234,7 +235,7 @@ export function Composable() {
           <>
             Transplant preserves real tool-calling — not a proxy metric — across 8 models. The one
             consistent exception in the wider study is sliding-window attention (Gemma), diagnosed
-            and fixed in §9.
+            and fixed in §11.
           </>
         }
       >
@@ -249,7 +250,7 @@ export function Composable() {
             Logit cosine to full recompute as N=1–4 independently-precompiled skills are spliced
             into one context. The recorded decision matches full recompute in nearly every cell;
             the exceptions sit at cosine ≥0.996 — boundary flips of a near-tied decision, the same
-            sensitivity quantified in §12, not transplant damage.
+            sensitivity quantified in §10, not transplant damage.
           </>
         }
       >
