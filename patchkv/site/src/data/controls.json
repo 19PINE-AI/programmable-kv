@@ -1,0 +1,3185 @@
+{
+ "xcond": [
+  {
+   "tag": "qwen3_4b",
+   "label": "Qwen3-4B",
+   "n": 36,
+   "trigger_only": {
+    "mean": -0.007,
+    "ci": [
+     -0.012,
+     -0.003
+    ]
+   },
+   "notes": {
+    "mean": 1.009,
+    "ci": [
+     1.004,
+     1.014
+    ]
+   },
+   "full_downstream": {
+    "mean": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "probe": [
+    {
+     "layer": 14,
+     "concl_acc": 0.742,
+     "field_acc": 0.988,
+     "depth": 0.39
+    },
+    {
+     "layer": 18,
+     "concl_acc": 0.825,
+     "field_acc": 0.975,
+     "depth": 0.5
+    },
+    {
+     "layer": 21,
+     "concl_acc": 1.0,
+     "field_acc": 0.988,
+     "depth": 0.58
+    },
+    {
+     "layer": 25,
+     "concl_acc": 1.0,
+     "field_acc": 1.0,
+     "depth": 0.69
+    },
+    {
+     "layer": 28,
+     "concl_acc": 1.0,
+     "field_acc": 1.0,
+     "depth": 0.78
+    }
+   ]
+  },
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "n": 36,
+   "trigger_only": {
+    "mean": -0.007,
+    "ci": [
+     -0.008,
+     -0.004
+    ]
+   },
+   "notes": {
+    "mean": 1.004,
+    "ci": [
+     1.003,
+     1.005
+    ]
+   },
+   "full_downstream": {
+    "mean": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "probe": [
+    {
+     "layer": 14,
+     "concl_acc": 0.783,
+     "field_acc": 0.988,
+     "depth": 0.39
+    },
+    {
+     "layer": 18,
+     "concl_acc": 0.904,
+     "field_acc": 1.0,
+     "depth": 0.5
+    },
+    {
+     "layer": 21,
+     "concl_acc": 1.0,
+     "field_acc": 1.0,
+     "depth": 0.58
+    },
+    {
+     "layer": 25,
+     "concl_acc": 1.0,
+     "field_acc": 1.0,
+     "depth": 0.69
+    },
+    {
+     "layer": 28,
+     "concl_acc": 1.0,
+     "field_acc": 1.0,
+     "depth": 0.78
+    }
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "n": 36,
+   "trigger_only": {
+    "mean": 0.007,
+    "ci": [
+     0.002,
+     0.014
+    ]
+   },
+   "notes": {
+    "mean": 0.998,
+    "ci": [
+     0.995,
+     1.002
+    ]
+   },
+   "full_downstream": {
+    "mean": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "probe": [
+    {
+     "layer": 12,
+     "concl_acc": 1.0,
+     "field_acc": 0.821,
+     "depth": 0.38
+    },
+    {
+     "layer": 16,
+     "concl_acc": 1.0,
+     "field_acc": 0.963,
+     "depth": 0.5
+    },
+    {
+     "layer": 19,
+     "concl_acc": 1.0,
+     "field_acc": 1.0,
+     "depth": 0.59
+    },
+    {
+     "layer": 22,
+     "concl_acc": 1.0,
+     "field_acc": 1.0,
+     "depth": 0.69
+    },
+    {
+     "layer": 25,
+     "concl_acc": 1.0,
+     "field_acc": 1.0,
+     "depth": 0.78
+    }
+   ]
+  }
+ ],
+ "specificity": [
+  {
+   "tag": "qwen3_4b",
+   "label": "Qwen3-4B",
+   "ks": [
+    {
+     "k": 1,
+     "top": {
+      "mean": 0.268,
+      "ci": [
+       0.243,
+       0.31
+      ]
+     },
+     "rand": {
+      "mean": 0.006,
+      "ci": [
+       0.004,
+       0.008
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "top": {
+      "mean": 0.423,
+      "ci": [
+       0.387,
+       0.479
+      ]
+     },
+     "rand": {
+      "mean": 0.007,
+      "ci": [
+       0.003,
+       0.012
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "top": {
+      "mean": 0.588,
+      "ci": [
+       0.54,
+       0.652
+      ]
+     },
+     "rand": {
+      "mean": 0.005,
+      "ci": [
+       0.004,
+       0.006
+      ]
+     }
+    },
+    {
+     "k": 8,
+     "top": {
+      "mean": 0.744,
+      "ci": [
+       0.701,
+       0.791
+      ]
+     },
+     "rand": {
+      "mean": 0.035,
+      "ci": [
+       0.019,
+       0.067
+      ]
+     }
+    },
+    {
+     "k": 16,
+     "top": {
+      "mean": 0.856,
+      "ci": [
+       0.826,
+       0.893
+      ]
+     },
+     "rand": {
+      "mean": 0.041,
+      "ci": [
+       0.022,
+       0.07
+      ]
+     }
+    },
+    {
+     "k": 32,
+     "top": {
+      "mean": 0.888,
+      "ci": [
+       0.849,
+       0.914
+      ]
+     },
+     "rand": {
+      "mean": 0.063,
+      "ci": [
+       0.053,
+       0.07
+      ]
+     }
+    },
+    {
+     "k": 64,
+     "top": {
+      "mean": 0.911,
+      "ci": [
+       0.886,
+       0.929
+      ]
+     },
+     "rand": {
+      "mean": 0.139,
+      "ci": [
+       0.123,
+       0.163
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "ks": [
+    {
+     "k": 1,
+     "top": {
+      "mean": 0.269,
+      "ci": [
+       0.237,
+       0.298
+      ]
+     },
+     "rand": {
+      "mean": 0.003,
+      "ci": [
+       -0.002,
+       0.007
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "top": {
+      "mean": 0.405,
+      "ci": [
+       0.358,
+       0.43
+      ]
+     },
+     "rand": {
+      "mean": 0.003,
+      "ci": [
+       -0.004,
+       0.011
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "top": {
+      "mean": 0.593,
+      "ci": [
+       0.525,
+       0.635
+      ]
+     },
+     "rand": {
+      "mean": 0.007,
+      "ci": [
+       -0.0,
+       0.011
+      ]
+     }
+    },
+    {
+     "k": 8,
+     "top": {
+      "mean": 0.78,
+      "ci": [
+       0.723,
+       0.82
+      ]
+     },
+     "rand": {
+      "mean": 0.009,
+      "ci": [
+       0.005,
+       0.017
+      ]
+     }
+    },
+    {
+     "k": 16,
+     "top": {
+      "mean": 0.92,
+      "ci": [
+       0.874,
+       0.955
+      ]
+     },
+     "rand": {
+      "mean": 0.06,
+      "ci": [
+       0.047,
+       0.08
+      ]
+     }
+    },
+    {
+     "k": 32,
+     "top": {
+      "mean": 0.962,
+      "ci": [
+       0.939,
+       0.978
+      ]
+     },
+     "rand": {
+      "mean": 0.082,
+      "ci": [
+       0.048,
+       0.111
+      ]
+     }
+    },
+    {
+     "k": 64,
+     "top": {
+      "mean": 0.977,
+      "ci": [
+       0.962,
+       0.99
+      ]
+     },
+     "rand": {
+      "mean": 0.112,
+      "ci": [
+       0.097,
+       0.126
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "ks": [
+    {
+     "k": 1,
+     "top": {
+      "mean": 0.556,
+      "ci": [
+       0.495,
+       0.592
+      ]
+     },
+     "rand": {
+      "mean": 0.002,
+      "ci": [
+       0.001,
+       0.003
+      ]
+     }
+    },
+    {
+     "k": 2,
+     "top": {
+      "mean": 0.643,
+      "ci": [
+       0.571,
+       0.679
+      ]
+     },
+     "rand": {
+      "mean": 0.016,
+      "ci": [
+       0.005,
+       0.039
+      ]
+     }
+    },
+    {
+     "k": 4,
+     "top": {
+      "mean": 0.731,
+      "ci": [
+       0.646,
+       0.791
+      ]
+     },
+     "rand": {
+      "mean": 0.017,
+      "ci": [
+       0.005,
+       0.038
+      ]
+     }
+    },
+    {
+     "k": 8,
+     "top": {
+      "mean": 0.793,
+      "ci": [
+       0.708,
+       0.839
+      ]
+     },
+     "rand": {
+      "mean": 0.005,
+      "ci": [
+       -0.004,
+       0.015
+      ]
+     }
+    },
+    {
+     "k": 16,
+     "top": {
+      "mean": 0.856,
+      "ci": [
+       0.802,
+       0.886
+      ]
+     },
+     "rand": {
+      "mean": 0.04,
+      "ci": [
+       0.031,
+       0.052
+      ]
+     }
+    },
+    {
+     "k": 32,
+     "top": {
+      "mean": 0.875,
+      "ci": [
+       0.807,
+       0.909
+      ]
+     },
+     "rand": {
+      "mean": 0.067,
+      "ci": [
+       0.059,
+       0.077
+      ]
+     }
+    },
+    {
+     "k": 64,
+     "top": {
+      "mean": 0.9,
+      "ci": [
+       0.842,
+       0.932
+      ]
+     },
+     "rand": {
+      "mean": 0.111,
+      "ci": [
+       0.079,
+       0.171
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "inject": [
+  {
+   "tag": "qwen3_4b",
+   "label": "Qwen3-4B",
+   "full_recovery": {
+    "mean": 0.981,
+    "ci": [
+     0.975,
+     0.99
+    ]
+   },
+   "flip_rate": 0.889,
+   "follows_rate": 1.0,
+   "dose": [
+    {
+     "k": 1,
+     "recovery": 0.18,
+     "ci": [
+      0.158,
+      0.211
+     ],
+     "follow_rate": 0.167
+    },
+    {
+     "k": 2,
+     "recovery": 0.289,
+     "ci": [
+      0.26,
+      0.329
+     ],
+     "follow_rate": 0.5
+    },
+    {
+     "k": 4,
+     "recovery": 0.433,
+     "ci": [
+      0.393,
+      0.478
+     ],
+     "follow_rate": 0.556
+    },
+    {
+     "k": 8,
+     "recovery": 0.581,
+     "ci": [
+      0.537,
+      0.635
+     ],
+     "follow_rate": 0.556
+    },
+    {
+     "k": 16,
+     "recovery": 0.667,
+     "ci": [
+      0.639,
+      0.711
+     ],
+     "follow_rate": 0.556
+    },
+    {
+     "k": 32,
+     "recovery": 0.69,
+     "ci": [
+      0.646,
+      0.744
+     ],
+     "follow_rate": 0.611
+    }
+   ]
+  },
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "full_recovery": {
+    "mean": 0.99,
+    "ci": [
+     0.988,
+     0.991
+    ]
+   },
+   "flip_rate": 1.0,
+   "follows_rate": 1.0,
+   "dose": [
+    {
+     "k": 1,
+     "recovery": 0.19,
+     "ci": [
+      0.184,
+      0.196
+     ],
+     "follow_rate": 0.056
+    },
+    {
+     "k": 2,
+     "recovery": 0.305,
+     "ci": [
+      0.293,
+      0.318
+     ],
+     "follow_rate": 0.222
+    },
+    {
+     "k": 4,
+     "recovery": 0.456,
+     "ci": [
+      0.422,
+      0.489
+     ],
+     "follow_rate": 0.278
+    },
+    {
+     "k": 8,
+     "recovery": 0.615,
+     "ci": [
+      0.561,
+      0.657
+     ],
+     "follow_rate": 0.722
+    },
+    {
+     "k": 16,
+     "recovery": 0.731,
+     "ci": [
+      0.693,
+      0.778
+     ],
+     "follow_rate": 0.889
+    },
+    {
+     "k": 32,
+     "recovery": 0.763,
+     "ci": [
+      0.711,
+      0.828
+     ],
+     "follow_rate": 0.889
+    }
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "full_recovery": {
+    "mean": 1.02,
+    "ci": [
+     1.016,
+     1.022
+    ]
+   },
+   "flip_rate": 0.0,
+   "follows_rate": 1.0,
+   "dose": [
+    {
+     "k": 1,
+     "recovery": 0.508,
+     "ci": [
+      0.488,
+      0.52
+     ],
+     "follow_rate": 1.0
+    },
+    {
+     "k": 2,
+     "recovery": 0.591,
+     "ci": [
+      0.563,
+      0.607
+     ],
+     "follow_rate": 1.0
+    },
+    {
+     "k": 4,
+     "recovery": 0.677,
+     "ci": [
+      0.641,
+      0.699
+     ],
+     "follow_rate": 1.0
+    },
+    {
+     "k": 8,
+     "recovery": 0.72,
+     "ci": [
+      0.686,
+      0.741
+     ],
+     "follow_rate": 1.0
+    },
+    {
+     "k": 16,
+     "recovery": 0.761,
+     "ci": [
+      0.753,
+      0.765
+     ],
+     "follow_rate": 1.0
+    },
+    {
+     "k": 32,
+     "recovery": 0.794,
+     "ci": [
+      0.79,
+      0.796
+     ],
+     "follow_rate": 1.0
+    }
+   ]
+  }
+ ],
+ "timing": [
+  {
+   "tag": "qwen3_4b",
+   "label": "Qwen3-4B",
+   "nlayers": 36,
+   "curves": {
+    "lets_check": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.554,
+      "field_acc": 0.5,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.525,
+      "field_acc": 0.542,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.5,
+      "field_acc": 0.525,
+      "depth": 0.08
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.554,
+      "field_acc": 0.675,
+      "depth": 0.11
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.625,
+      "field_acc": 0.783,
+      "depth": 0.14
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.642,
+      "field_acc": 0.787,
+      "depth": 0.17
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.642,
+      "field_acc": 0.817,
+      "depth": 0.19
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.725,
+      "field_acc": 0.863,
+      "depth": 0.22
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.662,
+      "field_acc": 0.85,
+      "depth": 0.25
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.696,
+      "field_acc": 0.838,
+      "depth": 0.28
+     },
+     {
+      "layer": 11,
+      "concl_acc": 0.642,
+      "field_acc": 0.925,
+      "depth": 0.31
+     },
+     {
+      "layer": 12,
+      "concl_acc": 0.896,
+      "field_acc": 0.925,
+      "depth": 0.33
+     },
+     {
+      "layer": 13,
+      "concl_acc": 0.846,
+      "field_acc": 0.929,
+      "depth": 0.36
+     },
+     {
+      "layer": 14,
+      "concl_acc": 0.929,
+      "field_acc": 0.975,
+      "depth": 0.39
+     },
+     {
+      "layer": 15,
+      "concl_acc": 0.917,
+      "field_acc": 1.0,
+      "depth": 0.42
+     },
+     {
+      "layer": 16,
+      "concl_acc": 0.958,
+      "field_acc": 0.958,
+      "depth": 0.44
+     },
+     {
+      "layer": 17,
+      "concl_acc": 0.983,
+      "field_acc": 0.983,
+      "depth": 0.47
+     },
+     {
+      "layer": 18,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.5
+     },
+     {
+      "layer": 19,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.53
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.56
+     },
+     {
+      "layer": 21,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.58
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.61
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.64
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.67
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.83
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.86
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.89
+     },
+     {
+      "layer": 33,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.92
+     },
+     {
+      "layer": 34,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 35,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 36,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ],
+    "task_hdr": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.475,
+      "field_acc": 0.546,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.483,
+      "field_acc": 0.504,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.542,
+      "field_acc": 0.742,
+      "depth": 0.08
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.537,
+      "field_acc": 0.833,
+      "depth": 0.11
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.542,
+      "field_acc": 0.817,
+      "depth": 0.14
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.65,
+      "field_acc": 0.775,
+      "depth": 0.17
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.613,
+      "field_acc": 0.792,
+      "depth": 0.19
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.658,
+      "field_acc": 0.758,
+      "depth": 0.22
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.683,
+      "field_acc": 0.742,
+      "depth": 0.25
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.675,
+      "field_acc": 0.717,
+      "depth": 0.28
+     },
+     {
+      "layer": 11,
+      "concl_acc": 0.662,
+      "field_acc": 0.754,
+      "depth": 0.31
+     },
+     {
+      "layer": 12,
+      "concl_acc": 0.633,
+      "field_acc": 0.812,
+      "depth": 0.33
+     },
+     {
+      "layer": 13,
+      "concl_acc": 0.75,
+      "field_acc": 0.825,
+      "depth": 0.36
+     },
+     {
+      "layer": 14,
+      "concl_acc": 0.738,
+      "field_acc": 0.829,
+      "depth": 0.39
+     },
+     {
+      "layer": 15,
+      "concl_acc": 0.783,
+      "field_acc": 0.892,
+      "depth": 0.42
+     },
+     {
+      "layer": 16,
+      "concl_acc": 0.767,
+      "field_acc": 0.85,
+      "depth": 0.44
+     },
+     {
+      "layer": 17,
+      "concl_acc": 0.842,
+      "field_acc": 0.887,
+      "depth": 0.47
+     },
+     {
+      "layer": 18,
+      "concl_acc": 0.912,
+      "field_acc": 0.963,
+      "depth": 0.5
+     },
+     {
+      "layer": 19,
+      "concl_acc": 0.912,
+      "field_acc": 0.871,
+      "depth": 0.53
+     },
+     {
+      "layer": 20,
+      "concl_acc": 0.958,
+      "field_acc": 0.933,
+      "depth": 0.56
+     },
+     {
+      "layer": 21,
+      "concl_acc": 1.0,
+      "field_acc": 0.95,
+      "depth": 0.58
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 0.975,
+      "depth": 0.61
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.64
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.67
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.83
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.86
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.89
+     },
+     {
+      "layer": 33,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.92
+     },
+     {
+      "layer": 34,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 35,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 36,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ],
+    "decision": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.525,
+      "field_acc": 0.575,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.5,
+      "field_acc": 0.654,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.525,
+      "field_acc": 0.583,
+      "depth": 0.08
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.525,
+      "field_acc": 0.721,
+      "depth": 0.11
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.571,
+      "field_acc": 0.921,
+      "depth": 0.14
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.583,
+      "field_acc": 0.829,
+      "depth": 0.17
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.596,
+      "field_acc": 0.833,
+      "depth": 0.19
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.667,
+      "field_acc": 0.846,
+      "depth": 0.22
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.662,
+      "field_acc": 0.929,
+      "depth": 0.25
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.662,
+      "field_acc": 0.917,
+      "depth": 0.28
+     },
+     {
+      "layer": 11,
+      "concl_acc": 0.667,
+      "field_acc": 0.883,
+      "depth": 0.31
+     },
+     {
+      "layer": 12,
+      "concl_acc": 0.662,
+      "field_acc": 0.896,
+      "depth": 0.33
+     },
+     {
+      "layer": 13,
+      "concl_acc": 0.713,
+      "field_acc": 0.963,
+      "depth": 0.36
+     },
+     {
+      "layer": 14,
+      "concl_acc": 0.742,
+      "field_acc": 0.988,
+      "depth": 0.39
+     },
+     {
+      "layer": 15,
+      "concl_acc": 0.792,
+      "field_acc": 0.988,
+      "depth": 0.42
+     },
+     {
+      "layer": 16,
+      "concl_acc": 0.746,
+      "field_acc": 0.975,
+      "depth": 0.44
+     },
+     {
+      "layer": 17,
+      "concl_acc": 0.867,
+      "field_acc": 0.988,
+      "depth": 0.47
+     },
+     {
+      "layer": 18,
+      "concl_acc": 0.825,
+      "field_acc": 0.975,
+      "depth": 0.5
+     },
+     {
+      "layer": 19,
+      "concl_acc": 0.988,
+      "field_acc": 0.988,
+      "depth": 0.53
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.56
+     },
+     {
+      "layer": 21,
+      "concl_acc": 1.0,
+      "field_acc": 0.988,
+      "depth": 0.58
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.61
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.64
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.67
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.83
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.86
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.89
+     },
+     {
+      "layer": 33,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.92
+     },
+     {
+      "layer": 34,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 35,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 36,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "nlayers": 36,
+   "curves": {
+    "lets_check": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.5,
+      "field_acc": 0.542,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.525,
+      "field_acc": 0.617,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.575,
+      "field_acc": 0.604,
+      "depth": 0.08
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.675,
+      "field_acc": 0.742,
+      "depth": 0.11
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.758,
+      "field_acc": 0.904,
+      "depth": 0.14
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.713,
+      "field_acc": 0.912,
+      "depth": 0.17
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.792,
+      "field_acc": 0.908,
+      "depth": 0.19
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.75,
+      "field_acc": 0.825,
+      "depth": 0.22
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.696,
+      "field_acc": 0.871,
+      "depth": 0.25
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.775,
+      "field_acc": 0.8,
+      "depth": 0.28
+     },
+     {
+      "layer": 11,
+      "concl_acc": 0.821,
+      "field_acc": 0.804,
+      "depth": 0.31
+     },
+     {
+      "layer": 12,
+      "concl_acc": 0.875,
+      "field_acc": 0.833,
+      "depth": 0.33
+     },
+     {
+      "layer": 13,
+      "concl_acc": 0.867,
+      "field_acc": 0.921,
+      "depth": 0.36
+     },
+     {
+      "layer": 14,
+      "concl_acc": 0.975,
+      "field_acc": 0.988,
+      "depth": 0.39
+     },
+     {
+      "layer": 15,
+      "concl_acc": 0.971,
+      "field_acc": 1.0,
+      "depth": 0.42
+     },
+     {
+      "layer": 16,
+      "concl_acc": 0.988,
+      "field_acc": 0.988,
+      "depth": 0.44
+     },
+     {
+      "layer": 17,
+      "concl_acc": 0.988,
+      "field_acc": 1.0,
+      "depth": 0.47
+     },
+     {
+      "layer": 18,
+      "concl_acc": 0.988,
+      "field_acc": 1.0,
+      "depth": 0.5
+     },
+     {
+      "layer": 19,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.53
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.56
+     },
+     {
+      "layer": 21,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.58
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.61
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.64
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.67
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.83
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.86
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.89
+     },
+     {
+      "layer": 33,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.92
+     },
+     {
+      "layer": 34,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 35,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 36,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ],
+    "task_hdr": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.487,
+      "field_acc": 0.554,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.529,
+      "field_acc": 0.608,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.525,
+      "field_acc": 0.629,
+      "depth": 0.08
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.592,
+      "field_acc": 0.771,
+      "depth": 0.11
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.667,
+      "field_acc": 0.846,
+      "depth": 0.14
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.608,
+      "field_acc": 0.854,
+      "depth": 0.17
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.742,
+      "field_acc": 0.833,
+      "depth": 0.19
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.767,
+      "field_acc": 0.817,
+      "depth": 0.22
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.671,
+      "field_acc": 0.829,
+      "depth": 0.25
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.679,
+      "field_acc": 0.879,
+      "depth": 0.28
+     },
+     {
+      "layer": 11,
+      "concl_acc": 0.808,
+      "field_acc": 0.812,
+      "depth": 0.31
+     },
+     {
+      "layer": 12,
+      "concl_acc": 0.787,
+      "field_acc": 0.908,
+      "depth": 0.33
+     },
+     {
+      "layer": 13,
+      "concl_acc": 0.746,
+      "field_acc": 0.917,
+      "depth": 0.36
+     },
+     {
+      "layer": 14,
+      "concl_acc": 0.792,
+      "field_acc": 0.917,
+      "depth": 0.39
+     },
+     {
+      "layer": 15,
+      "concl_acc": 0.796,
+      "field_acc": 0.958,
+      "depth": 0.42
+     },
+     {
+      "layer": 16,
+      "concl_acc": 0.833,
+      "field_acc": 0.971,
+      "depth": 0.44
+     },
+     {
+      "layer": 17,
+      "concl_acc": 0.917,
+      "field_acc": 0.971,
+      "depth": 0.47
+     },
+     {
+      "layer": 18,
+      "concl_acc": 0.983,
+      "field_acc": 1.0,
+      "depth": 0.5
+     },
+     {
+      "layer": 19,
+      "concl_acc": 1.0,
+      "field_acc": 0.983,
+      "depth": 0.53
+     },
+     {
+      "layer": 20,
+      "concl_acc": 0.983,
+      "field_acc": 0.983,
+      "depth": 0.56
+     },
+     {
+      "layer": 21,
+      "concl_acc": 0.983,
+      "field_acc": 0.983,
+      "depth": 0.58
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.61
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.64
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.67
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.83
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.86
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.89
+     },
+     {
+      "layer": 33,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.92
+     },
+     {
+      "layer": 34,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 35,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 36,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ],
+    "decision": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.504,
+      "field_acc": 0.525,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.512,
+      "field_acc": 0.667,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.517,
+      "field_acc": 0.562,
+      "depth": 0.08
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.55,
+      "field_acc": 0.812,
+      "depth": 0.11
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.633,
+      "field_acc": 0.85,
+      "depth": 0.14
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.713,
+      "field_acc": 0.846,
+      "depth": 0.17
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.733,
+      "field_acc": 0.833,
+      "depth": 0.19
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.696,
+      "field_acc": 0.875,
+      "depth": 0.22
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.767,
+      "field_acc": 0.983,
+      "depth": 0.25
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.725,
+      "field_acc": 0.988,
+      "depth": 0.28
+     },
+     {
+      "layer": 11,
+      "concl_acc": 0.758,
+      "field_acc": 0.975,
+      "depth": 0.31
+     },
+     {
+      "layer": 12,
+      "concl_acc": 0.733,
+      "field_acc": 0.975,
+      "depth": 0.33
+     },
+     {
+      "layer": 13,
+      "concl_acc": 0.725,
+      "field_acc": 1.0,
+      "depth": 0.36
+     },
+     {
+      "layer": 14,
+      "concl_acc": 0.783,
+      "field_acc": 0.988,
+      "depth": 0.39
+     },
+     {
+      "layer": 15,
+      "concl_acc": 0.787,
+      "field_acc": 1.0,
+      "depth": 0.42
+     },
+     {
+      "layer": 16,
+      "concl_acc": 0.812,
+      "field_acc": 1.0,
+      "depth": 0.44
+     },
+     {
+      "layer": 17,
+      "concl_acc": 0.875,
+      "field_acc": 1.0,
+      "depth": 0.47
+     },
+     {
+      "layer": 18,
+      "concl_acc": 0.904,
+      "field_acc": 1.0,
+      "depth": 0.5
+     },
+     {
+      "layer": 19,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.53
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.56
+     },
+     {
+      "layer": 21,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.58
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.61
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.64
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.67
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.83
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.86
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.89
+     },
+     {
+      "layer": 33,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.92
+     },
+     {
+      "layer": 34,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 35,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 36,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "nlayers": 32,
+   "curves": {
+    "lets_check": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.554,
+      "field_acc": 0.671,
+      "depth": 0.09
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.517,
+      "field_acc": 0.675,
+      "depth": 0.12
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.525,
+      "field_acc": 0.583,
+      "depth": 0.16
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.654,
+      "field_acc": 0.558,
+      "depth": 0.19
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.642,
+      "field_acc": 0.613,
+      "depth": 0.22
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.65,
+      "field_acc": 0.6,
+      "depth": 0.25
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.704,
+      "field_acc": 0.887,
+      "depth": 0.28
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.929,
+      "field_acc": 0.975,
+      "depth": 0.31
+     },
+     {
+      "layer": 11,
+      "concl_acc": 1.0,
+      "field_acc": 0.917,
+      "depth": 0.34
+     },
+     {
+      "layer": 12,
+      "concl_acc": 1.0,
+      "field_acc": 0.887,
+      "depth": 0.38
+     },
+     {
+      "layer": 13,
+      "concl_acc": 1.0,
+      "field_acc": 0.958,
+      "depth": 0.41
+     },
+     {
+      "layer": 14,
+      "concl_acc": 1.0,
+      "field_acc": 0.917,
+      "depth": 0.44
+     },
+     {
+      "layer": 15,
+      "concl_acc": 1.0,
+      "field_acc": 0.946,
+      "depth": 0.47
+     },
+     {
+      "layer": 16,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.5
+     },
+     {
+      "layer": 17,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.53
+     },
+     {
+      "layer": 18,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.56
+     },
+     {
+      "layer": 19,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.59
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.62
+     },
+     {
+      "layer": 21,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.66
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.84
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.88
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.91
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ],
+    "task_hdr": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.5,
+      "field_acc": 0.533,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.467,
+      "field_acc": 0.833,
+      "depth": 0.09
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.529,
+      "field_acc": 0.833,
+      "depth": 0.12
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.487,
+      "field_acc": 0.846,
+      "depth": 0.16
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.55,
+      "field_acc": 0.596,
+      "depth": 0.19
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.496,
+      "field_acc": 0.525,
+      "depth": 0.22
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.529,
+      "field_acc": 0.642,
+      "depth": 0.25
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.575,
+      "field_acc": 0.588,
+      "depth": 0.28
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.675,
+      "field_acc": 0.713,
+      "depth": 0.31
+     },
+     {
+      "layer": 11,
+      "concl_acc": 0.796,
+      "field_acc": 0.804,
+      "depth": 0.34
+     },
+     {
+      "layer": 12,
+      "concl_acc": 0.858,
+      "field_acc": 0.875,
+      "depth": 0.38
+     },
+     {
+      "layer": 13,
+      "concl_acc": 0.917,
+      "field_acc": 0.95,
+      "depth": 0.41
+     },
+     {
+      "layer": 14,
+      "concl_acc": 1.0,
+      "field_acc": 0.933,
+      "depth": 0.44
+     },
+     {
+      "layer": 15,
+      "concl_acc": 1.0,
+      "field_acc": 0.904,
+      "depth": 0.47
+     },
+     {
+      "layer": 16,
+      "concl_acc": 1.0,
+      "field_acc": 0.942,
+      "depth": 0.5
+     },
+     {
+      "layer": 17,
+      "concl_acc": 1.0,
+      "field_acc": 0.821,
+      "depth": 0.53
+     },
+     {
+      "layer": 18,
+      "concl_acc": 1.0,
+      "field_acc": 0.971,
+      "depth": 0.56
+     },
+     {
+      "layer": 19,
+      "concl_acc": 1.0,
+      "field_acc": 0.971,
+      "depth": 0.59
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0,
+      "field_acc": 0.988,
+      "depth": 0.62
+     },
+     {
+      "layer": 21,
+      "concl_acc": 1.0,
+      "field_acc": 0.988,
+      "depth": 0.66
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.84
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.88
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.91
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ],
+    "decision": [
+     {
+      "layer": 0,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.0
+     },
+     {
+      "layer": 1,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.03
+     },
+     {
+      "layer": 2,
+      "concl_acc": 0.5,
+      "field_acc": 0.5,
+      "depth": 0.06
+     },
+     {
+      "layer": 3,
+      "concl_acc": 0.508,
+      "field_acc": 0.733,
+      "depth": 0.09
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.525,
+      "field_acc": 0.733,
+      "depth": 0.12
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.596,
+      "field_acc": 0.55,
+      "depth": 0.16
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.588,
+      "field_acc": 0.704,
+      "depth": 0.19
+     },
+     {
+      "layer": 7,
+      "concl_acc": 0.512,
+      "field_acc": 0.667,
+      "depth": 0.22
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.5,
+      "field_acc": 0.667,
+      "depth": 0.25
+     },
+     {
+      "layer": 9,
+      "concl_acc": 0.558,
+      "field_acc": 0.667,
+      "depth": 0.28
+     },
+     {
+      "layer": 10,
+      "concl_acc": 0.671,
+      "field_acc": 0.667,
+      "depth": 0.31
+     },
+     {
+      "layer": 11,
+      "concl_acc": 0.908,
+      "field_acc": 0.667,
+      "depth": 0.34
+     },
+     {
+      "layer": 12,
+      "concl_acc": 1.0,
+      "field_acc": 0.821,
+      "depth": 0.38
+     },
+     {
+      "layer": 13,
+      "concl_acc": 1.0,
+      "field_acc": 0.808,
+      "depth": 0.41
+     },
+     {
+      "layer": 14,
+      "concl_acc": 1.0,
+      "field_acc": 0.904,
+      "depth": 0.44
+     },
+     {
+      "layer": 15,
+      "concl_acc": 1.0,
+      "field_acc": 0.863,
+      "depth": 0.47
+     },
+     {
+      "layer": 16,
+      "concl_acc": 1.0,
+      "field_acc": 0.963,
+      "depth": 0.5
+     },
+     {
+      "layer": 17,
+      "concl_acc": 1.0,
+      "field_acc": 0.963,
+      "depth": 0.53
+     },
+     {
+      "layer": 18,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.56
+     },
+     {
+      "layer": 19,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.59
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.62
+     },
+     {
+      "layer": 21,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.66
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.69
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.72
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.75
+     },
+     {
+      "layer": 25,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.78
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.81
+     },
+     {
+      "layer": 27,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.84
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.88
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.91
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.94
+     },
+     {
+      "layer": 31,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 0.97
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0,
+      "field_acc": 1.0,
+      "depth": 1.0
+     }
+    ]
+   }
+  }
+ ],
+ "general": [
+  {
+   "tag": "qwen3_4b",
+   "label": "Qwen3-4B",
+   "families": {
+    "multihop": {
+     "field_only": {
+      "mean": 0.006,
+      "ci": [
+       0.003,
+       0.009
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    },
+    "natural": {
+     "field_only": {
+      "mean": 0.019,
+      "ci": [
+       0.008,
+       0.029
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    },
+    "rag_lookup": {
+     "field_only": {
+      "mean": 0.633,
+      "ci": [
+       0.62,
+       0.645
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    }
+   }
+  },
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "families": {
+    "multihop": {
+     "field_only": {
+      "mean": -0.012,
+      "ci": [
+       -0.013,
+       -0.011
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    },
+    "natural": {
+     "field_only": {
+      "mean": 0.054,
+      "ci": [
+       0.047,
+       0.061
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    },
+    "rag_lookup": {
+     "field_only": {
+      "mean": 0.251,
+      "ci": [
+       0.242,
+       0.26
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    }
+   }
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "families": {
+    "multihop": {
+     "field_only": {
+      "mean": 0.002,
+      "ci": [
+       0.0,
+       0.004
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    },
+    "natural": {
+     "field_only": {
+      "mean": -0.012,
+      "ci": [
+       -0.018,
+       -0.009
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    },
+    "rag_lookup": {
+     "field_only": {
+      "mean": 0.377,
+      "ci": [
+       0.363,
+       0.392
+      ]
+     },
+     "full_downstream": {
+      "mean": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    }
+   }
+  }
+ ],
+ "replicate": [
+  {
+   "tag": "mistral_7b",
+   "label": "Mistral-7B",
+   "primary": {
+    "field_only": {
+     "mean": 0.137,
+     "ci": [
+      0.119,
+      0.155
+     ],
+     "n": 18
+    },
+    "full_downstream": {
+     "mean": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 18
+    }
+   },
+   "dissoc": {
+    "trigger_only": {
+     "mean": 0.001,
+     "ci": [
+      -0.003,
+      0.005
+     ],
+     "n": 18
+    },
+    "notes": {
+     "mean": 0.995,
+     "ci": [
+      0.993,
+      0.998
+     ],
+     "n": 18
+    }
+   },
+   "specificity": {
+    "top_k": {
+     "mean": 0.942,
+     "ci": [
+      0.927,
+      0.953
+     ],
+     "n": 4
+    },
+    "random_k": {
+     "mean": 0.528,
+     "ci": [
+      0.361,
+      0.69
+     ],
+     "n": 4
+    },
+    "K": 8
+   },
+   "injection": {
+    "recovery": {
+     "mean": 0.983,
+     "ci": [
+      0.978,
+      0.986
+     ],
+     "n": 4
+    },
+    "follow_rate": {
+     "mean": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 4
+    }
+   },
+   "timing": {
+    "write_layer": 6,
+    "write_depth": 0.19,
+    "commit_layer": 15.0,
+    "commit_depth": 0.47,
+    "nlayers": 32,
+    "concl_acc_by_layer": [
+     {
+      "layer": 2,
+      "concl_acc": 0.5
+     },
+     {
+      "layer": 4,
+      "concl_acc": 0.625
+     },
+     {
+      "layer": 6,
+      "concl_acc": 0.906
+     },
+     {
+      "layer": 8,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 10,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 12,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 14,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 16,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 18,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 22,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 24,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 28,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 30,
+      "concl_acc": 1.0
+     }
+    ]
+   }
+  },
+  {
+   "tag": "gemma2_9b",
+   "label": "Gemma-2-9B",
+   "primary": {
+    "field_only": {
+     "mean": 0.005,
+     "ci": [
+      0.002,
+      0.008
+     ],
+     "n": 18
+    },
+    "full_downstream": {
+     "mean": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 18
+    }
+   },
+   "dissoc": {
+    "trigger_only": {
+     "mean": -0.0,
+     "ci": [
+      -0.002,
+      0.001
+     ],
+     "n": 18
+    },
+    "notes": {
+     "mean": 1.0,
+     "ci": [
+      0.998,
+      1.002
+     ],
+     "n": 18
+    }
+   },
+   "specificity": {
+    "top_k": {
+     "mean": 0.955,
+     "ci": [
+      0.95,
+      0.959
+     ],
+     "n": 4
+    },
+    "random_k": {
+     "mean": 0.484,
+     "ci": [
+      0.159,
+      0.698
+     ],
+     "n": 4
+    },
+    "K": 8
+   },
+   "injection": {
+    "recovery": {
+     "mean": 0.999,
+     "ci": [
+      0.992,
+      1.005
+     ],
+     "n": 4
+    },
+    "follow_rate": {
+     "mean": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 4
+    }
+   },
+   "timing": {
+    "write_layer": 11,
+    "write_depth": 0.26,
+    "commit_layer": 20.2,
+    "commit_depth": 0.48,
+    "nlayers": 42,
+    "concl_acc_by_layer": [
+     {
+      "layer": 2,
+      "concl_acc": 0.625
+     },
+     {
+      "layer": 5,
+      "concl_acc": 0.656
+     },
+     {
+      "layer": 8,
+      "concl_acc": 0.844
+     },
+     {
+      "layer": 11,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 14,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 17,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 20,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 23,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 26,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 29,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 32,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 35,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 38,
+      "concl_acc": 1.0
+     },
+     {
+      "layer": 41,
+      "concl_acc": 1.0
+     }
+    ]
+   }
+  }
+ ]
+}

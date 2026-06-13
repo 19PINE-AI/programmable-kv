@@ -1,0 +1,309 @@
+{
+ "compose_edit": [
+  {
+   "tag": "gemma2_9b",
+   "label": "Gemma-2-9B",
+   "n": 7,
+   "clean_flips": 7,
+   "methods": [
+    {
+     "method": "in_place",
+     "recomputed": -0.002,
+     "composed": -0.01
+    },
+    {
+     "method": "sel@8",
+     "recomputed": 0.876,
+     "composed": 0.806
+    },
+    {
+     "method": "sel@32",
+     "recomputed": 0.962,
+     "composed": 0.904
+    },
+    {
+     "method": "erratum",
+     "recomputed": 0.956,
+     "composed": 2.252
+    }
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "n": 8,
+   "clean_flips": 7,
+   "methods": [
+    {
+     "method": "in_place",
+     "recomputed": 0.054,
+     "composed": 0.036
+    },
+    {
+     "method": "sel@8",
+     "recomputed": 0.574,
+     "composed": 0.623
+    },
+    {
+     "method": "sel@32",
+     "recomputed": 0.802,
+     "composed": 0.805
+    },
+    {
+     "method": "erratum",
+     "recomputed": 1.114,
+     "composed": 1.246
+    }
+   ]
+  }
+ ],
+ "agent": [
+  {
+   "tag": "qwen3_0p6b",
+   "label": "Qwen3-0.6B",
+   "agreement": 0.99,
+   "agreement_ci": [
+    0.977,
+    1.0
+   ],
+   "speedup": 0.7,
+   "speedup_ci": [
+    0.698,
+    0.71
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.57,
+   "full_correct": 0.573
+  },
+  {
+   "tag": "qwen3_1p7b",
+   "label": "Qwen3-1.7B",
+   "agreement": 0.963,
+   "agreement_ci": [
+    0.94,
+    0.983
+   ],
+   "speedup": 1.09,
+   "speedup_ci": [
+    1.084,
+    1.101
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.533,
+   "full_correct": 0.497
+  },
+  {
+   "tag": "qwen3_4b",
+   "label": "Qwen3-4B",
+   "agreement": 0.967,
+   "agreement_ci": [
+    0.947,
+    0.987
+   ],
+   "speedup": 1.98,
+   "speedup_ci": [
+    1.954,
+    1.994
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.633,
+   "full_correct": 0.6
+  },
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "agreement": 0.93,
+   "agreement_ci": [
+    0.9,
+    0.96
+   ],
+   "speedup": 2.97,
+   "speedup_ci": [
+    2.956,
+    2.984
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.357,
+   "full_correct": 0.367
+  },
+  {
+   "tag": "qwen3_14b",
+   "label": "Qwen3-14B",
+   "agreement": 0.85,
+   "agreement_ci": [
+    0.807,
+    0.89
+   ],
+   "speedup": 4.23,
+   "speedup_ci": [
+    4.213,
+    4.244
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.517,
+   "full_correct": 0.533
+  },
+  {
+   "tag": "qwen3_30a3b",
+   "label": "Qwen3-30B-A3B",
+   "agreement": 0.877,
+   "agreement_ci": [
+    0.837,
+    0.913
+   ],
+   "speedup": 1.43,
+   "speedup_ci": [
+    1.422,
+    1.432
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.64,
+   "full_correct": 0.67
+  },
+  {
+   "tag": "qwen3_32b",
+   "label": "Qwen3-32B-FP8",
+   "agreement": 0.81,
+   "agreement_ci": [
+    0.763,
+    0.853
+   ],
+   "speedup": 14.88,
+   "speedup_ci": [
+    14.832,
+    14.919
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.56,
+   "full_correct": 0.483
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "agreement": 0.963,
+   "agreement_ci": [
+    0.94,
+    0.983
+   ],
+   "speedup": 2.83,
+   "speedup_ci": [
+    2.807,
+    2.846
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.963,
+   "full_correct": 1.0
+  },
+  {
+   "tag": "llama31_70b_4bit",
+   "label": "Llama-3.1-70B (4-bit)",
+   "agreement": 1.0,
+   "agreement_ci": [
+    1.0,
+    1.0
+   ],
+   "speedup": 5.27,
+   "speedup_ci": [
+    5.252,
+    5.275
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.967,
+   "full_correct": 0.967
+  },
+  {
+   "tag": "dsr1_llama8b",
+   "label": "R1-Distill-Llama-8B",
+   "agreement": 0.95,
+   "agreement_ci": [
+    0.923,
+    0.973
+   ],
+   "speedup": 2.92,
+   "speedup_ci": [
+    2.902,
+    2.935
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.733,
+   "full_correct": 0.717
+  },
+  {
+   "tag": "mistral7b",
+   "label": "Mistral-7B",
+   "agreement": 0.983,
+   "agreement_ci": [
+    0.967,
+    0.997
+   ],
+   "speedup": 3.19,
+   "speedup_ci": [
+    3.148,
+    3.231
+   ],
+   "decisions": 300,
+   "domains": 10,
+   "trajectories": 100,
+   "unified_correct": 0.983,
+   "full_correct": 1.0
+  },
+  {
+   "tag": "gemma2_9b",
+   "label": "Gemma-2-9B",
+   "agreement": 0.942,
+   "agreement_ci": [
+    0.9,
+    0.983
+   ],
+   "speedup": 3.64,
+   "speedup_ci": [
+    3.566,
+    3.716
+   ],
+   "decisions": 120,
+   "domains": 10,
+   "trajectories": 40,
+   "unified_correct": 0.942,
+   "full_correct": 1.0
+  },
+  {
+   "tag": "gemma3_27b",
+   "label": "Gemma-3-27B",
+   "agreement": 0.933,
+   "agreement_ci": [
+    0.883,
+    0.975
+   ],
+   "speedup": 5.63,
+   "speedup_ci": [
+    5.601,
+    5.657
+   ],
+   "decisions": 120,
+   "domains": 10,
+   "trajectories": 40,
+   "unified_correct": 0.933,
+   "full_correct": 1.0
+  }
+ ]
+}

@@ -1,0 +1,104 @@
+{
+ "transplant_cosine_bar": {
+  "source": "paper \u00a75 / fig. 4b (validated spread; per-model JSON not released)",
+  "rows": [
+   {
+    "label": "Gemma-2-9B",
+    "cos": 0.999
+   },
+   {
+    "label": "Mistral-7B",
+    "cos": 0.999
+   },
+   {
+    "label": "Qwen3-8B",
+    "cos": 0.99
+   },
+   {
+    "label": "R1-Distill-Llama-8B",
+    "cos": 0.99
+   },
+   {
+    "label": "Llama-3.1-8B",
+    "cos": 0.98
+   },
+   {
+    "label": "Llama-3.1-70B (4-bit)",
+    "cos": 0.986
+   },
+   {
+    "label": "Qwen3-14B",
+    "cos": 0.96
+   },
+   {
+    "label": "Qwen3-32B-FP8",
+    "cos": 0.91
+   },
+   {
+    "label": "Qwen3-30B-A3B",
+    "cos": 0.9
+   }
+  ]
+ },
+ "attention_shares": {
+  "source": "mechanism study, Qwen3-8B attention attribution (MECHANISM.md / paper \u00a73)",
+  "field": 0.001,
+  "downstream": 0.56,
+  "sink": 0.36
+ },
+ "attention_knockout": {
+  "source": "mechanism rigor suite E3, Qwen3-8B (MECHANISM.md)",
+  "non_reasoning": {
+   "baseline_P_safe": 0.0,
+   "masked_P_safe": 1.0
+  },
+  "reasoning": {
+   "baseline_P_safe": 1.0,
+   "masked_P_safe": 0.61
+  },
+  "note": "masking the decision token's attention to the stale downstream notes flips the field-only decision from unsafe to safe (non-reasoning); under reasoning the chain itself is corrective and masking it hurts"
+ },
+ "sliding_window_before_fix": {
+  "source": "paper \u00a77 (Reach): the window-truncated default cache breaks splices beyond the window; no agreement number was recorded pre-fix"
+ },
+ "timing_depths": {
+  "source": "deep-mechanism EXP2 (FINDINGS_MECHANISM_DEEP / paper \u00a73): write = first layer where the aggregator's conclusion probe reaches 0.9; commit = mean logit-lens commit layer at the decision token",
+  "rows": [
+   {
+    "label": "Qwen3-8B",
+    "nlayers": 36,
+    "write_layer": 14,
+    "write_depth": 0.39,
+    "commit_layer": 26.9,
+    "commit_depth": 0.75
+   },
+   {
+    "label": "Llama-3.1-8B",
+    "nlayers": 32,
+    "write_layer": 10,
+    "write_depth": 0.31,
+    "commit_layer": 23.5,
+    "commit_depth": 0.73
+   },
+   {
+    "label": "Qwen3-4B",
+    "nlayers": 36,
+    "write_layer": 14,
+    "write_depth": 0.39,
+    "commit_layer": 27.9,
+    "commit_depth": 0.77
+   }
+  ]
+ },
+ "e5_chain_agreement": {
+  "source": "paper \u00a79: greedy CoT chains are boundary-sensitive",
+  "range": [
+   0.31,
+   0.78
+  ]
+ },
+ "paper_meta": {
+  "title": "Models Take Notes at Prefill: KV Cache Can Be Editable and Composable",
+  "status": "Preprint. Under review. Anonymous author(s)."
+ }
+}

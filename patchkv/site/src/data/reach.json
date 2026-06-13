@@ -1,0 +1,455 @@
+{
+ "mla": [
+  {
+   "tag": "dscoderv2_mla",
+   "label": "DeepSeek-Coder-V2-Lite",
+   "agreement": 1.0,
+   "agreement_ci": [
+    1.0,
+    1.0
+   ],
+   "cos": 0.9801,
+   "n": 160,
+   "domains": 10
+  },
+  {
+   "tag": "dsv2lite_mla",
+   "label": "DeepSeek-V2-Lite-Chat",
+   "agreement": 0.744,
+   "agreement_ci": [
+    0.675,
+    0.806
+   ],
+   "cos": 0.9832,
+   "n": 160,
+   "domains": 10
+  }
+ ],
+ "vision": [
+  {
+   "tag": "qwen2vl_7b",
+   "label": "Qwen2-VL-7B",
+   "n": 120,
+   "img_tokens": 1296,
+   "overall": {
+    "full": 0.9,
+    "precompiled": 0.817,
+    "precompiled_ci": [
+     0.742,
+     0.883
+    ],
+    "agreement": 0.917,
+    "agreement_ci": [
+     0.867,
+     0.958
+    ]
+   },
+   "by_category": {
+    "agentic": {
+     "n": 36,
+     "full": 0.694,
+     "precompiled": 0.472,
+     "precompiled_ci": [
+      0.306,
+      0.639
+     ],
+     "agreement": 0.778
+    },
+    "perception": {
+     "n": 24,
+     "full": 1.0,
+     "precompiled": 1.0,
+     "precompiled_ci": [
+      1.0,
+      1.0
+     ],
+     "agreement": 1.0
+    },
+    "reasoning": {
+     "n": 60,
+     "full": 0.983,
+     "precompiled": 0.95,
+     "precompiled_ci": [
+      0.883,
+      1.0
+     ],
+     "agreement": 0.967
+    }
+   }
+  },
+  {
+   "tag": "qwen25vl_32b",
+   "label": "Qwen2.5-VL-32B",
+   "n": 120,
+   "img_tokens": 1296,
+   "overall": {
+    "full": 0.767,
+    "precompiled": 0.775,
+    "precompiled_ci": [
+     0.7,
+     0.85
+    ],
+    "agreement": 0.992,
+    "agreement_ci": [
+     0.975,
+     1.0
+    ]
+   },
+   "by_category": {
+    "agentic": {
+     "n": 36,
+     "full": 1.0,
+     "precompiled": 1.0,
+     "precompiled_ci": [
+      1.0,
+      1.0
+     ],
+     "agreement": 1.0
+    },
+    "perception": {
+     "n": 24,
+     "full": 0.5,
+     "precompiled": 0.5,
+     "precompiled_ci": [
+      0.292,
+      0.708
+     ],
+     "agreement": 1.0
+    },
+    "reasoning": {
+     "n": 60,
+     "full": 0.733,
+     "precompiled": 0.75,
+     "precompiled_ci": [
+      0.633,
+      0.85
+     ],
+     "agreement": 0.983
+    }
+   }
+  },
+  {
+   "tag": "qwen25vl_3b",
+   "label": "Qwen2.5-VL-3B",
+   "n": 120,
+   "img_tokens": 1296,
+   "overall": {
+    "full": 0.725,
+    "precompiled": 0.725,
+    "precompiled_ci": [
+     0.642,
+     0.8
+    ],
+    "agreement": 1.0,
+    "agreement_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "by_category": {
+    "agentic": {
+     "n": 30,
+     "full": 0.6,
+     "precompiled": 0.6,
+     "precompiled_ci": [
+      0.433,
+      0.767
+     ],
+     "agreement": 1.0
+    },
+    "perception": {
+     "n": 30,
+     "full": 1.0,
+     "precompiled": 1.0,
+     "precompiled_ci": [
+      1.0,
+      1.0
+     ],
+     "agreement": 1.0
+    },
+    "reasoning": {
+     "n": 60,
+     "full": 0.65,
+     "precompiled": 0.65,
+     "precompiled_ci": [
+      0.533,
+      0.767
+     ],
+     "agreement": 1.0
+    }
+   }
+  },
+  {
+   "tag": "qwen25vl_7b",
+   "label": "Qwen2.5-VL-7B",
+   "n": 120,
+   "img_tokens": 1296,
+   "overall": {
+    "full": 0.858,
+    "precompiled": 0.867,
+    "precompiled_ci": [
+     0.808,
+     0.925
+    ],
+    "agreement": 0.958,
+    "agreement_ci": [
+     0.917,
+     0.992
+    ]
+   },
+   "by_category": {
+    "agentic": {
+     "n": 30,
+     "full": 1.0,
+     "precompiled": 1.0,
+     "precompiled_ci": [
+      1.0,
+      1.0
+     ],
+     "agreement": 1.0
+    },
+    "perception": {
+     "n": 30,
+     "full": 0.5,
+     "precompiled": 0.6,
+     "precompiled_ci": [
+      0.433,
+      0.767
+     ],
+     "agreement": 0.9
+    },
+    "reasoning": {
+     "n": 60,
+     "full": 0.967,
+     "precompiled": 0.933,
+     "precompiled_ci": [
+      0.867,
+      0.983
+     ],
+     "agreement": 0.967
+    }
+   }
+  },
+  {
+   "tag": "qwen3vl_30a3b",
+   "label": "Qwen3-VL-30B-A3B",
+   "n": 120,
+   "img_tokens": 1024,
+   "overall": {
+    "full": 0.0,
+    "precompiled": 0.0,
+    "precompiled_ci": [
+     0.0,
+     0.0
+    ],
+    "agreement": 1.0,
+    "agreement_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "by_category": {
+    "agentic": {
+     "n": 30,
+     "full": 0.0,
+     "precompiled": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0
+    },
+    "perception": {
+     "n": 30,
+     "full": 0.0,
+     "precompiled": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0
+    },
+    "reasoning": {
+     "n": 60,
+     "full": 0.0,
+     "precompiled": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0
+    }
+   }
+  },
+  {
+   "tag": "qwen3vl_8b",
+   "label": "Qwen3-VL-8B",
+   "n": 120,
+   "img_tokens": 1024,
+   "overall": {
+    "full": 0.8,
+    "precompiled": 0.792,
+    "precompiled_ci": [
+     0.717,
+     0.867
+    ],
+    "agreement": 0.992,
+    "agreement_ci": [
+     0.975,
+     1.0
+    ]
+   },
+   "by_category": {
+    "agentic": {
+     "n": 30,
+     "full": 0.767,
+     "precompiled": 0.767,
+     "precompiled_ci": [
+      0.6,
+      0.9
+     ],
+     "agreement": 1.0
+    },
+    "perception": {
+     "n": 30,
+     "full": 0.5,
+     "precompiled": 0.5,
+     "precompiled_ci": [
+      0.333,
+      0.667
+     ],
+     "agreement": 1.0
+    },
+    "reasoning": {
+     "n": 60,
+     "full": 0.967,
+     "precompiled": 0.95,
+     "precompiled_ci": [
+      0.883,
+      1.0
+     ],
+     "agreement": 0.983
+    }
+   }
+  }
+ ],
+ "shift": [
+  {
+   "tag": "qwen25vl_3b",
+   "label": "Qwen2.5-VL-3B",
+   "overall": {
+    "full_at_B": 0.767,
+    "shifted": 0.758,
+    "agreement": 0.992,
+    "agreement_ci": [
+     0.975,
+     1.0
+    ],
+    "shifted_ci": [
+     0.683,
+     0.833
+    ]
+   }
+  },
+  {
+   "tag": "qwen25vl_7b",
+   "label": "Qwen2.5-VL-7B",
+   "overall": {
+    "full_at_B": 0.808,
+    "shifted": 0.808,
+    "agreement": 1.0,
+    "agreement_ci": [
+     1.0,
+     1.0
+    ],
+    "shifted_ci": [
+     0.733,
+     0.875
+    ]
+   }
+  },
+  {
+   "tag": "qwen3vl_30a3b",
+   "label": "Qwen3-VL-30B-A3B",
+   "overall": {
+    "full_at_B": 0.0,
+    "shifted": 0.008,
+    "agreement": 0.992,
+    "agreement_ci": [
+     0.975,
+     1.0
+    ],
+    "shifted_ci": [
+     0.0,
+     0.025
+    ]
+   }
+  },
+  {
+   "tag": "qwen3vl_8b",
+   "label": "Qwen3-VL-8B",
+   "overall": {
+    "full_at_B": 0.792,
+    "shifted": 0.783,
+    "agreement": 0.992,
+    "agreement_ci": [
+     0.975,
+     1.0
+    ],
+    "shifted_ci": [
+     0.708,
+     0.858
+    ]
+   }
+  }
+ ],
+ "gemma_fix": [
+  {
+   "tag": "gemma2_9b",
+   "label": "Gemma-2-9B",
+   "agreement": 0.942,
+   "agreement_ci": [
+    0.9,
+    0.983
+   ]
+  },
+  {
+   "tag": "gemma3_27b",
+   "label": "Gemma-3-27B",
+   "agreement": 0.933,
+   "agreement_ci": [
+    0.883,
+    0.975
+   ]
+  }
+ ],
+ "gemma_seam": {
+  "by_K": [
+   {
+    "K": 0,
+    "acc": 0.692
+   },
+   {
+    "K": 4,
+    "acc": 0.692
+   },
+   {
+    "K": 8,
+    "acc": 0.692
+   },
+   {
+    "K": 16,
+    "acc": 0.644
+   },
+   {
+    "K": 32,
+    "acc": 0.885
+   },
+   {
+    "K": 64,
+    "acc": 0.913
+   }
+  ],
+  "full_acc": 0.952
+ }
+}

@@ -1,0 +1,1075 @@
+{
+ "scaling": [
+  {
+   "tag": "qwen3_1p7b",
+   "label": "Qwen3-1.7B",
+   "points": [
+    {
+     "L": 500,
+     "full_ms": 11.8,
+     "precomp_ms": 25.6,
+     "speedup": 0.46
+    },
+    {
+     "L": 2000,
+     "full_ms": 33.4,
+     "precomp_ms": 26.3,
+     "speedup": 1.27
+    },
+    {
+     "L": 8000,
+     "full_ms": 128.7,
+     "precomp_ms": 41.4,
+     "speedup": 3.11
+    },
+    {
+     "L": 16000,
+     "full_ms": 332.1,
+     "precomp_ms": 76.1,
+     "speedup": 4.37
+    },
+    {
+     "L": 32000,
+     "full_ms": 867.2,
+     "precomp_ms": 157.0,
+     "speedup": 5.52
+    }
+   ]
+  },
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "points": [
+    {
+     "L": 500,
+     "full_ms": 83.9,
+     "precomp_ms": 72.6,
+     "speedup": 1.16
+    },
+    {
+     "L": 2000,
+     "full_ms": 264.2,
+     "precomp_ms": 87.9,
+     "speedup": 3.01
+    },
+    {
+     "L": 8000,
+     "full_ms": 1241.3,
+     "precomp_ms": 126.7,
+     "speedup": 9.8
+    },
+    {
+     "L": 16000,
+     "full_ms": 2506.5,
+     "precomp_ms": 236.8,
+     "speedup": 10.58
+    },
+    {
+     "L": 32000,
+     "full_ms": 6188.9,
+     "precomp_ms": 444.2,
+     "speedup": 13.93
+    }
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "points": [
+    {
+     "L": 500,
+     "full_ms": 82.4,
+     "precomp_ms": 62.1,
+     "speedup": 1.33
+    },
+    {
+     "L": 2000,
+     "full_ms": 214.3,
+     "precomp_ms": 71.9,
+     "speedup": 2.98
+    },
+    {
+     "L": 8000,
+     "full_ms": 457.8,
+     "precomp_ms": 55.3,
+     "speedup": 8.28
+    },
+    {
+     "L": 16000,
+     "full_ms": 1039.7,
+     "precomp_ms": 94.5,
+     "speedup": 11.0
+    },
+    {
+     "L": 32000,
+     "full_ms": 2508.8,
+     "precomp_ms": 184.0,
+     "speedup": 13.64
+    }
+   ]
+  },
+  {
+   "tag": "dsr1_llama8b",
+   "label": "R1-Distill-Llama-8B",
+   "points": [
+    {
+     "L": 500,
+     "full_ms": 91.6,
+     "precomp_ms": 75.7,
+     "speedup": 1.21
+    },
+    {
+     "L": 2000,
+     "full_ms": 304.5,
+     "precomp_ms": 104.6,
+     "speedup": 2.91
+    },
+    {
+     "L": 8000,
+     "full_ms": 1291.2,
+     "precomp_ms": 158.2,
+     "speedup": 8.16
+    },
+    {
+     "L": 16000,
+     "full_ms": 2400.8,
+     "precomp_ms": 255.6,
+     "speedup": 9.39
+    },
+    {
+     "L": 32000,
+     "full_ms": 6056.7,
+     "precomp_ms": 501.6,
+     "speedup": 12.08
+    }
+   ]
+  }
+ ],
+ "domains": [
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "rows": [
+    {
+     "domain": "access",
+     "skill_tok": 617,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.98,
+     "agree": true
+    },
+    {
+     "domain": "incident",
+     "skill_tok": 591,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.98,
+     "agree": true
+    }
+   ],
+   "summary": {
+    "full_correct": [
+     2,
+     8
+    ],
+    "precompiled_correct": [
+     2,
+     8
+    ],
+    "agree": [
+     8,
+     8
+    ],
+    "cos": 0.979
+   }
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "rows": [
+    {
+     "domain": "refund",
+     "skill_tok": 605,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.99,
+     "agree": true
+    },
+    {
+     "domain": "access",
+     "skill_tok": 606,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.99,
+     "agree": true
+    },
+    {
+     "domain": "deploy",
+     "skill_tok": 596,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.99,
+     "agree": true
+    },
+    {
+     "domain": "rx",
+     "skill_tok": 603,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "loan",
+     "skill_tok": 587,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.98,
+     "agree": true
+    },
+    {
+     "domain": "legal",
+     "skill_tok": 586,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.97,
+     "agree": true
+    },
+    {
+     "domain": "incident",
+     "skill_tok": 580,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.93,
+     "agree": true
+    },
+    {
+     "domain": "visa",
+     "skill_tok": 582,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.98,
+     "agree": true
+    }
+   ],
+   "summary": {
+    "full_correct": [
+     8,
+     8
+    ],
+    "precompiled_correct": [
+     8,
+     8
+    ],
+    "agree": [
+     8,
+     8
+    ],
+    "cos": 0.98
+   }
+  },
+  {
+   "tag": "mistral7b",
+   "label": "Mistral-7B",
+   "rows": [
+    {
+     "domain": "refund",
+     "skill_tok": 672,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.99,
+     "agree": true
+    },
+    {
+     "domain": "access",
+     "skill_tok": 670,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "deploy",
+     "skill_tok": 662,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "rx",
+     "skill_tok": 670,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "loan",
+     "skill_tok": 653,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "legal",
+     "skill_tok": 645,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "incident",
+     "skill_tok": 642,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "visa",
+     "skill_tok": 644,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    }
+   ],
+   "summary": {
+    "full_correct": [
+     8,
+     8
+    ],
+    "precompiled_correct": [
+     8,
+     8
+    ],
+    "agree": [
+     8,
+     8
+    ],
+    "cos": 0.996
+   }
+  },
+  {
+   "tag": "gemma2_9b",
+   "label": "Gemma-2-9B",
+   "rows": [
+    {
+     "domain": "refund",
+     "skill_tok": 638,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "access",
+     "skill_tok": 643,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "deploy",
+     "skill_tok": 630,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "rx",
+     "skill_tok": 634,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "loan",
+     "skill_tok": 623,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.99,
+     "agree": true
+    },
+    {
+     "domain": "legal",
+     "skill_tok": 615,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 1.0,
+     "agree": true
+    },
+    {
+     "domain": "incident",
+     "skill_tok": 613,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.99,
+     "agree": true
+    },
+    {
+     "domain": "visa",
+     "skill_tok": 614,
+     "full": "correct",
+     "reposition": "correct",
+     "cos": 0.99,
+     "agree": true
+    }
+   ],
+   "summary": {
+    "full_correct": [
+     8,
+     8
+    ],
+    "precompiled_correct": [
+     8,
+     8
+    ],
+    "agree": [
+     8,
+     8
+    ],
+    "cos": 0.996
+   }
+  }
+ ],
+ "facts": [
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "n": 104,
+   "results": {
+    "early": {
+     "full_acc": 0.0,
+     "full_ci": [
+      0.0,
+      0.0
+     ],
+     "precompiled_acc": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0,
+     "agreement_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "late": {
+     "full_acc": 0.0,
+     "full_ci": [
+      0.0,
+      0.0
+     ],
+     "precompiled_acc": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0,
+     "agreement_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "tag": "qwen3_30a3b",
+   "label": "Qwen3-30B-A3B",
+   "n": 104,
+   "results": {
+    "early": {
+     "full_acc": 0.0,
+     "full_ci": [
+      0.0,
+      0.0
+     ],
+     "precompiled_acc": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0,
+     "agreement_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "late": {
+     "full_acc": 0.0,
+     "full_ci": [
+      0.0,
+      0.0
+     ],
+     "precompiled_acc": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0,
+     "agreement_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "tag": "qwen3_32b",
+   "label": "Qwen3-32B-FP8",
+   "n": 104,
+   "results": {
+    "early": {
+     "full_acc": 0.0,
+     "full_ci": [
+      0.0,
+      0.0
+     ],
+     "precompiled_acc": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0,
+     "agreement_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "late": {
+     "full_acc": 0.0,
+     "full_ci": [
+      0.0,
+      0.0
+     ],
+     "precompiled_acc": 0.0,
+     "precompiled_ci": [
+      0.0,
+      0.0
+     ],
+     "agreement": 1.0,
+     "agreement_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "n": 104,
+   "results": {
+    "early": {
+     "full_acc": 0.99,
+     "full_ci": [
+      0.971,
+      1.0
+     ],
+     "precompiled_acc": 1.0,
+     "precompiled_ci": [
+      1.0,
+      1.0
+     ],
+     "agreement": 0.99,
+     "agreement_ci": [
+      0.971,
+      1.0
+     ]
+    },
+    "late": {
+     "full_acc": 1.0,
+     "full_ci": [
+      1.0,
+      1.0
+     ],
+     "precompiled_acc": 1.0,
+     "precompiled_ci": [
+      1.0,
+      1.0
+     ],
+     "agreement": 1.0,
+     "agreement_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "tag": "mistral7b",
+   "label": "Mistral-7B",
+   "n": 104,
+   "results": {
+    "early": {
+     "full_acc": 0.942,
+     "full_ci": [
+      0.894,
+      0.981
+     ],
+     "precompiled_acc": 0.952,
+     "precompiled_ci": [
+      0.904,
+      0.99
+     ],
+     "agreement": 0.99,
+     "agreement_ci": [
+      0.971,
+      1.0
+     ]
+    },
+    "late": {
+     "full_acc": 0.942,
+     "full_ci": [
+      0.894,
+      0.981
+     ],
+     "precompiled_acc": 0.952,
+     "precompiled_ci": [
+      0.904,
+      0.99
+     ],
+     "agreement": 0.99,
+     "agreement_ci": [
+      0.971,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "tag": "gemma2_9b",
+   "label": "Gemma-2-9B",
+   "n": 104,
+   "results": {
+    "early": {
+     "full_acc": 0.952,
+     "full_ci": [
+      0.904,
+      0.99
+     ],
+     "precompiled_acc": 0.692,
+     "precompiled_ci": [
+      0.606,
+      0.779
+     ],
+     "agreement": 0.74,
+     "agreement_ci": [
+      0.654,
+      0.827
+     ]
+    },
+    "late": {
+     "full_acc": 0.942,
+     "full_ci": [
+      0.894,
+      0.981
+     ],
+     "precompiled_acc": 0.692,
+     "precompiled_ci": [
+      0.606,
+      0.779
+     ],
+     "agreement": 0.75,
+     "agreement_ci": [
+      0.663,
+      0.827
+     ]
+    }
+   }
+  },
+  {
+   "tag": "gemma3_27b",
+   "label": "Gemma-3-27B",
+   "n": 104,
+   "results": {
+    "early": {
+     "full_acc": 0.913,
+     "full_ci": [
+      0.856,
+      0.962
+     ],
+     "precompiled_acc": 0.019,
+     "precompiled_ci": [
+      0.0,
+      0.048
+     ],
+     "agreement": 0.106,
+     "agreement_ci": [
+      0.048,
+      0.173
+     ]
+    },
+    "late": {
+     "full_acc": 0.923,
+     "full_ci": [
+      0.865,
+      0.971
+     ],
+     "precompiled_acc": 0.029,
+     "precompiled_ci": [
+      0.0,
+      0.067
+     ],
+     "agreement": 0.106,
+     "agreement_ci": [
+      0.048,
+      0.173
+     ]
+    }
+   }
+  }
+ ],
+ "agentic": [
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "n": 108,
+   "full_acc": 0.991,
+   "full_ci": [
+    0.972,
+    1.0
+   ],
+   "precompiled_acc": 1.0,
+   "precompiled_ci": [
+    1.0,
+    1.0
+   ],
+   "agreement": 0.991,
+   "agreement_ci": [
+    0.972,
+    1.0
+   ]
+  },
+  {
+   "tag": "qwen3_30a3b",
+   "label": "Qwen3-30B-A3B",
+   "n": 108,
+   "full_acc": 1.0,
+   "full_ci": [
+    1.0,
+    1.0
+   ],
+   "precompiled_acc": 0.972,
+   "precompiled_ci": [
+    0.935,
+    1.0
+   ],
+   "agreement": 1.0,
+   "agreement_ci": [
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "tag": "qwen3_32b",
+   "label": "Qwen3-32B-FP8",
+   "n": 108,
+   "full_acc": 0.954,
+   "full_ci": [
+    0.907,
+    0.991
+   ],
+   "precompiled_acc": 0.972,
+   "precompiled_ci": [
+    0.935,
+    1.0
+   ],
+   "agreement": 1.0,
+   "agreement_ci": [
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "n": 108,
+   "full_acc": 1.0,
+   "full_ci": [
+    1.0,
+    1.0
+   ],
+   "precompiled_acc": 1.0,
+   "precompiled_ci": [
+    1.0,
+    1.0
+   ],
+   "agreement": 1.0,
+   "agreement_ci": [
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "tag": "llama31_70b_4bit",
+   "label": "Llama-3.1-70B (4-bit)",
+   "n": 108,
+   "full_acc": 1.0,
+   "full_ci": [
+    1.0,
+    1.0
+   ],
+   "precompiled_acc": 1.0,
+   "precompiled_ci": [
+    1.0,
+    1.0
+   ],
+   "agreement": 1.0,
+   "agreement_ci": [
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "tag": "mistral7b",
+   "label": "Mistral-7B",
+   "n": 108,
+   "full_acc": 1.0,
+   "full_ci": [
+    1.0,
+    1.0
+   ],
+   "precompiled_acc": 1.0,
+   "precompiled_ci": [
+    1.0,
+    1.0
+   ],
+   "agreement": 1.0,
+   "agreement_ci": [
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "tag": "gemma2_9b",
+   "label": "Gemma-2-9B",
+   "n": 108,
+   "full_acc": 1.0,
+   "full_ci": [
+    1.0,
+    1.0
+   ],
+   "precompiled_acc": 0.435,
+   "precompiled_ci": [
+    0.343,
+    0.528
+   ],
+   "agreement": 0.454,
+   "agreement_ci": [
+    0.361,
+    0.546
+   ]
+  },
+  {
+   "tag": "gemma3_27b",
+   "label": "Gemma-3-27B",
+   "n": 108,
+   "full_acc": 1.0,
+   "full_ci": [
+    1.0,
+    1.0
+   ],
+   "precompiled_acc": 0.481,
+   "precompiled_ci": [
+    0.389,
+    0.574
+   ],
+   "agreement": 0.481,
+   "agreement_ci": [
+    0.389,
+    0.574
+   ]
+  }
+ ],
+ "multi": [
+  {
+   "tag": "qwen3_0p6b",
+   "label": "Qwen3-0.6B",
+   "points": [
+    {
+     "N": 1,
+     "agree": true,
+     "cos": 0.993,
+     "speedup": 1.02
+    },
+    {
+     "N": 2,
+     "agree": true,
+     "cos": 0.985,
+     "speedup": 0.41
+    },
+    {
+     "N": 3,
+     "agree": true,
+     "cos": 0.976,
+     "speedup": 0.47
+    },
+    {
+     "N": 4,
+     "agree": true,
+     "cos": 0.966,
+     "speedup": 0.57
+    }
+   ]
+  },
+  {
+   "tag": "qwen3_4b",
+   "label": "Qwen3-4B",
+   "points": [
+    {
+     "N": 1,
+     "agree": false,
+     "cos": 0.999,
+     "speedup": 1.2
+    },
+    {
+     "N": 2,
+     "agree": false,
+     "cos": 0.996,
+     "speedup": 1.36
+    },
+    {
+     "N": 3,
+     "agree": true,
+     "cos": 0.993,
+     "speedup": 1.52
+    },
+    {
+     "N": 4,
+     "agree": true,
+     "cos": 0.99,
+     "speedup": 2.12
+    }
+   ]
+  },
+  {
+   "tag": "qwen3_32b_fp8",
+   "label": "Qwen3-32B-FP8",
+   "points": [
+    {
+     "N": 1,
+     "agree": true,
+     "cos": 0.886,
+     "speedup": 0.52
+    },
+    {
+     "N": 2,
+     "agree": true,
+     "cos": 0.856,
+     "speedup": 1.59
+    },
+    {
+     "N": 3,
+     "agree": true,
+     "cos": 0.82,
+     "speedup": 1.6
+    },
+    {
+     "N": 4,
+     "agree": true,
+     "cos": 0.76,
+     "speedup": 2.45
+    }
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "points": [
+    {
+     "N": 1,
+     "agree": true,
+     "cos": 0.846,
+     "speedup": 1.14
+    },
+    {
+     "N": 2,
+     "agree": true,
+     "cos": 0.952,
+     "speedup": 1.55
+    },
+    {
+     "N": 3,
+     "agree": true,
+     "cos": 0.688,
+     "speedup": 2.12
+    },
+    {
+     "N": 4,
+     "agree": true,
+     "cos": 0.598,
+     "speedup": 2.45
+    }
+   ]
+  },
+  {
+   "tag": "dsr1_llama8b",
+   "label": "R1-Distill-Llama-8B",
+   "points": [
+    {
+     "N": 1,
+     "agree": true,
+     "cos": 0.935,
+     "speedup": 1.27
+    },
+    {
+     "N": 2,
+     "agree": true,
+     "cos": 0.905,
+     "speedup": 1.69
+    },
+    {
+     "N": 3,
+     "agree": true,
+     "cos": 0.913,
+     "speedup": 2.58
+    },
+    {
+     "N": 4,
+     "agree": true,
+     "cos": 0.875,
+     "speedup": 2.63
+    }
+   ]
+  },
+  {
+   "tag": "gemma2_9b",
+   "label": "Gemma-2-9B",
+   "points": [
+    {
+     "N": 1,
+     "agree": true,
+     "cos": 0.995,
+     "speedup": 3.04
+    },
+    {
+     "N": 2,
+     "agree": true,
+     "cos": 0.99,
+     "speedup": 1.15
+    },
+    {
+     "N": 3,
+     "agree": true,
+     "cos": 0.977,
+     "speedup": 1.32
+    },
+    {
+     "N": 4,
+     "agree": true,
+     "cos": 0.952,
+     "speedup": 1.11
+    }
+   ]
+  }
+ ]
+}

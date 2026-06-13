@@ -1,0 +1,243 @@
+{
+ "model": "Qwen3-8B",
+ "prompt_tokens": 8066,
+ "max_new": 64,
+ "n": 96,
+ "rows": [
+  {
+   "rate": 2.0,
+   "baseline": {
+    "n": 96,
+    "wall_s": 72.147,
+    "throughput_req_s": 1.33,
+    "output_tok_s": 85.2,
+    "ttft_ms": {
+     "mean": 9753.3,
+     "p50": 8358.8,
+     "p90": 22529.8,
+     "p99": 25900.1
+    },
+    "tpot_ms": 153.9,
+    "e2e_ms": {
+     "mean": 19447.1,
+     "p90": 30336.4
+    },
+    "prefix_hit_rate": 0.0103
+   },
+   "erratum": {
+    "n": 96,
+    "wall_s": 45.619,
+    "throughput_req_s": 2.1,
+    "output_tok_s": 134.7,
+    "ttft_ms": {
+     "mean": 71.9,
+     "p50": 72.2,
+     "p90": 85.8,
+     "p99": 97.3
+    },
+    "tpot_ms": 17.5,
+    "e2e_ms": {
+     "mean": 1175.6,
+     "p90": 1296.4
+    },
+    "prefix_hit_rate": 0.9852
+   },
+   "ttft_p90_speedup": 262.59,
+   "throughput_speedup": 1.58
+  },
+  {
+   "rate": 4.0,
+   "baseline": {
+    "n": 96,
+    "wall_s": 62.719,
+    "throughput_req_s": 1.53,
+    "output_tok_s": 98.0,
+    "ttft_ms": {
+     "mean": 18166.9,
+     "p50": 17818.8,
+     "p90": 35058.8,
+     "p99": 38949.7
+    },
+    "tpot_ms": 150.7,
+    "e2e_ms": {
+     "mean": 27658.3,
+     "p90": 41507.8
+    },
+    "prefix_hit_rate": 0.0103
+   },
+   "erratum": {
+    "n": 96,
+    "wall_s": 23.426,
+    "throughput_req_s": 4.1,
+    "output_tok_s": 262.3,
+    "ttft_ms": {
+     "mean": 74.5,
+     "p50": 73.7,
+     "p90": 90.4,
+     "p99": 105.0
+    },
+    "tpot_ms": 17.7,
+    "e2e_ms": {
+     "mean": 1188.1,
+     "p90": 1342.6
+    },
+    "prefix_hit_rate": 0.9852
+   },
+   "ttft_p90_speedup": 387.82,
+   "throughput_speedup": 2.68
+  },
+  {
+   "rate": 8.0,
+   "baseline": {
+    "n": 96,
+    "wall_s": 63.415,
+    "throughput_req_s": 1.51,
+    "output_tok_s": 96.9,
+    "ttft_ms": {
+     "mean": 24538.6,
+     "p50": 24468.5,
+     "p90": 45863.7,
+     "p99": 50746.3
+    },
+    "tpot_ms": 152.8,
+    "e2e_ms": {
+     "mean": 34167.8,
+     "p90": 52256.1
+    },
+    "prefix_hit_rate": 0.0103
+   },
+   "erratum": {
+    "n": 96,
+    "wall_s": 12.552,
+    "throughput_req_s": 7.65,
+    "output_tok_s": 489.5,
+    "ttft_ms": {
+     "mean": 92.0,
+     "p50": 91.0,
+     "p90": 115.2,
+     "p99": 152.6
+    },
+    "tpot_ms": 22.3,
+    "e2e_ms": {
+     "mean": 1495.7,
+     "p90": 1768.9
+    },
+    "prefix_hit_rate": 0.9852
+   },
+   "ttft_p90_speedup": 398.12,
+   "throughput_speedup": 5.07
+  },
+  {
+   "rate": 16.0,
+   "baseline": {
+    "n": 96,
+    "wall_s": 63.649,
+    "throughput_req_s": 1.51,
+    "output_tok_s": 96.5,
+    "ttft_ms": {
+     "mean": 27653.4,
+     "p50": 27779.9,
+     "p90": 51054.1,
+     "p99": 56421.5
+    },
+    "tpot_ms": 153.5,
+    "e2e_ms": {
+     "mean": 37324.8,
+     "p90": 57665.0
+    },
+    "prefix_hit_rate": 0.0103
+   },
+   "erratum": {
+    "n": 96,
+    "wall_s": 8.016,
+    "throughput_req_s": 11.98,
+    "output_tok_s": 766.4,
+    "ttft_ms": {
+     "mean": 164.3,
+     "p50": 152.9,
+     "p90": 273.1,
+     "p99": 319.8
+    },
+    "tpot_ms": 42.2,
+    "e2e_ms": {
+     "mean": 2819.9,
+     "p90": 3552.2
+    },
+    "prefix_hit_rate": 0.9852
+   },
+   "ttft_p90_speedup": 186.94,
+   "throughput_speedup": 7.93
+  },
+  {
+   "rate": 0.0,
+   "baseline": {
+    "n": 96,
+    "wall_s": 63.391,
+    "throughput_req_s": 1.51,
+    "output_tok_s": 96.9,
+    "ttft_ms": {
+     "mean": 30320.1,
+     "p50": 30661.6,
+     "p90": 55355.6,
+     "p99": 60959.2
+    },
+    "tpot_ms": 152.7,
+    "e2e_ms": {
+     "mean": 39938.3,
+     "p90": 61792.8
+    },
+    "prefix_hit_rate": 0.0103
+   },
+   "erratum": {
+    "n": 96,
+    "wall_s": 4.376,
+    "throughput_req_s": 21.94,
+    "output_tok_s": 1404.0,
+    "ttft_ms": {
+     "mean": 659.4,
+     "p50": 628.0,
+     "p90": 1043.3,
+     "p99": 1152.2
+    },
+    "tpot_ms": 47.6,
+    "e2e_ms": {
+     "mean": 3659.0,
+     "p90": 3824.5
+    },
+    "prefix_hit_rate": 0.9852
+   },
+   "ttft_p90_speedup": 53.06,
+   "throughput_speedup": 14.53
+  }
+ ],
+ "vision_ttft": [
+  {
+   "px": 448,
+   "img_tokens": 256,
+   "full_ms": 201.3,
+   "reuse_ms": 51.1,
+   "speedup": 3.94
+  },
+  {
+   "px": 672,
+   "img_tokens": 576,
+   "full_ms": 95.6,
+   "reuse_ms": 39.7,
+   "speedup": 2.41
+  },
+  {
+   "px": 1008,
+   "img_tokens": 1296,
+   "full_ms": 187.9,
+   "reuse_ms": 65.7,
+   "speedup": 2.86
+  },
+  {
+   "px": 1344,
+   "img_tokens": 2304,
+   "full_ms": 797.5,
+   "reuse_ms": 94.8,
+   "speedup": 8.41
+  }
+ ]
+}

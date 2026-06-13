@@ -1,0 +1,1270 @@
+{
+ "runs": [
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "period": 1,
+   "turns": 28,
+   "mean_agree": 0.822,
+   "agree_first_third": 0.926,
+   "agree_last_third": 0.741,
+   "mean_logit_cos": 0.99,
+   "cos_first_third": 0.992,
+   "cos_last_third": 0.988,
+   "oracle_acc": 0.667,
+   "per_turn": [
+    {
+     "t": 1,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9878
+    },
+    {
+     "t": 2,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9905
+    },
+    {
+     "t": 3,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9934
+    },
+    {
+     "t": 4,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9919
+    },
+    {
+     "t": 5,
+     "agree": 1.0,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9917
+    },
+    {
+     "t": 6,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9933
+    },
+    {
+     "t": 7,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9926
+    },
+    {
+     "t": 8,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9917
+    },
+    {
+     "t": 9,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9925
+    },
+    {
+     "t": 10,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9906
+    },
+    {
+     "t": 11,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9922
+    },
+    {
+     "t": 12,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9922
+    },
+    {
+     "t": 13,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9917
+    },
+    {
+     "t": 14,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9919
+    },
+    {
+     "t": 15,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9911
+    },
+    {
+     "t": 16,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9886
+    },
+    {
+     "t": 17,
+     "agree": 1.0,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9903
+    },
+    {
+     "t": 18,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9848
+    },
+    {
+     "t": 19,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9909
+    },
+    {
+     "t": 20,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9872
+    },
+    {
+     "t": 21,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9932
+    },
+    {
+     "t": 22,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9859
+    },
+    {
+     "t": 23,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9915
+    },
+    {
+     "t": 24,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9878
+    },
+    {
+     "t": 25,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9869
+    },
+    {
+     "t": 26,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9867
+    },
+    {
+     "t": 27,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9829
+    },
+    {
+     "t": 28,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9872
+    }
+   ]
+  },
+  {
+   "tag": "qwen3_8b",
+   "label": "Qwen3-8B",
+   "period": 6,
+   "turns": 28,
+   "mean_agree": 0.964,
+   "agree_first_third": 0.926,
+   "agree_last_third": 0.963,
+   "mean_logit_cos": 0.9868,
+   "cos_first_third": 0.991,
+   "cos_last_third": 0.982,
+   "oracle_acc": 0.667,
+   "per_turn": [
+    {
+     "t": 1,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9878
+    },
+    {
+     "t": 2,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9938
+    },
+    {
+     "t": 3,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.995
+    },
+    {
+     "t": 4,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9946
+    },
+    {
+     "t": 5,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9896
+    },
+    {
+     "t": 6,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9875
+    },
+    {
+     "t": 7,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9835
+    },
+    {
+     "t": 8,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9922
+    },
+    {
+     "t": 9,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.991
+    },
+    {
+     "t": 10,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9891
+    },
+    {
+     "t": 11,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9928
+    },
+    {
+     "t": 12,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9933
+    },
+    {
+     "t": 13,
+     "agree": 1.0,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9881
+    },
+    {
+     "t": 14,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9888
+    },
+    {
+     "t": 15,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9918
+    },
+    {
+     "t": 16,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9872
+    },
+    {
+     "t": 17,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.986
+    },
+    {
+     "t": 18,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9864
+    },
+    {
+     "t": 19,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9788
+    },
+    {
+     "t": 20,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9832
+    },
+    {
+     "t": 21,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9821
+    },
+    {
+     "t": 22,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9798
+    },
+    {
+     "t": 23,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9854
+    },
+    {
+     "t": 24,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9855
+    },
+    {
+     "t": 25,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9809
+    },
+    {
+     "t": 26,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9719
+    },
+    {
+     "t": 27,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9844
+    },
+    {
+     "t": 28,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9807
+    }
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "period": 1,
+   "turns": 28,
+   "mean_agree": 0.905,
+   "agree_first_third": 0.963,
+   "agree_last_third": 1.0,
+   "mean_logit_cos": 0.9939,
+   "cos_first_third": 0.991,
+   "cos_last_third": 0.996,
+   "oracle_acc": 0.643,
+   "per_turn": [
+    {
+     "t": 1,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9853
+    },
+    {
+     "t": 2,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.988
+    },
+    {
+     "t": 3,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9891
+    },
+    {
+     "t": 4,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9937
+    },
+    {
+     "t": 5,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9956
+    },
+    {
+     "t": 6,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9942
+    },
+    {
+     "t": 7,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.989
+    },
+    {
+     "t": 8,
+     "agree": 0.667,
+     "patched_correct": 1.0,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9943
+    },
+    {
+     "t": 9,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9921
+    },
+    {
+     "t": 10,
+     "agree": 0.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9935
+    },
+    {
+     "t": 11,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9945
+    },
+    {
+     "t": 12,
+     "agree": 0.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9959
+    },
+    {
+     "t": 13,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.995
+    },
+    {
+     "t": 14,
+     "agree": 1.0,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9911
+    },
+    {
+     "t": 15,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9941
+    },
+    {
+     "t": 16,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9941
+    },
+    {
+     "t": 17,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9927
+    },
+    {
+     "t": 18,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.996
+    },
+    {
+     "t": 19,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9956
+    },
+    {
+     "t": 20,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.996
+    },
+    {
+     "t": 21,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9949
+    },
+    {
+     "t": 22,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.997
+    },
+    {
+     "t": 23,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9968
+    },
+    {
+     "t": 24,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9953
+    },
+    {
+     "t": 25,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9955
+    },
+    {
+     "t": 26,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.997
+    },
+    {
+     "t": 27,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9967
+    },
+    {
+     "t": 28,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.997
+    }
+   ]
+  },
+  {
+   "tag": "llama31_8b",
+   "label": "Llama-3.1-8B",
+   "period": 6,
+   "turns": 28,
+   "mean_agree": 0.786,
+   "agree_first_third": 0.852,
+   "agree_last_third": 0.704,
+   "mean_logit_cos": 0.9888,
+   "cos_first_third": 0.992,
+   "cos_last_third": 0.988,
+   "oracle_acc": 0.821,
+   "per_turn": [
+    {
+     "t": 1,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9853
+    },
+    {
+     "t": 2,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9925
+    },
+    {
+     "t": 3,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9925
+    },
+    {
+     "t": 4,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9921
+    },
+    {
+     "t": 5,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9918
+    },
+    {
+     "t": 6,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9931
+    },
+    {
+     "t": 7,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.991
+    },
+    {
+     "t": 8,
+     "agree": 0.333,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.995
+    },
+    {
+     "t": 9,
+     "agree": 0.333,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9927
+    },
+    {
+     "t": 10,
+     "agree": 0.333,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9892
+    },
+    {
+     "t": 11,
+     "agree": 0.333,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9911
+    },
+    {
+     "t": 12,
+     "agree": 0.333,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.9893
+    },
+    {
+     "t": 13,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9912
+    },
+    {
+     "t": 14,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9827
+    },
+    {
+     "t": 15,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9875
+    },
+    {
+     "t": 16,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9876
+    },
+    {
+     "t": 17,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9852
+    },
+    {
+     "t": 18,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9818
+    },
+    {
+     "t": 19,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9835
+    },
+    {
+     "t": 20,
+     "agree": 0.333,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.667,
+     "logit_cos": 0.988
+    },
+    {
+     "t": 21,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9899
+    },
+    {
+     "t": 22,
+     "agree": 0.333,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9869
+    },
+    {
+     "t": 23,
+     "agree": 0.333,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9912
+    },
+    {
+     "t": 24,
+     "agree": 0.667,
+     "patched_correct": 0.333,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9916
+    },
+    {
+     "t": 25,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.986
+    },
+    {
+     "t": 26,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.975
+    },
+    {
+     "t": 27,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9909
+    },
+    {
+     "t": 28,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9927
+    }
+   ]
+  },
+  {
+   "tag": "mistral_7b",
+   "label": "Mistral-7B",
+   "period": 1,
+   "turns": 28,
+   "mean_agree": 0.976,
+   "agree_first_third": 0.926,
+   "agree_last_third": 1.0,
+   "mean_logit_cos": 0.9992,
+   "cos_first_third": 0.999,
+   "cos_last_third": 0.999,
+   "oracle_acc": 0.524,
+   "per_turn": [
+    {
+     "t": 1,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 2,
+     "agree": 0.667,
+     "patched_correct": 0.667,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9991
+    },
+    {
+     "t": 3,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9996
+    },
+    {
+     "t": 4,
+     "agree": 0.667,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9995
+    },
+    {
+     "t": 5,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9995
+    },
+    {
+     "t": 6,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 7,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9993
+    },
+    {
+     "t": 8,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 9,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9993
+    },
+    {
+     "t": 10,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.999
+    },
+    {
+     "t": 11,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9988
+    },
+    {
+     "t": 12,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9988
+    },
+    {
+     "t": 13,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9993
+    },
+    {
+     "t": 14,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9993
+    },
+    {
+     "t": 15,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9993
+    },
+    {
+     "t": 16,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9989
+    },
+    {
+     "t": 17,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 18,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 19,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 20,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9986
+    },
+    {
+     "t": 21,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9991
+    },
+    {
+     "t": 22,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 23,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9989
+    },
+    {
+     "t": 24,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 25,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9991
+    },
+    {
+     "t": 26,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 27,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9991
+    },
+    {
+     "t": 28,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9989
+    }
+   ]
+  },
+  {
+   "tag": "mistral_7b",
+   "label": "Mistral-7B",
+   "period": 6,
+   "turns": 28,
+   "mean_agree": 0.988,
+   "agree_first_third": 1.0,
+   "agree_last_third": 0.963,
+   "mean_logit_cos": 0.9993,
+   "cos_first_third": 0.999,
+   "cos_last_third": 0.999,
+   "oracle_acc": 0.583,
+   "per_turn": [
+    {
+     "t": 1,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 2,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 3,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9993
+    },
+    {
+     "t": 4,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9995
+    },
+    {
+     "t": 5,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9995
+    },
+    {
+     "t": 6,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 7,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 8,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 9,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 10,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 11,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 12,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9993
+    },
+    {
+     "t": 13,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9989
+    },
+    {
+     "t": 14,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 15,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.999
+    },
+    {
+     "t": 16,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9989
+    },
+    {
+     "t": 17,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 18,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.999
+    },
+    {
+     "t": 19,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9993
+    },
+    {
+     "t": 20,
+     "agree": 0.667,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.333,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 21,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9991
+    },
+    {
+     "t": 22,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 23,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9991
+    },
+    {
+     "t": 24,
+     "agree": 1.0,
+     "patched_correct": 0.0,
+     "oracle_correct": 0.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 25,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9992
+    },
+    {
+     "t": 26,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 27,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9994
+    },
+    {
+     "t": 28,
+     "agree": 1.0,
+     "patched_correct": 1.0,
+     "oracle_correct": 1.0,
+     "logit_cos": 0.9993
+    }
+   ]
+  }
+ ]
+}
