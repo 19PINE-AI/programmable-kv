@@ -9,13 +9,13 @@ prefill the model has already computed the \emph{field-conditioned conclusion} a
 downstream aggregator/delimiter tokens: the field's own key/value drives under $1\%$ of the decision,
 while the downstream \emph{notes} drive essentially all of it. The KV cache is best read as a notebook of
 memoized conclusions, and two capabilities follow.
-\textbf{It is editable.} Because the conclusion is already written downstream, the fix is not a full
-recomputation: either recompute only the few \emph{affected} downstream notes, or append a salient
-\emph{erratum} that amends them---\fielderr{} matches the strong hoist-to-end baseline without rewriting
-the prompt. The two model classes differ starkly: on \emph{reasoning} models a near-free in-place refresh
-of the field alone recovers the decision ($1.00$ at $8$B, ${\sim}1\%$ compute, because the chain re-reads
-the field), whereas \emph{instruction-tuned} models ignore that edit ($0.00$) and need one of the two real
-fixes.
+\textbf{It is editable.} Because the conclusion is already written downstream, the cheap, robust fix is a
+salient \emph{erratum} that amends the notes (\fielderr{} matches the strong hoist-to-end baseline without
+rewriting the prompt); one can instead recompute the affected downstream notes---reliably for the whole
+affected suffix, but only unreliably for a cheap top-$K$ (\fieldsel{}@$K$, with a model-dependent minimum).
+An even cheaper in-place refresh of the field alone is gated by \emph{chain-of-thought}, not model size:
+with CoT the chain re-reads the field and the edit alone recovers the decision ($1.00$ at $8$B, ${\sim}1\%$
+compute), without CoT it is ignored ($0.00$).
 \textbf{It is composable.} The notes are localized and position-portable, so a precompiled skill can be
 RoPE-repositioned and spliced into any context---behaviorally indistinguishable from full recompute (logit
 cosine $0.90$--$0.999$ across twelve models) at $O(L)$ rather than $O(L^2)$ time-to-first-token

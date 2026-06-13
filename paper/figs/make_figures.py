@@ -363,16 +363,17 @@ def fig_systems():
 # FIG OVERVIEW — one mechanism -> two operations -> one substrate (the spine)
 # =====================================================================================
 def fig_overview():
-    """Results preview: KV editing landscape, recompute-K-dependent-tokens, and the
-    stark reasoning-vs-instruct contrast. (All Qwen3-8B; detail in Secs. 4 / 3.)"""
-    fig, axs = plt.subplots(1, 3, figsize=(7.4, 2.5))
+    """Results preview (Qwen3-8B unless noted; detail in Secs. 3-6): the KV-editing
+    landscape, recomputing the affected notes, the chain-of-thought gap, and the
+    lossless composing+editing agent."""
+    fig, axs = plt.subplots(2, 2, figsize=(7.0, 4.3))
 
     # (a) KV editing: cost vs. correctness frontier
     bt = J("baseline_table_qwen3_8b.json")["methods"]
     order = [("stale", "stale"), ("in_place", "field-only"), ("cacheblend@15%", "CacheBlend"),
              ("hoist_to_end", "hoist"), ("erratum", "erratum"), ("field+erratum", "field+err"),
              ("full_reprefill", "full")]
-    ax = axs[0]
+    ax = axs[0][0]
     off = {"stale": (0, -11, "center"), "field-only": (10, 5, "left"),
            "CacheBlend": (0, -11, "center"), "hoist": (0, 8, "center"),
            "erratum": (-3, -12, "right"), "field+err": (6, 8, "left"), "full": (0, -12, "center")}
@@ -386,33 +387,49 @@ def fig_overview():
     ax.set_xscale("log"); ax.set_xlim(0.003, 1.6); ax.set_ylim(-0.12, 1.22)
     ax.set_xlabel("fraction recomputed"); ax.set_ylabel("P(correct decision)")
     ax.axhline(1.0, color=C["green"], lw=0.5, ls=":"); despine(ax)
-    ax.set_title("(a) KV editing", fontsize=8.8, loc="left")
+    ax.set_title("(a) KV editing: erratum is cheap + robust", fontsize=8.4, loc="left")
 
-    # (b) recompute the K most field-dependent downstream notes (suffix concentration)
+    # (b) recompute the affected downstream notes (suffix concentration)
     cs = J("mech_causal_patch_qwen3_8b.json")["agg"]["cum_suffix_mean"]
     items = sorted((float(k), v["mean"]) for k, v in cs.items())
-    ax = axs[1]
+    ax = axs[0][1]
     ax.plot([a * 100 for a, _ in items], [b for _, b in items], "-o", color=C["orange"], ms=3, lw=1.4)
     ax.axhline(1.0, color=C["green"], lw=0.5, ls=":")
-    ax.set_ylim(0, 1.1); ax.set_xlabel("% dependent notes recomputed")
+    ax.set_ylim(0, 1.1); ax.set_xlabel("% of affected suffix recomputed")
     ax.set_ylabel("decision recovery"); despine(ax)
-    ax.set_title("(b) Recompute $K$ notes", fontsize=8.8, loc="left")
+    ax.set_title("(b) Recompute the affected notes", fontsize=8.4, loc="left")
 
-    # (c) reasoning vs. instruct: the field-only edit flips
+    # (c) chain-of-thought gap: same model, thinking on/off
     md = J("mech_diverse_qwen3_8b.json")["by_mode"]
     def pc(mode, cond): return md[mode]["summary"][cond]["P_correct"]
-    ax = axs[2]; x = np.arange(2); w = 0.36
+    ax = axs[1][0]; x = np.arange(2); w = 0.36
     nonr = [pc("nonreasoning", "field_only"), pc("nonreasoning", "erratum")]
-    reas = [pc("reasoning", "field_only"), pc("reasoning", "erratum")]
-    b1 = ax.bar(x - w / 2, nonr, w, color=C["grey"], label="instruct", edgecolor="white", lw=0.6, zorder=3)
-    b2 = ax.bar(x + w / 2, reas, w, color=C["blue"], label="reasoning", edgecolor="white", lw=0.6, zorder=3)
+    cot = [pc("reasoning", "field_only"), pc("reasoning", "erratum")]
+    b1 = ax.bar(x - w / 2, nonr, w, color=C["grey"], label="without CoT", edgecolor="white", lw=0.6, zorder=3)
+    b2 = ax.bar(x + w / 2, cot, w, color=C["blue"], label="with CoT", edgecolor="white", lw=0.6, zorder=3)
     ax.bar_label(b1, fmt="%.2f", fontsize=5.0, padding=1)
     ax.bar_label(b2, fmt="%.2f", fontsize=5.0, padding=1)
     ax.set_xticks(x); ax.set_xticklabels(["field-only", "erratum"], fontsize=6.5)
     ax.set_ylim(0, 1.22); ax.set_ylabel("P(correct decision)")
     ax.legend(fontsize=5.6, frameon=False, loc="upper left", handlelength=1.0)
     despine(ax)
-    ax.set_title("(c) Reasoning vs instruct", fontsize=8.8, loc="left")
+    ax.set_title("(c) The cheap field-only edit needs CoT", fontsize=8.4, loc="left")
+
+    # (d) composing+editing is lossless: unified-agent agreement vs full recompute
+    agent_models = [("qwen3_8b", "Qwen3-8B"), ("qwen3_14b", "Qwen3-14B"), ("llama31_8b", "Llama-3.1-8B"),
+                    ("mistral7b", "Mistral-7B"), ("llama31_70b_4bit", "Llama-70B"), ("gemma2_9b", "Gemma-2-9B")]
+    labs, ys = [], []
+    for tag, lab in agent_models:
+        f = os.path.join(R, f"agent_rigorous_{tag}.json")
+        if not os.path.exists(f): continue
+        ys.append(J(f"agent_rigorous_{tag}.json")["agreement"]); labs.append(lab)
+    ax = axs[1][1]; yp = np.arange(len(labs))
+    ax.barh(yp, ys, color=C["green"], height=0.62, edgecolor="white", lw=0.5, zorder=3)
+    for yi, v in zip(yp, ys): ax.text(min(v + 0.012, 1.0), yi, f"{v:.2f}", va="center", fontsize=5.4)
+    ax.set_yticks(yp); ax.set_yticklabels(labs, fontsize=6.2); ax.invert_yaxis()
+    ax.set_xlim(0.5, 1.06); ax.axvline(1.0, color=C["grey"], ls=":", lw=0.6)
+    ax.set_xlabel("unified agent: agreement vs full recompute"); despine(ax)
+    ax.set_title("(d) Composing+editing is lossless", fontsize=8.4, loc="left")
 
     save(fig, "fig0_overview")
 

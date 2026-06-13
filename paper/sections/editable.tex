@@ -18,37 +18,37 @@ KV in isolation, RoPE-reposition it to the target positions, and splice it in ($
 \label{fig:ops}
 \end{figure}
 
-\paragraph{Two fixes, neither a full reprefill.} If the stale notes carry an old conclusion, there are
-two correct interventions. \emph{(i) Recompute the affected notes}: refresh the field plus the few
-highest-effect downstream tokens that memoized the old conclusion---\fieldsel{}@$K$, recomputing only the
-dependent suffix rather than the whole context. \emph{(ii) Append an erratum}: one salient line late in the
-context---``\texttt{[STATE UPDATE] field $\rightarrow$ new; overrides any earlier value and
-conclusion}''---so the decision token attends to a fresh, authoritative note (verbatim template in
-\Cref{app:examples}). The erratum is the robust default: appended after the field (\texttt{field+erratum})
-it matches the strong \emph{hoist-to-end} oracle \emph{without rewriting the prompt} ($0.97$ under
-chain-of-thought on Qwen3-8B, \Cref{fig:overview}a), and being append-only it composes with prefix caching
-(\Cref{sec:systems}).
+\paragraph{Two ways to fix it, neither a full reprefill.} If the stale notes carry an old conclusion, there
+are two interventions. \emph{(i) Recompute the affected notes} after the field. Recomputing the \emph{whole}
+affected suffix is reliable---it is exactly \emph{full-downstream} (recovery $1.0$)---but pays the post-field
+prefill; recomputing only the top-$K$ highest-effect notes (\fieldsel{}@$K$) is cheaper but
+\emph{unreliable}, because the minimal $K$ is strongly model-dependent (below). \emph{(ii) Append an erratum}:
+one salient line late in the context---``\texttt{[STATE UPDATE] field $\rightarrow$ new; overrides any
+earlier value and conclusion}''---so the decision token attends to a fresh, authoritative note (verbatim
+template in \Cref{app:examples}). The erratum is the cheap, robust default: appended after the field
+(\texttt{field+erratum}) it matches the strong \emph{hoist-to-end} oracle \emph{without rewriting the
+prompt} ($0.97$ under chain-of-thought on Qwen3-8B, \Cref{fig:overview}a), and being append-only it composes
+with prefix caching (\Cref{sec:systems}).
 
-\paragraph{Reasoning vs.\ instruction-tuned: a stark split.} Which fix you \emph{need} depends sharply on
-the model class. On a \emph{reasoning} model a near-free third option appears---refresh the field's own KV
-alone (${\sim}1\%$ compute) and nothing else---because the chain re-reads the refreshed field and
-re-derives the conclusion instead of trusting the stale note; field-only recovery is $1.00$ on Qwen3-8B.
-On an \emph{instruction-tuned} model the identical edit is \emph{ignored} ($0.00$): with no chain to
-re-derive, the decision commits to the memoized note (\Cref{fig:overview}c). Instruction-tuned models
-therefore require one of the two real fixes above. The mechanics are simple---an in-place edit only helps
-if some later computation actually re-reads the field---and we keep them brief here; the per-model
-stickiness, the \fieldsel{}@$K$ sweep ($K^\star\approx 4$ at $8$B but $>64$ at $4$B, varying
-non-monotonically with scale; \Cref{fig:edit}a,b), and the layer-wise account are detailed in
-\Cref{app:edit,app:deepmech}. We report \fieldsel{}@$K$ honestly as a genuine but \emph{unreliable}
-surgical tool, not a default.
+\paragraph{Chain-of-thought, not model size, gates the cheapest edit.} A third, near-free option---refresh
+the field's own KV alone (${\sim}1\%$ compute) and nothing else---works only when some later computation
+actually re-reads the field. A reasoning \emph{chain} does exactly that, so with chain-of-thought the
+field-only edit alone recovers the decision ($1.00$ on Qwen3-8B); without the chain the \emph{identical}
+edit on the \emph{same} model is ignored ($0.00$) and the decision commits to the stale note
+(\Cref{fig:overview}c). The divider is therefore the CoT \emph{mode}, not raw scale---reasoning-native
+models default to CoT, instruction-tuned ones to direct answers---so without CoT one of the two real fixes
+above is required. The mechanics are that simple, and we keep them brief here; the per-model stickiness, the
+\fieldsel{}@$K$ sweep ($K^\star\approx 4$ at $8$B but $>64$ at $4$B, varying non-monotonically with scale;
+\Cref{fig:edit}a,b), and the layer-wise account are detailed in \Cref{app:edit,app:deepmech}. We report
+\fieldsel{}@$K$ honestly as a genuine but \emph{unreliable} surgical tool, not a default.
 
 \paragraph{A frontier, not a winner.} A controlled comparison (full table in \Cref{app:edit}) shows no single
 dominant method. Hoist-to-end is cheapest but demands prompt surgery and pre-identification of every field;
 \texttt{field+erratum} matches it with no surgery at a one-line append; \inplace{} is near-free but only
-under reasoning; a KV-deviation-ranked selective recompute (CacheBlend-style) underperforms here because it
-chases changed keys rather than the tokens that \emph{memoized the conclusion}. The practical
-recommendation is \texttt{field+erratum} as the robust default, with \inplace{} as a free fast-path for
-reasoning models.
+with chain-of-thought; a KV-deviation-ranked selective recompute (CacheBlend-style) underperforms here
+because it chases changed keys rather than the tokens that \emph{memoized the conclusion}. The practical
+recommendation is \texttt{field+erratum} as the robust default, with \inplace{} as a free fast-path under
+chain-of-thought.
 
 \paragraph{Why not edit the weights?} A natural objection: to act on a changed field, why not edit
 the model's \emph{weights} (ROME/MEMIT) or fine-tune, rather than the cache? We compare on the paper's

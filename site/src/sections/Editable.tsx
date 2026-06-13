@@ -24,7 +24,7 @@ function ReasoningGap() {
         { label: 'recompute affected', values: [{ v: 1.0 }, { v: 1.0 }] },
         { label: 'erratum', values: [{ v: nonr.erratum.P_correct }, { v: reas.erratum.P_correct }] },
       ]}
-      seriesLabels={['instruction-tuned', 'reasoning']}
+      seriesLabels={['without CoT', 'with CoT']}
       colors={[COLORS.gray, COLORS.blue]}
       yDomain={[0, 1.12]}
       yLabel="P(correct decision)"
@@ -198,36 +198,37 @@ export function Editable() {
         The second challenge was <strong>mutation</strong>: when a field changes mid-session you
         should not have to recompute the cache. The naive shortcut — surgically refreshing the
         field&rsquo;s own keys and values — is silently ignored (we show exactly why in §7). There
-        are <strong>two real fixes</strong>, and they work for any model:{' '}
-        <strong>(1) recompute the affected notes</strong> — the few downstream tokens that memoized
-        the old conclusion (field + selective@K) — or{' '}
-        <strong>(2) append an erratum</strong>, a one-line salient correction the decision reads as
-        a fresh, authoritative note. The erratum is append-only, so the prefix stays cache-aligned
-        (which is what makes §5&rsquo;s serving numbers possible).
+        are <strong>two ways to fix it</strong>, neither a full reprefill.{' '}
+        <strong>(1) Recompute the affected notes</strong> after the field — reliably if you recompute
+        the whole affected suffix, cheaply but <em>unreliably</em> if you recompute only the top-K
+        (<code>field+selective@K</code>, whose minimal K is model-dependent).{' '}
+        <strong>(2) Append an erratum</strong> — one salient line the decision reads as a fresh,
+        authoritative note. The erratum is the <strong>cheap, robust default</strong>: append-only,
+        so the prefix stays cache-aligned (which is what makes §5&rsquo;s serving numbers possible).
       </P>
 
-      <H3>The stark split: reasoning vs. instruction-tuned models</H3>
+      <H3>Chain-of-thought, not model size, gates the cheap edit</H3>
       <P>
-        Whether you <em>need</em> one of those fixes depends sharply on the model class. A{' '}
-        <strong>reasoning</strong> model gets a near-free third option — refresh the field&rsquo;s
-        KV alone (~1% compute) and nothing else — because its chain re-reads the fresh field and
-        re-derives the conclusion. An <strong>instruction-tuned</strong> model running the{' '}
-        <em>identical</em> edit simply ignores it: with no chain to re-derive, the decision commits
-        to the stale note. The mechanics are that simple — an in-place edit helps only if some later
-        computation actually re-reads the field — so we keep them brief here and put the detail under
-        the hood (§12).
+        There is also a near-free third option — refresh the field&rsquo;s KV alone (~1% compute) and
+        nothing else — but it works only when some later computation actually re-reads the field. A
+        reasoning <em>chain</em> does exactly that, so <strong>with chain-of-thought</strong> the
+        field-only edit alone recovers the decision; run the <em>identical</em> edit on the{' '}
+        <em>same</em> model <strong>without CoT</strong> and it is ignored — the decision commits to
+        the stale note. The divider is the CoT <em>mode</em>, not raw model size (reasoning-native
+        models default to CoT; instruction-tuned ones to direct answers). The mechanics are that
+        simple, so we keep them brief and put the detail under the hood (§12).
       </P>
 
       <Figure
         narrow
-        label="Reasoning vs. instruction-tuned."
-        title="The same field-only edit: recovered under reasoning, ignored without it"
-        sub="Qwen3-8B, P(correct decision) after each fix; ‘recompute affected’ = full downstream recompute"
+        label="The chain-of-thought gap."
+        title="The same field-only edit: recovered with chain-of-thought, ignored without it"
+        sub="Qwen3-8B, P(correct decision) after each fix (same model, thinking on/off); ‘recompute affected’ = full downstream recompute"
         caption={
           <>
             Both real fixes — recompute the affected notes, or append an erratum — recover the
-            decision for either model class. The cheap field-only refresh is the divider: it reaches{' '}
-            <b>1.00</b> on the reasoning model but <b>0.00</b> on the instruction-tuned one.
+            decision either way. The cheap field-only refresh is the divider: it reaches <b>1.00</b>{' '}
+            with chain-of-thought but <b>0.00</b> without it, on the same model.
           </>
         }
       >

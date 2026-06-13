@@ -11,5 +11,8 @@ any per-token attention KV cache: it holds across scale, quantization, Mixture-o
 image caches, transfers freely across throughput optimizations, and reaches Multi-head Latent Attention,
 sliding-window, and interleaved-M-RoPE models through small adapters---up to the edge of the 2026
 sparse/compressed-attention frontier, where the unit of editing and composition becomes a block rather
-than a token. We hope the ``models take notes at prefill'' lens is useful beyond editing and composition:
-the cache is a readable, writable record of what a model has already concluded.
+than a token. In practice this turns two everyday agent costs---reloading a library of skills and
+re-reading a mutating user-memory document---into $O(L)$ cache operations that preserve the decision, with
+up to $14.5\times$ online serving throughput. We hope the ``models take notes at prefill'' lens is useful
+beyond editing and composition: the cache is a readable, writable record of what a model has already
+concluded.
