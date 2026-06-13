@@ -16,7 +16,7 @@ policy is \emph{composed} once and never re-prefilled; as the world changes acro
 is \emph{edited} by appended errata; and each turn reuses the longest cached prefix and prefills only the
 delta. Against a reprefill-every-turn baseline, over $10$ agent domains $\times$ $10$ instances ($300$
 decisions) per model ($40$ instances, $120$ decisions, on the two Gemma models) and across thirteen
-models, the unified path is decision-identical to full recompute
+models (\Cref{app:models}), the unified path is decision-identical to full recompute
 with agreement $0.81$--$1.00$ (e.g.\ Llama-3.1-8B $0.963$, Mistral-7B $0.983$, Llama-3.1-70B $1.00$) at
 cumulative-TTFT speedups up to $14.9\times$ (\Cref{fig:key}b); the speedup scales with policy length
 $\times$ turns. This is editing and composing operating together, losslessly and faster, across the model

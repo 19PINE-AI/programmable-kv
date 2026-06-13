@@ -39,7 +39,7 @@ $K$ helps ($0.00$ recovery at every scale). \fieldsel{}@$K$ is therefore a genui
 \emph{unreliable} surgical tool---effective when the conclusion is not sticky, model-dependent otherwise;
 we report it honestly rather than as a default.
 
-\paragraph{A frontier, not a winner.} A controlled comparison (full table in the appendix) shows no single
+\paragraph{A frontier, not a winner.} A controlled comparison (full table in \Cref{app:edit}) shows no single
 dominant method. Hoist-to-end is cheapest but demands prompt surgery and pre-identification of every field;
 \texttt{field+erratum} matches it with no surgery at a one-line append; \inplace{} is near-free but only
 under reasoning; a KV-deviation-ranked selective recompute (CacheBlend-style) underperforms here because it
@@ -52,7 +52,7 @@ the model's \emph{weights} (ROME/MEMIT) or fine-tune, rather than the cache? We 
 gated task (status \texttt{pending}$\rightarrow$\texttt{shipped}, so \emph{cancel}$\rightarrow$\emph{deny})
 against a faithful rank-one ROME---validated on the canonical factual edit first (``the Eiffel Tower is
 in'' \emph{Paris}$\rightarrow$\emph{Rome}, locality intact), so the baseline is not crippled---and a LoRA
-fine-tune (\Cref{tab:weight}). All of \fielderr{}, ROME, and LoRA \emph{succeed} at flipping the target
+fine-tune (\Cref{tab:weight}; methodology in \Cref{app:systems}). All of \fielderr{}, ROME, and LoRA \emph{succeed} at flipping the target
 decision. But a weight edit is \emph{global}: the same model instance can no longer hold
 \texttt{status=shipped} for one request and \texttt{pending} for another, so \emph{all} concurrent orders
 that are genuinely still pending are wrongly flipped (cross-request contamination $1.0$), and half of an

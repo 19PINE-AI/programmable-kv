@@ -17,7 +17,7 @@ block's content hash and invalidates every downstream block. We test this on vLL
 online server---\texttt{AsyncLLMEngine} with CUDA graphs, continuous batching, APC, and \emph{Poisson}
 request arrivals at controlled offered load (not an offline batch)---over a shared ${\sim}8$k-token agent
 policy with one mutable field, measuring TTFT percentiles, throughput, and the engine's own APC hit-rate
-(\Cref{fig:sys}a). The append-only edit keeps the prefix a cache hit (\textbf{$98.5\%$ vs.\ $1.0\%$ APC
+(\Cref{fig:sys}a; full configuration in \Cref{app:systems}). The append-only edit keeps the prefix a cache hit (\textbf{$98.5\%$ vs.\ $1.0\%$ APC
 hit-rate}); the in-prefix baseline is prefill-bound and \emph{saturates at ${\approx}1.5$ req/s}, so its
 $p90$ time-to-first-token collapses under load ($22$--$55$\,s) while the erratum stays $86$\,ms--$1$\,s
 ($53$--$398\times$ lower TTFT). The throughput advantage \emph{grows with offered load}---$1.6\times$ at

@@ -39,8 +39,9 @@ that once the corrected value is present, the override phrasing is \emph{redunda
 update, and explicit override all reach $\approx 1.0$ P(safe)), while aggressive ``disregard your earlier
 conclusion and re-evaluate'' phrasing actively \emph{hurts} ($0.81$). The note behaves like a committed
 conclusion that a late, salient correction can overwrite---but that confrontational instructions can
-destabilize. We name the phenomenon \textbf{attention-mediated memoized inference}, and the rest of the
-paper shows it makes the cache both editable (\Cref{sec:editable}) and composable (\Cref{sec:composable}).
+destabilize. We name the phenomenon \textbf{attention-mediated memoized inference}. The remainder of this
+section stress-tests the account---further controls, more architecture families, and a component-level
+circuit---before the rest of the paper turns it into capabilities.
 
 \paragraph{Separating conclusion from content---causal, temporal, and writable.} Four further
 controls (three models each: Qwen3-8B/4B, Llama-3.1-8B; \Cref{app:deepmech}) close the gap
@@ -88,7 +89,8 @@ the decision logit ($12$ heads recover $0.78$ of the decision, random heads $\ap
 scrubbing confirms the note alone governs the decision (resampling it to the opposite conclusion flips the
 decision; resampling everything else does not). The feature that \emph{decodes} the conclusion is not
 causally sufficient alone---the same decodability-vs-causation split we control for above, now at the level
-of single features.
+of single features. With the mechanism established, the rest of the paper shows it makes the cache both
+editable (\Cref{sec:editable}) and composable (\Cref{sec:composable}).
 
 \begin{figure}[t]
 \centering

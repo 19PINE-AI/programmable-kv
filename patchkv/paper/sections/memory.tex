@@ -14,6 +14,20 @@ precompile it once in isolation, place it late (\note{[sys][traj][MEM][query]} s
 reads it directly), RoPE-reposition it each turn, repair one boundary token, and edit it in
 place when it changes.
 
+\paragraph{Placement and the pre-digestion cost (E1).} Pre-digestion is real, and we quantify
+it. Under full recompute and chain-of-thought, reading memory \emph{late} carries a small but
+\emph{statistically significant} accuracy cost vs.\ \emph{early} (Qwen3-4B, $192$ personas per
+cell: GEE-logistic $\beta_{\text{late}}=-0.44$, $p=0.018$), and the cost \emph{grows with memory
+length}: the early$-$late gap is ${\approx}0$ at $2$k tokens but ${+}0.09$ at $16$k and ${+}0.16$
+at $32$k. The mechanism explains it---late placement forgoes prefill-time pre-digestion and
+relies on the decode/CoT to integrate raw memory. This is a \emph{tradeoff, not free}: late
+placement is still preferred because it enables $O(L)$ editing/transplant at $2.3$--$4.3\times$
+lower TTFT and the transplant is faithful at a fixed placement (both shown below), so the net is
+small accuracy for large efficiency---with early placement preferable when memory is very long
+and accuracy-critical. (Direct one-shot decisions are at chance for the reasoning-native Qwen3
+family \emph{to 32B}, breaking only at Llama-3.1-70B, direct $0.81$; CoT is the operative regime
+across scale---see \Cref{app:memory-agent}.)
+
 \paragraph{Memory transplant is faithful, to 70B (E2).} Across ten models from $0.6$B to
 $70$B, a precompiled+repositioned memory chunk reproduces the full-recompute decision logits
 with cosine $0.94$--$0.9996$; a \emph{single} seam-repair token closes the start-of-chunk
@@ -74,20 +88,6 @@ $0.76$ when the pair stays in one block---a $0.30$ penalty (Llama-3.1-8B, $n{=}8
 accuracy $0.85$; McNemar $p{<}10^{-6}$), because block~$B$'s isolated precompute never attended to
 its referent~$A$. The same split costs an independent fact pair only $0.04$. Practical guidance:
 keep cross-referential facts in one block.
-
-\paragraph{Placement and the pre-digestion cost (E1).} Pre-digestion is real, and we quantify
-it. Under full recompute and chain-of-thought, reading memory \emph{late} carries a small but
-\emph{statistically significant} accuracy cost vs.\ \emph{early} (Qwen3-4B, $192$ personas per
-cell: GEE-logistic $\beta_{\text{late}}=-0.44$, $p=0.018$), and the cost \emph{grows with memory
-length}: the early$-$late gap is ${\approx}0$ at $2$k tokens but ${+}0.09$ at $16$k and ${+}0.16$
-at $32$k. The mechanism explains it---late placement forgoes prefill-time pre-digestion and
-relies on the decode/CoT to integrate raw memory. This is a \emph{tradeoff, not free}: late
-placement is still preferred because it enables $O(L)$ editing/transplant and $2.3$--$4.3\times$
-TTFT (below) and the transplant is faithful at a fixed placement (above), so the net is small
-accuracy for large efficiency---with early placement preferable when memory is very long and
-accuracy-critical. (Direct one-shot decisions are at chance for the reasoning-native Qwen3 family
-\emph{to 32B}, breaking only at Llama-3.1-70B, direct $0.81$; CoT is the operative regime across
-scale---see appendix.)
 
 \paragraph{End-to-end agent (E5).} We implement a live agent (\Cref{app:memory-agent}) that
 composes memory once, re-rotates it each turn, and edits it on tool-driven changes. Over
