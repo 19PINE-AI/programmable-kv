@@ -22,7 +22,11 @@ plt.rcParams.update({
     "axes.axisbelow": True, "figure.facecolor": "white", "savefig.facecolor": "white",
 })
 R = os.path.join(os.path.dirname(__file__), "results")
-F = os.path.join(os.path.dirname(__file__), "figs")
+# Render straight into the paper's figure directory (the single source of truth the
+# LaTeX build includes) so the committed PDFs are always exactly this script's output
+# from results/*.jsonl. Override with FIGS_OUT to render elsewhere.
+F = os.environ.get("FIGS_OUT") or os.path.normpath(
+    os.path.join(os.path.dirname(__file__), "..", "paper", "figs"))
 os.makedirs(F, exist_ok=True)
 # colorblind-friendly (Wong), matching the paper palette
 C = dict(blue="#0072B2", orange="#E69F00", green="#009E73", red="#D55E00", gray="#9a9a9a", purple="#CC79A7")

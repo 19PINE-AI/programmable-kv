@@ -478,6 +478,15 @@ flat at $0.99{+}$---no drift with trajectory length.}
 \label{fig:horizon}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{fig_e4_granularity}
+\caption{\textbf{E4 --- granularity is a free knob} (\Cref{sec:memory}). Splitting memory into $S$
+independently-precompiled blocks makes a localized edit $S\times$ cheaper and stays decision-lossless to
+$S{=}16$; only genuinely cross-referential facts must be kept in one block (cross-referential test above).}
+\label{fig:mem-e4}
+\end{figure}
+
 \section{The user-memory agent}
 \label{app:memory-agent}
 The agent of \Cref{sec:memory} keeps the layout \texttt{[system][trajectory][MEMORY][query]}.
@@ -523,6 +532,13 @@ battery of unrelated single-token gated decisions.
 All numbers are from local runs; result records and figure-generation scripts are released with the code
 at \url{https://github.com/bojieli/programmable-kv}; an interactive companion is at
 \url{https://01.me/research/programmable-kv/}.
+Every figure is regenerated from the raw result records by a script and no PDF is hand-edited: the main and
+appendix figures from \texttt{paper/figs/make\_\allowbreak figures.py}, \texttt{make\_\allowbreak
+appendix\_\allowbreak figures.py}, \texttt{make\_\allowbreak circuit\_\allowbreak figure.py}, and
+\texttt{make\_\allowbreak horizon\_\allowbreak figure.py} (reading \texttt{results/*.json}); the
+user-memory figures (E1--E5, LoCoMo) from \texttt{mem/make\_\allowbreak figs.py} (reading
+\texttt{mem/results/*.jsonl}). Running \texttt{make} in \texttt{paper/figs/} rebuilds all of them from the
+raw records into the directory the \LaTeX{} build includes, in one step.
 Bootstrap confidence intervals use $10^4$ resamples. The unified-agent study uses $10$ domains $\times$
 $10$ instances ($300$ decisions) per model, except the two Gemma models ($40$ instances, $120$
 decisions); the multimodal and agentic studies use $N{=}120$ and $N{=}108$. The

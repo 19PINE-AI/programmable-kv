@@ -541,4 +541,5 @@ if __name__ == "__main__":
     fig_overview(); fig_operations()
     fig_teaser(); fig_mechanism(); fig_editable(); fig_composable()
     fig_keystone(); fig_reach(); fig_systems()
+    fig_adapters()  # figA7 (appendix); defined here, so it is built with the main figures
     print("ALL FIGURES DONE")

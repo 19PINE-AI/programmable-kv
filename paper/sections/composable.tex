@@ -10,9 +10,10 @@ are position-free) before concatenating (\Cref{fig:ops}b). This is the position-
 \citet{liu2026cacheslide}; our point is that the \emph{mechanism predicts it should preserve behavior}.
 
 \paragraph{Transplant is behaviorally indistinguishable from full recompute.} It does. The spliced skill
-matches a full reprefill in next-token logits with cosine $0.90$--$0.999$ across the full model family---
-Qwen3-1.7B through 32B (including FP8 and the 30B-A3B Mixture-of-Experts), Gemma-2/3, Mistral-7B,
-Llama-3.1-8B and 70B, and DeepSeek-R1-Distill-Llama-8B (\Cref{fig:comp}b)---and on the models competent at the task it
+matches a full reprefill in next-token logits with cosine $0.90$--$0.999$ across the full model family
+(twelve models; full roster in \Cref{app:models})---Qwen3-1.7B through 32B (including FP8 and the 30B-A3B
+Mixture-of-Experts), Gemma-2/3, Mistral-7B, Llama-3.1-8B and 70B, and DeepSeek-R1-Distill-Llama-8B
+(\Cref{fig:comp}b)---and on the models competent at the task it
 preserves \emph{correct} skill-following across $8$ diverse domains and $3$ families ($24/24$, cosine
 $0.98$--$0.999$), including $16/16$ under chain-of-thought.
 

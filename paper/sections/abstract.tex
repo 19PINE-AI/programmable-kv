@@ -27,5 +27,9 @@ recompute (agreement $0.81$--$1.0$) at up to $14.9\times$ lower latency.
 The substrate is any per-token attention KV cache. We validate it across scale, quantization,
 Mixture-of-Experts, and multimodal image caches; extend it to Multi-head Latent Attention, sliding-window,
 and interleaved-M-RoPE models through small adapters; and map where it holds up to the 2026 sparse-attention
-frontier. The caching machinery itself is prior art; our contributions are the mechanism, the unification, a
-decision-governance evaluation, and the attention-variant adapters.
+frontier. Because the erratum is append-only, it composes with production prefix caching: in an online vLLM
+serving benchmark (V1 engine, continuous batching, Poisson load) the edit keeps the static prefix
+cache-aligned ($98.5\%$ vs.\ $1\%$ hit-rate), cutting $p90$ time-to-first-token by $53$--$398\times$ and
+lifting throughput up to $14.5\times$ at saturation. The caching machinery itself is prior art; our
+contributions are the mechanism, the unification, a decision-governance evaluation, and the
+attention-variant adapters.

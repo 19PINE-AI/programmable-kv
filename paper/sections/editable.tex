@@ -37,9 +37,14 @@ field-only edit alone recovers the decision ($1.00$ on Qwen3-8B); without the ch
 edit on the \emph{same} model is ignored ($0.00$) and the decision commits to the stale note
 (\Cref{fig:overview}c). The divider is therefore the CoT \emph{mode}, not raw scale---reasoning-native
 models default to CoT, instruction-tuned ones to direct answers---so without CoT one of the two real fixes
-above is required. The mechanics are that simple, and we keep them brief here; the per-model stickiness, the
-\fieldsel{}@$K$ sweep ($K^\star\approx 4$ at $8$B but $>64$ at $4$B, varying non-monotonically with scale;
-\Cref{fig:edit}a,b), and the layer-wise account are detailed in \Cref{app:edit,app:deepmech}. We report
+above is required. The dependence is two-level, and it is worth stating precisely: CoT gates \emph{whether}
+the field-only edit can work at all (the binary $0.00$/$1.00$ split above is set by mode, not size), while
+\emph{conditional on} CoT the residual \emph{stickiness}---how completely the cheap edit recovers the
+decision---is model-dependent (\Cref{fig:edit}a; and E3 of \Cref{sec:memory}, where it climbs with scale
+within the Qwen3 family). The mechanics are that simple, and we keep them brief here; the per-model
+stickiness, the \fieldsel{}@$K$ sweep ($K^\star\approx 4$ at $8$B but $>64$ at $4$B, varying
+non-monotonically with scale; \Cref{fig:edit}a,b), and the layer-wise account are detailed in
+\Cref{app:edit,app:deepmech}. We report
 \fieldsel{}@$K$ honestly as a genuine but \emph{unreliable} surgical tool, not a default.
 
 \paragraph{A frontier, not a winner.} A controlled comparison (full table in \Cref{app:edit}) shows no single
@@ -87,8 +92,9 @@ LoRA fine-tune & \ding{51} & $3.1$\,s & $1.0$ & $0.5$ \\
 \centering
 \includegraphics[width=\linewidth]{fig3_editable}
 \caption{\textbf{Editing is model-dependent} (the editing landscape and the chain-of-thought split are
-previewed in \Cref{fig:overview}). (a) The stickiness of the memoized conclusion is model-dependent: the
-near-free field-only recovery under chain-of-thought varies non-monotonically across model sizes. (b)
+previewed in \Cref{fig:overview}). (a) \emph{Given} chain-of-thought (which gates whether the edit works at all), the
+residual stickiness is model-dependent: the near-free field-only recovery varies non-monotonically across
+model sizes. (b)
 \texttt{field+selective}@$K$: the minimal recompute $K^\star$ to reach full quality is likewise
 model-dependent.}
 \label{fig:edit}

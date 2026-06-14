@@ -53,8 +53,8 @@ model-dependent); and a head-to-head with \emph{weight}
 editing (ROME, LoRA) showing it is the wrong tool for mutable per-request state (global contamination,
 collateral, $30$--$50\times$ slower).
 \item \textbf{A composing capability} (\Cref{sec:composable}): position-portable transplant of precompiled
-skills, $O(L)$ vs.\ $O(L^2)$ TTFT ($13.9\times$ at $32$k), with a seam-repair knob---honestly credited to
-prior caching work, with our addition being the mechanism that explains it and a correctness lens.
+skills, $O(L)$ vs.\ $O(L^2)$ TTFT ($13.9\times$ at $32$k), with a seam-repair knob---building on prior
+caching work (\Cref{sec:related}), our addition being the mechanism that explains it and a correctness lens.
 \item \textbf{The unification} (\Cref{sec:keystone}): the keystone and a unified edit+compose agent over
 thirteen models.
 \item \textbf{An application: user memory} (\Cref{sec:memory}): the large, mutable user-memory

@@ -115,14 +115,7 @@ the linked pair across a block boundary drops decision agreement with full recom
 $0.76$ when the pair stays in one block---a $0.30$ penalty (Llama-3.1-8B, $n{=}80$, full-recompute
 accuracy $0.85$; McNemar $p{<}10^{-6}$), because block~$B$'s isolated precompute never attended to
 its referent~$A$. The same split costs an independent fact pair only $0.04$. Practical guidance:
-keep cross-referential facts in one block.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{fig_e4_granularity}
-\caption{\textbf{E4 --- granularity is a free knob.} Splitting memory into $S$ independently-precompiled blocks makes a localized edit $S\times$ cheaper and stays decision-lossless to $S{=}16$; only genuinely cross-referential facts must be kept in one block (\Cref{app:robustness}).}
-\label{fig:mem-e4}
-\end{figure}
+keep cross-referential facts in one block (\Cref{fig:mem-e4}).
 
 \paragraph{End-to-end agent (E5; \Cref{fig:mem-e5}).} We implement a live agent (\Cref{app:memory-agent}) that
 composes memory once, re-rotates it each turn, and edits it on tool-driven changes. Over
