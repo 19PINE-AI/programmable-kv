@@ -6,9 +6,12 @@ are out of scope, and hybrid attention+SSM models are only partially served (the
 transplantable; \Cref{sec:reach}). The MLA and sliding-window adapters are validated but carry residual
 edge cases: a single transplanted \emph{chunk that itself exceeds the sliding window} drops to logit cosine
 $\approx 0.89$ (real skills are far smaller), and our small MLA checkpoints ship legacy-cache custom
-modeling that we shim. Sequence-dimension KV compression (DeepSeek-V4-class) and cross-attention image
+modeling that we shim. Sequence-dimension KV compression (DeepSeek-V4-class \citep{deepseekv4}) and cross-attention image
 caches are open: the unit of edit/transplant there becomes a compressed block rather than a token, which we
 have analyzed but not implemented. The \fieldsel{}@$K$ surgical edit is unreliable (model- and
 domain-dependent stickiness) and we present it as such, not as a default. Finally, while several studies use
 synthetic policies for controlled measurement, we mitigate this with the real \(\tau^2\)-bench retail policy
-and real images; broader real-workload evaluation remains future work.
+and real images; broader real-workload evaluation remains future work. More broadly, our operations exploit
+a mechanism that arises \emph{for free} in today's models; the direction this work points to is a KV cache
+\emph{programmable} by design---models trained to expose composable, editable notes---which we leave to
+future work.

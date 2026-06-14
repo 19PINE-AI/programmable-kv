@@ -43,9 +43,9 @@ agreement $0.93$--$0.94$; \Cref{fig:adapters}c).
 \item \textbf{Partial}---hybrids with full-attention layers (Falcon-H1): the attention KV is transplantable
 but the per-layer Mamba scan-state is recurrent, not per-token, so a correct transplant must re-scan the
 Mamba path and saves only the attention fraction.
-\item \textbf{Open frontier}---sequence-dimension KV compression (DeepSeek-V4's CSA/HCA) merges tokens into
-sub-token-count entries, so edit/splice become block-granular; DeepSeek-V3.2's sparse attention (DSA) is
-MLA plus top-$k$ selection and inherits our MLA adapter.
-\item \textbf{Out of scope}---no per-token attention KV: pure-recurrent (RWKV), pure-SSM (Mamba), and
-diffusion LMs. The prompt-level erratum still applies there, but it is not a KV operation.
+\item \textbf{Open frontier}---sequence-dimension KV compression (DeepSeek-V4's CSA/HCA \citep{deepseekv4})
+merges tokens into sub-token-count entries, so edit/splice become block-granular; DeepSeek-V3.2's sparse
+attention (DSA \citep{deepseekv32}) is MLA plus top-$k$ selection and inherits our MLA adapter.
+\item \textbf{Out of scope}---no per-token attention KV: pure-recurrent (RWKV \citep{peng2023rwkv}), pure-SSM
+(Mamba \citep{gu2024mamba}), and diffusion LMs. The prompt-level erratum still applies there, but it is not a KV operation.
 \end{itemize}

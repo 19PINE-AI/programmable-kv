@@ -1,18 +1,24 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-A surgical edit to a field's KV is ignored not because the cache is fragile but because the model already
-did the work: at prefill it memoizes the field-conditioned \emph{conclusion} onto downstream aggregator
-tokens, and the decision reads those notes. Reframing the KV cache as a notebook of memoized conclusions
-makes two capabilities fall out of one mechanism---you can \emph{edit} the notes (amend them with a late,
-salient erratum rather than recompute) and \emph{compose} the notes (reposition and splice a precompiled
-skill, in $O(L)$ time)---and a keystone experiment shows they act on the same notes. The mechanism holds for
-any per-token attention KV cache: it spans scale, quantization, Mixture-of-Experts, and multimodal
-image caches, transfers freely across throughput optimizations, and reaches Multi-head Latent Attention,
-sliding-window, and interleaved-M-RoPE models through small adapters---up to the edge of the 2026
-sparse/compressed-attention frontier, where the unit of editing and composition becomes a block rather
-than a token. In practice this turns two everyday agent costs---reloading a library of skills and
-re-reading a mutating user-memory document---into $O(L)$ cache operations that preserve the decision, with
-up to $14.5\times$ online serving throughput. We hope the ``models take notes at prefill'' lens is useful
-beyond editing and composition: the cache is a readable, writable record of what a model has already
-concluded.
+A surgical edit to a field's KV is ignored not because the cache is fragile but because the model has
+already done the work: at prefill it computes the field-conditioned \emph{conclusion} and writes it onto
+downstream aggregator tokens, so the decision only reads those notes back. This reframes what a KV cache
+is---not a write-once byproduct of prefill, but a structured record of intermediate conclusions that we can
+read, amend, and rearrange. Two capabilities follow from the one mechanism: \emph{editing} the notes (a late,
+salient erratum in place of recomputation) and \emph{composing} them (repositioning and splicing a
+precompiled skill in $O(L)$ time); a keystone experiment shows both act on the same notes. The account holds
+wherever attention keeps per-token KV, up to the block-granular frontier of 2026 sparse-attention designs
+\citep{deepseekv32,deepseekv4}.
+
+The question this opens is larger than either operation. If prefill routinely deposits reusable conclusions
+into the cache, then much of what a model has worked out mid-context is already written down somewhere we can
+inspect and overwrite---not buried in its weights, and not only spelled out in its generated text. Editing
+and composition are two uses of that record, and they work today even though no model was trained for them.
+The larger opportunity is to make this explicit: models trained to be \emph{aware} that their KV can be
+composed and edited---exposing notes that are cleanly addressable, splice-able, and revisable by design---would
+turn the cache from a linear, append-only log into a \emph{programmable} memory the system reads, writes, and
+rearranges. Once the KV cache is programmable rather than merely linear, context engineering changes
+character: skills, memory, and state become first-class, reusable cache objects rather than text re-prefilled
+on every turn. We offer \emph{models take notes at prefill} as a first step toward that programmable KV
+cache---a notebook the model keeps for itself, and one it can learn to read and edit.
