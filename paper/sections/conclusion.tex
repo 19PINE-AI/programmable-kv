@@ -6,8 +6,8 @@ did the work: at prefill it memoizes the field-conditioned \emph{conclusion} ont
 tokens, and the decision reads those notes. Reframing the KV cache as a notebook of memoized conclusions
 makes two capabilities fall out of one mechanism---you can \emph{edit} the notes (amend them with a late,
 salient erratum rather than recompute) and \emph{compose} the notes (reposition and splice a precompiled
-skill, in $O(L)$ time)---and a keystone experiment shows they act on a single substrate. The substrate is
-any per-token attention KV cache: it holds across scale, quantization, Mixture-of-Experts, and multimodal
+skill, in $O(L)$ time)---and a keystone experiment shows they act on the same notes. The mechanism holds for
+any per-token attention KV cache: it spans scale, quantization, Mixture-of-Experts, and multimodal
 image caches, transfers freely across throughput optimizations, and reaches Multi-head Latent Attention,
 sliding-window, and interleaved-M-RoPE models through small adapters---up to the edge of the 2026
 sparse/compressed-attention frontier, where the unit of editing and composition becomes a block rather

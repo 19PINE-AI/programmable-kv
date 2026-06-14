@@ -80,7 +80,9 @@ def fig_teaser():
     cols = [C["grey"], C["red"], C["blue"], C["green"]]
     bb = axb.bar(range(4), vals, color=cols, width=0.74, edgecolor="white", lw=0.7, zorder=3)
     axb.bar_label(bb, fmt="%.2f", padding=2, fontsize=5.8)
-    axb.set_xticks(range(4)); axb.set_xticklabels(labs, fontsize=6.0); axb.set_ylim(0, 1.18)
+    axb.set_xticks(range(4))
+    axb.set_xticklabels(labs, fontsize=6.0, rotation=30, ha="right", rotation_mode="anchor")
+    axb.set_ylim(0, 1.18)
     axb.set_ylabel("P(new decision)"); despine(axb)
     axb.set_title("(b) Two fixes recover\nthe ignored edit", fontsize=8.5, loc="left")
     axb.axhline(1.0, color=C["green"], lw=0.6, ls=":")
@@ -259,7 +261,7 @@ def fig_keystone():
     axs[0].set_xlabel("recovery (recomputed)"); axs[0].set_ylabel("recovery (composed)")
     for i,m in enumerate(methods): axs[0].annotate(m, (rec[i], com[i]), textcoords="offset points", xytext=(4,-2), fontsize=6.3)
     axs[0].legend(loc="upper left"); despine(axs[0])
-    axs[0].set_title("(a) keystone: edit inside a transplant\n(composed $\\approx$ recomputed)", fontsize=8.2, loc="left")
+    axs[0].set_title("(a) edit inside a transplant\n(composed $\\approx$ recomputed)", fontsize=8.2, loc="left")
 
     # (b) unified agent across the model family: agreement (bars) + speedup (markers)
     fam = [("qwen3_0p6b","0.6B"),("qwen3_1p7b","1.7B"),("qwen3_4b","4B"),("qwen3_8b","8B"),
@@ -292,11 +294,11 @@ def fig_reach():
             ("GQA / MQA","free","✓ tested"),
             ("MLA (DeepSeek-V2/V3)","adapter","✓ decoupled-k\\_pe"),
             ("M-RoPE (sectioned/interleaved)","adapter","✓ images"),
-            ("Sliding-window (Gemma)","fixed","✓ full-cache+mask"),
+            ("Sliding-window (Gemma)","config fix","✓ full-cache+mask"),
             ("Hybrid attn+SSM (Falcon-H1)","partial","attn-only"),
             ("Seq.-dim compress (V4 CSA/HCA)","open","block-granular"),
             ("RWKV / Mamba / diffusion","out","no per-token KV")]
-    cmap = {"free":C["green"],"adapter":C["blue"],"fixed":C["sky"],"partial":C["orange"],
+    cmap = {"free":C["green"],"adapter":C["blue"],"config fix":C["sky"],"partial":C["orange"],
             "open":C["purple"],"out":C["grey"]}
     ax.set_xlim(0,10); ax.set_ylim(0, len(rows)+1)
     ax.text(0.1, len(rows)+0.4, "attention variant", fontsize=7.5, fontweight="bold")
@@ -308,7 +310,7 @@ def fig_reach():
         ax.text(0.1, y, name, fontsize=7, va="center")
         ax.text(8.1, y, stat, fontsize=6.8, va="center", ha="center", color="white", fontweight="bold")
         ax.text(6.5, y-0.0, "", fontsize=6)
-    ax.set_title("(a) the substrate $=$ any per-token attention KV", fontsize=8.5, loc="left")
+    ax.set_title("(a) any per-token attention KV representation", fontsize=8.5, loc="left")
 
     # (b) multimodal agreement across VL models + TTFT vs image tokens (inset)
     axb = fig.add_subplot(gs[1])
@@ -372,7 +374,7 @@ def fig_systems():
     save(fig, "fig7_systems")
 
 # =====================================================================================
-# FIG OVERVIEW — one mechanism -> two operations -> one substrate (the spine)
+# FIG OVERVIEW — one mechanism -> two operations -> one notebook of notes (the spine)
 # =====================================================================================
 def fig_overview():
     """Results preview (Qwen3-8B unless noted; detail in Secs. 3-6): the KV-editing
@@ -449,28 +451,28 @@ def fig_overview():
 # FIG OPERATIONS — edit (append erratum) vs compose (reposition+splice) on the cache
 # =====================================================================================
 def fig_operations():
-    fig, axs = plt.subplots(2, 1, figsize=(7.2, 3.5), gridspec_kw={"height_ratios": [1.7, 1.0]})
-    def cell(ax, x, lab, col, w=0.9, y=0.0, h=0.8, tc="black", fs=6.6, ec="#3a3a3a", lw=0.7):
+    fig, axs = plt.subplots(2, 1, figsize=(7.2, 3.8), gridspec_kw={"height_ratios": [1.7, 1.0]})
+    def cell(ax, x, lab, col, w=0.9, y=0.0, h=0.8, tc="black", fs=7.8, ec="#3a3a3a", lw=0.7):
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.01,rounding_size=0.05",
                      fc=col, ec=ec, lw=lw))
         ax.text(x+w/2, y+h/2, lab, ha="center", va="center", fontsize=fs, color=tc)
     RC = C["red"]  # recompute-highlight edge color
     # (a) EDIT -- two ways to amend the stale notes on one cache
     ax = axs[0]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.45, 3.15)
-    ax.text(0.2, 2.86, "(a) Editable: two ways to amend the stale notes", fontsize=8.2, fontweight="bold")
+    ax.text(0.2, 2.86, "(a) Editable: two ways to amend the stale notes", fontsize=9.5, fontweight="bold")
     # strip 1: field+selective -- recompute the field plus the top-K affected downstream notes
     ax.text(0.2, 2.36, "field+selective ($O(K)$): recompute the field $+$ top-$K$ affected notes",
-            fontsize=6.8, color=C["blue"])
+            fontsize=7.8, color=C["blue"])
     s1 = [("sys","#E8E8E8","black",False),("field=new",C["orange"],"white",True),("rule","#E8E8E8","black",False),
           ("note*",C["sky"],"white",True),("notes",C["sky"],"white",False),("dec.",C["green"],"white",False)]
     xs = 0.2
     for lab, col, tc, rec in s1:
         cell(ax, xs, lab, col, y=1.58, h=0.66, tc=tc,
              ec=(RC if rec else "#3a3a3a"), lw=(1.8 if rec else 0.7)); xs += 1.0
-    ax.text(xs+0.15, 1.91, "red outline $=$ recomputed; rest reused stale", fontsize=6.2, color=RC, va="center")
+    ax.text(xs+0.15, 1.91, "red outline $=$ recomputed; rest reused stale", fontsize=7.2, color=RC, va="center")
     # strip 2: erratum -- append one salient correction, reuse the whole prefix
     ax.text(0.2, 1.06, "erratum ($O(1)$): append a salient correction; reuse the whole prefix",
-            fontsize=6.8, color=RC)
+            fontsize=7.8, color=RC)
     s2 = [("sys","#E8E8E8","black"),("field=old",C["orange"],"white"),("rule","#E8E8E8","black"),
           ("notes",C["sky"],"white"),("notes",C["sky"],"white"),("dec.",C["green"],"white")]
     xs = 0.2
@@ -478,17 +480,17 @@ def fig_operations():
         cell(ax, xs, lab, col, y=0.3, h=0.66, tc=tc); xs += 1.0
     cell(ax, xs+0.25, "ERRATUM", C["red"], w=1.5, y=0.3, h=0.66, tc="white")
     ax.add_patch(FancyArrowPatch((xs-0.05,0.63),(xs+0.25,0.63), arrowstyle="-|>", mutation_scale=10, lw=1.4, color=C["red"]))
-    ax.text(xs+1.0, 0.04, "amends the stale notes", fontsize=6.2, color=C["red"], ha="center")
+    ax.text(xs+1.0, 0.04, "amends the stale notes", fontsize=7.2, color=C["red"], ha="center")
     # (b) COMPOSE
     ax = axs[1]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.5, 2.15)
     ax.text(0.2, 1.95, "(b) Composable: reposition + splice precompiled notes (O(L)); skip reprefill",
-            fontsize=8.2, fontweight="bold")
+            fontsize=9.5, fontweight="bold")
     # isolated skill
     for i,xs in enumerate([0.2,1.2,2.2]):
         cell(ax, xs, "skill", C["purple"], tc="white", y=0.55, h=0.7)
-    ax.text(1.4, 1.42, "precompiled in isolation", fontsize=6.4, ha="center", color="#5a3a8a")
+    ax.text(1.4, 1.42, "precompiled in isolation", fontsize=7.4, ha="center", color="#5a3a8a")
     ax.add_patch(FancyArrowPatch((3.35,0.9),(4.5,0.45), arrowstyle="-|>", mutation_scale=11, lw=1.6, color="#5a3a8a"))
-    ax.text(3.95, 1.05, "RoPE\nreposition", fontsize=6.2, ha="center", color="#5a3a8a")
+    ax.text(3.95, 1.05, "RoPE\nreposition", fontsize=7.2, ha="center", color="#5a3a8a")
     # target context with spliced skill
     xs = 4.6
     for lab, col, tc in [("sys","#E8E8E8","black"),("skill",C["purple"],"white"),("skill",C["purple"],"white"),

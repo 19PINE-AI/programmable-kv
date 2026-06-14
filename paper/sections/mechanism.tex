@@ -1,6 +1,31 @@
 \section{The discovery: memoized inference in the KV cache}
 \label{sec:mechanism}
 
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{fig2_mechanism}
+\caption{\textbf{Four causal probes for memoized inference.} (a) Refreshing the field's own KV recovers
+$\approx 0$ of the decision; recomputing the downstream recovers it fully. (b) Recovery is
+suffix-concentrated, accruing only as many post-field tokens are patched. (c) The decision reads almost
+entirely from downstream notes, not the field token. (d) Once the value is present, override wording is
+redundant and ``re-evaluate'' phrasing hurts---the note is a committed conclusion.}
+\label{fig:mech}
+\end{figure}
+
+\paragraph{Where the conclusion is written and read.} We first state the account that the probes in this
+section establish. A transformer prefills the prompt left-to-right, each position attending to all earlier
+ones. At a small number of positions \emph{after} the mutable field---\emph{aggregator} tokens such as
+punctuation, newlines, and section breaks, which later tokens route attention through---the model does more
+than cache the raw token: it computes the field-conditioned answer (e.g.\ ``status is \texttt{shipped}, so
+the action is \emph{deny}'') and writes that conclusion into those positions' cached key/value vectors at
+mid-to-late layers. These cached vectors are the \emph{notes}, and they lie \emph{downstream} of the field.
+At decode time the decision token does not re-derive the answer from the field; it attends back to the note
+positions, and a small set of late-layer attention heads read the stored conclusion into the output logit.
+Refreshing the field's \emph{own} KV therefore changes little, since the conclusion was written elsewhere and
+the field itself accounts for under $1\%$ of the decision. The four probes below establish each link of this
+chain causally: \emph{where} the notes lie, that they encode a \emph{conclusion} rather than a copy of the
+field, and that the decision \emph{reads} them.
+
 \paragraph{Setup.} We study a minimal but agent-realistic decision: a context contains a policy rule and a
 \emph{mutable field} whose value determines the correct action (e.g.\ ``cancel an order only if its status
 is \texttt{pending}''; with \texttt{status=shipped} the correct action flips from \emph{cancel} to
@@ -11,6 +36,7 @@ of the new value). We report \emph{decision recovery}: the fraction of the oracl
 state reproduces ($0$ = behaves like stale, $1$ = behaves like oracle). Four independent probes converge
 on one account (\Cref{fig:mech}); \Cref{app:examples} gives a complete worked example---the verbatim
 prompt, the erratum, and recorded model responses.
+
 
 \paragraph{(1) Locality: the field's own KV barely matters.} Refreshing only the field's KV recovers
 essentially none of the decision---field-only recovery is $-0.028$ on Llama-3.1-8B and near zero across
@@ -41,30 +67,35 @@ conclusion and re-evaluate'' phrasing actively \emph{hurts} ($0.81$). The note b
 conclusion that a late, salient correction can overwrite---but that confrontational instructions can
 destabilize. We name the phenomenon \textbf{attention-mediated memoized inference}. The remainder of this
 section stress-tests the account---further controls, more architecture families, and a component-level
-circuit---before the rest of the paper turns it into capabilities.
+circuit---before the rest of the paper builds on it.
 
-\paragraph{Separating conclusion from content---causal, temporal, and writable.} Four further
-controls (three models each: Qwen3-8B/4B, Llama-3.1-8B; \Cref{app:deepmech}) close the gap
-between ``the conclusion is \emph{decodable} downstream'' and ``the decision \emph{uses} a
-memoized conclusion.'' \textbf{(i) Dissociation.} We hold the field value byte-identical and
-flip a single rule token (a polarity \emph{trigger}) so the \emph{conclusion} inverts while
-the \emph{content} does not; transplanting the downstream notes alone then carries the whole
-flipped conclusion (recovery $0.998$--$1.009$) while patching the differing rule token carries
-none ($-0.007$ to $+0.007$)---the decision cannot be re-encoding field content, since the
-content is constant. (A linear probe finds \emph{both} conclusion and field identity decodable
-downstream, so decodability alone cannot separate them: the causal patch is the necessary
-instrument.) \textbf{(ii) Timing.} Within the single prefill pass, the conclusion becomes
-linearly decodable on the downstream aggregator at depth $0.31$--$0.39$, roughly twelve layers
-\emph{before} the decision token's logit-lens commit (depth $0.73$--$0.77$): the note is
-written at prefill, before it is read. \textbf{(iii) Specificity.} Transplanting the eight
-highest-effect downstream positions recovers $0.74$--$0.79$ of the decision; eight \emph{random}
-downstream positions recover ${\le}0.035$---a few specific aggregator tokens, not a diffuse
-code. \textbf{(iv) Writability.} Injecting a \emph{false} note (the opposite conclusion's
-downstream KV) over an otherwise-consistent cache makes the decision follow the written note
-\emph{against its own live field} (recovery $\approx 1.0$); a handful of note tokens suffice.
-The account also holds off the synthetic template---field-only recovery stays ${\approx}0$ for
-multi-hop reasoning and free-form conversational phrasing, bounded only for near-verbatim
-attribute lookup, where the field is partly a copy (\Cref{app:deepmech}).
+\paragraph{Separating the stored conclusion from the field content.} A linear probe can \emph{decode} the
+conclusion from the downstream tokens, but decodability alone does not show the decision \emph{uses} it---the
+same tokens also encode the field's raw content, and a probe finds both. Four causal controls (three models
+each: Qwen3-8B/4B and Llama-3.1-8B; \Cref{app:deepmech}) close that gap; the causal patch, not the probe, is
+the instrument that separates the two.
+
+\textbf{(i) It is the conclusion, not the field content.} We hold the field value byte-identical and flip a
+single rule token (a polarity \emph{trigger}) so the \emph{conclusion} inverts while the field \emph{content}
+stays constant. Transplanting the downstream notes then carries the entire flipped conclusion (recovery
+$0.998$--$1.009$), whereas patching the changed rule token carries none ($-0.007$ to $+0.007$). Since the
+content never changed, the notes cannot merely be re-encoding it.
+
+\textbf{(ii) The note is written before it is read.} Within the single prefill pass the conclusion becomes
+decodable on the downstream aggregator about twelve layers \emph{earlier} (relative depth $0.31$--$0.39$)
+than the point at which the decision token commits to its answer (depth $0.73$--$0.77$): the note already
+exists at prefill, ahead of the read.
+
+\textbf{(iii) A few specific tokens carry it.} Transplanting the eight \emph{highest-effect} downstream
+positions recovers $0.74$--$0.79$ of the decision, while eight \emph{random} downstream positions recover
+${\le}0.035$: the conclusion lives in a few specific aggregator tokens, not a diffuse code.
+
+\textbf{(iv) The decision follows the note, even when the note is wrong.} Injecting a \emph{false} note (the
+opposite conclusion's downstream KV) into an otherwise-consistent cache makes the decision follow the written
+note \emph{against its own live field} (recovery $\approx1.0$); a handful of note tokens suffice. The account
+also holds off the synthetic template: field-only recovery stays ${\approx}0$ for multi-hop reasoning and
+free-form conversational phrasing, and is bounded only for near-verbatim attribute lookup, where the field is
+itself partly a copy (\Cref{app:deepmech}).
 
 \paragraph{Not a model-family artifact: four families.} To rule out the aggregator-token account being
 a Qwen3/Llama tokenizer artifact, we replicate five probes (the locality probe and the four deep
@@ -77,28 +108,23 @@ injection ($0.98$--$1.0$, follow-rate $1.0$); and write-before-read timing (writ
 decision commit $0.47$--$0.48$). The mechanism is consistent across \emph{four} families (Qwen3, Llama-3.1,
 Gemma-2, Mistral; \Cref{app:deepmech}).
 
-\paragraph{A component-level circuit.} The probes above localize the memoized conclusion; a further five
-interventions (\Cref{app:circuit}, replicated across four families: Llama-3.1, Qwen3, Gemma-2, Mistral)
-resolve it to \emph{components}.
-The picture is a \emph{distributed write, concentrated read}: at mid layers \emph{attention} writes the
-field-conditioned conclusion onto aggregator tokens ($\approx 0.6$ of the write on Llama), in a redundant
-code that is sparsely \emph{decodable}---a trained SAE feature reaches AUC $1.0$---yet causally spread over
-${\sim}10$--$30$ features and a shared low-rank direction ($\approx25\times$ a random direction); a small,
-nameable set of late \emph{read heads} (e.g.\ those attending decision$\to$aggregator) then funnels it into
-the decision logit ($12$ heads recover $0.78$ of the decision, random heads $\approx 0$); and causal
-scrubbing confirms the note alone governs the decision (resampling it to the opposite conclusion flips the
-decision; resampling everything else does not). The feature that \emph{decodes} the conclusion is not
-causally sufficient alone---the same decodability-vs-causation split we control for above, now at the level
-of single features. With the mechanism established, the rest of the paper shows it makes the cache both
-editable (\Cref{sec:editable}) and composable (\Cref{sec:composable}).
+\paragraph{A component-level circuit.} The probes above show \emph{where} the conclusion is stored; five
+further interventions (\Cref{app:circuit}; replicated across Llama-3.1, Qwen3, Gemma-2, and Mistral) show
+\emph{which components} write and read it. The pattern is \emph{distributed write, concentrated read}.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{fig2_mechanism}
-\caption{\textbf{Four causal probes for memoized inference.} (a) Refreshing the field's own KV recovers
-$\approx 0$ of the decision; recomputing the downstream recovers it fully. (b) Recovery is
-suffix-concentrated, accruing only as many post-field tokens are patched. (c) The decision reads almost
-entirely from downstream notes, not the field token. (d) Once the value is present, override wording is
-redundant and ``re-evaluate'' phrasing hurts---the note is a committed conclusion.}
-\label{fig:mech}
-\end{figure}
+\textbf{Write (many components, mid layers).} Mid-layer \emph{attention}---not the MLPs---does most of the
+writing onto the aggregator tokens ($\approx0.6$ of the write on Llama). The conclusion is stored
+\emph{redundantly}: it is easy to \emph{decode} (a trained sparse-autoencoder feature separates the two
+conclusions at AUC $1.0$), yet its causal content is spread across ${\sim}10$--$30$ features along a shared
+low-rank direction (that direction carries $\approx25\times$ the decision-effect of a random one).
+
+\textbf{Read (few components, late layers).} A small, nameable set of late \emph{read heads}---those
+attending from the decision token back to the aggregators---funnels the stored conclusion into the output
+logit ($12$ such heads recover $0.78$ of the decision; the same number of random heads recover $\approx0$).
+
+\textbf{Control.} Causal scrubbing confirms the note alone governs the decision: resampling it to the
+opposite conclusion flips the decision, while resampling everything else leaves it unchanged. As at the
+token level, the single feature that best \emph{decodes} the conclusion is not by itself \emph{causally}
+sufficient---decodability and causation come apart, now among individual features. With the mechanism
+established, the rest of the paper turns it into capabilities: the cache is editable (\Cref{sec:editable})
+and composable (\Cref{sec:composable}).

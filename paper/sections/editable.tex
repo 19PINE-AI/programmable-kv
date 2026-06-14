@@ -1,15 +1,18 @@
 \section{Consequence I: the cache is editable}
 \label{sec:editable}
 
-\Cref{fig:ops} contrasts the two cache operations this section and the next make precise: editing appends
-a salient correction; composing repositions and splices precompiled KV.
+The mechanism tells us how to repair the cache after a field changes, not only why a naive edit fails.
+Because the decision reads a conclusion stored in the downstream notes (\Cref{sec:mechanism}),
+\emph{editing} means amending those notes rather than recomputing the prefix; this section establishes when a
+naive edit fails, the two ways to repair the notes, and which to prefer. \Cref{fig:ops} contrasts the two cache operations this section and the
+next make precise: editing appends a salient correction; composing repositions and splices precompiled KV.
 
 \paragraph{Naive editing fails---by design.} The mechanism predicts the in-place edit will fail, and it
 does: refreshing the field's KV while reusing the stale downstream leaves the decision at the old value
 (\Cref{fig:teaser}b). The prefix before the field is genuinely reusable (deviation $0.0$); the problem is
 that the conclusion was already memoized after it.
 
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\linewidth]{fig_operations}
 \caption{\textbf{Two cache operations.} (a) \emph{Editable}, two ways to amend the stale notes:
@@ -21,10 +24,13 @@ to the target positions, and splice it in ($O(L)$, no reprefill).}
 \end{figure}
 
 \paragraph{Two ways to fix it, neither a full reprefill.} If the stale notes carry an old conclusion, there
-are two interventions. \emph{(i) Recompute the affected notes} after the field. Recomputing the \emph{whole}
-affected suffix is reliable---it is exactly \emph{full-downstream} (recovery $1.0$)---but pays the post-field
-prefill; recomputing only the top-$K$ highest-effect notes (\fieldsel{}@$K$) is cheaper but
-\emph{unreliable}, because the minimal $K$ is strongly model-dependent (below). \emph{(ii) Append an erratum}:
+are two interventions. \emph{(i) Recompute the affected notes} after the field. The safe version recomputes
+the \emph{whole} suffix after the field---exactly the \emph{full-downstream} state from \Cref{sec:mechanism}
+(recovery $1.0$)---but pays the post-field prefill. The cheaper version, \fieldsel{}@$K$, recomputes only the
+field plus the $K$ downstream tokens that carry most of the decision---the high-effect aggregator positions
+identified in \Cref{sec:mechanism}, ranked by their causal effect on the decision---and reuses every other
+cached token unchanged. It is cheaper but \emph{unreliable}: the smallest $K$ that restores the decision is
+strongly model-dependent (below). \emph{(ii) Append an erratum}:
 one salient line late in the context---``\texttt{[STATE UPDATE] field $\rightarrow$ new; overrides any
 earlier value and conclusion}''---so the decision token attends to a fresh, authoritative note (verbatim
 template in \Cref{app:examples}). The erratum is the cheap, robust default: appended after the field
@@ -32,7 +38,7 @@ template in \Cref{app:examples}). The erratum is the cheap, robust default: appe
 prompt} (P(correct) $1.00$ on the gated-task frontier, \Cref{fig:overview}a; \Cref{tab:frontier}), and being
 append-only it composes with prefix caching (\Cref{sec:systems}).
 
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\linewidth]{fig3_editable}
 \caption{\textbf{Editing is model-dependent} (the editing landscape and the chain-of-thought split are
@@ -55,26 +61,26 @@ above is required. The dependence is two-level, and it is worth stating precisel
 the field-only edit can work at all (the binary $0.00$/$1.00$ split above is set by mode, not size), while
 \emph{conditional on} CoT the residual \emph{stickiness}---how completely the cheap edit recovers the
 decision---is model-dependent (\Cref{fig:edit}a; and E3 of \Cref{sec:memory}, where it climbs with scale
-within the Qwen3 family). The mechanics are that simple, and we keep them brief here; the per-model
+within the Qwen3 family). These two dependencies---CoT-gating and per-model stickiness---are the whole story for the cheap edit, and we keep the rest brief here; the per-model
 stickiness, the \fieldsel{}@$K$ sweep ($K^\star\approx 4$ at $8$B but $>64$ at $4$B, varying
 non-monotonically with scale; \Cref{fig:edit}a,b), and the layer-wise account are detailed in
 \Cref{app:edit,app:deepmech}. We report
 \fieldsel{}@$K$ honestly as a genuine but \emph{unreliable} surgical tool, not a default.
 
-\paragraph{A frontier, not a winner.} A controlled comparison (full table in \Cref{app:edit}) shows no single
+\paragraph{Which edit to use: no single dominant method.} A controlled comparison (full table in \Cref{app:edit}) shows no single
 dominant method. Hoist-to-end is cheapest but demands prompt surgery and pre-identification of every field;
 \texttt{field+erratum} matches it with no surgery at a one-line append; \inplace{} is near-free but only
-with chain-of-thought; a KV-deviation-ranked selective recompute (CacheBlend-style) underperforms here
+with chain-of-thought; a KV-deviation-ranked selective recompute (CacheBlend-style \citep{yao2025cacheblend}) underperforms here
 because it chases changed keys rather than the tokens that \emph{memoized the conclusion}. The practical
 recommendation is \texttt{field+erratum} as the robust default, with \inplace{} as a free fast-path under
 chain-of-thought.
 
 \paragraph{Why not edit the weights?} A natural objection: to act on a changed field, why not edit
-the model's \emph{weights} (ROME/MEMIT) or fine-tune, rather than the cache? We compare on the paper's
+the model's \emph{weights} (ROME/MEMIT \citep{meng2022rome,meng2023memit}) or fine-tune, rather than the cache? We compare on the paper's
 gated task (status \texttt{pending}$\rightarrow$\texttt{shipped}, so \emph{cancel}$\rightarrow$\emph{deny})
 against a faithful rank-one ROME---validated on the canonical factual edit first (``the Eiffel Tower is
 in'' \emph{Paris}$\rightarrow$\emph{Rome}, locality intact), so the baseline is not crippled---and a LoRA
-fine-tune (\Cref{tab:weight}; methodology in \Cref{app:systems}). All of \fielderr{}, ROME, and LoRA \emph{succeed} at flipping the target
+fine-tune \citep{hu2022lora} (\Cref{tab:weight}; methodology in \Cref{app:systems}). All of \fielderr{}, ROME, and LoRA \emph{succeed} at flipping the target
 decision. But a weight edit is \emph{global}: the same model instance can no longer hold
 \texttt{status=shipped} for one request and \texttt{pending} for another, so \emph{all} concurrent orders
 that are genuinely still pending are wrongly flipped (cross-request contamination $1.0$), and half of an
@@ -84,7 +90,7 @@ zero cross-request contamination, zero collateral, $114$\,ms, and it composes wi
 (\Cref{sec:systems}). Weight editing targets \emph{durable, global facts}; mutable per-request, per-turn
 state is the wrong job for it---which is precisely the niche the editable KV cache fills.
 
-\begin{table}[H]
+\begin{table}[tbp]
 \centering\small
 \caption{\textbf{KV editing vs.\ weight editing} for mutable per-request state (Llama-3.1-8B). Weight edits
 succeed at the target yet are global (contaminate concurrent requests), damage unrelated decisions, and are

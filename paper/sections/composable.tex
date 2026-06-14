@@ -1,13 +1,24 @@
 \section{Consequence II: the cache is composable}
 \label{sec:composable}
 
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{fig4_composable}
+\caption{\textbf{Composing the cache.} (a) Pasting a precompiled skill is $O(L)$ vs.\ full reprefill's
+$O(L^2)$; TTFT speedup reaches $13.9\times$ at $32$k tokens. (b) The transplanted skill matches full
+recompute in next-token logits (cosine $0.90$--$0.999$) across the model family.}
+\label{fig:comp}
+\end{figure}
+
 \paragraph{From mechanism to prediction.} If a region's notes are localized and re-derivable from context
 the decision can still see, then the notes should be \emph{position-portable}: we can compute a reusable
 chunk's KV once, in isolation, move it to a new absolute position, and splice it in. Concretely we
 precompile a long \emph{skill} (a policy or tool specification), and because the attention library caches
 post-RoPE keys, we re-rotate the chunk's keys from their source positions to the target positions (values
 are position-free) before concatenating (\Cref{fig:ops}b). This is the position-aware reuse of
-\citet{liu2026cacheslide}; our point is that the \emph{mechanism predicts it should preserve behavior}.
+\citet{liu2026cacheslide}; our point is that the \emph{mechanism predicts the splice should match a full
+reprefill}---the same next-token logits and decisions.
 
 \paragraph{Transplant is behaviorally indistinguishable from full recompute.} It does. The spliced skill
 matches a full reprefill in next-token logits with cosine $0.90$--$0.999$ across the full model family
@@ -29,7 +40,7 @@ re-rotation pass plus the suffix). Time-to-first-token speedups grow with skill 
 tokens, $9.8\times$ at $8$k, and $13.9\times$ at $32$k on an $8$B model (\Cref{fig:comp}a). A library of
 skills composes (decisions preserved for $N=1$--$4$ concurrent skills).
 
-\paragraph{Generality of content, placement, and agency.} Transplantation is not specific to rule-like
+\paragraph{Generality: content type, insertion position, and agentic tool-calling.} Transplantation is not specific to rule-like
 skills. It preserves decisions for \emph{facts/RAG} passages as well as rules; for chunks inserted in the
 system area \emph{and} mid-trajectory as tool results; and---measured with actual function calls rather
 than a proxy---it preserves \emph{agentic tool-calling} ($N{=}108$ with bootstrap CIs: function-call
@@ -37,12 +48,3 @@ accuracy $1.00$ on Mistral-7B, Llama-3.1-8B/70B, and Qwen3-8B; $0.97\,[0.94,1.0]
 30B-A3B, whose transplanted-vs-full tool-call \emph{agreement} is $1.00$). The one consistent exception
 is sliding-window attention (Gemma), which we diagnose and fix in \Cref{sec:reach}. Full per-domain
 scorecards are in \Cref{app:compose}.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{fig4_composable}
-\caption{\textbf{Composing the cache.} (a) Pasting a precompiled skill is $O(L)$ vs.\ full reprefill's
-$O(L^2)$; TTFT speedup reaches $13.9\times$ at $32$k tokens. (b) The transplanted skill matches full
-recompute in next-token logits (cosine $0.90$--$0.999$) across the model family.}
-\label{fig:comp}
-\end{figure}

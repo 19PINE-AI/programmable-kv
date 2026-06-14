@@ -1,11 +1,23 @@
 \section{Systems payoff}
 \label{sec:systems}
 
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{fig7_systems}
+\caption{\textbf{Systems payoff.} (a) Online vLLM serving (V1 engine, CUDA graphs, continuous batching,
+APC, Poisson arrivals): the append-only erratum keeps the prefix cache-aligned ($98.5\%$ vs.\ $1\%$ APC
+hit-rate), so its throughput advantage grows with offered load---up to $14.5\times$ at saturation---while
+$p90$ TTFT is $53$--$398\times$ lower. (b) Reusing a cached image (skipping the vision tower and
+image-token prefill) accelerates time-to-first-token, more so for larger images.}
+\label{fig:sys}
+\end{figure}
+
 \paragraph{A real agentic environment.} On the \(\tau^2\)-bench retail environment
 \citep{barres2025tau2}---single tool-decisions
 and a multi-turn autonomous-agent loop scored by the environment's own tool enforcement---an agent that
-reuses a stale cache after a state change collapses, while \texttt{field+erratum} preserves task success at
-a fraction of the recompute. On the real ${\sim}1.4$k-token retail policy, transplant reproduces the clean
+reuses a stale cache after a state change fails the task---it acts on the outdated field value---while
+\texttt{field+erratum} preserves task success at a fraction of the recompute cost. On the real ${\sim}1.4$k-token retail policy, transplant reproduces the clean
 decision (composed $=$ full on Llama-3.1 and Mistral); the one hard case, a long buried field that must
 \emph{flip} a conclusion, requires the robust \texttt{field+erratum} edit rather than transplant-plus-bare-
 erratum---the same long-context lesson the editing axis predicts, now in a real environment.
@@ -25,14 +37,3 @@ $2$ req/s up to $\mathbf{14.5\times}$ at saturation---exactly as predicted for a
 cache-bound regime. The image-KV reuse of \Cref{sec:reach} contributes a complementary serving
 win---$2.4$--$8.4\times$ faster first-token as image size grows (\Cref{fig:sys}b)---by skipping the vision
 tower and image-token prefill entirely.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{fig7_systems}
-\caption{\textbf{Systems payoff.} (a) Online vLLM serving (V1 engine, CUDA graphs, continuous batching,
-APC, Poisson arrivals): the append-only erratum keeps the prefix cache-aligned ($98.5\%$ vs.\ $1\%$ APC
-hit-rate), so its throughput advantage grows with offered load---up to $14.5\times$ at saturation---while
-$p90$ TTFT is $53$--$398\times$ lower. (b) Reusing a cached image (skipping the vision tower and
-image-token prefill) accelerates time-to-first-token, more so for larger images.}
-\label{fig:sys}
-\end{figure}

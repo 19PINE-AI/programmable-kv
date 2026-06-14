@@ -8,6 +8,15 @@
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{float}
+% Relaxed float placement: keep figures/tables flowing with the text (top/bottom of
+% pages) instead of forcing exact spots, while avoiding stranded float-only pages.
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.8}
 \usepackage{booktabs}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -30,11 +39,11 @@
 \newcommand{\note}[1]{\textsl{#1}}
 \newcommand{\kpe}{\texttt{k\_pe}}
 
-\setheadername{Models Take Notes at Prefill}
+\setheadername{Models Take Notes at Prefill: KV Cache Can Be Editable and Composable}
 
 \title{Models Take Notes at Prefill:\\ KV Cache Can Be Editable and Composable}
 \author{Bojie Li\\ Pine AI}
-\date{\small Code: \url{https://github.com/bojieli/programmable-kv} \\
+\date{\small Code: \url{https://github.com/19PINE-AI/programmable-kv} \\
 Website: \url{https://01.me/research/programmable-kv/}}
 
 \begin{document}

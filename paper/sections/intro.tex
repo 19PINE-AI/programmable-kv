@@ -26,7 +26,24 @@ aggregator/delimiter tokens that later positions attend through. The decision th
 the decision, while the downstream notes drive essentially all of it. The KV cache is best understood not
 as a frozen byproduct of prefill but as a \emph{notebook of memoized conclusions} (\Cref{fig:teaser}a).
 
-\paragraph{Two capabilities from one mechanism.} This reframing is generative. (1) If the conclusion is
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{fig1_teaser}
+\caption{\textbf{Models take notes at prefill.} (a) At prefill the model memoizes the field-conditioned
+conclusion onto downstream aggregator tokens (orange); at decode the decision reads those notes (blue).
+(b) Consequently, surgically editing the field's own KV is ignored (without a reasoning chain), but the
+decision is recovered cheaply: recompute the \emph{affected} downstream suffix, or---cheaper and robust---
+append a salient \emph{erratum} (P(new decision), no-CoT model; with chain-of-thought the field-only
+refresh alone also works, \Cref{fig:overview}c). (c) Because the notes are position-portable, a precompiled
+skill can be pasted into a new context in $O(L)$ rather than $O(L^2)$ time.}
+\label{fig:teaser}
+\end{figure}
+
+
+\paragraph{Two capabilities from one mechanism.} Once the cache is read as a notebook of memoized
+conclusions, we can manipulate those conclusions directly---editing or reusing them in place rather than
+recomputing them---in two ways.
+(1) If the conclusion is
 already written downstream, then \emph{editing} a field means amending the notes, not recomputing them. The
 cheap and robust fix is a one-line salient \emph{erratum} that overrides the stale notes; one can instead
 recompute the affected downstream notes (reliably for the full affected suffix, cheaply-but-unreliably for
@@ -34,10 +51,26 @@ a top-$K$, \fieldsel{}@$K$). An even cheaper in-place refresh of the field alone
 \emph{chain-of-thought}: with a reasoning chain the model re-reads the field and the edit suffices, without
 it the edit is ignored. (2) If the notes are localized and position-portable, then a reusable skill can be
 \emph{composed} into a new context by repositioning and splicing its cached notes---no recompute. A
-\emph{keystone} experiment, editing a field \emph{inside} a transplanted skill, shows the two operations
-act on a single substrate. \Cref{fig:overview} previews both capabilities.
+\emph{unifying} experiment, editing a field \emph{inside} a transplanted skill, shows the two operations
+act on the same notes. \Cref{fig:overview} previews both capabilities.
 
-\paragraph{Contributions.}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{fig0_overview}
+\caption{\textbf{Editing and composing, previewed} (Qwen3-8B unless noted; detail in
+\Cref{sec:mechanism,sec:editable,sec:keystone}). (a) \emph{KV editing landscape}: naive edits (stale,
+field-only without CoT, CacheBlend) fail, while the append-only \texttt{erratum}/\texttt{field+erratum}
+reach full-reprefill correctness cheaply and robustly (hoisting also works but needs prompt surgery).
+(b) \emph{Recompute the affected notes}: recovery climbs as more of the post-field \emph{affected suffix} is
+recomputed---reliable in the limit, but the cheap top-$K$ version (\texttt{field+selective}@$K$) is
+unreliable (\Cref{fig:edit}). (c) \emph{Chain-of-thought, not model size, gates the cheapest edit}: with CoT
+the near-free field-only refresh alone recovers the decision ($1.00$); without CoT it is ignored ($0.00$);
+the erratum fixes both. (d) \emph{Composing $+$ editing is lossless}: the unified agent stays
+decision-identical to full recompute across models.}
+\label{fig:overview}
+\end{figure}
+
+\paragraph{Structure of the paper.}
 \begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
 \item \textbf{A mechanism} (\Cref{sec:mechanism})---\emph{attention-mediated memoized inference}---established
 by four causal probes (locality patching, suffix concentration, linear probing, circuit knockout) and four
@@ -55,51 +88,19 @@ collateral, $30$--$50\times$ slower).
 \item \textbf{A composing capability} (\Cref{sec:composable}): position-portable transplant of precompiled
 skills, $O(L)$ vs.\ $O(L^2)$ TTFT ($13.9\times$ at $32$k), with a seam-repair knob---building on prior
 caching work (\Cref{sec:related}), our addition being the mechanism that explains it and a correctness lens.
-\item \textbf{The unification} (\Cref{sec:keystone}): the keystone and a unified edit+compose agent over
+\item \textbf{The unification} (\Cref{sec:keystone}): this experiment and a unified edit+compose agent over
 thirteen models.
 \item \textbf{An application: user memory} (\Cref{sec:memory}): the large, mutable user-memory
 document is both composed (precompiled, repositioned, spliced) and edited (in-place / erratum)
-as one substrate---decision-faithful to full recompute at $2.3$--$4.3\times$ lower
+as one set of notes---decision-faithful to full recompute at $2.3$--$4.3\times$ lower
 time-to-first-token, validated to $70$B and on real long-conversation memory (LoCoMo, transplant
 $\equiv$ full recompute in QA accuracy)---with a pre-registered, statistically-controlled evaluation.
-\item \textbf{Reach and scope} (\Cref{sec:reach}): validation across scale, MoE, quantization, and
-multimodal image caches; small adapters for MLA and interleaved M-RoPE; a fix for sliding-window; and an
-analysis of where the substrate holds up to the 2026 sparse/compressed-attention frontier.
+\item \textbf{Applicability to multimodal and new attention mechanisms} (\Cref{sec:reach}): the mechanism carries from small models through MoE and
+low-bit quantization to multimodal image caches; lightweight adapters bring it to MLA and interleaved
+M-RoPE; a mask-based remedy handles sliding-window attention; and we chart where it breaks down against the
+2026 sparse/compressed-attention frontier.
 \item \textbf{Systems payoff} (\Cref{sec:systems}): a real agentic environment and a comprehensive online
 vLLM serving benchmark (V1 engine, continuous batching, Poisson load)---$98.5\%$ vs.\ $1\%$ prefix-cache
 hit-rate, $53$--$398\times$ lower $p90$ TTFT, and throughput gains that grow with load to $14.5\times$.
 \end{itemize}
 
-\paragraph{Roadmap.} \Cref{sec:mechanism} establishes the mechanism;
-\Cref{sec:editable,sec:composable,sec:keystone} derive editing, composing, and their unification;
-\Cref{sec:memory} applies both to user memory; and \Cref{sec:reach,sec:systems} map the substrate's reach
-and the end-to-end systems payoff.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{fig1_teaser}
-\caption{\textbf{Models take notes at prefill.} (a) At prefill the model memoizes the field-conditioned
-conclusion onto downstream aggregator tokens (orange); at decode the decision reads those notes (blue).
-(b) Consequently, surgically editing the field's own KV is ignored (without a reasoning chain), but the
-decision is recovered cheaply: recompute the \emph{affected} downstream suffix, or---cheaper and robust---
-append a salient \emph{erratum} (P(new decision), no-CoT model; with chain-of-thought the field-only
-refresh alone also works, \Cref{fig:overview}c). (c) Because the notes are position-portable, a precompiled
-skill can be pasted into a new context in $O(L)$ rather than $O(L^2)$ time.}
-\label{fig:teaser}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{fig0_overview}
-\caption{\textbf{Editing and composing, previewed} (Qwen3-8B unless noted; detail in
-\Cref{sec:mechanism,sec:editable,sec:keystone}). (a) \emph{KV editing landscape}: naive edits (stale,
-field-only without CoT, CacheBlend) fail, while the append-only \texttt{erratum}/\texttt{field+erratum}
-reach full-reprefill correctness cheaply and robustly (hoisting also works but needs prompt surgery).
-(b) \emph{Recompute the affected notes}: recovery climbs as more of the post-field \emph{affected suffix} is
-recomputed---reliable in the limit, but the cheap top-$K$ version (\texttt{field+selective}@$K$) is
-unreliable (\Cref{fig:edit}). (c) \emph{Chain-of-thought, not model size, gates the cheapest edit}: with CoT
-the near-free field-only refresh alone recovers the decision ($1.00$); without CoT it is ignored ($0.00$);
-the erratum fixes both. (d) \emph{Composing $+$ editing is lossless}: the unified agent stays
-decision-identical to full recompute across models.}
-\label{fig:overview}
-\end{figure}

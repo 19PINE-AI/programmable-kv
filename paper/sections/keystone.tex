@@ -1,5 +1,17 @@
-\section{One substrate: the keystone and a unified agent}
+\section{Combining edit and compose}
 \label{sec:keystone}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{fig5_keystone}
+\caption{\textbf{Edit and compose can be combined.} (a) Editing inside a transplant: a field edited \emph{inside} a
+transplanted skill reproduces the editing mechanism, and the \emph{composed} cache matches the
+\emph{recomputed} cache for every method (points on the diagonal). (b) A unified edit+compose agent over
+thirteen models ($10$ domains $\times$ $10$ instances, $300$ decisions; $120$ on the two Gemma models):
+unified-vs-full agreement (bars) and
+cumulative-TTFT speedup (markers).}
+\label{fig:key}
+\end{figure}
 
 \paragraph{The keystone: editing inside a transplant.} If editing and composing are truly two operations
 on the same object, then editing a field that lives \emph{inside a transplanted skill} should behave
@@ -9,7 +21,7 @@ comparing the \emph{composed} cache (skill spliced in) against a fully \emph{rec
 editing mechanism reproduces verbatim (\Cref{fig:key}a): the in-place edit is weak ($\approx 0.05$),
 selective recompute recovers ($\mathrm{sel}@32 \approx 0.80$), the erratum is strongest, and crucially
 \emph{composed $\approx$ recomputed} for every method (points lie on the diagonal) across Gemma-2-9B and
-Llama-3.1-8B. The notes a transplant pastes in are the same notes an edit amends---one substrate.
+Llama-3.1-8B. The notes a transplant pastes in are the same notes an edit amends---one notebook.
 
 \paragraph{A unified edit+compose agent.} We embody both operations in a single live agent loop: a long
 policy is \emph{composed} once and never re-prefilled; as the world changes across turns the mutable state
@@ -20,20 +32,8 @@ models (the twelve transplant models of \Cref{fig:comp} plus Qwen3-0.6B; \Cref{a
 path is decision-identical to full recompute
 with agreement $0.81$--$1.00$ (e.g.\ Llama-3.1-8B $0.963$, Mistral-7B $0.983$, Llama-3.1-70B $1.00$) at
 cumulative-TTFT speedups up to $14.9\times$ (\Cref{fig:key}b); the speedup scales with policy length
-$\times$ turns. This is editing and composing operating together, losslessly and faster, across the model
+$\times$ turns. Editing and composing therefore run in one loop, decision-identical to full recompute and at lower cumulative TTFT, across the model
 family. The leave-stale$+$erratum cache also does \emph{not} compound error over long trajectories: across
 a $28$-turn stress test where the gating field toggles every turn, the decision logits stay faithful to a
 full reprefill (cosine $0.99{+}$, flat with trajectory length) with no systematic drift
 (\Cref{app:robustness}).
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{fig5_keystone}
-\caption{\textbf{Edit and compose are one substrate.} (a) Keystone: editing a field \emph{inside} a
-transplanted skill reproduces the editing mechanism, and the \emph{composed} cache matches the
-\emph{recomputed} cache for every method (points on the diagonal). (b) A unified edit+compose agent over
-thirteen models ($10$ domains $\times$ $10$ instances, $300$ decisions; $120$ on the two Gemma models):
-unified-vs-full agreement (bars) and
-cumulative-TTFT speedup (markers).}
-\label{fig:key}
-\end{figure}

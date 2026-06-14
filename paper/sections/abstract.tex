@@ -1,35 +1,19 @@
-Prefix caching reuses a transformer's prefill only across an exactly shared prefix, so a single changed
-field---a clock tick, a session id, an account-status flip---invalidates the entire downstream cache. We
-start from a puzzle: the cache \emph{before} a field is provably reusable (key/value deviation $0.0$), yet
-surgically overwriting only the field's own key/value vectors and reusing the rest leaves the model acting
-on the \emph{old} value.
-
-The reason---established causally by four probes, replicated across four model families---is that at
-prefill the model has already computed the \emph{field-conditioned conclusion} and written it onto
-downstream aggregator/delimiter tokens: the field's own key/value drives under $1\%$ of the decision,
-while the downstream \emph{notes} drive essentially all of it. The KV cache is best read as a notebook of
-memoized conclusions, and two capabilities follow.
-\textbf{It is editable.} Because the conclusion is already written downstream, the cheap, robust fix is a
-salient \emph{erratum} that amends the notes (\fielderr{} matches the strong hoist-to-end baseline without
-rewriting the prompt); one can instead recompute the affected downstream notes---reliably for the whole
-affected suffix, but only unreliably for a cheap top-$K$ (\fieldsel{}@$K$, with a model-dependent minimum).
-An even cheaper in-place refresh of the field alone is gated by \emph{chain-of-thought}, not model size:
-with CoT the chain re-reads the field and the edit alone recovers the decision ($1.00$ at $8$B, ${\sim}1\%$
-compute), without CoT it is ignored ($0.00$).
-\textbf{It is composable.} The notes are localized and position-portable, so a precompiled skill can be
-RoPE-repositioned and spliced into any context---behaviorally indistinguishable from full recompute (logit
-cosine $0.90$--$0.999$ across twelve models) at $O(L)$ rather than $O(L^2)$ time-to-first-token
-($13.9\times$ at $32$k). A keystone experiment---editing a field \emph{inside} a transplanted skill---reproduces
-the editing mechanism verbatim, showing the two operations act on one substrate; a unified
-edit+compose agent (thirteen models, up to $300$ decisions each) stays decision-identical to full
-recompute (agreement $0.81$--$1.0$) at up to $14.9\times$ lower latency.
-
-The substrate is any per-token attention KV cache. We validate it across scale, quantization,
-Mixture-of-Experts, and multimodal image caches; extend it to Multi-head Latent Attention, sliding-window,
-and interleaved-M-RoPE models through small adapters; and map where it holds up to the 2026 sparse-attention
-frontier. Because the erratum is append-only, it composes with production prefix caching: in an online vLLM
-serving benchmark (V1 engine, continuous batching, Poisson load) the edit keeps the static prefix
-cache-aligned ($98.5\%$ vs.\ $1\%$ hit-rate), cutting $p90$ time-to-first-token by $53$--$398\times$ and
-lifting throughput up to $14.5\times$ at saturation. The caching machinery itself is prior art; our
-contributions are the mechanism, the unification, a decision-governance evaluation, and the
-attention-variant adapters.
+Prefix caching reuses prefill only across an exactly shared prefix, so one changed
+field invalidates the entire downstream cache.
+Yet overwriting the field's own key/value vectors and reusing the rest leaves the model acting on
+the \emph{old} value. The reason, established causally across four model families: at prefill the model
+has already written the \emph{field-conditioned conclusion} onto downstream
+\emph{notes}; the field's own key/value drives under $1\%$ of the decision. Read as a
+notebook of memoized conclusions, two capabilities follow.
+\textbf{It is editable.} A salient \emph{erratum} amends the notes;
+and with \emph{chain-of-thought}---not scale---editing the field alone recovers the decision ($1.00$ at
+$8$B, ${\sim}1\%$ compute), while without CoT it is ignored.
+\textbf{It is composable.} The notes are position-portable, so a precompiled skill can be RoPE-repositioned
+and spliced into any context---indistinguishable from full recompute (logit cosine $0.90$--$0.999$, twelve
+models) at $O(L)$ rather than $O(L^2)$ time-to-first-token. A unified edit+compose agent stays
+decision-identical to recompute at up to $14.9\times$ lower latency.
+The approach applies to any per-token attention KV cache, validated across scale, quantization,
+Mixture-of-Experts, and multimodal caches, and extends to several attention variants through small
+adapters. Because the erratum is append-only, it composes with production prefix caching: in an online
+vLLM benchmark it keeps the prefix cache-aligned ($98.5\%$ hit-rate), cutting $p90$ time-to-first-token by
+$53$--$398\times$.

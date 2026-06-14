@@ -54,7 +54,7 @@ def fig_e2_seam():
     if not recs:
         return
     models = sorted(set(r["model"] for r in recs))
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.2))
     # (a) seam dose-response: dec_agree vs seam, late placement, per model
     ax = axes[0]
     for i, m in enumerate(models):
@@ -70,15 +70,18 @@ def fig_e2_seam():
     ax.legend(fontsize=6, ncol=2)
     # (b) naive vs rotated(seam0) vs seam1, late, decision agreement, per model
     ax = axes[1]
-    labels = ["naive\n(no rotate)", "rotated\n(seam0)", "rotated\n+seam1"]
+    labels = ["naive (no rotate)", "rotated (seam0)", "rotated +seam1"]
     x = np.arange(len(models)); w = 0.26
     for j, (meth, col) in enumerate([("naive", C["red"]), ("seam0", C["orange"]), ("seam1", C["green"])]):
         ys = [np.mean([r["dec_agree"] for r in recs if r["model"] == m and r["placement"] == "late" and r["method"] == meth] or [np.nan]) for m in models]
         ax.bar(x + (j - 1) * w, ys, w, color=col, label=labels[j])
     ax.set_xticks(x); ax.set_xticklabels([short(m) for m in models], rotation=35, ha="right", fontsize=6)
     ax.set_ylabel("decision agreement vs full"); ax.set_title("(b) Re-rotation + 1 seam token suffice")
-    ax.set_ylim(0, 1.05); ax.legend(fontsize=6)
-    plt.tight_layout(); plt.savefig(os.path.join(F, "fig_e2_faithfulness.pdf")); plt.close()
+    ax.set_ylim(0, 1.05)
+    # legend below the axis (clear of the long, rotated model labels) so it never overlaps the bars
+    ax.legend(fontsize=6, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.66),
+              frameon=False, columnspacing=1.0, handlelength=1.2, handletextpad=0.4)
+    plt.tight_layout(); plt.savefig(os.path.join(F, "fig_e2_faithfulness.pdf"), bbox_inches="tight"); plt.close()
     print("wrote fig_e2_faithfulness.pdf")
 
 
@@ -96,18 +99,25 @@ def fig_e3_editing():
         ax.bar(x + i * w, ys, w, label=short(m))
     ax.set_xticks(x + w * (len(models) - 1) / 2); ax.set_xticklabels(methods, rotation=35, ha="right", fontsize=6)
     ax.set_ylabel("decision correct (vs new gold)"); ax.set_title("(a) Editing a memory fact (CoT)")
-    ax.set_ylim(0, 1.05); ax.legend(fontsize=6)
+    ax.set_ylim(0, 1.05)
+    # legend below the axis so it never overlaps the tall bars
+    ax.legend(fontsize=6, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.42),
+              frameon=False, columnspacing=1.0, handlelength=1.2, handletextpad=0.4)
     # (b) cost vs correctness frontier (one model)
     ax = axes[1]
     m = models[-1]
     for meth, col in zip(methods, [C["gray"], C["red"], C["orange"], C["purple"], C["green"], C["blue"], "#000"]):
         sub = [r for r in recs if r["model"] == m and r["method"] == meth]
         if sub:
+            # label each method in the legend (below) instead of annotating on top of the dots
             ax.scatter(np.median([r["recompute_tok"] for r in sub]), np.mean([r["correct"] for r in sub]),
-                       c=col, s=40); ax.annotate(meth, (np.median([r["recompute_tok"] for r in sub]), np.mean([r["correct"] for r in sub])), fontsize=6)
+                       c=col, s=40, label=meth)
     ax.set_xscale("symlog"); ax.set_xlabel("recompute tokens (median)"); ax.set_ylabel("decision correct")
     ax.set_title(f"(b) Cost/correctness frontier ({short(m)})"); ax.set_ylim(0, 1.05)
-    plt.tight_layout(); plt.savefig(os.path.join(F, "fig_e3_editing.pdf")); plt.close()
+    # legend below the axis so the method names never overlap the dots
+    ax.legend(fontsize=6, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.30),
+              frameon=False, columnspacing=1.0, handlelength=1.0, handletextpad=0.3)
+    plt.tight_layout(); plt.savefig(os.path.join(F, "fig_e3_editing.pdf"), bbox_inches="tight"); plt.close()
     print("wrote fig_e3_editing.pdf")
 
 
@@ -184,8 +194,11 @@ def fig_e5_systems():
     ax.axhline(1, ls="--", c="#000", lw=1)
     ax.set_xticks(xb); ax.set_xticklabels([short(m) for m in models], rotation=25, ha="right", fontsize=7)
     ax.set_ylabel("cumulative TTFT speedup (×)")
-    ax.set_title("(b) Cumulative speedup"); ax.legend(fontsize=7)
-    plt.tight_layout(); plt.savefig(os.path.join(F, "fig_e5_systems.pdf")); plt.close()
+    ax.set_title("(b) Cumulative speedup")
+    # legend below the axis so it never overlaps the tall speedup bars
+    ax.legend(fontsize=7, ncol=2, loc="upper center", bbox_to_anchor=(0.5, -0.34),
+              frameon=False, columnspacing=1.3, handlelength=1.4, handletextpad=0.5)
+    plt.tight_layout(); plt.savefig(os.path.join(F, "fig_e5_systems.pdf"), bbox_inches="tight"); plt.close()
     print("wrote fig_e5_systems.pdf")
 
 
@@ -194,22 +207,27 @@ def fig_locomo():
     if not recs:
         return
     models = sorted(set(r["model"] for r in recs))
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.95))
+    # each panel carries its own (different) legend, placed below the axis so it never
+    # overlaps the near-full-height bars
+    legkw = dict(fontsize=7, ncol=2, loc="upper center", bbox_to_anchor=(0.5, -0.34),
+                 frameon=False, columnspacing=1.3, handlelength=1.4, handletextpad=0.5)
     ax = axes[0]; x = np.arange(len(models)); w = 0.38
     af = [np.mean([r["correct_full"] for r in recs if r["model"] == m]) for m in models]
     at = [np.mean([r["correct_transplant"] for r in recs if r["model"] == m]) for m in models]
     ax.bar(x - w / 2, af, w, color=C["gray"], label="full recompute")
     ax.bar(x + w / 2, at, w, color=C["green"], label="transplant")
     ax.set_xticks(x); ax.set_xticklabels([short(m) for m in models], rotation=25, ha="right", fontsize=7)
-    ax.set_ylabel("LoCoMo QA accuracy"); ax.set_title("(a) Real memory: accuracy parity"); ax.set_ylim(0, 1); ax.legend(fontsize=7)
+    ax.set_ylabel("LoCoMo QA accuracy"); ax.set_title("(a) Real memory: accuracy parity"); ax.set_ylim(0, 1); ax.legend(**legkw)
     ax = axes[1]
     cos = [np.mean([r["ans_cos"] for r in recs if r["model"] == m]) for m in models]
     t1 = [np.mean([r["ans_top1_agree"] for r in recs if r["model"] == m]) for m in models]
     ax.bar(x - w / 2, cos, w, color=C["blue"], label="answer-token cos")
     ax.bar(x + w / 2, t1, w, color=C["orange"], label="top-1 agree")
     ax.set_xticks(x); ax.set_xticklabels([short(m) for m in models], rotation=25, ha="right", fontsize=7)
-    ax.set_ylabel("transplant vs full"); ax.set_title("(b) Real memory: answer fidelity"); ax.set_ylim(0, 1.05); ax.legend(fontsize=7)
-    plt.tight_layout(); plt.savefig(os.path.join(F, "fig_locomo.pdf")); plt.close()
+    ax.set_ylabel("transplant vs full"); ax.set_title("(b) Real memory: answer fidelity"); ax.set_ylim(0, 1.05); ax.legend(**legkw)
+    fig.tight_layout(rect=[0, 0.10, 1, 1])
+    plt.savefig(os.path.join(F, "fig_locomo.pdf"), bbox_inches="tight"); plt.close()
     print("wrote fig_locomo.pdf")
 
 
