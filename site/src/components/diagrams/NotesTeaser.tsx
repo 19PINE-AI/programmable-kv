@@ -131,9 +131,9 @@ export function NotesTeaser() {
           )
         })}
 
-        {/* substrate label */}
+        {/* cache row label */}
         <text x={32} y={y + 58} style={{ fontFamily: 'var(--sans)', fontSize: 10.5, letterSpacing: '0.08em' }} fill="var(--ink-faint)">
-          KV CACHE (ONE ENTRY PER TOKEN, PER LAYER)
+          THE KV CACHE — THE MODEL&rsquo;S NOTES (ONE PER WORD, PER LAYER)
         </text>
       </svg>
       <style>{`@keyframes dashflow { to { stroke-dashoffset: -22; } }`}</style>

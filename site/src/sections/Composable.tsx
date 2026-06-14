@@ -10,7 +10,7 @@ import { fmt, fmtX, fmtTokens } from '../lib/format'
 import composing from '../data/composing.json'
 import constants from '../data/constants.json'
 
-const META = { id: 'composable', num: '2', title: 'Load a skill once: the composable cache' }
+const META = { id: 'composable', num: '2', title: 'Reuse a skill instantly' }
 
 function TtftScaling() {
   const sc = composing.scaling as any[]
@@ -33,14 +33,14 @@ function TtftScaling() {
         xTicks={m.points.map((p: any) => p.L)}
         xFmt={(v) => fmtTokens(v)}
         yFmt={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}s` : `${v.toFixed(0)}ms`)}
-        xLabel="skill length L (tokens)"
-        yLabel="time to first token"
+        xLabel="length of the skill (tokens)"
+        yLabel="time until the first word of the reply"
         yDomain={[Math.min(...m.points.map((p: any) => p.precomp_ms)) * 0.7, Math.max(...m.points.map((p: any) => p.full_ms)) * 1.4]}
         height={300}
       />
       <Legend items={[
-        { label: 'full reprefill — O(L²)', color: COLORS.red },
-        { label: 'transplant (re-rotate + splice) — O(L)', color: COLORS.blue },
+        { label: 'read the skill fresh every time', color: COLORS.red },
+        { label: 'paste the saved notes (re-stamp + slot in)', color: COLORS.blue },
       ]} />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
         speedups on {m.label}:{' '}
@@ -62,13 +62,13 @@ function DomainScorecard() {
         </ControlGroup>
         {m.summary && (
           <span style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)' }}>
-            transplanted ≡ full: <b>{m.summary.agree[0]}/{m.summary.agree[1]} domains</b> (mean cos {fmt(m.summary.cos, 3)})
+            pasted notes match fresh reading: <b>{m.summary.agree[0]}/{m.summary.agree[1]} skills</b> (mean similarity {fmt(m.summary.cos, 3)})
           </span>
         )}
       </Controls>
       <table className="data-table">
         <thead>
-          <tr><th>skill domain</th><th>skill tokens</th><th>full reprefill</th><th>transplanted</th><th>logit cos</th><th>same decision</th></tr>
+          <tr><th>skill area</th><th>skill size (tokens)</th><th>read fresh</th><th>pasted notes</th><th>similarity</th><th>same decision</th></tr>
         </thead>
         <tbody>
           {m.rows.map((r: any) => (
@@ -84,7 +84,7 @@ function DomainScorecard() {
         </tbody>
       </table>
       <div style={{ fontFamily: 'var(--sans)', fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 6 }}>
-        parsed directly from the released run logs (<code>comp_div_*.log</code>); domains span refund
+        read straight from the released run logs (<code>comp_div_*.log</code>); the skills span refund
         policy, access control, deployment gates, prescriptions, loans, legal holds, incident
         response, and visa rules
       </div>
@@ -98,7 +98,7 @@ function FidelityBar() {
     <BarsH
       items={rows.map((r: any) => ({ label: r.label, value: r.cos, color: COLORS.blue }))}
       domain={[0.85, 1.01]}
-      xLabel="next-token logit cosine: transplanted skill vs. full recompute"
+      xLabel="how closely pasted notes match reading the skill fresh"
       refX={[{ x: 1.0, label: 'identical', color: COLORS.green }]}
       valueFmt={(v) => v.toFixed(3)}
       labelWidth={180}
@@ -118,7 +118,7 @@ function Agentic() {
         color: COLORS.purple,
       }))}
       domain={[0.25, 1.05]}
-      xLabel="transplanted-vs-full tool-call agreement (N=108 actual function calls, bootstrap CIs)"
+      xLabel="how often pasted notes and fresh reading pick the same tool (N=108 real tool calls)"
       refX={[{ x: 1, label: 'identical' }]}
       labelWidth={185}
     />
@@ -139,8 +139,8 @@ function MultiSkill() {
           marker: false,
         }))}
         xTicks={[1, 2, 3, 4]}
-        xLabel="number of independently-precompiled skills spliced into one context"
-        yLabel="logit cosine vs. full recompute"
+        xLabel="number of separately-saved skills pasted into one prompt"
+        yLabel="how closely the result matches reading them fresh"
         yDomain={[0.5, 1.02]}
         height={260}
       />
@@ -153,25 +153,28 @@ export function Composable() {
   return (
     <Section meta={META}>
       <P>
-        The first challenge was <strong>loading skills</strong>: a reusable skill — a policy, a
-        tool spec — should be loadable once and reused anywhere, not re-prefilled every time it
-        lands in a new context. It can be. Compute the skill&rsquo;s KV once, in isolation, then
-        move it to wherever it sits in a new context. Because attention libraries cache{' '}
-        <em>post-RoPE</em> keys, moving a chunk means re-rotating its keys to the target positions
-        (values carry no position at all). The reason this preserves behavior — a skill&rsquo;s notes
-        are re-derivable from context the decision can still see — is the mechanism we unpack in §7.
+        Here is the idea. A reusable skill — a refund policy, a tool manual — can be read{' '}
+        <strong>once</strong> and reused anywhere, instead of being re-read every time it shows up in
+        a new prompt. As the model reads a prompt, it jots down a private notebook of notes about
+        what it just read (engineers call this the &ldquo;KV cache&rdquo;). So we let the model read
+        the skill once on its own, save that notebook, and later paste those saved notes into any new
+        prompt. Each note carries a kind of &ldquo;position stamp&rdquo; that records where in the
+        prompt it came from. To slot the notes into a new spot, we simply re-stamp them with their
+        new positions — nothing else about the notes changes. Why this still works — the notes only
+        summarize the skill&rsquo;s own text, which the model can still see — is the mechanism we
+        unpack in §7.
       </P>
 
       <Figure
-        label="Position-portable transplant."
-        title="RoPE is a rotation, so repositioning is a re-rotation"
+        label="Re-stamping the notes for a new spot."
+        title="Re-stamping a note is just turning a dial"
         caption={
           <>
-            The skill&rsquo;s keys precompiled at positions 0…L−1 are rotated forward by Δpos and
-            spliced into the live cache; the values copy verbatim. The caching machinery here is
-            prior art (Prompt Cache, CacheBlend, EPIC, CacheSlide) — the paper&rsquo;s contribution
-            is the mechanism that predicts <em>when this preserves behavior</em>, and the
-            decision-governance evaluation showing it does.
+            The skill&rsquo;s notes were saved with position stamps for slots 0…L−1. To place them
+            later in the prompt, each stamp is turned forward by the gap; the rest of each note is
+            copied as-is. The note-saving machinery itself is prior work (Prompt Cache, CacheBlend,
+            EPIC, CacheSlide) — this paper&rsquo;s contribution is explaining <em>when this keeps the
+            model&rsquo;s behavior the same</em>, and showing on real decisions that it does.
           </>
         }
       >
@@ -179,35 +182,36 @@ export function Composable() {
       </Figure>
 
       <Figure
-        label="Linear-time TTFT."
+        label="Faster, and far faster as skills grow."
         caption={
           <>
-            Full reprefill of a length-L skill is O(L²); transplant is O(L) — a re-rotation pass
-            plus the suffix. The speedup grows with skill length: 13.9× at 32k tokens on an 8B
-            model.
+            Reading the skill fresh gets disproportionately slower as the skill grows. Pasting the
+            saved notes only takes a quick re-stamp, so the time grows in step with the skill&rsquo;s
+            length instead. The longer the skill, the bigger the win: 13.9× faster at a 32,000-token
+            skill on an 8-billion-parameter model.
           </>
         }
       >
         <TtftScaling />
       </Figure>
 
-      <H3>But does the transplanted skill still govern behavior?</H3>
+      <H3>But does the pasted skill still steer the answer?</H3>
       <P>
-        Throughput is the easy half. The paper&rsquo;s evaluation lens is{' '}
-        <strong>decision governance</strong>: after the splice, does the skill still control the
-        model&rsquo;s tool decision, exactly as a fresh prefill would?
+        Speed is the easy half. The real test is whether the skill still does its job: after the
+        notes are pasted in, does the model make the same decision it would have made if it had read
+        the skill fresh?
       </P>
 
       <Figure
         narrow
-        label="Eight domains, per-model."
+        label="Eight skill areas, one model at a time."
         caption={
           <>
-            A precompiled, repositioned skill reproduces the full-reprefill decision domain by
-            domain. The one residual error across the study is a <em>seam</em> at the
-            chunk&rsquo;s start — the few tokens that would have attended to the now-missing
-            prefix — and recomputing 1–2 boundary tokens closes it. §7&rsquo;s mechanism is why it
-            is the boundary, specifically, that needs repair.
+            A saved-and-re-stamped skill produces the same decision as reading it fresh, area by
+            area. The one lingering glitch in the whole study is at the very start of the pasted
+            notes — the first words, which originally expected some text in front of them that is now
+            gone. Re-reading just 1–2 of those opening words fixes it. §7&rsquo;s mechanism explains
+            why it is only those opening words that need the touch-up.
           </>
         }
       >
@@ -216,11 +220,11 @@ export function Composable() {
 
       <Figure
         narrow
-        label="Transplant fidelity across the model family."
+        label="Holds up across many models."
         caption={
           <>
-            Next-token logit cosine between the spliced skill and a full reprefill, across
-            families and scales including FP8 and MoE checkpoints.{' '}
+            How closely pasting the saved notes matches reading the skill fresh, across model
+            families and sizes, including compressed and mixture-of-experts versions.{' '}
             <PaperConst src={constants.transplant_cosine_bar.source} />
           </>
         }
@@ -230,12 +234,12 @@ export function Composable() {
 
       <Figure
         narrow
-        label="Agentic tool-calling, measured with actual function calls."
+        label="Real tool use, measured on actual tool calls."
         caption={
           <>
-            Transplant preserves real tool-calling — not a proxy metric — across 8 models. The one
-            consistent exception in the wider study is sliding-window attention (Gemma), diagnosed
-            and fixed in §11.
+            Pasting the notes keeps the model picking the right tools — measured on real tool calls,
+            not a stand-in score — across 8 models. The one steady exception in the wider study is a
+            model that reads through a moving window (Gemma); we diagnose and fix it in §11.
           </>
         }
       >
@@ -244,13 +248,14 @@ export function Composable() {
 
       <Figure
         narrow
-        label="A library of skills composes."
+        label="Stack several skills together."
         caption={
           <>
-            Logit cosine to full recompute as N=1–4 independently-precompiled skills are spliced
-            into one context. The recorded decision matches full recompute in nearly every cell;
-            the exceptions sit at cosine ≥0.996 — boundary flips of a near-tied decision, the same
-            sensitivity quantified in §10, not transplant damage.
+            How closely the result matches reading everything fresh as 1 to 4 separately-saved skills
+            are pasted into one prompt. The decision matches fresh reading in nearly every case; the
+            rare misses are still a near-perfect match (similarity ≥ 0.996) and happen only when the
+            decision was a coin-flip to begin with — the same sensitivity measured in §10, not damage
+            from pasting.
           </>
         }
       >
@@ -258,10 +263,9 @@ export function Composable() {
       </Figure>
 
       <Aside>
-        <b>Why it works, in one line.</b> A skill&rsquo;s notes memoize conclusions about{' '}
-        <em>the skill&rsquo;s own content</em>; as long as the decision can still see the live
-        context it needs, the only thing position changes is the keys&rsquo; rotation — which is
-        exactly invertible.
+        <b>Why it works, in one line.</b> The saved notes only sum up{' '}
+        <em>the skill&rsquo;s own text</em>, which the model can still see. So moving them to a new
+        spot changes nothing but the position stamp — and re-stamping is exact, with nothing lost.
       </Aside>
     </Section>
   )

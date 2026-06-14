@@ -10,7 +10,7 @@ import controls from '../data/controls.json'
 import prompts from '../data/prompts.json'
 import constants from '../data/constants.json'
 
-const META = { id: 'controls', num: '12', title: 'Under the hood: stress-testing the mechanism' }
+const META = { id: 'controls', num: '12', title: 'Under the hood: four careful checks' }
 
 /* ------------------------------------------------------------------ */
 /* (a) dissociation: one trigger token flips the conclusion           */
@@ -29,7 +29,7 @@ function Dissociation() {
   return (
     <div>
       <Controls>
-        <ControlGroup label="rule trigger (the ONE differing token)">
+        <ControlGroup label="the ONE word we change">
           <Seg options={[0, 1] as any} value={variant as any} onChange={(x) => setVariant(x as any)}
             labels={{ 0: dis.variants[0].trigger, 1: dis.variants[1].trigger } as any} accent="orange" />
         </ControlGroup>
@@ -41,10 +41,10 @@ function Dissociation() {
       <div className="prompt-box" style={{ maxHeight: 200 }}>
         <span className="dim">SESSION CONTEXT{'\n'}</span>
         <span className="hl-field">{dis.field_label}: {dis.field_value}</span>
-        <span className="dim">   ← field held byte-identical in both variants{'\n\n'}</span>
+        <span className="dim">   ← the fact stays exactly the same in both cases{'\n\n'}</span>
         <span className="hl-rule">
           {gateParts[0]}
-          <span className="hl-diff" title="the only differing token">{v.trigger}</span>
+          <span className="hl-diff" title="the only word that changes">{v.trigger}</span>
           {gateParts.slice(1).join(v.trigger)}
         </span>
         {'\n\n'}
@@ -55,11 +55,11 @@ function Dissociation() {
       <div style={{ marginTop: 14 }}>
         <BarsH
           items={[
-            { label: 'patch the differing rule token only', value: m.trigger_only.mean, lo: m.trigger_only.ci?.[0], hi: m.trigger_only.ci?.[1], color: COLORS.gray },
-            { label: 'patch the downstream notes only', value: m.notes.mean, lo: m.notes.ci?.[0], hi: m.notes.ci?.[1], color: COLORS.orange },
+            { label: 'copy over only the one word that changed', value: m.trigger_only.mean, lo: m.trigger_only.ci?.[0], hi: m.trigger_only.ci?.[1], color: COLORS.gray },
+            { label: "copy over only the model's later notes", value: m.notes.mean, lo: m.notes.ci?.[0], hi: m.notes.ci?.[1], color: COLORS.orange },
           ]}
           domain={[-0.1, 1.15]}
-          xLabel={`recovery of the flipped conclusion — ${m.label}, n=${m.n}`}
+          xLabel={`how much of the flipped answer comes back — ${m.label}, n=${m.n}`}
           refX={[{ x: 0, label: 'none' }, { x: 1, label: 'all' }]}
           labelWidth={230}
         />
@@ -98,20 +98,21 @@ function Specificity() {
         ]}
         xLog
         xTicks={ks}
-        xLabel="number of downstream positions transplanted (k)"
-        yLabel="decision recovery"
+        xLabel="how many note spots we copy over (k)"
+        yLabel="how much of the answer comes back"
         yDomain={[-0.06, 1.06]}
         highlightX={k}
         height={290}
       />
       <Legend items={[
-        { label: 'k highest-effect positions', color: COLORS.orange },
-        { label: 'k random downstream positions', color: COLORS.gray, dash: true },
+        { label: 'the k spots that matter most', color: COLORS.orange },
+        { label: 'k randomly chosen note spots', color: COLORS.gray, dash: true },
       ]} />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
-        k = {k}: top-{k} recovers <b>{fmt(cur.top.mean, 2)}</b>; {k} random downstream positions recover{' '}
-        <b>{cur.rand ? fmt(cur.rand.mean, 2) : '—'}</b>. A few specific aggregator tokens carry the
-        conclusion — not a diffuse code.
+        k = {k}: the {k} most important spots bring back <b>{fmt(cur.top.mean, 2)}</b> of the answer;
+        {' '}{k} random spots bring back{' '}
+        <b>{cur.rand ? fmt(cur.rand.mean, 2) : '—'}</b>. A few specific spots hold the answer —
+        it is not spread thinly everywhere.
       </div>
     </div>
   )
@@ -132,8 +133,8 @@ function Injection() {
           <ModelPicker models={inj.map((x) => ({ id: x.tag, label: x.label }))} value={tag} onChange={setTag} />
         </ControlGroup>
         <span style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)' }}>
-          full-note injection: recovery <b>{fmt(m.full_recovery.mean, 2)}</b>, follows the written
-          lie <b>{fmt(m.follows_rate, 2)}</b> of the time
+          overwrite the whole note: answer comes back <b>{fmt(m.full_recovery.mean, 2)}</b>, and the
+          model follows the false note <b>{fmt(m.follows_rate, 2)}</b> of the time
         </span>
       </Controls>
       <LineChart
@@ -143,14 +144,14 @@ function Injection() {
         ]}
         xLog
         xTicks={m.dose.map((d: any) => d.k)}
-        xLabel="number of note tokens overwritten with the opposite conclusion"
-        yLabel="recovery / follow rate"
+        xLabel="how many note spots we overwrite with the opposite answer"
+        yLabel="answer comes back / model follows the note"
         yDomain={[-0.06, 1.1]}
         height={280}
       />
       <Legend items={[
-        { label: 'decision recovery toward the injected conclusion', color: COLORS.purple },
-        { label: 'follow rate (decision obeys the false note)', color: COLORS.blue, dash: true },
+        { label: 'the answer shifts toward the note we wrote in', color: COLORS.purple },
+        { label: 'how often the answer obeys the false note', color: COLORS.blue, dash: true },
       ]} />
     </div>
   )
@@ -180,8 +181,8 @@ function Timing() {
 
   return (
     <ChartSvg width={W} height={H}>
-      <text x={x0} y={16} className="tick-label">layer depth 0</text>
-      <text x={x1} y={16} className="tick-label" textAnchor="end">1 (last layer)</text>
+      <text x={x0} y={16} className="tick-label">start of the model</text>
+      <text x={x1} y={16} className="tick-label" textAnchor="end">end of the model</text>
       {rows.map((r, i) => {
         const y = 36 + i * rowH
         return (
@@ -197,10 +198,10 @@ function Timing() {
               <title>{`commit: layer ${r.commit_layer} (depth ${r.commit_depth})`}</title>
             </circle>
             <text x={x(r.write_depth)} y={y - 11} textAnchor="middle" className="tick-label" style={{ fill: COLORS.orange, fontWeight: 700 }}>
-              write {fmt(r.write_depth, 2)}
+              note written {fmt(r.write_depth, 2)}
             </text>
             <text x={x(r.commit_depth)} y={y + 21} textAnchor="middle" className="tick-label" style={{ fill: COLORS.blue, fontWeight: 700 }}>
-              commit {fmt(r.commit_depth, 2)}
+              answer decided {fmt(r.commit_depth, 2)}
             </text>
           </g>
         )
@@ -216,9 +217,9 @@ function Timing() {
 function Generalization() {
   const gen = controls.general as any[]
   const fams: { key: string; label: string }[] = [
-    { key: 'multihop', label: 'multi-hop reasoning' },
+    { key: 'multihop', label: 'multi-step reasoning' },
     { key: 'natural', label: 'free-form conversation' },
-    { key: 'rag_lookup', label: 'near-verbatim RAG lookup' },
+    { key: 'rag_lookup', label: 'near word-for-word lookup' },
   ]
   return (
     <BarsV
@@ -232,7 +233,7 @@ function Generalization() {
       seriesLabels={gen.map((g) => g.label)}
       colors={[COLORS.orange, COLORS.blue, COLORS.purple]}
       yDomain={[-0.1, 1.0]}
-      yLabel="field-only recovery"
+      yLabel="answer recovered by refreshing the fact alone"
       height={280}
     />
   )
@@ -248,21 +249,21 @@ function Replication() {
     <table className="data-table">
       <thead>
         <tr>
-          <th>probe</th>
+          <th>check</th>
           {rep.map((r) => <th key={r.tag}>{r.label}</th>)}
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>field-only recovery (≈0 expected)</td>
+          <td>refreshing the fact alone (should be ≈0)</td>
           {rep.map((r) => <td key={r.tag}><b>{fmt(r.primary?.field_only?.mean ?? r.primary?.field_only, 3)}</b></td>)}
         </tr>
         <tr>
-          <td>full-downstream recovery</td>
+          <td>copying over all the later notes</td>
           {rep.map((r) => <td key={r.tag}>{fmt(r.primary?.full_downstream?.mean ?? r.primary?.full_downstream, 2)}</td>)}
         </tr>
         <tr>
-          <td>dissociation: trigger-only / notes</td>
+          <td>check (i): one word changed / the notes</td>
           {rep.map((r) => (
             <td key={r.tag}>
               {fmt(r.dissoc?.trigger_only?.mean ?? r.dissoc?.trigger_only, 2)} / <b>{fmt(r.dissoc?.notes?.mean ?? r.dissoc?.notes, 2)}</b>
@@ -270,7 +271,7 @@ function Replication() {
           ))}
         </tr>
         <tr>
-          <td>specificity: top-k / random-k</td>
+          <td>check (iii): top spots / random spots</td>
           {rep.map((r) => (
             <td key={r.tag}>
               <b>{fmt(r.specificity?.top_k?.mean ?? r.specificity?.top_k, 2)}</b> / {fmt(r.specificity?.random_k?.mean ?? r.specificity?.random_k, 2)}
@@ -278,7 +279,7 @@ function Replication() {
           ))}
         </tr>
         <tr>
-          <td>false-note injection: recovery / follows</td>
+          <td>check (iv): answer back / follows false note</td>
           {rep.map((r) => (
             <td key={r.tag}>
               {fmt(r.injection?.recovery?.mean ?? r.injection?.recovery, 2)} / {fmt(r.injection?.follow_rate?.mean ?? r.injection?.follow_rate, 2)}
@@ -286,7 +287,7 @@ function Replication() {
           ))}
         </tr>
         <tr>
-          <td>write depth → commit depth</td>
+          <td>check (ii): note written → answer decided</td>
           {rep.map((r) => (
             <td key={r.tag}>{fmt(r.timing.write_depth, 2)} → {fmt(r.timing.commit_depth, 2)}</td>
           ))}
@@ -300,109 +301,116 @@ export function DeepControls() {
   return (
     <Section meta={META}>
       <P>
-        A skeptic&rsquo;s null hypothesis survives §7: maybe the downstream tokens merely{' '}
-        <em>re-encode the field&rsquo;s content</em>, and the decision re-reads that copy. Four
-        controls close the gap between &ldquo;the conclusion is <em>decodable</em>{' '}
-        downstream&rdquo; and &ldquo;the decision <em>uses</em> a memoized conclusion.&rdquo;
+        This is an optional deep-dive. Earlier we saw the model jot down a worked-out answer as it
+        reads &mdash; in what we&rsquo;ll call its &ldquo;notebook of notes&rdquo; (the running
+        scratchpad it keeps while processing a prompt). But there&rsquo;s a fair worry: maybe those
+        notes are just a <em>copy of the original fact</em>, and the model simply re-reads the copy.
+        You can often <em>read</em> the answer off the notes &mdash; but that alone doesn&rsquo;t
+        prove the model actually <em>uses</em> them. So we tested use directly, by swapping notes in
+        and out and watching what the model does. Four careful checks tell the difference.
       </P>
 
-      <H3>Control 1 — dissociating conclusion from content</H3>
+      <H3>Check (i) — it&rsquo;s the conclusion, not a copy of the fact</H3>
       <P>
-        Hold the field value <strong>byte-identical</strong> and flip a single rule token — a
-        polarity <em>trigger</em> — so the conclusion inverts while the content does not. If the
-        notes carried field content, patching them across this pair would do nothing (the field
-        never changed). Toggle the trigger:
+        Keep the underlying fact <strong>exactly the same</strong>, word for word, and change just
+        one word in the rule &mdash; enough to flip the right answer. If the notes only held a copy
+        of the fact, copying them between these two cases should change nothing, since the fact
+        never moved. Flip the word and watch:
       </P>
       <Figure
-        label="Dissociation."
+        label="It&rsquo;s the conclusion, not a copy of the fact."
         caption={
           <>
-            The two prompts differ in exactly one token, yet transplanting the downstream notes
-            alone carries the whole flipped conclusion (recovery ≈1.0) while patching the differing
-            rule token itself carries none (≈0). The decision cannot be re-encoding field content —
-            the content is constant. (A linear probe finds <em>both</em> conclusion and field
-            identity decodable downstream; only the causal patch separates them.)
+            The two prompts differ by exactly one word. Yet copying over the model&rsquo;s later
+            notes alone brings back the whole flipped answer (about 1.0), while copying that one
+            changed word brings back almost none (about 0). The notes can&rsquo;t just be a copy of
+            the fact &mdash; the fact never changed. (You <em>can</em> read both the answer and the
+            fact off the notes; only this swap test shows which one the model actually relies on.)
           </>
         }
       >
         <Dissociation />
       </Figure>
 
-      <H3>Control 2 — a few specific tokens, not a diffuse code</H3>
+      <H3>Check (iii) — a few specific spots carry it</H3>
       <Figure
-        label="Specificity."
+        label="A few specific spots carry it."
         caption={
           <>
-            Transplanting the eight highest-effect downstream positions recovers 0.74–0.79 of the
-            decision across models; eight random downstream positions recover ≤0.035.
+            Copying over just the eight most important note spots brings back 0.74&ndash;0.79 of the
+            answer across models; eight randomly chosen spots bring back 0.035 or less. The answer
+            lives in a few specific places, not smeared across the whole notebook.
           </>
         }
       >
         <Specificity />
       </Figure>
 
-      <H3>Control 3 — the note is writable: inject a lie</H3>
+      <H3>Check (iv) — the model follows the note even when the note is wrong</H3>
       <P>
-        The strongest test of &ldquo;the decision reads the notes&rdquo; is to <em>write</em> the
-        notes. Take an internally consistent cache — field and rule agree — and overwrite just the
-        note positions with KV carrying the <em>opposite</em> conclusion:
+        The strongest way to show the model reads its notes is to <em>edit</em> them. Start from a
+        case where everything agrees &mdash; the fact and the rule point to the same answer &mdash;
+        and then overwrite just the note spots so they say the <em>opposite</em>:
       </P>
       <Figure
-        label="False-note injection."
+        label="The model follows the note even when the note is wrong."
         caption={
           <>
-            The decision follows the written note <em>against the model&rsquo;s own live field</em>{' '}
-            (recovery ≈1.0, follow rate 1.0), and a handful of note tokens suffice. The cache is
-            not a passive transcript; it is the operative record of what the model believes it
-            concluded.
+            The model goes with the note we wrote in, <em>even though its own fact still says the
+            other thing</em> (answer comes back about 1.0, followed every time), and only a handful
+            of note spots are needed. The notebook isn&rsquo;t a passive transcript &mdash; it&rsquo;s
+            the working record of what the model thinks it concluded.
           </>
         }
       >
         <Injection />
       </Figure>
 
-      <H3>Control 4 — written before it is read</H3>
+      <H3>Check (ii) — the note is written before it&rsquo;s read</H3>
       <Figure
         narrow
-        label="Timing."
+        label="The note is written before it&rsquo;s read."
         caption={
           <>
-            Within the single prefill pass, the conclusion becomes linearly decodable on the
-            downstream aggregator at depth 0.19–0.39 — roughly twelve layers <em>before</em> the
-            decision token&rsquo;s logit-lens commit at depth 0.47–0.77. The note is written, then
-            read. Dots from the released timing records (Gemma/Mistral) and the deep-mechanism
-            study (Qwen/Llama). <PaperConst src={constants.timing_depths.source} />
+            As the model reads the prompt in a single pass, the answer shows up in its notes early
+            on (about a fifth to two-fifths of the way through) &mdash; roughly twelve steps
+            <em> before</em> the model commits to its final answer (about halfway to three-quarters
+            through). The note is written first, then read. Dots come from two sets of released
+            measurements (Gemma/Mistral) and the deeper study (Qwen/Llama).{' '}
+            <PaperConst src={constants.timing_depths.source} />
           </>
         }
       >
         <Timing />
       </Figure>
 
-      <H3>Does it survive off the template?</H3>
+      <H3>Does it hold up away from our test format?</H3>
       <Figure
-        label="Generalization, with an honest boundary."
+        label="It holds up, with one honest exception."
         caption={
           <>
-            Field-only recovery stays ≈0 for multi-hop reasoning and free-form conversational
-            phrasing — the mechanism is not a template artifact. For near-verbatim attribute
-            lookup it is bounded (0.25–0.63): there the &ldquo;note&rdquo; is partly a literal
-            copy of the field, and refreshing the field does partial work. The paper reports this
-            boundary rather than hiding it.
+            Just refreshing the original fact brings back almost nothing (about 0) for multi-step
+            reasoning and free-form conversation &mdash; so this isn&rsquo;t a quirk of our test
+            format. There&rsquo;s one honest exception: when the task is looking up an attribute
+            almost word for word, refreshing the fact does some of the work (0.25&ndash;0.63),
+            because there the &ldquo;note&rdquo; really is partly just a copy of the fact. We report
+            this exception rather than hide it.
           </>
         }
       >
         <Generalization />
       </Figure>
 
-      <H3>Not a model-family artifact</H3>
+      <H3>Not specific to one kind of model</H3>
       <Figure
         narrow
-        label="Four families."
+        label="Four model families."
         caption={
           <>
-            The full probe battery replicated on two further architecture families with a
-            tokenizer-robust readout (Gemma-2 keeps its attention/logit soft-capping intact).
-            Every result holds: Qwen3, Llama-3.1, Gemma-2, Mistral.
+            We ran the full set of checks on two more kinds of model, using a measurement that
+            works across their different ways of splitting text into pieces (and leaving Gemma-2&rsquo;s
+            internals untouched). Every result holds across all four: Qwen3, Llama-3.1, Gemma-2,
+            and Mistral.
           </>
         }
       >
@@ -410,10 +418,10 @@ export function DeepControls() {
       </Figure>
 
       <Aside>
-        <b>Where this leaves the account.</b> The conclusion is causally separable from the
-        content (Control 1), concentrated on nameable positions (Control 2), writable (Control 3),
-        and written at prefill before any read (Control 4). What remains is to find the components
-        — §13 names the heads.
+        <b>Where this leaves us.</b> The note holds a worked-out answer, not just a copy of the
+        fact (check i); it&rsquo;s written before it&rsquo;s read (check ii); a few specific spots
+        carry it (check iii); and the model follows the note even when the note is wrong (check iv).
+        What&rsquo;s left is to find the exact parts of the model that do this &mdash; §13 names them.
       </Aside>
     </Section>
   )

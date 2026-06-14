@@ -4,7 +4,7 @@ import { ChartSvg, COLORS } from '../components/charts/core'
 import { fmtPct } from '../lib/format'
 import constants from '../data/constants.json'
 
-const META = { id: 'attention', num: '8', title: 'How attention reads the notes' }
+const META = { id: 'attention', num: '8', title: 'How the model reads its own notes' }
 
 /**
  * One panel of the attention-flow comparison: where the decision token's
@@ -18,11 +18,11 @@ function FlowPanel({ masked, heading }: { masked: boolean; heading: string }) {
   const W = 720
   const y = 96
   const cells = [
-    { id: 'sink', label: '⟨bos⟩ sink', x: 24, w: 76 },
-    { id: 'field', label: 'FIELD (fresh)', x: 116, w: 104, field: true },
+    { id: 'sink', label: 'start position', x: 24, w: 76 },
+    { id: 'field', label: 'the fresh fact', x: 116, w: 104, field: true },
     { id: 'rule', label: 'rule', x: 232, w: 60 },
-    { id: 'notes', label: 'stale downstream notes ✎ ✎ ✎', x: 304, w: 224, note: true },
-    { id: 'dec', label: 'decision', x: 568, w: 92, dec: true },
+    { id: 'notes', label: 'old notes ✎ ✎ ✎', x: 304, w: 224, note: true },
+    { id: 'dec', label: 'the answer', x: 568, w: 92, dec: true },
   ]
   const pos = Object.fromEntries(cells.map((c) => [c.id, c]))
   const cx = (id: string) => pos[id].x + pos[id].w / 2
@@ -59,7 +59,7 @@ function FlowPanel({ masked, heading }: { masked: boolean; heading: string }) {
             y={y - 62 - 26 * (f.to === 'sink' ? 1.5 : f.to === 'field' ? 1.15 : 0.8)}
             textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 11.5, fontWeight: 700 }}
             fill={f.to === 'notes' ? COLORS.orange : f.to === 'field' ? COLORS.green : 'var(--ink-faint)'}>
-            {f.to === 'notes' ? `notes ${fmtPct(f.share, 0)}` : f.to === 'field' ? (masked ? 'field re-derived' : `field ${fmtPct(f.share, 1)}`) : `sink ${fmtPct(f.share, 0)}`}
+            {f.to === 'notes' ? `notes ${fmtPct(f.share, 0)}` : f.to === 'field' ? (masked ? 'reworked from the fact' : `fact ${fmtPct(f.share, 1)}`) : `start ${fmtPct(f.share, 0)}`}
           </text>
         </g>
       ))}
@@ -88,11 +88,11 @@ function FlowPanel({ masked, heading }: { masked: boolean; heading: string }) {
 
       <g transform={`translate(24,${y + 64})`}>
         <text style={{ fontFamily: 'var(--sans)', fontSize: 12 }} fill="var(--ink-soft)">
-          field-only edit, no chain-of-thought:&nbsp;&nbsp;P(safe decision) =
+          changed the fact only, no step-by-step thinking:&nbsp;&nbsp;chance of a safe decision =
         </text>
         <text x={392} style={{ fontFamily: 'var(--sans)', fontSize: 15, fontWeight: 700 }}
           fill={pSafe > 0.5 ? COLORS.green : COLORS.red}>
-          {pSafe.toFixed(2)} {pSafe > 0.5 ? '✓ follows the fresh field' : '✗ follows the stale notes'}
+          {pSafe.toFixed(2)} {pSafe > 0.5 ? '✓ follows the fresh fact' : '✗ follows the old notes'}
         </text>
       </g>
     </ChartSvg>
@@ -102,9 +102,9 @@ function FlowPanel({ masked, heading }: { masked: boolean; heading: string }) {
 function AttentionFlow() {
   return (
     <div style={{ display: 'grid', gap: 6 }}>
-      <FlowPanel masked={false} heading="① attention as-is — the decision reads the stale notes" />
+      <FlowPanel masked={false} heading="① normal: the answer is pulled from the stale notes" />
       <div style={{ borderTop: '1px dashed var(--rule-strong)' }} />
-      <FlowPanel masked heading="② mask the decision’s edges to the stale notes — it flips" />
+      <FlowPanel masked heading="② block the look-back to those notes — the answer flips" />
     </div>
   )
 }
@@ -115,27 +115,30 @@ export function Attention() {
   return (
     <Section meta={META}>
       <P>
-        Patching shows <em>where</em> the conclusion lives; attention shows <em>how it is read</em>.
-        Measure where the decision token&rsquo;s attention mass actually goes in the gated-decision
-        prompt: about {fmtPct(shares.downstream, 0)} lands on the stale downstream region —
-        disproportionately on aggregator and delimiter tokens like end-of-rule punctuation and the{' '}
-        <code>TASK</code> header — about {fmtPct(shares.sink, 0)} on the attention sink, and{' '}
-        <strong>about {fmtPct(shares.field, 1)} on the field itself</strong>. The freshly edited
-        field is barely consulted; the decision flows through the notes.
+        Earlier we found <em>where</em> the model&rsquo;s conclusion is stored. Here we watch{' '}
+        <em>how it reads that conclusion back</em>. As a model writes its answer, it looks back at
+        earlier spots in the text and pulls information from them &mdash; researchers call this
+        &ldquo;paying attention.&rdquo; So we measured where the model actually looks when it makes
+        the decision. About {fmtPct(shares.downstream, 0)} of its look-back lands on the spots where
+        it took notes earlier &mdash; especially on small marker positions like the punctuation that
+        ends a rule and the <code>TASK</code> header. About {fmtPct(shares.sink, 0)} lands on a
+        catch-all starting position, and{' '}
+        <strong>only about {fmtPct(shares.field, 1)} on the fact we actually changed</strong>. The
+        model barely glances at the fresh fact; its answer comes from the old notes.
       </P>
 
       <Figure
-        label="Attention knockout."
-        title="The decision reads the notes — cut the edges and it stops"
-        sub="Top: attention as-is. Bottom: the decision token's attention to the stale downstream positions is masked."
+        label="Blocking the look-back."
+        title="The answer comes from the notes — block the look-back and it stops"
+        sub="Top: how the model normally looks back. Bottom: we block its look-back to the old note positions."
         caption={
           <>
-            With attention intact, a field-only edit is ignored (P(safe) ={' '}
-            {ko.non_reasoning.baseline_P_safe.toFixed(2)}) — the decision keeps reading the stale
-            notes. Masking exactly those attention edges flips it (P(safe) ={' '}
-            {ko.non_reasoning.masked_P_safe.toFixed(2)}): starved of its notes, the model falls
-            back to re-deriving from the rule and the fresh field. Arc widths are proportional to
-            measured attention mass. <PaperConst src={ko.source} />
+            Normally, when we change only the fact, the model ignores the change (the chance of a
+            safe decision is {ko.non_reasoning.baseline_P_safe.toFixed(2)}) &mdash; it keeps reading
+            its old notes. Block just that look-back and the answer flips (the chance of a safe
+            decision rises to {ko.non_reasoning.masked_P_safe.toFixed(2)}): with no notes to lean
+            on, the model works the answer out again from the rule and the fresh fact. The thicker
+            the arc, the more the model looks there. <PaperConst src={ko.source} />
           </>
         }
       >
@@ -143,21 +146,23 @@ export function Attention() {
       </Figure>
 
       <P>
-        The same intervention explains the reasoning fast-path from §6: under chain-of-thought the
-        chain itself is the corrective reader — it re-reads the fresh field and re-derives the
-        conclusion (P(safe) {ko.reasoning.baseline_P_safe.toFixed(2)} with field-only editing), and
-        masking the <em>chain&rsquo;s</em> attention instead drops safety to{' '}
-        {ko.reasoning.masked_P_safe.toFixed(2)}. Whether an in-place edit works is exactly the
-        question of <em>which reader gets to the answer first</em>: the memoized note or a live
-        re-derivation.
+        This also explains the shortcut we saw in §6 when the model thinks step by step. In that
+        case, the step-by-step thinking does the corrective work: it re-reads the fresh fact and
+        works out the answer again (the chance of a safe decision is{' '}
+        {ko.reasoning.baseline_P_safe.toFixed(2)} when we change only the fact). And if we instead
+        block the <em>thinking</em> from looking back, safety drops to{' '}
+        {ko.reasoning.masked_P_safe.toFixed(2)}. So whether changing a fact in place actually works
+        comes down to one race: <em>which answer arrives first</em> &mdash; the one copied from the
+        old notes, or the one worked out fresh.
       </P>
 
       <Aside>
-        <b>Connection to interpretability.</b> Aggregation onto delimiter tokens is the same
-        structural motif reported in Anthropic&rsquo;s circuit work on forward planning (plans
-        stored on line-break tokens). Here the stored object is a backward-looking,
-        field-conditioned <b>conclusion</b> — and because it lives in the KV cache, an inference
-        system can read <em>and write</em> it directly.
+        <b>A link to other research.</b> The model storing information on small marker positions
+        is the same pattern Anthropic found when studying how models plan ahead (they stash plans
+        on line-break positions). The difference here: what gets stored is a finished{' '}
+        <b>conclusion</b> that depends on the fact. And because it sits in the model&rsquo;s
+        notebook of notes &mdash; the running scratchpad it keeps while reading &mdash; a system can
+        read <em>and rewrite</em> it directly.
       </Aside>
     </Section>
   )

@@ -6,14 +6,14 @@ import { SegmentedPrompt } from '../components/diagrams/SegmentedPrompt'
 import prompts from '../data/prompts.json'
 import editing from '../data/editing.json'
 
-const META = { id: 'puzzle', num: '6', title: 'Why it works: a surgical edit the model ignores' }
+const META = { id: 'puzzle', num: '6', title: 'Why it works: the edit the model ignores' }
 
 type Treatment = 'stale_full' | 'field_only' | 'oracle_new'
 
 const TREATMENTS: { key: Treatment; label: string; desc: string }[] = [
-  { key: 'stale_full', label: 'reuse the stale cache', desc: 'keep every cached key/value from the old prefill' },
-  { key: 'field_only', label: 'refresh only the field’s KV', desc: 'recompute the 2 field tokens (~0.2% of the cache), reuse the rest' },
-  { key: 'oracle_new', label: 'full recompute (oracle)', desc: 'clean prefill of the whole context with the new value' },
+  { key: 'stale_full', label: 'reuse the stale cache', desc: 'keep all the old notes the model made while reading the original prompt' },
+  { key: 'field_only', label: 'refresh only the field’s notes', desc: 'rewrite just the two words of the changed field (about 0.2% of the notes), keep the rest' },
+  { key: 'oracle_new', label: 'reread everything', desc: 'have the model reread the whole prompt with the new value — the ideal answer to compare against' },
 ]
 
 export function Puzzle() {
@@ -27,20 +27,23 @@ export function Puzzle() {
   return (
     <Section meta={META}>
       <Aside>
-        <b>Part II — why it works.</b> Everything above (§1–§5) rested on one claim: a precompiled
-        skill stays correct when you move it, and a stale cache stays correct when you amend it with
-        an erratum. The rest of the page earns that claim. It starts from the obvious optimization
-        that <em>fails</em>.
+        <b>Part II — why it works.</b> First, a quick idea. As a model reads a prompt, it writes
+        itself a private notebook of working notes — one note per word. (Researchers call this
+        notebook the &ldquo;KV cache.&rdquo;) Saving the notebook lets the model skip rereading the
+        same text later. Everything in Part I rested on one claim: you can move or amend those notes
+        and the model still behaves correctly. The rest of the page earns that claim — starting with
+        the obvious shortcut that <em>fails</em>.
       </Aside>
       <P>
-        Here is the paper&rsquo;s running example, verbatim from the released harness: a
-        customer-support agent with a policy document, a tool catalog, and one{' '}
-        <strong>mutable field</strong> —{' '}
-        <code>account_role: verified_admin</code>. A binding rule later in the prompt says a{' '}
-        <code>suspended_user</code> must never get write actions; the correct next tool call
-        flips from a refund lookup to <code>escalate(queue="trust", …)</code> the moment the role
-        changes. Now suppose the role <em>does</em> change mid-session, and the ~1k-token prefill
-        is sitting in cache.
+        Here is the example we&rsquo;ll use throughout, taken straight from our test code. A
+        customer-support assistant has a policy document, a list of tools it can call, and one{' '}
+        <strong>changeable detail</strong> — the user&rsquo;s role,{' '}
+        <code>account_role: verified_admin</code>. A rule further down says a{' '}
+        <code>suspended_user</code> must never be allowed to make changes. So the moment the role
+        switches, the right next action flips: instead of looking up a refund, the assistant should
+        call <code>escalate(queue="trust", …)</code>. Now imagine the role really does change
+        partway through the session — and the model&rsquo;s notebook of notes (about a thousand
+        words&rsquo; worth) is already saved.
       </P>
 
       <Figure
@@ -48,10 +51,10 @@ export function Puzzle() {
         label="The test case."
         caption={
           <>
-            The verbatim gated-decision prompt (scenario <code>account_role</code>, regenerated
-            from the released harness). The <span className="hl-field">mutable field</span> and
-            the <span className="hl-rule">gating rule</span> are highlighted; thirty-eight neutral
-            filler rules are collapsed.
+            The actual prompt we test (scenario <code>account_role</code>, regenerated from our test
+            code). The <span className="hl-field">changeable detail</span> and the{' '}
+            <span className="hl-rule">rule that depends on it</span> are highlighted; thirty-eight
+            other harmless rules are collapsed to save space.
           </>
         }
       >
@@ -59,22 +62,22 @@ export function Puzzle() {
       </Figure>
 
       <P>
-        The cache <em>before</em> the field is provably reusable: when the field value changes,
-        the keys and values of every earlier token deviate by exactly <strong>0.0</strong> — by
-        construction of causal attention, those tokens never saw the field. So one might hope to
-        surgically refresh only the field&rsquo;s own keys and values — two tokens, about{' '}
-        <strong>0.2%</strong> of the cache — and keep everything else. Try it:
+        The notes taken <em>before</em> the changeable detail are guaranteed safe to keep. A model
+        reads strictly left to right, so any word written before the detail couldn&rsquo;t have seen
+        it — when the detail changes, those earlier notes change by exactly <strong>0.0</strong>. So
+        here&rsquo;s the tempting shortcut: just rewrite the notes for the two words of the detail
+        itself — about <strong>0.2%</strong> of the notebook — and keep everything else. Try it:
       </P>
 
       <Figure
         narrow
-        label="Recorded behavior (Qwen3-8B, reasoning mode)."
+        label="What actually happened (Qwen3-8B, thinking mode)."
         caption={
           <>
-            Real recorded outcomes from <code>thinking_qwen3_8b_think.json</code>: the world
-            changed to <code>account_role: suspended_user</code>; each treatment decides the next
-            tool call. The recorded answer head is shown verbatim (the harness stores the tool
-            call and thinking-token count, not full chains).
+            Real results from our recorded runs (<code>thinking_qwen3_8b_think.json</code>): the
+            role changed to <code>account_role: suspended_user</code>, and each treatment decides
+            the next action. The start of the model&rsquo;s own answer is shown word for word (we
+            saved the action it chose and how much it thought, not its full reasoning).
           </>
         }
       >
@@ -85,9 +88,9 @@ export function Puzzle() {
               value={treatment}
               onChange={setTreatment}
               labels={{
-                stale_full: 'reuse stale cache',
-                field_only: 'refresh field KV only',
-                oracle_new: 'full recompute',
+                stale_full: 'reuse old notes',
+                field_only: 'refresh only the field',
+                oracle_new: 'reread everything',
               }}
             />
           </ControlGroup>
@@ -129,24 +132,26 @@ export function Puzzle() {
 
         {treatment === 'field_only' && (
           <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 12, lineHeight: 1.6 }}>
-            Under explicit reasoning the in-place edit <em>can</em> recover the decision — but look
-            at the cost: <b>{rec.field_only.think_tokens}</b> thinking tokens vs.{' '}
-            <b>{rec.oracle_new.think_tokens}</b> for the oracle. The recomputation didn&rsquo;t
-            disappear; it moved into the chain-of-thought, which re-reads the refreshed field and
-            re-derives the conclusion. <b>Without reasoning, the same edit recovers nothing</b> —
-            P(correct) ={' '}
+            When the model is allowed to think out loud, the patched notebook <em>can</em> reach
+            the right answer — but look at the price: <b>{rec.field_only.think_tokens}</b> words of
+            thinking, versus <b>{rec.oracle_new.think_tokens}</b> when it simply rereads. The work we
+            tried to save didn&rsquo;t vanish; it just moved into the thinking, where the model
+            notices the refreshed detail and works out the conclusion again. <b>And when it
+            isn&rsquo;t allowed to think out loud, the same patch recovers nothing</b> — it lands the
+            right answer only{' '}
             {(editing.baseline.methods.find((m: any) => m.method === 'in_place')!.P_correct as number).toFixed(2)}{' '}
-            across the editing benchmark (§3). The model simply acts on the old value, as if the
-            edit never happened.
+            of the time across our test set (§3). The model just acts on the old value, as if nothing
+            had changed.
           </div>
         )}
       </Figure>
 
       <Aside>
-        <b>The puzzle.</b> The field&rsquo;s new value is sitting right there in the cache — every
-        key and every value of those two tokens is fresh — and the prefix before it never depended
-        on the field at all. Yet the decision reverts to the <em>old</em> value. Something else in
-        the cache must be carrying the old conclusion. The next section finds it, causally.
+        <b>The puzzle.</b> The new value is right there in the notebook — the notes for those two
+        words are completely up to date — and nothing written before them ever depended on the old
+        value. Yet the model still decides as if the value had never changed. Something else in the
+        notebook must be quietly carrying the old conclusion. The next section tracks down exactly
+        what.
       </Aside>
     </Section>
   )

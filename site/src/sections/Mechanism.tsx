@@ -8,7 +8,7 @@ import { ChartSvg, COLORS, Legend } from '../components/charts/core'
 import { fmt, fmtPct } from '../lib/format'
 import mechanism from '../data/mechanism.json'
 
-const META = { id: 'mechanism', num: '7', title: 'Models take notes at prefill' }
+const META = { id: 'mechanism', num: '7', title: 'Models take notes while reading' }
 
 function CachePatchLab() {
   const models = mechanism.models as any[]
@@ -106,11 +106,11 @@ function CachePatchLab() {
       </ChartSvg>
 
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', lineHeight: 1.6, marginTop: 4 }}>
-        On {m.label}: refreshing the field&rsquo;s own KV recovers{' '}
-        <b>{fmt(m.field_only.mean, 3)}</b> of the decision&rsquo;s flip — essentially nothing —
-        while keeping the field <em>stale</em> and recomputing the downstream recovers{' '}
-        <b>{fmt(m.full_downstream.mean, 3)}</b>. The fresh field is ignored; the conclusion lives in
-        the downstream notes. (stale and oracle are 0 and 1 by definition.)
+        On {m.label}: updating the fact alone moves the answer by{' '}
+        <b>{fmt(m.field_only.mean, 3)}</b> — essentially nothing —
+        while leaving the fact <em>untouched</em> and refreshing the notes taken after it moves it by{' '}
+        <b>{fmt(m.full_downstream.mean, 3)}</b>. The fresh fact is ignored; the answer was already
+        written into the notes. (Doing nothing scores 0; rereading the whole new prompt scores 1.)
       </div>
     </div>
   )
@@ -129,9 +129,9 @@ function FieldVsDownstreamStrip() {
         marker: m.full_downstream.mean,
       }))}
       domain={[-0.1, 1.1]}
-      xLabel="decision recovery"
-      refX={[{ x: 0, label: 'stale' }, { x: 1, label: 'oracle' }]}
-      markerLabel="full-downstream recovery"
+      xLabel="how much the answer moved"
+      refX={[{ x: 0, label: 'no change' }, { x: 1, label: 'fully' }]}
+      markerLabel="when the after-the-fact notes are refreshed"
       labelWidth={170}
     />
   )
@@ -161,16 +161,16 @@ function SuffixConcentration() {
       <LineChart
         series={[
           {
-            id: 'suffix', label: 'patch downstream tokens (ranked by effect)', color: COLORS.orange,
+            id: 'suffix', label: 'refresh notes after the fact (most important first)', color: COLORS.orange,
             points: (m.cum_suffix as any[]).map((p) => ({ x: p.frac, y: p.mean, lo: p.ci?.[0], hi: p.ci?.[1] })), band: true,
           },
           {
-            id: 'prefix', label: 'patch prefix tokens (control)', color: COLORS.gray, dash: true,
+            id: 'prefix', label: 'refresh notes before the fact (comparison)', color: COLORS.gray, dash: true,
             points: (m.cum_prefix as any[]).map((p) => ({ x: p.frac, y: p.mean, lo: p.ci?.[0], hi: p.ci?.[1] })),
           },
         ]}
-        xLabel="fraction of tokens patched with fresh KV"
-        yLabel="decision recovery"
+        xLabel="share of notes refreshed"
+        yLabel="how much the answer moved"
         yDomain={[-0.08, 1.08]}
         xFmt={(v) => fmtPct(v, 0)}
         refLinesY={[{ y: 1, label: 'oracle' }, { y: 0, label: 'stale' }]}
@@ -178,13 +178,14 @@ function SuffixConcentration() {
         height={300}
       />
       <Legend items={[
-        { label: 'downstream (suffix) tokens', color: COLORS.orange },
-        { label: 'prefix tokens — control', color: COLORS.gray, dash: true },
+        { label: 'notes after the fact', color: COLORS.orange },
+        { label: 'notes before the fact — comparison', color: COLORS.gray, dash: true },
       ]} />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
-        At {fmtPct(frac, 0)} patched: downstream recovers <b>{fmt(nearest.mean, 2)}</b> of the decision; the same
-        fraction of prefix tokens recovers <b>{fmt(nearestPre.mean, 2)}</b>. The effect lives after the field,
-        spread over many tokens.
+        With {fmtPct(frac, 0)} of the notes refreshed: refreshing notes taken after the fact moves the answer by{' '}
+        <b>{fmt(nearest.mean, 2)}</b>; refreshing the same share of notes taken before it moves it by{' '}
+        <b>{fmt(nearestPre.mean, 2)}</b>. The answer lives in the notes that come after the fact,
+        spread across many of them.
       </div>
     </div>
   )
@@ -198,8 +199,8 @@ function DoseResponse() {
         label: d.label, value: d.mean, lo: d.ci?.[0], hi: d.ci?.[1], color: COLORS.blue,
       }))}
       domain={[-0.05, 1.05]}
-      xLabel="field-only recovery (Qwen3-8B)"
-      refX={[{ x: 1, label: 'oracle' }]}
+      xLabel="how much fixing the fact alone moves the answer (Qwen3-8B)"
+      refX={[{ x: 1, label: 'fully' }]}
       labelWidth={190}
     />
   )
@@ -216,7 +217,7 @@ function WordingAblation() {
         color: x.key === 'none' ? COLORS.gray : x.key === 'conclusion' ? COLORS.red : COLORS.green,
       }))}
       domain={[0, 1.05]}
-      xLabel={`P(safe decision) — corrected value in context + appended wording (Qwen3-8B, n=${mechanism.wording_n})`}
+      xLabel={`chance of the safe answer — corrected fact in the prompt, plus one added line (Qwen3-8B, n=${mechanism.wording_n})`}
       labelWidth={215}
     />
   )
@@ -227,23 +228,28 @@ export function Mechanism() {
   return (
     <Section meta={META}>
       <P>
-        The method is <strong>causal patching</strong> on the KV cache itself: prefill the context
-        twice (old and new field value), then build hybrid caches that mix entries from the two
-        worlds and read which decision comes out. We report <em>decision recovery</em> — the
-        fraction of the oracle&rsquo;s decision flip a cache state reproduces (0 = behaves stale,
-        1 = behaves like a clean prefill). Try the four cache states the paper compares:
+        Here is the surprising part. When a model reads a prompt, it keeps a running set of notes —
+        a kind of scratchpad it builds up as it goes (researchers call it the &ldquo;KV cache&rdquo;).
+        You might assume those notes just hold the words it read. They hold more than that. At certain
+        points after an important fact — think of the moment after a sentence ends or a section
+        breaks, little summary spots where it pauses to take stock — the model has already worked out
+        the answer and written that conclusion into its notes. Later, when it replies, it reads back
+        those notes, not the original fact. So if you correct the fact but leave the notes alone,
+        nothing changes: the old answer is sitting elsewhere. We tested this by surgically swapping
+        pieces of the notes and watching the answer follow. Try the four versions below — each one
+        keeps some parts old and refreshes others:
       </P>
 
       <Figure
-        label="Probe 1 — locality."
-        title="Patch the cache, read the decision"
-        sub="Four cache states compared side by side; pick a model. Recovery numbers are the released causal-patching records."
+        label="Test 1 — where the answer lives."
+        title="Swap pieces of the notes, watch the answer"
+        sub="Four versions compared side by side; pick a model. The numbers are from our released measurements."
         caption={
           <>
-            Refreshing the field&rsquo;s own KV recovers essentially none of the decision
-            (−0.028…0.14 across eleven models); recomputing the downstream while keeping the field
-            <em> stale</em> recovers it fully. The field is read indirectly — its causal share of
-            the decision is under 1%.
+            Refreshing the model&rsquo;s notes about the fact itself changes the answer almost not at
+            all (between −0.028 and 0.14 across eleven models); leaving the fact untouched and
+            refreshing the notes taken after it changes the answer completely. The fact is read only
+            indirectly — it drives under 1% of the decision.
           </>
         }
       >
@@ -252,30 +258,31 @@ export function Mechanism() {
 
       <Figure
         narrow
-        label="All models."
+        label="Every model we tested."
         caption={
           <>
-            Field-only recovery (orange bars, with bootstrap CIs) vs. full-downstream recovery
-            (orange diamonds at ≈1.0) for every model in the study — four architecture families,
-            0.6B to 32B. The dissociation is universal.
+            Refreshing the fact alone (orange bars, with error ranges) versus refreshing the notes
+            after it (orange diamonds, near 1.0) for every model in the study — four families of
+            models, from small to large. The pattern holds across all of them.
           </>
         }
       >
         <FieldVsDownstreamStrip />
       </Figure>
 
-      <H3>Probe 2 — the effect is suffix-concentrated</H3>
+      <H3>Test 2 — the answer is spread across the notes after the fact</H3>
       <P>
-        Where downstream does the old conclusion live? Patch fresh KV into an increasing fraction
-        of tokens, ranked by causal effect, and watch recovery accrue. Drag the scrubber:
+        Which notes hold the old answer? We refreshed a growing share of them — starting with the
+        ones that matter most — and watched how much the answer moved. Drag the slider:
       </P>
       <Figure
-        label="Probe 2 — suffix concentration."
+        label="Test 2 — the answer sits after the fact."
         caption={
           <>
-            Recovery accrues only as many post-field tokens are patched and saturates near 100% of
-            the suffix; patching the same fraction of <em>prefix</em> tokens (control) does
-            nothing. On Qwen3-8B, patching the top 2% of downstream tokens already recovers{' '}
+            The answer moves only as we refresh notes taken after the fact, and is fully recovered by
+            the time we have refreshed almost all of them; refreshing the same share of notes taken
+            before the fact (a comparison case) does nothing. On Qwen3-8B, refreshing just the top 2%
+            of the after-the-fact notes already moves the answer by{' '}
             {fmt((q8.cum_suffix as any[])[0].mean, 2)}.
           </>
         }
@@ -283,50 +290,53 @@ export function Mechanism() {
         <SuffixConcentration />
       </Figure>
 
-      <H3>Probe 3 — the conclusion is written down, not just decodable</H3>
+      <H3>Test 3 — the answer is actually written down, not just inferable</H3>
       <P>
-        A linear probe finds the field-conditioned conclusion decodable from downstream
-        tokens&rsquo; residual streams already at prefill time — the model has computed and
-        recorded the answer before any decoding starts (per-layer curves in §12, where we also pin
-        down <em>when</em> the note is written). And the dose–response below shows the memoization
-        follows the field&rsquo;s position: the later the field appears, the fewer tokens sit
-        after it to memoize a conclusion, and the more an in-place edit recovers.
+        We can read the model&rsquo;s notes directly. A simple reader trained on them recovers the
+        answer from the after-the-fact notes the moment the model finishes reading — before it has
+        said a single word. So the answer is genuinely recorded, not figured out on the fly (the
+        full breakdown, including exactly <em>when</em> the note gets written, is in §12). The chart
+        below shows the catch depends on <em>where</em> the fact sits: the later it appears, the
+        fewer notes come after it to capture an answer — so correcting the fact in place works
+        better.
       </P>
       <Figure
         narrow
-        label="Probe 4 — dose–response by field position."
+        label="Test 4 — it depends on where the fact sits."
         caption={
           <>
-            Field-only recovery as the field moves later in the context (Qwen3-8B). Hoisted to the
-            end — the de-facto industry workaround — nothing sits after the field, no conclusion
-            is memoized, and the in-place edit works. The workaround is a special case of the
-            mechanism.
+            How much a fix to the fact alone moves the answer, as the fact appears later in the
+            prompt (Qwen3-8B). Move it all the way to the end — the common practical workaround —
+            and nothing comes after it, no answer gets recorded, and editing it in place just works.
+            That popular workaround turns out to be a special case of what is going on here.
           </>
         }
       >
         <DoseResponse />
       </Figure>
 
-      <H3>What the note contains</H3>
+      <H3>What the note actually holds</H3>
       <P>
-        If the note were a verbatim copy of the field, wording appended after it would be inert.
-        The ablation isolates pure wording: every variant runs on a <em>clean</em> context that
-        already contains the corrected value, plus one appended line. Restating the value or
-        tagging an update changes nothing — but aggressively telling the model that its{' '}
+        If the note were just a copy of the fact, adding a line of text afterward would do nothing.
+        So we tested exactly that. Each version starts from a clean prompt that already has the
+        corrected fact, then adds one line at the end. Restating the value, or labeling it as an
+        update, changes nothing. But bluntly telling the model that its{' '}
         <em>&ldquo;earlier conclusion is void — re-evaluate from scratch&rdquo;</em> actively
-        hurts:
+        backfires:
       </P>
       <Figure
         narrow
-        label="Wording ablation."
+        label="Trying different wording."
         caption={
           <>
-            P(safe) with the corrected value in context plus an appended line (Qwen3-8B). Nothing
-            appended, bare value, and tagged update sit at 1.0; explicit override is statistically
-            indistinguishable; the confrontational re-evaluate phrasing drops to{' '}
+            Chance of the safe answer, with the corrected fact in the prompt plus one added line
+            (Qwen3-8B). Adding nothing, restating the value, and labeling it an update all sit at
+            1.0; a plain explicit override is no different; the confrontational
+            &ldquo;re-evaluate&rdquo; phrasing drops to{' '}
             {fmt((mechanism.wording as any[]).find((x) => x.key === 'conclusion')!.P_safe, 2)}.
-            The note behaves like a <b>committed conclusion</b>: a late, salient correction can
-            overwrite it, but instructions that attack it destabilize the decision.
+            The note behaves like an <b>answer the model has already settled on</b>: a clear,
+            late correction can overwrite it, but trying to argue it down only throws the answer
+            off balance.
           </>
         }
       >
@@ -334,12 +344,13 @@ export function Mechanism() {
       </Figure>
 
       <Aside>
-        <b>Naming it.</b> At prefill the model computes the field-conditioned conclusion and
-        writes it onto downstream aggregator tokens; at decode the decision reads those notes, not
-        the field. The paper names this <b>attention-mediated memoized inference</b>. This is the
-        single fact behind everything in Part I — composing (§2) reuses the notes, editing (§3)
-        amends them — and the keystone (§9) confirms they are one object. For the deeper evidence,
-        §12–§13 stress-test the account down to the level of individual heads and features.
+        <b>The one idea.</b> While the model reads, it works out the answer to the fact and writes
+        that answer into its notes — at summary spots that come after the fact. When it later
+        replies, it reads the answer from those notes, not from the fact itself. The paper calls
+        this <b>attention-mediated memoized inference</b>. It is the single idea behind everything
+        in Part I — reusing notes lets you combine them (§2), and amending notes lets you edit them
+        (§3) — and §9 confirms they are all the same thing. For the deeper evidence, §12–§13 take
+        the explanation apart down to individual pieces of the model.
       </Aside>
     </Section>
   )

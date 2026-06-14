@@ -6,7 +6,7 @@ import { COLORS, Legend } from '../components/charts/core'
 import { fmt, fmtX } from '../lib/format'
 import keystone from '../data/keystone.json'
 
-const META = { id: 'keystone', num: '9', title: 'One substrate: edit and compose are the same object' }
+const META = { id: 'keystone', num: '9', title: 'Editing and reuse are the same trick' }
 
 const METHOD_COLORS: Record<string, string> = {
   in_place: COLORS.orange,
@@ -30,8 +30,8 @@ function KeystoneScatter() {
     <div>
       <DiagonalScatter
         points={points}
-        xLabel="edit recovery in a RECOMPUTED cache"
-        yLabel="edit recovery in a COMPOSED cache"
+        xLabel="how well the edit took when the notes were made fresh"
+        yLabel="how well the edit took inside reused notes"
       />
       <Legend
         items={[
@@ -42,7 +42,7 @@ function KeystoneScatter() {
         ]}
       />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 4 }}>
-        circles = Llama-3.1-8B (n=8) · squares = Gemma-2-9B; values are recovery ratios and may exceed 1
+        circles = Llama-3.1-8B (n=8) · squares = Gemma-2-9B; values show how much of the edit landed, and can edge past 1
       </div>
     </div>
   )
@@ -62,14 +62,14 @@ function UnifiedAgent() {
           note: `· ${fmtX(m.speedup, 1)}`,
         }))}
         domain={[0.5, 1.05]}
-        xLabel="unified-agent vs. full-recompute decision agreement (note: cumulative-TTFT speedup)"
+        xLabel="how often the reuse-and-edit agent makes the same call as redoing it all (annotations: speedup)"
         refX={[{ x: 1, label: 'identical' }]}
         labelWidth={185}
       />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 6 }}>
         10 domains × 10 instances = 300 decisions per model, except the two Gemma models (40
-        instances, 120 decisions). Speedup scales with policy length × turns; the maximum observed
-        here is {fmtX(Math.max(...ag.map((m: any) => m.speedup)), 1)}.
+        instances, 120 decisions). The longer the instructions and the more turns, the bigger the
+        speedup; the most we saw here is {fmtX(Math.max(...ag.map((m: any) => m.speedup)), 1)}.
       </div>
     </div>
   )
@@ -79,46 +79,48 @@ export function Keystone() {
   return (
     <Section meta={META}>
       <P>
-        Editing (§3) and composing (§2) both rest on the same mechanism (§7) — but are they really
-        two operations on <em>one object</em>? The keystone test: transplant a skill whose body
-        contains a mutable field, then <strong>edit the field inside the transplant</strong>. If
-        the notes a transplant pastes in are the same notes an edit amends, every editing method
-        should behave identically in a composed cache and a normally-recomputed one.
+        As the model reads, it builds up a private notebook of notes about what it has seen. Part I
+        showed we can paste a ready-made skill straight into that notebook and reuse it. Part II
+        showed we can edit a fact already written in the notebook. Here is the payoff that ties them
+        together: both abilities act on the <em>same notes</em>. To prove it, we paste in a skill
+        that contains a fact, then <strong>change that fact right inside the pasted-in skill</strong>.
+        If reuse and editing really touch one notebook, then editing a pasted-in fact should work
+        exactly as well as editing a fact the model wrote itself.
       </P>
 
       <Figure
         narrow
-        label="The keystone."
-        title="Editing inside a transplanted skill — points on the diagonal"
+        label="The payoff."
+        title="Editing a fact inside a pasted-in skill — every point lands on the line"
         caption={
           <>
-            Each point is one editing method applied inside a transplanted skill (y) vs. inside a
-            recomputed context (x). The editing mechanism reproduces verbatim — in-place weak,
-            selective recovers with K, erratum strongest — and <b>composed ≈ recomputed for every
-            method</b>. One substrate.
+            Each point compares one way of editing a fact inside a pasted-in skill (up the side)
+            against editing that same fact the model wrote itself (along the bottom). The editing
+            methods rank the same in both cases, and <b>pasted-in lines up with from-scratch every
+            time</b>. Reuse and editing really are touching the same notes.
           </>
         }
       >
         <KeystoneScatter />
       </Figure>
 
-      <H3>Both operations, live, across thirteen models</H3>
+      <H3>Both abilities at once, live, across thirteen models</H3>
       <P>
-        The paper embodies the claim in a single agent loop: a long policy is <em>composed</em>{' '}
-        once and never re-prefilled; as the world changes across turns, mutable state is{' '}
-        <em>edited</em> by appended errata; each turn prefills only the delta. Against a
-        reprefill-every-turn baseline:
+        We put both abilities to work in one running agent. It reads a long set of instructions{' '}
+        <em>once</em> and reuses those notes for the rest of the task. As the situation changes from
+        turn to turn, it <em>edits</em> the relevant facts in place instead of re-reading everything.
+        We compare it against the slow way — re-reading the whole thing every single turn:
       </P>
 
       <Figure
         narrow
-        label="The unified edit+compose agent."
+        label="One agent that reuses and edits."
         caption={
           <>
-            Decision agreement with full recompute (bars, bootstrap CIs) and cumulative
-            time-to-first-token speedup (annotations) across thirteen models spanning 0.6B–70B,
-            dense, MoE, FP8 and 4-bit. Editing and composing operate together, losslessly and
-            faster, on one cache.
+            How often the agent reaches the same decision as the slow re-read-everything way (bars,
+            with confidence ranges), plus how much faster it responds (annotations), across thirteen
+            models from 0.6B to 70B of all kinds. Reusing and editing work together, just as
+            correctly and a lot faster, on one notebook.
           </>
         }
       >
@@ -126,10 +128,10 @@ export function Keystone() {
       </Figure>
 
       <Aside>
-        <b>Reading the agreement numbers.</b> Agreement is measured against full recompute on
-        gated decisions that sit near the action boundary, so sub-percent logit differences can
-        flip a discrete choice — the same boundary noise quantified in §10&rsquo;s 28-turn stress
-        test, which shows it does <em>not</em> compound with trajectory length.
+        <b>Why agreement isn&rsquo;t a perfect 100%.</b> We score the agent on close-call decisions,
+        right at the line where a yes could just as easily be a no. On those, a tiny rounding-sized
+        difference can tip the choice the other way. Section 10&rsquo;s 28-turn stress test measures
+        exactly this wobble and shows it does <em>not</em> pile up as the task runs longer.
       </Aside>
     </Section>
   )

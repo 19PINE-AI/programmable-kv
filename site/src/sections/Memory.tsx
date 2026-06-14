@@ -10,16 +10,16 @@ import { fmt, fmtX } from '../lib/format'
 import memory from '../data/memory.json'
 import constants from '../data/constants.json'
 
-const META = { id: 'memory', num: '4', title: 'Application: editable and composable user memory' }
+const META = { id: 'memory', num: '4', title: 'A living memory' }
 
 /* ---------------- placement dilemma schematic ---------------- */
 
 function PlacementDiagram() {
   const W = 720
   const layouts = [
-    { name: 'memory at the FRONT', cells: ['sys', 'MEMORY', 'trajectory…', 'query'], memIdx: 1, note: 'trajectory memoizes memory-conditioned conclusions → a change reprefills everything after' },
-    { name: 'memory at the END', cells: ['sys', 'trajectory…', 'MEMORY', 'query'], memIdx: 2, note: 'memory’s KV depends on the trajectory → re-attended every turn' },
-    { name: 'this paper: compose + edit', cells: ['sys', 'trajectory…', 'MEMORY ⟲', 'query'], memIdx: 2, note: 'precompiled once, RoPE-repositioned each turn, 1 seam token repaired, edited in place', win: true },
+    { name: 'memory at the START', cells: ['sys', 'MEMORY', 'conversation…', 'query'], memIdx: 1, note: 'the rest of the chat bakes in what it read from memory → change one fact and everything after must be reread' },
+    { name: 'memory at the END', cells: ['sys', 'conversation…', 'MEMORY', 'query'], memIdx: 2, note: 'memory now depends on the chat before it → it gets reread from scratch every turn' },
+    { name: 'this paper: reuse + edit', cells: ['sys', 'conversation…', 'MEMORY ⟲', 'query'], memIdx: 2, note: 'read once and saved, dropped back in each turn, one boundary note fixed up, edited in place when a fact changes', win: true },
   ]
   return (
     <ChartSvg width={W} height={layouts.length * 64 + 8}>
@@ -75,14 +75,14 @@ function E1Length() {
         ]}
         xTicks={pts.map((_, i) => i)}
         xFmt={(i) => MT_LABEL[pts[Math.round(i)]?.mt] ?? ''}
-        xLabel="memory size"
-        yLabel="decision accuracy (full recompute, CoT)"
+        xLabel="size of memory"
+        yLabel="answer accuracy (rereading everything)"
         yDomain={[0.5, 1.05]}
         height={270}
       />
       <Legend items={[
-        { label: 'memory read EARLY (pre-digested at prefill)', color: COLORS.blue },
-        { label: 'memory read LATE (raw at decode)', color: COLORS.orange },
+        { label: 'memory placed EARLY (model digests it before the chat)', color: COLORS.blue },
+        { label: 'memory placed LATE (model reads it right before answering)', color: COLORS.orange },
       ]} />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
         early−late gap: {pts.map((p) => `${p.gap >= 0 ? '+' : ''}${fmt(p.gap, 2)}`).join(' → ')} as memory grows
@@ -115,20 +115,20 @@ function E2Seam() {
           ...(early ? [{ id: 'early', color: COLORS.blue, dash: true, points: early.doses.map((d: any) => ({ x: d.seam, y: d.dec_agree, lo: d.dec_agree_lo })) }] : []),
         ]}
         xTicks={[0, 1, 2, 4, 8]}
-        xLabel="seam-repair tokens recomputed at the chunk boundary"
-        yLabel="decision agreement vs. full recompute"
+        xLabel="number of words recomputed at the start of the pasted-in memory"
+        yLabel="how often the answer matches rereading everything"
         yDomain={[0.4, 1.02]}
         height={270}
       />
       <Legend items={[
-        { label: 'late placement (decode reads memory directly)', color: COLORS.orange },
-        { label: 'early placement (reads through pre-digested notes)', color: COLORS.blue, dash: true },
+        { label: 'memory placed late (read right before answering)', color: COLORS.orange },
+        { label: 'memory placed early (digested before the chat)', color: COLORS.blue, dash: true },
       ]} />
       {sel.includes('70B') && late && early && (
         <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
-          The cleanest decision-governance test: 70B&rsquo;s decisions genuinely vary, and{' '}
-          <b>late beats early ({fmt(late.doses[2].dec_agree, 2)} vs {fmt(early.doses[2].dec_agree, 2)} at seam 2)</b>{' '}
-          exactly as the mechanism predicts. A single seam token closes most of the boundary gap.
+          This is the clearest test, because the 70B model&rsquo;s answers really do change. And{' '}
+          <b>late placement beats early ({fmt(late.doses[2].dec_agree, 2)} vs {fmt(early.doses[2].dec_agree, 2)} with 2 words fixed up)</b>{' '}
+          exactly as expected. Recomputing a single word at the boundary closes most of the gap.
         </div>
       )}
     </div>
@@ -142,8 +142,8 @@ function E3Heat() {
   const models = Object.keys(by)
   const methods = ['stale', 'in_place', 'erratum', 'recompile_chunk', 'selective@16', 'full_recompute']
   const LBL: Record<string, string> = {
-    stale: 'stale', in_place: 'in-place (1 tok)', erratum: 'erratum',
-    recompile_chunk: 'recompile chunk', 'selective@16': 'selective@16', full_recompute: 'full',
+    stale: 'no edit', in_place: 'edit in place (1 word)', erratum: 'append a correction',
+    recompile_chunk: 'reread memory', 'selective@16': 'reread 16 words', full_recompute: 'reread all',
   }
   return (
     <div>
@@ -152,22 +152,22 @@ function E3Heat() {
         cols={methods.map((m) => LBL[m])}
         value={(r, c) => by[models[r]][methods[c]]?.correct ?? null}
         colorOf={(v) => (v === null ? '#f0eee6' : ramp(v, [74, 138, 92]))}
-        colLabel="P(correct flipped decision) after a mid-session memory edit (CoT)"
+        colLabel="how often the model gives the right answer after a fact changes mid-conversation"
         rowLabelWidth={140}
         tooltip={(r, c) => {
           const cell = by[models[r]][methods[c]]
-          return cell ? `${models[r]} · ${methods[c]}: correct ${fmt(cell.correct, 2)}, ~${cell.recompute_tok} tokens recomputed` : null
+          return cell ? `${models[r]} · ${methods[c]}: correct ${fmt(cell.correct, 2)}, ~${cell.recompute_tok} words recomputed` : null
         }}
       />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
-        The near-free in-place edit (one token recomputed) strengthens with scale:{' '}
+        The nearly-free in-place edit (just one word recomputed) works even better in bigger models:{' '}
         {Object.entries(memory.e3.scale_inplace as any)
           .filter(([k]) => k.includes('Qwen'))
           .map(([k, v]) => `${k.split('/').pop()} ${fmt(v as number, 2)}`)
           .join(' · ')}
-        . Where the chain does not re-read the field (Llama-3.1-8B,{' '}
-        {fmt((memory.e3.scale_inplace as any)['unsloth/Meta-Llama-3.1-8B-Instruct'], 2)}), the
-        append-only erratum is the robust fallback (McNemar p ={' '}
+        . When the model doesn&rsquo;t re-read the changed fact (Llama-3.1-8B,{' '}
+        {fmt((memory.e3.scale_inplace as any)['unsloth/Meta-Llama-3.1-8B-Instruct'], 2)}), simply
+        appending a correction is a reliable fallback (p ={' '}
         {(by['Llama-3.1-8B']?.['_mcnemar_inplace_vs_erratum']?.p ?? 0.031).toFixed(3)}).
       </div>
     </div>
@@ -186,7 +186,7 @@ function Keystone70() {
     <BarsH
       items={items}
       domain={[0, 1.05]}
-      xLabel="P(correct) editing a field INSIDE a transplanted memory chunk — Llama-3.1-70B, direct mode"
+      xLabel="how often the answer is right after editing a fact INSIDE the pasted-in memory — Llama-3.1-70B"
       labelWidth={150}
     />
   )
@@ -213,7 +213,7 @@ function BlockSplit() {
         <ControlGroup label="block boundary">
           <Seg options={['split', 'colocated'] as const} value={split ? 'split' : 'colocated'}
             onChange={(v) => setSplit(v === 'split')} accent="orange"
-            labels={{ split: 'between A and B', colocated: 'past both' }} />
+            labels={{ split: 'between A and B', colocated: 'keep A and B together' }} />
         </ControlGroup>
       </Controls>
 
@@ -224,23 +224,23 @@ function BlockSplit() {
           return (
             <g>
               <text x={20} y={22} style={{ fontFamily: 'var(--sans)', fontSize: 11.5, fontWeight: 600 }} fill="var(--ink-soft)">
-                memory, precompiled as independent blocks:
+                memory, saved as separate blocks:
               </text>
               <rect x={20} y={36} width={bx - 24} height={44} rx={6} fill="var(--blue-faint)" stroke={COLORS.blue} />
               <rect x={bx + 4} y={36} width={620 - bx} height={44} rx={6} fill="var(--blue-faint)" stroke={COLORS.blue} />
               {/* facts */}
               <text x={120} y={62} textAnchor="middle" style={{ fontFamily: 'var(--mono)', fontSize: 10.5, fontWeight: 700 }} fill={COLORS.orange}>
-                A: DEFINITION → “gate on setting_X”
+                A: rule → “depends on setting_X”
               </text>
               <text x={500} y={62} textAnchor="middle" style={{ fontFamily: 'var(--mono)', fontSize: 10.5, fontWeight: 700 }} fill={COLORS.orange}>
                 B: setting_X = false
               </text>
               <line x1={bx} x2={bx} y1={28} y2={92} stroke={COLORS.red} strokeWidth={2.5} strokeDasharray="5 3" />
               <text x={bx} y={108} textAnchor="middle" style={{ fontFamily: 'var(--sans)', fontSize: 10.5, fontWeight: 700 }} fill={COLORS.red}>
-                block boundary {split ? '— splits the A→B chain' : '— A and B stay together'}
+                block boundary {split ? '— separates the linked A and B' : '— A and B stay together'}
               </text>
               <text x={20} y={140} style={{ fontFamily: 'var(--sans)', fontSize: 11 }} fill="var(--ink-faint)">
-                block B precompiled in isolation never attended to its referent A — split the pair and the two-hop chain is never memoized
+                a block saved on its own never saw the fact it depends on — split a linked pair and the model can&rsquo;t connect them
               </text>
             </g>
           )
@@ -249,13 +249,13 @@ function BlockSplit() {
 
       <div style={{ display: 'flex', gap: 28, fontFamily: 'var(--sans)', fontSize: 13, marginTop: 8 }}>
         <span>
-          cross-referential pair A→B: agreement{' '}
+          two linked facts (A needs B): match{' '}
           <b style={{ color: agree < 0.6 ? 'var(--red)' : 'var(--green)', fontSize: 16 }}>{fmt(agree, 2)}</b>
         </span>
         <span>
-          independent pair (control): <b style={{ fontSize: 16 }}>{fmt(indep, 2)}</b>
+          two unrelated facts (control): <b style={{ fontSize: 16 }}>{fmt(indep, 2)}</b>
         </span>
-        <span style={{ color: 'var(--ink-faint)' }}>n={s.xref.n}, full-recompute accuracy {fmt(s.xref.full_acc, 2)}</span>
+        <span style={{ color: 'var(--ink-faint)' }}>n={s.xref.n}, accuracy when rereading all {fmt(s.xref.full_acc, 2)}</span>
       </div>
     </div>
   )
@@ -273,8 +273,8 @@ function E4Sweep() {
         }))}
         xTicks={[1, 2, 4, 8, 16]}
         xLog
-        xLabel="memory split into S independently-precompiled blocks"
-        yLabel="decision agreement vs. S=1"
+        xLabel="memory split into S separately-saved blocks"
+        yLabel="how often the answer matches a single block"
         yDomain={[0.5, 1.05]}
         height={250}
       />
@@ -297,7 +297,7 @@ function E5Bars() {
         note: `· cos ${fmt(by[m].proposed_cos, 2)}`,
       }))}
       domain={[0, Math.max(...models.map((m) => by[m].cum_speedup_vs_end)) * 1.2]}
-      xLabel="cumulative TTFT speedup vs. reprefill-every-turn-at-the-end (note: logit cosine vs. token-matched oracle)"
+      xLabel="how much faster the assistant starts replying vs. rereading memory every turn (response-latency speedup)"
       valueFmt={(v) => fmtX(v, 1)}
       labelWidth={200}
     />
@@ -311,8 +311,8 @@ function LocomoTable() {
     <table className="data-table">
       <thead>
         <tr>
-          <th>model</th><th>full recompute</th><th>transplanted memory</th><th>Δ accuracy</th>
-          <th>TOST equivalent (±3pt)</th><th>answer-logit cos</th>
+          <th>model</th><th>reread everything</th><th>reused memory</th><th>Δ accuracy</th>
+          <th>statistically equivalent (±3 pts)</th><th>answer similarity</th>
         </tr>
       </thead>
       <tbody>
@@ -340,55 +340,60 @@ export function Memory() {
   return (
     <Section meta={META}>
       <P>
-        The highest-value instance of the edit+compose substrate is <strong>user memory</strong>:
-        the large, dynamically summarized profile an assistant re-reads every turn. Memory is big
-        (10³–10⁴ tokens), reused across turns, and mutated mid-session by tool calls — so where it
-        lives in the prompt is a dilemma the mechanism (§7) explains precisely:
+        Here is where the idea really pays off: an assistant&rsquo;s <strong>memory</strong>. This
+        is a long, growing profile of facts about you that the assistant re-reads at the start of
+        every turn. Re-reading it each time is slow, because the model first turns all that text
+        into internal notes (think of it as the model&rsquo;s private notebook of what it just
+        read). Our idea: compute those notes once, drop them back in each turn instead of
+        re-reading, and edit them in place when a single fact changes. The catch is where memory
+        sits in the conversation — and that choice forces a trade-off:
       </P>
 
-      <Figure narrow label="The placement dilemma." caption={<>Front placement pre-digests but makes every memory change expensive; end placement is cheap to change but re-attends memory every turn. The paper&rsquo;s resolution treats memory as a <em>skill that is also edited</em>.</>}>
+      <Figure narrow label="Where should memory go?" caption={<>Put memory at the start and the model digests it up front, but then any change to memory is expensive. Put it at the end and changes are cheap, but the model re-reads memory every turn. Our fix: treat memory as a <em>reusable note that can also be edited</em>.</>}>
         <PlacementDiagram />
       </Figure>
 
-      <H3>E1 — pre-digestion is real, and it is the price of late placement</H3>
+      <H3>E1 — reading memory early helps a little, and the gap grows with length</H3>
       <Figure
-        label="Placement × memory length."
+        label="Where memory sits vs. how long it is."
         caption={
           <>
-            Under full recompute and CoT, reading memory late costs a small but statistically
-            significant amount of accuracy — and the cost grows with memory length. Late placement
-            is still preferred: it buys O(L) editing/transplant and the TTFT wins below, a
-            tradeoff the paper states rather than hides (early placement is preferable when memory
-            is very long and accuracy-critical).
+            Even when the model rereads everything, placing memory late costs a small but real bit
+            of accuracy — and that cost grows as memory gets longer. We still prefer late
+            placement: it makes editing and reuse cheap, and it gives the big speed wins shown
+            below. We state this trade-off plainly rather than hide it (early placement is the
+            better choice when memory is very long and accuracy is critical).
           </>
         }
       >
         <E1Length />
       </Figure>
 
-      <H3>E2 — memory transplant is faithful, to 70B</H3>
+      <H3>E2 — pasting in saved memory gives the same answers, even at 70B</H3>
       <Figure
-        label="Seam dose-response."
+        label="Fixing up the boundary."
         caption={
           <>
-            A precompiled, RoPE-repositioned memory chunk reproduces full-recompute decisions
-            across ten models (cosine 0.94–0.9996); one seam-repair token closes the
-            start-of-chunk boundary. A no-rotation control collapses (agreement 0.18 vs 0.78 on
-            70B) — the re-rotation is what carries it.
+            Saving memory once and pasting it back in (after correcting for its new position in
+            the prompt) reproduces the same decisions as rereading everything, across ten models
+            (answers 94–99.96% similar). Recomputing just one word at the start of the pasted-in
+            block cleans up the boundary. Skip the position correction and it falls apart (matches
+            18% of the time instead of 78% on the 70B model) — that correction is what makes it
+            work.
           </>
         }
       >
         <E2Seam />
       </Figure>
 
-      <H3>E3 — memory is editable mid-session</H3>
+      <H3>E3 — you can edit memory mid-conversation</H3>
       <Figure
-        label="Edit modes."
+        label="Ways to update a changed fact."
         caption={
           <>
-            When a stored fact toggles, reusing stale memory recovers the flipped decision
-            essentially never (≤0.03); every real edit recovers it. Consistent with §3, the
-            near-free in-place edit suffices under CoT and strengthens with scale.
+            When a stored fact flips, reusing the old memory almost never gives the updated answer
+            (3% or less); every real edit does. The nearly-free in-place edit — recomputing just
+            one word — is enough, and it works even better in bigger models.
           </>
         }
       >
@@ -397,28 +402,29 @@ export function Memory() {
 
       <Figure
         narrow
-        label="Keystone, again — inside transplanted memory."
+        label="The same pattern, inside memory."
         caption={
           <>
-            Editing a field <em>inside a transplanted memory chunk</em> (70B, direct mode, where
-            decisions genuinely vary) reproduces §7&rsquo;s memoization verbatim: the
-            field&rsquo;s own KV recovers little, recovery climbs with selective recompute, and
-            under CoT the stickiness dissolves (a flat selective@K sweep at ≈0.98). One substrate,
-            twice over.
+            Editing a fact <em>inside the pasted-in memory</em> (70B, where the answers genuinely
+            change) behaves exactly like elsewhere in the paper: editing just that fact recovers
+            little on its own, recovery climbs as you recompute a bit more around it, and when the
+            model reasons step by step the stickiness disappears (a flat line at about 0.98). The
+            same mechanism, showing up twice.
           </>
         }
       >
         <Keystone70 />
       </Figure>
 
-      <H3>E4 — granularity is a free knob, with one sharp edge</H3>
+      <H3>E4 — splitting memory into blocks is mostly free, with one catch</H3>
       <Figure
-        label="Block granularity."
+        label="How finely to split memory."
         caption={
           <>
-            Splitting memory into S independently-precompiled blocks makes a localized edit
-            S× cheaper and stays decision-lossless to S=16 — independent facts are integrated at
-            read time. The sharp edge is <em>cross-referential</em> facts:
+            Splitting memory into S separately-saved blocks makes editing one spot S times cheaper,
+            and the answers stay just as good all the way to 16 blocks — the model stitches
+            unrelated facts together when it reads. The one catch is <em>linked</em> facts that
+            point to each other:
           </>
         }
       >
@@ -426,32 +432,33 @@ export function Memory() {
       </Figure>
 
       <Figure
-        label="The block-split test."
+        label="Splitting linked facts apart."
         caption={
           <>
-            A decision needing a two-hop chain (a DEFINITION names which setting gates; the value
-            lives elsewhere): splitting the linked pair across a block boundary drops agreement to
-            0.46 vs 0.76 colocated (Llama-3.1-8B, McNemar p&lt;10⁻⁶) — while the same split costs
-            an independent pair almost nothing. Practical guidance: keep cross-referential facts
-            in one block.
+            Some answers need two facts that point to each other (one fact says which setting
+            matters; the setting&rsquo;s value lives elsewhere). Put those two in different blocks
+            and the answers match only 46% of the time, versus 76% when they share a block
+            (Llama-3.1-8B, p&lt;10⁻⁶) — yet the same split barely hurts two unrelated facts. The
+            practical rule: keep linked facts together in one block.
           </>
         }
       >
         <BlockSplit />
       </Figure>
 
-      <H3>E5 — the live memory agent, and real conversations</H3>
+      <H3>E5 — a working assistant, and real conversations</H3>
       <Figure
         narrow
-        label="End-to-end agent."
+        label="The whole thing, end to end."
         caption={
           <>
-            A live agent that composes memory once, re-rotates it each turn, and edits it on
-            tool-driven changes: 2.3–4.3× lower cumulative TTFT vs. reprefill-every-turn, while
-            reproducing full-reprefill next-token logits at a token-matched oracle. One honest
-            caveat: greedy CoT chains are boundary-sensitive, so exact chains reproduce only{' '}
+            A working assistant that computes its memory once, drops it back in each turn, and
+            edits it whenever a fact changes: it starts replying 2.3–4.3× faster than rereading
+            memory every turn, while producing the same next word. One honest caveat: when the
+            model reasons step by step, its exact wording is sensitive to where the boundary
+            falls, so the full chains match only{' '}
             {constants.e5_chain_agreement.range[0]}–{constants.e5_chain_agreement.range[1]} of the
-            time even though decisions are faithful.{' '}
+            time — even though the final answers stay correct.{' '}
             <PaperConst src={constants.e5_chain_agreement.source} />
           </>
         }
@@ -461,13 +468,15 @@ export function Memory() {
 
       <Figure
         narrow
-        label="LoCoMo — external validity on real long conversations."
+        label="A real long-conversation benchmark."
         caption={
           <>
-            The multi-session LoCoMo dialogues (median ~19.7k tokens) as the memory, precompiled
-            and spliced before each of all 1,540 answerable questions per model: transplant is
-            statistically equivalent to full recompute (TOST, ±3pt margin) on the three Qwen3
-            models, and within −2.7 points on Llama-3.1-8B — shown, not smoothed over.
+            We tested this on LoCoMo, a public benchmark of long, multi-session conversations
+            (each around 19.7k words). Using those conversations as the memory and pasting it in
+            before each of all 1,540 answerable questions per model, reusing memory was
+            statistically just as accurate as rereading everything (within a ±3-point margin) on
+            the three Qwen3 models, and within 2.7 points on Llama-3.1-8B — shown plainly, not
+            glossed over.
           </>
         }
       >

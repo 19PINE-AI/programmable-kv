@@ -11,7 +11,7 @@ import editing from '../data/editing.json'
 import prompts from '../data/prompts.json'
 import mechanism from '../data/mechanism.json'
 
-const META = { id: 'editable', num: '3', title: 'Mutate in place: the editable cache' }
+const META = { id: 'editable', num: '3', title: 'Change a fact, skip the redo' }
 
 function ReasoningGap() {
   const dv = (mechanism.diverse as any[]).find((x) => x.tag === 'qwen3_8b')!
@@ -20,27 +20,27 @@ function ReasoningGap() {
   return (
     <BarsV
       groups={[
-        { label: 'field-only refresh', values: [{ v: nonr.field_only.P_correct }, { v: reas.field_only.P_correct }] },
-        { label: 'recompute affected', values: [{ v: 1.0 }, { v: 1.0 }] },
-        { label: 'erratum', values: [{ v: nonr.erratum.P_correct }, { v: reas.erratum.P_correct }] },
+        { label: 'just refresh the fact', values: [{ v: nonr.field_only.P_correct }, { v: reas.field_only.P_correct }] },
+        { label: 'redo affected notes', values: [{ v: 1.0 }, { v: 1.0 }] },
+        { label: 'correction note', values: [{ v: nonr.erratum.P_correct }, { v: reas.erratum.P_correct }] },
       ]}
-      seriesLabels={['without CoT', 'with CoT']}
+      seriesLabels={['answers directly', 'thinks step by step']}
       colors={[COLORS.gray, COLORS.blue]}
       yDomain={[0, 1.12]}
-      yLabel="P(correct decision)"
+      yLabel="chance of the right decision"
       height={250}
     />
   )
 }
 
 const METHOD_INFO: Record<string, { label: string; desc: string; color: string }> = {
-  full_reprefill: { label: 'full reprefill', color: COLORS.gray, desc: 'recompute the whole context — correct but pays the full quadratic prefill' },
-  hoist_to_end: { label: 'hoist-to-end', color: COLORS.purple, desc: 'rewrite the prompt so the mutable field sits at the end — cheapest, but demands prompt surgery and pre-identifying every mutable field' },
-  'field+erratum': { label: 'field + erratum', color: COLORS.green, desc: 'refresh the field KV and append a one-line salient erratum — the paper’s robust default; no prompt surgery' },
-  erratum: { label: 'erratum only', color: COLORS.green, desc: 'append the one-line erratum, leave everything stale — the notes are amended, not recomputed' },
-  'cacheblend@15%': { label: 'CacheBlend@15%', color: COLORS.blue, desc: 'KV-deviation-ranked selective recompute — chases changed keys rather than the tokens that memoized the conclusion, and fails here' },
-  in_place: { label: 'in-place edit', color: COLORS.orange, desc: 'refresh only the field’s KV (~0.6% recompute) — near-free, but recovers nothing without reasoning' },
-  stale: { label: 'stale (reuse)', color: COLORS.red, desc: 'reuse everything — the do-nothing baseline' },
+  full_reprefill: { label: 'read everything again', color: COLORS.gray, desc: 'have the model re-read the whole prompt — always right, but slow, since the work grows fast as the prompt gets longer' },
+  hoist_to_end: { label: 'move the fact to the end', color: COLORS.purple, desc: 'reword the prompt so the changeable fact sits at the very end — cheapest, but you have to rewrite the prompt and know in advance which facts can change' },
+  'field+erratum': { label: 'fact + correction note', color: COLORS.green, desc: 'redo the notes for just the changed fact, then add one clear correction note — the paper’s reliable default, and no prompt rewriting needed' },
+  erratum: { label: 'correction note only', color: COLORS.green, desc: 'just add the one-line correction note and leave the rest of the notes as they were — you amend the notes instead of redoing them' },
+  'cacheblend@15%': { label: 'CacheBlend', color: COLORS.blue, desc: 'redo the notes that changed the most — but it follows the changed wording, not the notes that already wrote down the conclusion, so it fails here' },
+  in_place: { label: 'just refresh the fact', color: COLORS.orange, desc: 'redo the notes for only the changed fact (about 1% of the work) — almost free, but recovers nothing unless the model reasons step by step' },
+  stale: { label: 'do nothing', color: COLORS.red, desc: 'reuse all the old notes unchanged — the do-nothing starting point' },
 }
 
 function Frontier() {
@@ -68,8 +68,8 @@ function Frontier() {
       </Controls>
 
       <ChartSvg width={W} height={H}>
-        <AxisBottom scale={x as any} y={H - pad.b} ticks={[0.005, 0.01, 0.05, 0.1, 0.5, 1]} fmt={(v) => fmtPct(v, v < 0.01 ? 1 : 0)} label="fraction of the context recomputed (log scale)" grid gridY1={pad.t} gridY2={H - pad.b} />
-        <AxisLeft scale={y as any} x={pad.l} ticks={[0, 0.25, 0.5, 0.75, 1]} label="P(correct decision)" grid gridX2={W - pad.r} />
+        <AxisBottom scale={x as any} y={H - pad.b} ticks={[0.005, 0.01, 0.05, 0.1, 0.5, 1]} fmt={(v) => fmtPct(v, v < 0.01 ? 1 : 0)} label="share of the prompt redone (log scale)" grid gridY1={pad.t} gridY2={H - pad.b} />
+        <AxisLeft scale={y as any} x={pad.l} ticks={[0, 0.25, 0.5, 0.75, 1]} label="chance of the right decision" grid gridX2={W - pad.r} />
         {methods.map((m) => {
           const fr = Math.max(m.recompute_frac, 0.005)
           const isSel = m.method === sel
@@ -88,7 +88,7 @@ function Frontier() {
       </ChartSvg>
 
       <div className="aside" style={{ marginTop: 4 }}>
-        <b>{info.label}</b> — P(correct) {fmt(cur.P_correct, 2)} at {fmtPct(cur.recompute_frac, 1)} recompute.{' '}
+        <b>{info.label}</b> — right {fmt(cur.P_correct, 2)} of the time, redoing {fmtPct(cur.recompute_frac, 1)} of the prompt.{' '}
         {info.desc}
         {(sel === 'erratum' || sel === 'field+erratum') && (
           <div className="mono" style={{ background: '#fff', borderRadius: 4, padding: '6px 10px', marginTop: 8, fontSize: 11.5 }}>
@@ -107,17 +107,17 @@ function KsweepHeat() {
     <div>
       <Heatmap
         rows={ks.map((m) => m.label)}
-        cols={Ks.map((k: number) => (k === 0 ? 'field only' : `+top ${k}`))}
+        cols={Ks.map((k: number) => (k === 0 ? 'fact only' : `+top ${k}`))}
         value={(r, c) => ks[r].Ks[c]?.P_correct ?? null}
         colorOf={(v) => (v === null ? '#f0eee6' : ramp(v, [74, 138, 92]))}
-        colLabel="field + K highest-effect downstream tokens recomputed (under reasoning)"
+        colLabel="redo the fact plus its K most important affected notes (model thinking step by step)"
         rowLabelWidth={160}
-        tooltip={(r, c) => `${ks[r].label}, K=${Ks[c]}: P(correct) ${fmt(ks[r].Ks[c].P_correct, 2)} (full=${fmt(ks[r].full, 2)})`}
+        tooltip={(r, c) => `${ks[r].label}, K=${Ks[c]}: right ${fmt(ks[r].Ks[c].P_correct, 2)} of the time (redo-all=${fmt(ks[r].full, 2)})`}
       />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
-        K&nbsp;★ (minimal K reaching full quality):{' '}
+        Fewest notes needed to fully recover (K&nbsp;★):{' '}
         {ks.filter((m) => m.K_star != null).map((m) => `${m.label} ${m.K_star}`).join(' · ')}
-        {' — '}and for several models no small K suffices.
+        {' — '}and for several models no small number is enough.
       </div>
     </div>
   )
@@ -141,8 +141,8 @@ function ArchBar() {
           : (a.arch ?? '').toLowerCase() === 'hybrid' ? COLORS.purple : COLORS.green,
       }))}
       domain={[0, 1.1]}
-      xLabel="erratum recovery under reasoning"
-      refX={[{ x: 1, label: 'oracle' }]}
+      xLabel="how well the correction note recovers (step-by-step reasoning)"
+      refX={[{ x: 1, label: 'perfect' }]}
       labelWidth={290}
     />
   )
@@ -151,17 +151,17 @@ function ArchBar() {
 function WeightEditTable() {
   const w = editing.weight as any
   const rows: { key: string; label: string }[] = [
-    { key: 'kv_erratum', label: 'field+erratum (KV cache)' },
-    { key: 'kv_inplace', label: 'in-place (KV cache)' },
-    { key: 'rome', label: 'ROME (rank-one weight edit)' },
-    { key: 'lora_ft', label: 'LoRA fine-tune (weights)' },
+    { key: 'kv_erratum', label: 'fact + correction note (in the notes)' },
+    { key: 'kv_inplace', label: 'just refresh the fact (in the notes)' },
+    { key: 'rome', label: 'ROME (edit the model itself)' },
+    { key: 'lora_ft', label: 'LoRA (retrain part of the model)' },
   ]
   return (
     <table className="data-table">
       <thead>
         <tr>
-          <th>method</th><th>flips the decision?</th><th>edit latency</th>
-          <th>cross-request contamination</th><th>collateral damage</th>
+          <th>method</th><th>changes the decision?</th><th>time to make the change</th>
+          <th>leaks into other requests</th><th>side effects elsewhere</th>
         </tr>
       </thead>
       <tbody>
@@ -172,10 +172,10 @@ function WeightEditTable() {
           return (
             <tr key={r.key} style={isKV ? { background: '#f3f8f4' } : undefined}>
               <td style={{ fontWeight: 600 }}>{r.label}</td>
-              <td>{m.efficacy_deny ? '✓' : '✗ (without CoT)'}</td>
+              <td>{m.efficacy_deny ? '✓' : '✗ (unless it reasons step by step)'}</td>
               <td>
                 {fmtMs(m.latency_ms)}
-                {m.cov_estimate_s ? ` + ${m.cov_estimate_s.toFixed(0)} s covariance` : ''}
+                {m.cov_estimate_s ? ` + ${m.cov_estimate_s.toFixed(0)} s setup` : ''}
               </td>
               <td style={{ color: (m.isolation_contamination ?? 0) > 0 ? 'var(--red)' : 'var(--green)', fontWeight: 600 }}>
                 {fmt(m.isolation_contamination ?? 0, 1)}
@@ -195,80 +195,94 @@ export function Editable() {
   return (
     <Section meta={META}>
       <P>
-        The second challenge was <strong>mutation</strong>: when a field changes mid-session you
-        should not have to recompute the cache. The naive shortcut — surgically refreshing the
-        field&rsquo;s own keys and values — is silently ignored (we show exactly why in §7). There
-        are <strong>two ways to fix it</strong>, neither a full reprefill.{' '}
-        <strong>(1) Recompute the affected notes</strong> after the field — reliably if you recompute
-        the whole affected suffix, cheaply but <em>unreliably</em> if you recompute only the top-K
-        (<code>field+selective@K</code>, whose minimal K is model-dependent).{' '}
-        <strong>(2) Append an erratum</strong> — one salient line the decision reads as a fresh,
-        authoritative note. The erratum is the <strong>cheap, robust default</strong>: append-only,
-        so the prefix stays cache-aligned (which is what makes §5&rsquo;s serving numbers possible).
+        As a model reads a prompt, it builds up a kind of <strong>notebook of notes</strong> — a
+        saved summary of what it has read so far, so it does not have to re-read the prompt for
+        every word it writes. The problem: what happens when a small fact in the prompt
+        <em> changes</em> mid-conversation — an order goes from &ldquo;pending&rdquo; to
+        &ldquo;shipped,&rdquo; a user&rsquo;s role changes? We&rsquo;d like to fix the notes instead
+        of re-reading the whole prompt. The obvious shortcut — quietly rewrite the few notes about
+        that one fact — gets ignored: the model still acts on the <em>old</em> value (we explain why
+        below). There are <strong>two fixes that actually work</strong>, and neither makes the model
+        re-read everything.{' '}
+        <strong>(1) Redo the affected notes</strong> — reliably if you redo all the notes that came
+        after the changed fact, or more cheaply but <em>less reliably</em> if you redo only the few
+        most important ones (how few depends on the model).{' '}
+        <strong>(2) Add a correction note</strong> — one short, clear line that the model reads as a
+        fresh, trustworthy instruction. The correction note is the <strong>cheap, reliable
+        default</strong>: you only add to the notes, so everything before it stays reusable (which is
+        what makes the serving speedups later possible).
       </P>
 
-      <H3>Chain-of-thought, not model size, gates the cheap edit</H3>
+      <H3>The cheap fix only works if the model thinks out loud</H3>
       <P>
-        There is also a near-free third option — refresh the field&rsquo;s KV alone (~1% compute) and
-        nothing else — but it works only when some later computation actually re-reads the field. A
-        reasoning <em>chain</em> does exactly that, so <strong>with chain-of-thought</strong> the
-        field-only edit alone recovers the decision; run the <em>identical</em> edit on the{' '}
-        <em>same</em> model <strong>without CoT</strong> and it is ignored — the decision commits to
-        the stale note. The divider is the CoT <em>mode</em>, not raw model size (reasoning-native
-        models default to CoT; instruction-tuned ones to direct answers). The mechanics are that
-        simple, so we keep them brief and put the detail under the hood (§12).
+        Why does the obvious shortcut fail? Because by the time you change the fact, the model has
+        often <em>already written the conclusion down</em> elsewhere in its notes. Refreshing the
+        one fact does not erase that conclusion, so the model keeps acting on it. This points to a
+        near-free third option: refresh only the changed fact (about 1% of the work) and trust the
+        model to look back at it. That works — but only when the model actually re-reads the fact
+        later. A model that <strong>thinks out loud</strong>, writing out its reasoning step by step
+        before answering (what researchers call &ldquo;chain-of-thought&rdquo;), does exactly that:
+        the reasoning re-reads the fresh fact and recovers the right answer. Run the
+        <em> identical</em> change on the <em>same</em> model with step-by-step thinking turned off,
+        and it gets ignored — the model commits to the old conclusion. The deciding factor is whether
+        the model reasons step by step, not how big it is (some models reason step by step by
+        default; others answer directly). The details are simple, so we keep this short and tuck the
+        mechanics away below.
       </P>
 
       <Figure
         narrow
-        label="The chain-of-thought gap."
-        title="The same field-only edit: recovered with chain-of-thought, ignored without it"
-        sub="Qwen3-8B, P(correct decision) after each fix (same model, thinking on/off); ‘recompute affected’ = full downstream recompute"
+        label="The step-by-step gap."
+        title="The same cheap fix: it works when the model thinks out loud, and fails when it doesn’t"
+        sub="Qwen3-8B, chance of the right decision after each fix (same model, thinking on or off); ‘redo affected notes’ = redo all notes after the changed fact"
         caption={
           <>
-            Both real fixes — recompute the affected notes, or append an erratum — recover the
-            decision either way. The cheap field-only refresh is the divider: it reaches <b>1.00</b>{' '}
-            with chain-of-thought but <b>0.00</b> without it, on the same model.
+            Both real fixes — redo the affected notes, or add a correction note — work either way.
+            The cheap &ldquo;just refresh the fact&rdquo; option is the divider: it&rsquo;s right{' '}
+            <b>every</b> time when the model thinks step by step, and <b>never</b> when it
+            doesn&rsquo;t — same model, both ways.
           </>
         }
       >
         <ReasoningGap />
       </Figure>
 
-      <P>Where the methods land on the cost/correctness frontier:</P>
+      <P>How the methods trade off cost against getting the answer right:</P>
 
       <Figure
-        label="The editing frontier."
-        title="Cost vs. correctness — there is no free lunch, but there is a cheap one"
-        sub={`Qwen3-8B, ${editing.baseline.n_tasks} gated tasks; x log-scale`}
+        label="Cost versus getting it right."
+        title="There’s no free fix, but there is a cheap one"
+        sub={`Qwen3-8B, ${editing.baseline.n_tasks} decision tasks; x is a log scale`}
         caption={
           <>
-            No single method dominates. Hoist-to-end is cheapest but demands prompt surgery;{' '}
-            <b>field+erratum matches its oracle correctness with no surgery</b> at a one-line
-            append; the in-place edit is near-free but recovers nothing without reasoning; a
-            KV-deviation-ranked recompute (CacheBlend-style) fails here because it chases changed
-            keys rather than the tokens that memoized the conclusion.
+            No single method wins on everything. Moving the fact to the end is cheapest but means
+            rewriting the prompt; <b>fact + correction note gets it right just as reliably with no
+            rewriting</b>, just one extra line; refreshing only the fact is almost free but recovers
+            nothing unless the model reasons step by step; and CacheBlend, which redoes the
+            most-changed notes, fails here because it follows the changed wording instead of the
+            notes that already wrote down the conclusion.
           </>
         }
       >
         <Frontier />
       </Figure>
 
-      <H3>The surgical option, mapped honestly</H3>
+      <H3>The middle-ground fix, judged fairly</H3>
       <P>
-        §7&rsquo;s specificity result suggests a surgical alternative: recompute the field plus
-        the K highest-effect downstream tokens. It works — sometimes. Under reasoning, the minimal
-        K to reach full quality is wildly model-dependent, because how <em>sticky</em> the memoized
-        conclusion is does not track scale:
+        There&rsquo;s a tempting middle ground: redo the changed fact plus just the handful of notes
+        it affects most. It works — sometimes. Even when the model reasons step by step, how many
+        notes you have to redo swings wildly from model to model, because how stubbornly a model
+        clings to the conclusion it already wrote down has little to do with its size:
       </P>
       <Figure
-        label="field+selective@K."
+        label="Redo the fact plus its few most important notes."
         caption={
           <>
-            P(correct) as K grows, per model. K★ ≈ 4 suffices at 8B while 4B needs &gt;64; without
-            reasoning, no small K helps at any scale (0.00 recovery). The paper reports{' '}
-            <code>field+selective</code> as a genuine but <em>unreliable</em> tool — effective when
-            the conclusion is not sticky — rather than as a default.
+            How the chance of the right answer climbs as you redo more notes, for each model. The 8B
+            model needs only about 4 extra notes, while the 4B model needs more than 64; with
+            step-by-step thinking off, no small number helps at any size (it never recovers). So this
+            is a real tool, but an <em>unreliable</em> one — handy when the model isn&rsquo;t stuck
+            on its old conclusion, not a safe default.
           </>
         }
       >
@@ -277,37 +291,40 @@ export function Editable() {
 
       <Figure
         narrow
-        label="The fix is an attention-architecture method."
+        label="The fix relies on the model’s ability to look back."
         caption={
           <>
-            Erratum recovery under reasoning across backbones: strong on full-attention and
-            sliding-window models, partial on a hybrid attention+SSM model, weak on a pure SSM
-            whose recurrent state has no per-token look-back. The mechanism — and therefore the
-            fix — lives in attention&rsquo;s ability to re-read a late note.
+            How well the correction note works across different model designs. It&rsquo;s strong on
+            the common designs that can freely look back at any earlier note, weaker on a hybrid
+            design, and weak on one that keeps only a rolling summary with no way to look back at a
+            specific earlier note. The fix depends on the model being able to re-read a note added
+            late.
           </>
         }
       >
         <ArchBar />
       </Figure>
 
-      <H3>Why not edit the weights instead?</H3>
+      <H3>Why not just change the model instead?</H3>
       <P>
-        A natural objection: to act on a changed fact, why not edit the model itself — ROME, or a
-        quick LoRA? The paper runs the comparison with a <em>faithful</em> ROME (validated first on
-        the canonical Eiffel-Tower edit, so the baseline is not crippled). All three methods flip
-        the target decision. The difference is everything else:
+        A fair question: to act on a changed fact, why not edit the model itself? Two well-known
+        ways to do that are ROME (a precise tweak to the model) and LoRA (a quick partial retrain).
+        We compare against a careful version of ROME — first checking it on a textbook example
+        (correcting where the Eiffel Tower is) so the comparison isn&rsquo;t rigged against it. All
+        three approaches do change the target decision. The difference is everything else:
       </P>
       <Figure
-        label="KV editing vs. weight editing (Llama-3.1-8B)."
+        label="Fixing the notes vs. changing the model (Llama-3.1-8B)."
         caption={
           <>
-            A weight edit is <em>global</em>: the same model instance can no longer hold{' '}
-            <code>status=shipped</code> for one request and <code>pending</code> for another —
-            every concurrent order that is genuinely still pending gets wrongly flipped
-            (contamination 1.0), and half of an unrelated decision battery drifts. The append-only
-            erratum lives in a <em>per-sequence</em> cache: zero contamination, zero collateral,
-            30–50× faster. Weight editing is for durable global facts; mutable per-request state
-            is the editable cache&rsquo;s niche.
+            Changing the model is <em>global</em>: the same running model can no longer treat one
+            order as &ldquo;shipped&rdquo; while another is still &ldquo;pending.&rdquo; Every order
+            that&rsquo;s genuinely still pending gets wrongly flipped (the change leaks into 100% of
+            other requests), and it disturbs half of an unrelated set of decisions too. The
+            correction note instead lives in <em>that one conversation&rsquo;s</em> notes: it
+            doesn&rsquo;t leak, it has no side effects, and it&rsquo;s 30–50&times; faster.
+            Changing the model is for lasting global facts; a fact that differs from request to
+            request is exactly what fixing the notes is for.
           </>
         }
       >
@@ -315,10 +332,11 @@ export function Editable() {
       </Figure>
 
       <Aside>
-        <b>Practical recipe.</b> Default to <code>field+erratum</code> (robust, append-only,
-        cache-aligned). If you are running a reasoning model and the context is benign, the
-        in-place edit is a free fast-path — the chain re-reads the field. Reserve{' '}
-        <code>field+selective@K</code> for models you have measured.
+        <b>Rule of thumb.</b> Default to <strong>fact + correction note</strong>: reliable, and it
+        only adds to the notes, so everything before it stays reusable. If your model already reasons
+        step by step and the situation is simple, just refreshing the fact is a free fast path — the
+        reasoning re-reads it. Save the <strong>redo-the-few-most-important-notes</strong> option for
+        models you&rsquo;ve actually tested.
       </Aside>
     </Section>
   )

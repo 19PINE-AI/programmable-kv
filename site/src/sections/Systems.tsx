@@ -7,7 +7,7 @@ import { ChartSvg, COLORS } from '../components/charts/core'
 import { fmt, fmtMs, fmtPct, fmtX } from '../lib/format'
 import systems from '../data/systems.json'
 
-const META = { id: 'systems', num: '5', title: 'Systems payoff: a real online serving benchmark' }
+const META = { id: 'systems', num: '5', title: "Why it's faster" }
 
 function rateLabel(r: number) {
   return r === 0 ? 'saturation' : `${r} req/s`
@@ -40,7 +40,7 @@ function ServingDashboard() {
   return (
     <div>
       <Controls>
-        <ControlGroup label="offered load (Poisson arrivals)">
+        <ControlGroup label="how busy the server is (requests arriving)">
           <Seg
             options={rows.map((_, i) => String(i)) as any}
             value={String(idx)}
@@ -53,28 +53,28 @@ function ServingDashboard() {
 
       <ChartSvg width={W} height={262}>
         <text x={0} y={16} style={{ fontFamily: 'var(--sans)', fontSize: 12, fontWeight: 700 }} fill={COLORS.red}>
-          write the new value INTO the prefix (invalidates downstream cache blocks)
+          rewrite the saved prompt (the server must redo its work)
         </text>
-        {bar(26, row.baseline.ttft_ms.p50, COLORS.red, 'TTFT p50')}
-        {bar(46, row.baseline.ttft_ms.p90, COLORS.red, 'TTFT p90')}
-        {bar(66, row.baseline.ttft_ms.p99, COLORS.red, 'TTFT p99')}
+        {bar(26, row.baseline.ttft_ms.p50, COLORS.red, 'typical reply')}
+        {bar(46, row.baseline.ttft_ms.p90, COLORS.red, 'slow-case reply')}
+        {bar(66, row.baseline.ttft_ms.p99, COLORS.red, 'worst-case reply')}
 
         <text x={0} y={116} style={{ fontFamily: 'var(--sans)', fontSize: 12, fontWeight: 700 }} fill={COLORS.green}>
-          append-only erratum (prefix stays cache-aligned)
+          add a short correction note (the saved work stays valid)
         </text>
-        {bar(126, row.erratum.ttft_ms.p50, COLORS.green, 'TTFT p50')}
-        {bar(146, row.erratum.ttft_ms.p90, COLORS.green, 'TTFT p90')}
-        {bar(166, row.erratum.ttft_ms.p99, COLORS.green, 'TTFT p99')}
+        {bar(126, row.erratum.ttft_ms.p50, COLORS.green, 'typical reply')}
+        {bar(146, row.erratum.ttft_ms.p90, COLORS.green, 'slow-case reply')}
+        {bar(166, row.erratum.ttft_ms.p99, COLORS.green, 'worst-case reply')}
 
-        <text x={0} y={216} className="tick-label">log scale →</text>
+        <text x={0} y={216} className="tick-label">time to first reply (log scale) →</text>
 
         {/* summary cards */}
         <g transform="translate(0,228)">
           {[
-            { t: 'APC hit-rate', v: `${fmtPct(row.erratum.prefix_hit_rate, 1)} vs ${fmtPct(row.baseline.prefix_hit_rate, 1)}` },
-            { t: 'throughput', v: `${fmt(row.erratum.throughput_req_s, 2)} vs ${fmt(row.baseline.throughput_req_s, 2)} req/s` },
-            { t: 'p90 TTFT speedup', v: fmtX(row.ttft_p90_speedup, 0) },
-            { t: 'throughput speedup', v: fmtX(row.throughput_speedup, 1) },
+            { t: 'reused saved work', v: `${fmtPct(row.erratum.prefix_hit_rate, 1)} vs ${fmtPct(row.baseline.prefix_hit_rate, 1)}` },
+            { t: 'requests handled at once', v: `${fmt(row.erratum.throughput_req_s, 2)} vs ${fmt(row.baseline.throughput_req_s, 2)} req/s` },
+            { t: 'slow-case reply, faster by', v: fmtX(row.ttft_p90_speedup, 0) },
+            { t: 'requests handled, more by', v: fmtX(row.throughput_speedup, 1) },
           ].map((c, i) => (
             <g key={c.t} transform={`translate(${i * 165},0)`}>
               <text className="tick-label" style={{ fontSize: 10 }}>{c.t}</text>
@@ -95,9 +95,9 @@ function SpeedupVsLoad() {
         label: rateLabel(r.rate),
         values: [{ v: r.throughput_speedup }],
       }))}
-      seriesLabels={['throughput speedup, erratum vs. in-prefix edit']}
+      seriesLabels={['how many more requests it handles: correction note vs. rewriting the prompt']}
       colors={[COLORS.orange]}
-      yLabel="speedup (×)"
+      yLabel="more requests handled (×)"
       yFmt={(v) => `${v.toFixed(1)}×`}
       height={250}
     />
@@ -112,9 +112,9 @@ function VisionTtft() {
         label: `${v.px}px (${v.img_tokens} tok)`,
         values: [{ v: v.full_ms }, { v: v.reuse_ms }],
       }))}
-      seriesLabels={['full re-encode (vision tower + image prefill)', 'cached image-KV reuse']}
+      seriesLabels={['re-process the whole image', 'reuse the saved image notes']}
       colors={[COLORS.red, COLORS.green]}
-      yLabel="TTFT (ms)"
+      yLabel="time to first reply (ms)"
       yFmt={(v) => `${v.toFixed(0)}`}
       height={260}
     />
@@ -126,25 +126,26 @@ export function Systems() {
   return (
     <Section meta={META}>
       <P>
-        Mechanism and capability only matter if they survive a real serving stack. The benchmark:
-        vLLM&rsquo;s V1 engine as a genuine online server — <code>AsyncLLMEngine</code>, CUDA
-        graphs, continuous batching, automatic prefix caching (APC), and <em>Poisson</em> request
-        arrivals at controlled offered load — over a shared ~{((systems.prompt_tokens as number) / 1000).toFixed(0)}k-token
-        agent policy ({systems.model}) with one mutable field. Two ways to apply the same field
-        change:
+        Here is the real-world payoff. As the model reads a prompt, it saves its work in a kind of
+        notebook of notes (the &ldquo;cache&rdquo;) so it does not have to redo that thinking. We ran
+        a real production-style server (vLLM, a popular open-source serving engine) sending it a
+        steady stream of requests, all sharing the same ~{((systems.prompt_tokens as number) / 1000).toFixed(0)}k-word
+        instruction document ({systems.model}) with one detail that can change. There are two ways
+        to make that change:
       </P>
 
       <Figure
-        label="Online serving."
-        title="One mutable field, two ways to update it"
-        sub="vLLM V1, 96 requests per arm, TTFT percentiles from client-side timestamps, APC hit-rate from the engine's own Prometheus counters"
+        label="On a live server."
+        title="One changed detail, two ways to update it"
+        sub="A live server, 96 requests each way. Response times measured at the client; how often saved work is reused, read straight from the server's own counters."
         caption={
           <>
-            Writing the new value into the prefix changes a cached block&rsquo;s content hash and
-            invalidates every downstream block — the server becomes prefill-bound and saturates at
-            ≈1.5 req/s, so p90 TTFT collapses under load (22–55 s). The append-only erratum keeps
-            the prefix a cache hit ({fmtPct(sat.erratum.prefix_hit_rate, 1)} vs.{' '}
-            {fmtPct(sat.baseline.prefix_hit_rate, 1)} APC hit-rate) and stays at 86 ms–1 s.
+            Rewriting the saved prompt forces the server to redo its work for every request. It
+            falls behind, handling only about 1.5 requests per second, and the slow-case response
+            time (the 90th percentile) balloons to 22&ndash;55 seconds. Adding a short correction
+            note instead keeps the saved work valid &mdash; reused{' '}
+            {fmtPct(sat.erratum.prefix_hit_rate, 1)} of the time vs.{' '}
+            {fmtPct(sat.baseline.prefix_hit_rate, 1)} &mdash; and replies stay fast, 86 ms to 1 s.
           </>
         }
       >
@@ -153,37 +154,39 @@ export function Systems() {
 
       <Figure
         narrow
-        label="The advantage grows with load."
+        label="The busier the server, the bigger the win."
         caption={
           <>
-            Exactly as predicted for a compute-bound vs. cache-bound regime: {fmtX(1.6, 1)} at 2
-            req/s rising to <b>{fmtX(sat.throughput_speedup, 1)}</b> at saturation. This is the
-            serving translation of §3&rsquo;s append-only property — the edit is not just correct,
-            it is <em>cache-shaped</em>.
+            When traffic is light the lead is modest ({fmtX(1.6, 1)} more requests handled at 2
+            requests per second), but as the server gets busier it grows to{' '}
+            <b>{fmtX(sat.throughput_speedup, 1)}</b>. The reason is simple: the correction note
+            keeps the saved work reusable, so the server never has to redo it.
           </>
         }
       >
         <SpeedupVsLoad />
       </Figure>
 
-      <H3>It also holds in a real agent environment</H3>
+      <H3>It also works for a real customer-support agent</H3>
       <P>
-        On the τ²-bench retail environment — single tool-decisions and a multi-turn autonomous
-        loop scored by the environment&rsquo;s own tool enforcement — an agent that reuses a stale
-        cache after a state change collapses, while <code>field+erratum</code> preserves task
-        success at a fraction of the recompute. On the real ~1.4k-token retail policy, transplant
-        reproduces the clean decision; the one hard case (a long, buried field that must flip a
-        conclusion) needs the robust <code>field+erratum</code> edit — the same long-context
-        lesson §3 predicts, now in a real environment.
+        We also tried it on a realistic customer-support agent benchmark (a retail help desk),
+        where the agent has to make the right calls and follow the rules to finish a task. If the
+        agent keeps reusing its saved notes after something changes, it gets the wrong answer. The
+        correction-note approach (<code>field+erratum</code>) keeps the agent succeeding while
+        skipping most of the redo work. On the real ~1.4k-word retail policy, simply copying over
+        the saved notes reproduces the clean decision; the one tricky case &mdash; a detail buried
+        deep in a long document that has to flip the final answer &mdash; needs the sturdier
+        correction-note edit. That is the same lesson the mechanism predicts, now in a real setting.
       </P>
 
       <Figure
         narrow
-        label="The multimodal serving win."
+        label="The same win for images."
         caption={
           <>
-            Reusing a cached image (skipping the vision tower and image-token prefill entirely)
-            accelerates first-token latency 2.4–8.4×, growing with image size (Qwen2.5-VL-7B).
+            Reusing the saved notes for an image, instead of processing it from scratch, makes the
+            first reply 2.4&ndash;8.4× faster &mdash; and the bigger the image, the bigger the
+            gain (Qwen2.5-VL-7B).
           </>
         }
       >
@@ -191,10 +194,11 @@ export function Systems() {
       </Figure>
 
       <Aside>
-        <b>Why the in-prefix baseline is the right one.</b> It is what every serving stack does
-        today when a templated field changes: re-render the prompt, lose the prefix match. The
-        erratum is behaviorally equivalent (§3) and turns the same update into an append — the
-        entire 53–398× p90 gap is downstream of that one representational choice.
+        <b>Why compare against rewriting the prompt?</b> Because that is what servers do today when
+        a detail changes: they rebuild the prompt and throw away the saved work. The correction
+        note gives the same answer (we showed this earlier) but turns the update into a tiny add-on
+        &mdash; and that single choice is what produces the whole 53&ndash;398× gap in slow-case
+        response time.
       </Aside>
     </Section>
   )

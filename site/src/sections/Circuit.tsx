@@ -8,7 +8,7 @@ import { ChartSvg, COLORS, Legend } from '../components/charts/core'
 import { fmt } from '../lib/format'
 import circuit from '../data/circuit.json'
 
-const META = { id: 'circuit', num: '13', title: 'Under the hood: the component circuit' }
+const META = { id: 'circuit', num: '13', title: 'Under the hood: the wiring' }
 
 function layerOf(head: string) {
   return parseInt(head.split('.')[0], 10)
@@ -76,8 +76,8 @@ function HeadMap({ m }: { m: any }) {
         </div>
       )}
       <Legend items={[
-        { label: 'read heads (decision → aggregator)', color: COLORS.blue },
-        { label: 'write heads (aggregator ← field/rule, at prefill)', color: COLORS.orange },
+        { label: 'look-back channels that READ the note when answering', color: COLORS.blue },
+        { label: 'channels that help WRITE the note while reading the prompt', color: COLORS.orange },
       ]} />
     </div>
   )
@@ -91,8 +91,8 @@ function CumK({ m }: { m: any }) {
           { id: 'read', color: COLORS.blue, points: m.read_cumk.map((p: any) => ({ x: p.k, y: p.mean, lo: p.ci?.[0], hi: p.ci?.[1] })), band: true },
           { id: 'write', color: COLORS.orange, points: m.write_cumk.map((p: any) => ({ x: p.k, y: p.mean, lo: p.ci?.[0], hi: p.ci?.[1] })), band: true },
         ]}
-        xLabel="top-k heads patched together"
-        yLabel="decision recovery"
+        xLabel="number of look-back channels turned on together"
+        yLabel="how much of the decision comes back"
         yDomain={[-0.05, 1.0]}
         xTicks={[1, 2, 3, 5, 8, 12]}
         height={280}
@@ -101,9 +101,9 @@ function CumK({ m }: { m: any }) {
         ]}
       />
       <Legend items={[
-        { label: 'cumulative read heads — concentrates', color: COLORS.blue },
-        { label: 'cumulative write heads — saturates low (write is distributed)', color: COLORS.orange },
-        { label: 'random-head control ≈ 0', color: COLORS.gray, dash: true },
+        { label: 'reading channels — a few of them do almost all the work', color: COLORS.blue },
+        { label: 'writing channels — no single one matters much (the writing is spread out)', color: COLORS.orange },
+        { label: 'random channels (a sanity check) ≈ 0', color: COLORS.gray, dash: true },
       ]} />
     </div>
   )
@@ -142,15 +142,15 @@ function AttnMlp({ m }: { m: any }) {
           )
         })}
         <text className="axis-label" x={(pad.l + W) / 2} y={H - 8} textAnchor="middle">
-          layer (up to the readout layer L{c.readout_layer})
+          processing stage (up to the readout stage L{c.readout_layer})
         </text>
         <text className="axis-label" transform={`translate(13,${(H - pad.b + pad.t) / 2}) rotate(-90)`} textAnchor="middle">
-          contribution to the note
+          how much it adds to the note
         </text>
       </ChartSvg>
       <Legend items={[
-        { label: `attention writes the note — share ${fmt(c.attn_share?.mean, 2)}`, color: COLORS.orange },
-        { label: `MLP — share ${fmt(c.mlp_share?.mean, 2)}`, color: COLORS.purple },
+        { label: `look-back channels write most of the note — share ${fmt(c.attn_share?.mean, 2)}`, color: COLORS.orange },
+        { label: `per-position processing — share ${fmt(c.mlp_share?.mean, 2)}`, color: COLORS.purple },
       ]} />
     </div>
   )
@@ -161,9 +161,9 @@ function Direction({ m }: { m: any }) {
   const layers: number[] = m.direction.layers
   const pl = m.direction.per_layer
   const series = [
-    { id: 'full', label: 'full residual patch', color: COLORS.gray, key: 'full', dash: true },
-    { id: 'along', label: 'along the 1-D conclusion direction', color: COLORS.blue, key: 'along' },
-    { id: 'random', label: 'random 1-D direction', color: COLORS.red, key: 'random', dash: true },
+    { id: 'full', label: 'copy the whole note across', color: COLORS.gray, key: 'full', dash: true },
+    { id: 'along', label: 'copy only the one "which conclusion" setting', color: COLORS.blue, key: 'along' },
+    { id: 'random', label: 'copy a random setting (a sanity check)', color: COLORS.red, key: 'random', dash: true },
   ]
   return (
     <div>
@@ -176,8 +176,8 @@ function Direction({ m }: { m: any }) {
           }),
           band: s.id === 'along',
         }))}
-        xLabel="layer"
-        yLabel="recovery transferred"
+        xLabel="processing stage"
+        yLabel="how much of the decision carried over"
         xTicks={layers}
         height={270}
         yDomain={[-0.06, Math.max(...layers.map((L) => pl[String(L)]?.dm.full.mean ?? 0)) * 1.2]}
@@ -193,13 +193,13 @@ function Scrub({ m }: { m: any }) {
   return (
     <BarsH
       items={[
-        { label: 'resample everything ELSE, same conclusion (drift)', value: s.drift?.drift_rest_same?.mean, lo: s.drift?.drift_rest_same?.ci?.[0], hi: s.drift?.drift_rest_same?.ci?.[1], color: COLORS.gray },
-        { label: 'resample the NOTE, same conclusion (drift)', value: s.drift?.drift_note_same?.mean, lo: s.drift?.drift_note_same?.ci?.[0], hi: s.drift?.drift_note_same?.ci?.[1], color: COLORS.gray },
-        { label: `swap the NOTE to the opposite conclusion (k=${s.k_note})`, value: s.interchange?.rec_note_opp?.mean, lo: s.interchange?.rec_note_opp?.ci?.[0], hi: s.interchange?.rec_note_opp?.ci?.[1], color: COLORS.orange },
-        { label: 'swap everything ELSE to the opposite conclusion', value: s.interchange?.rec_rest_opp?.mean, lo: s.interchange?.rec_rest_opp?.ci?.[0], hi: s.interchange?.rec_rest_opp?.ci?.[1], color: COLORS.blue },
+        { label: 'swap in everything ELSE from a run that reached the same conclusion (should not move)', value: s.drift?.drift_rest_same?.mean, lo: s.drift?.drift_rest_same?.ci?.[0], hi: s.drift?.drift_rest_same?.ci?.[1], color: COLORS.gray },
+        { label: 'swap in the NOTE from a run that reached the same conclusion (should not move)', value: s.drift?.drift_note_same?.mean, lo: s.drift?.drift_note_same?.ci?.[0], hi: s.drift?.drift_note_same?.ci?.[1], color: COLORS.gray },
+        { label: `swap in the NOTE from a run that reached the OPPOSITE conclusion (k=${s.k_note})`, value: s.interchange?.rec_note_opp?.mean, lo: s.interchange?.rec_note_opp?.ci?.[0], hi: s.interchange?.rec_note_opp?.ci?.[1], color: COLORS.orange },
+        { label: 'swap in everything ELSE from a run that reached the OPPOSITE conclusion', value: s.interchange?.rec_rest_opp?.mean, lo: s.interchange?.rec_rest_opp?.ci?.[0], hi: s.interchange?.rec_rest_opp?.ci?.[1], color: COLORS.blue },
       ]}
       domain={[0, 1.0]}
-      xLabel="decision movement toward the resampled conclusion"
+      xLabel="how far the answer moved toward the swapped-in conclusion"
       labelWidth={300}
     />
   )
@@ -212,26 +212,26 @@ function Sae() {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
       <div>
-        <div className="fig-sub" style={{ marginBottom: 6 }}>decoding — feature AUC (top features, layer 14 SAE)</div>
+        <div className="fig-sub" style={{ marginBottom: 6 }}>can it spot the conclusion? — accuracy of each learned detector</div>
         <BarsH
           items={L.top_features_auc.slice(0, 6).map(([feat, auc]: [number, number]) => ({
-            label: `feature #${feat}`, value: auc, color: auc >= 0.99 ? COLORS.green : COLORS.blueSoft as any,
+            label: `detector #${feat}`, value: auc, color: auc >= 0.99 ? COLORS.green : COLORS.blueSoft as any,
           }))}
           domain={[0, 1.05]}
-          xLabel="conclusion-decoding AUC"
+          xLabel="accuracy at spotting the conclusion (1.0 = perfect)"
           labelWidth={110}
           width={420}
         />
       </div>
       <div>
-        <div className="fig-sub" style={{ marginBottom: 6 }}>causation — recovery from top-K features alone</div>
+        <div className="fig-sub" style={{ marginBottom: 6 }}>does it drive the answer? — using only the top detectors</div>
         <BarsH
           items={[
-            ...L.sufficiency_byK.map((x: any) => ({ label: `top-${x.K} features`, value: x.mean, color: COLORS.orange })),
-            { label: 'random features (control)', value: L.control_byK?.[L.control_byK.length - 1]?.mean ?? 0, color: COLORS.gray },
+            ...L.sufficiency_byK.map((x: any) => ({ label: `top ${x.K} detectors`, value: x.mean, color: COLORS.orange })),
+            { label: 'random detectors (a sanity check)', value: L.control_byK?.[L.control_byK.length - 1]?.mean ?? 0, color: COLORS.gray },
           ]}
           domain={[-0.05, 1.05]}
-          xLabel="decision recovery"
+          xLabel="how much of the decision comes back"
           labelWidth={150}
           width={420}
         />
@@ -248,11 +248,21 @@ export function Circuit() {
   return (
     <Section meta={META}>
       <P>
-        Five further interventions resolve the mechanism to <em>components</em>: named attention
-        heads, a causal direction, sparse features, and a causal-scrubbing validation — replicated
-        across the four families. The shape that emerges everywhere:{' '}
-        <strong>attention writes the note redundantly across many mid-layer heads; a small,
-        nameable set of late heads reads it into the decision.</strong>
+        This is an optional deep-dive. Here we pop the hood and look at the actual machinery,
+        so it gets a bit more detailed — but we'll keep it in plain terms. Quick reminder: the
+        model keeps a kind of running notebook of notes as it reads (researchers call it the
+        &ldquo;KV cache&rdquo;). Earlier sections showed that editing one note can change the
+        model's answer. Now we trace which parts of the model put that note there, and which
+        parts read it back.
+      </P>
+      <P>
+        One clear pattern shows up across all four model families. We call it{' '}
+        <strong>&ldquo;distributed write, concentrated read.&rdquo;</strong> Many parts of the
+        model help write the conclusion into the notes — the work is spread out and redundant, so
+        there's no single piece you could remove to stop it. But only a small, identifiable handful
+        of &ldquo;look-back channels&rdquo; read that note back out when the model answers. (A
+        look-back channel is a specialized part of the model that, at each step, decides which
+        earlier notes to glance back at; researchers call these &ldquo;attention heads.&rdquo;)
       </P>
 
       <Controls>
@@ -262,15 +272,16 @@ export function Circuit() {
       </Controls>
 
       <Figure
-        label="Exp 1 — the heads."
-        title="Read heads concentrate; write heads don't"
+        label="Experiment 1 — the look-back channels."
+        title="A few channels read the note; many channels help write it"
         caption={
           <>
-            Each dot is a named head (hover for its id and score). Read heads — those attending
-            decision→aggregator at decode — are few and individually strong (top head{' '}
-            {m.read_heads[0]?.head} alone recovers {fmt(m.read_heads[0]?.rec, 2)} on {m.label});
-            write heads at prefill are many and individually weak. Patching random heads recovers{' '}
-            {fmt(m.read_ctrl?.mean, 3)}.
+            Each dot is one look-back channel (hover for its id and score). The blue ones read
+            the note when the model answers; there are only a few, and each one matters a lot — the
+            single strongest channel ({m.read_heads[0]?.head}) on its own brings back{' '}
+            {fmt(m.read_heads[0]?.rec, 2)} of the decision on {m.label}. The orange ones, which
+            help write the note as the model reads the prompt, are many and each does little on its
+            own. Picking channels at random brings back almost nothing ({fmt(m.read_ctrl?.mean, 3)}).
           </>
         }
       >
@@ -278,14 +289,15 @@ export function Circuit() {
       </Figure>
 
       <Figure
-        label="Cumulative top-k."
+        label="Adding channels one at a time."
         caption={
           <>
-            Stacking the top read heads recovers the decision rapidly (top-12:{' '}
-            {fmt(m.read_cumk?.[m.read_cumk.length - 1]?.mean, 2)} on {m.label}); stacking write
-            heads saturates low — the write is genuinely distributed, so there is no single
-            &ldquo;note-writing head&rdquo; to ablate. This asymmetry is why editing the cache
-            beats editing the computation.
+            Turn on the reading channels a few at a time and the decision snaps back fast (the top
+            twelve together: {fmt(m.read_cumk?.[m.read_cumk.length - 1]?.mean, 2)} on {m.label}).
+            Do the same with the writing channels and it never climbs much — the writing really is
+            spread out, so there's no one &ldquo;note-writing channel&rdquo; you could disable. This
+            lopsidedness is exactly why editing the notes works better than trying to edit the
+            model's wiring.
           </>
         }
       >
@@ -293,13 +305,17 @@ export function Circuit() {
       </Figure>
 
       <Figure
-        label="Exp 2 — attention vs. MLP."
+        label="Experiment 2 — look-back vs. per-position processing."
+        title="The note is mostly copied in, not computed on the spot"
         caption={
           <>
-            Decomposing what builds the note at the aggregator position, layer by layer up to the
-            readout: attention dominates the write ({fmt(m.components?.attn_share?.mean, 2)} share
-            on {m.label}) — consistent with a cross-token copy of a computed conclusion rather
-            than per-token feature synthesis.
+            What actually builds the note? The model has two kinds of machinery: the look-back
+            channels (which pull in information from earlier in the text) and a per-position
+            processing layer (which crunches each spot on its own; researchers call it the
+            &ldquo;MLP&rdquo;). Stage by stage, the look-back channels do most of the writing
+            ({fmt(m.components?.attn_share?.mean, 2)} of it on {m.label}). In other words, the
+            model is mostly copying a conclusion it already worked out elsewhere into the note,
+            rather than building it fresh at this spot.
           </>
         }
       >
@@ -307,14 +323,15 @@ export function Circuit() {
       </Figure>
 
       <Figure
-        label="Exp 3 — a causal conclusion direction."
+        label="Experiment 3 — the one setting that carries the conclusion."
         caption={
           <>
-            A difference-of-means direction in the aggregator&rsquo;s residual stream transfers
-            the decision when patched <em>along that single dimension</em> — far above a random
-            direction at the same layer — peaking mid-stack exactly where the timing analysis put
-            the write. The note has low-rank structure, but (next panels) no single feature is the
-            whole story.
+            Inside the note there's essentially a single dial that records which conclusion the
+            model reached. Copy just that one dial from another run and the decision follows it —
+            almost as well as copying the whole note, and far better than copying some random dial.
+            The effect peaks mid-way through the model, exactly where our earlier timing analysis
+            said the note gets written. So the note has simple structure — but, as the next panels
+            show, no single ingredient is the whole story.
           </>
         }
       >
@@ -323,31 +340,39 @@ export function Circuit() {
 
       <Figure
         narrow
-        label="Exp 4 — causal scrubbing."
+        label="Experiment 4 — the swap test."
+        title="The note alone decides the answer"
         caption={
           <>
-            The clinching test: resample the note from runs with the <em>same</em> conclusion and
-            nothing moves (drift ≈ {fmt(m.scrub?.drift?.drift_note_same?.mean, 2)}); swap the note
-            for the <em>opposite</em> conclusion and the decision follows it (
-            {fmt(m.scrub?.interchange?.rec_note_opp?.mean, 2)}); swap everything <em>except</em>{' '}
-            the note and it mostly doesn&rsquo;t ({fmt(m.scrub?.interchange?.rec_rest_opp?.mean, 2)}).
-            The note alone governs the decision.
+            The clinching test is to swap pieces between runs and watch what moves the answer
+            (researchers call this &ldquo;causal scrubbing&rdquo;). Swap in a note from a run that
+            reached the same conclusion and nothing changes (about{' '}
+            {fmt(m.scrub?.drift?.drift_note_same?.mean, 2)}). Swap in a note from a run that reached
+            the <em>opposite</em> conclusion and the answer flips to match it (
+            {fmt(m.scrub?.interchange?.rec_note_opp?.mean, 2)}). But swap in everything <em>except</em>{' '}
+            the note and the answer mostly stays put (
+            {fmt(m.scrub?.interchange?.rec_rest_opp?.mean, 2)}). So it's the note itself, and not the
+            surrounding context, that drives the decision.
           </>
         }
       >
         <Scrub m={m} />
       </Figure>
 
-      <H3>Decodable ≠ causal, down to single features</H3>
+      <H3>Being able to read it off is not the same as it driving the answer</H3>
       <Figure
-        label="Exp 5 — SAE features (Llama-3.1-8B, layer-14 SAE)."
+        label="Experiment 5 — learned detectors (Llama-3.1-8B)."
         caption={
           <>
-            A trained sparse autoencoder finds features that decode the conclusion{' '}
-            <em>perfectly</em> (AUC 1.0) — yet patching the top features alone recovers only about
-            half the decision, spreading over ~10–30 features. The same
-            decodability-vs-causation split the controls established in §12, now at the level of
-            single features: read the cache by its causal effect, not by what a probe can extract.
+            We trained a set of small detectors, each tuned to spot one pattern in the notes
+            (these come from a tool called a &ldquo;sparse autoencoder&rdquo;). Some of them can
+            tell which conclusion the model reached <em>perfectly</em> — a clean 1.0 on the left.
+            Yet when we let only those top detectors steer the model, they bring back only about
+            half the decision, and the real signal turns out to be spread over roughly ten to
+            thirty of them. It's the same lesson as the controls in the previous section, now down
+            to the finest level: being able to <em>read</em> something off the notes doesn't mean
+            it <em>drives</em> the answer. Judge a note by the effect it has, not by what a detector
+            can pull out of it.
           </>
         }
       >
@@ -355,10 +380,11 @@ export function Circuit() {
       </Figure>
 
       <Aside>
-        <b>Why this matters for the capabilities.</b> The write is distributed (no clean
-        weight-space handle), but the <em>written artifact</em> — the note in the KV cache — is
-        compact, localized, and writable. Intervening on the cache is intervening at the
-        circuit&rsquo;s natural bottleneck. That is exactly what the next two sections do.
+        <b>Why this matters for what comes next.</b> Because the writing is spread all over the
+        model, there's no clean knob in the model's wiring to turn. But the thing it writes — the
+        note in the notebook — is small, sits in one place, and we can change it directly. Editing
+        the note means working at the one natural choke point in this machinery. That's exactly
+        what the next two sections do.
       </Aside>
     </Section>
   )

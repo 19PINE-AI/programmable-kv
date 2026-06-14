@@ -1,36 +1,36 @@
 import { Section, P } from '../components/ui/Section'
 import constants from '../data/constants.json'
 
-const META = { id: 'boundaries', num: '15', title: 'Boundaries and colophon' }
+const META = { id: 'boundaries', num: '15', title: "What it can't do (yet)" }
 
 const LIMITS = [
   {
-    t: 'Per-token attention KV required',
-    d: 'Pure-recurrent (RWKV), pure-SSM (Mamba), and diffusion LMs are out of scope; hybrid attention+SSM models are only partially served — the recurrent state is not transplantable.',
+    t: 'Only works on the usual kind of model',
+    d: 'Our approach needs a model that keeps its notes as a per-word "KV cache" — the running notebook a model fills in as it reads. Some newer designs (RWKV, Mamba, and diffusion language models) store their state differently and are out of scope. Mixed designs are only partly covered, because part of their memory cannot be moved.',
   },
   {
-    t: 'field+selective@K is unreliable by design',
-    d: 'Conclusion stickiness is model- and domain-dependent (K★≈4 at 8B, >64 at 4B); the paper presents it as a measured tool, not a default.',
+    t: 'The near-free quick edit is not reliable',
+    d: 'Editing just one fact and a few of the model’s nearby notes is cheap, but how well it sticks depends on the model and the situation: a small tweak is enough for one model (about 4 notes at 8B), while another needs far more (over 64 at 4B). We treat it as a tool you measure case by case, not a default you can trust blindly.',
   },
   {
-    t: 'Near-verbatim lookup is a partial exception',
-    d: 'For attribute-lookup tasks the downstream note is partly a literal copy of the field, so field-only recovery is bounded (0.25–0.63) rather than ≈0.',
+    t: 'Simple lookups are a partial exception',
+    d: 'When the task is just to look up a stored value, the model’s note is partly a literal copy of that value. So editing the fact alone still changes the answer somewhat (recovery 0.25–0.63) instead of having almost no effect.',
   },
   {
-    t: 'Adapter edge cases remain',
-    d: 'A single transplanted chunk that itself exceeds Gemma’s sliding window drops to logit cosine ≈0.89 (real skills are far smaller); small MLA checkpoints ship legacy-cache custom modeling that needs a shim.',
+    t: 'A few rough edges remain',
+    d: 'If a single transplanted piece is itself larger than Gemma’s attention window, quality dips (logit cosine ≈0.89) — though real reusable skills are far smaller. And a few small models ship older code that needs a minor patch to work with our method.',
   },
   {
-    t: 'The 2026 compressed frontier is analyzed, not implemented',
-    d: 'Sequence-dimension KV compression (DeepSeek-V4-class CSA/HCA) makes the unit of edit/splice a block rather than a token; cross-attention image caches are likewise open.',
+    t: 'The newest compressed models: analyzed, not built',
+    d: 'Some 2026 models squeeze their notes into blocks rather than per-word entries (DeepSeek-V4-class designs). With those, the smallest thing you can edit or splice is a whole block, not a single word. Editing the memory behind images is similarly still open. We analyze these cases but have not implemented them.',
   },
   {
-    t: 'Synthetic policies, mitigated',
-    d: 'Several studies use synthetic policies for controlled measurement; the τ²-bench retail policy, real images, and LoCoMo conversations mitigate this. Broader real-workload evaluation remains future work.',
+    t: 'Some tests use made-up rules, partly addressed',
+    d: 'Several of our experiments use synthetic (made-up) policies so we can measure things cleanly. We balance this with real material: an actual retail-support benchmark (τ²-bench), real images, and real recorded conversations (LoCoMo). Testing on a wider range of real workloads is still to come.',
   },
   {
-    t: 'Credit where due',
-    d: 'The caching machinery (position-independent reuse, boundary recompute, RoPE repositioning) is prior art — Prompt Cache, CacheBlend, EPIC, CacheSlide, MPIC. This editable/composable-cache direction grew directly out of EPIC and CacheSlide and out of discussions with Junhao Hu (first author of EPIC; see acknowledgement below). The paper claims the mechanism, the unification, the decision-governance lens, and the attention-variant adapters — not the reuse machinery itself.',
+    t: 'Credit where it is due',
+    d: 'The underlying caching machinery (reusing notes regardless of position, recomputing at boundaries, and re-anchoring positions) is prior work — Prompt Cache, CacheBlend, EPIC, CacheSlide, MPIC. This editable-and-composable-cache direction grew directly out of EPIC and CacheSlide and out of discussions with Junhao Hu (first author of EPIC; see the acknowledgement below). What we claim as new is the explanation of how it works, the unified view, the decision-governance angle, and the adapters for different attention designs — not the reuse machinery itself.',
   },
 ]
 
@@ -49,11 +49,12 @@ export function Boundaries() {
       </div>
 
       <P>
-        <strong>The closing lens.</strong> A surgical edit to a field&rsquo;s KV is ignored not
-        because the cache is fragile but because the model already did the work: at prefill it
-        memoizes the field-conditioned conclusion onto downstream aggregator tokens, and the
-        decision reads those notes. The cache is a readable, writable record of what a model has
-        already concluded — we hope the lens is useful well beyond editing and composition.
+        <strong>The big idea.</strong> When you edit one fact in the model’s notes and the answer
+        does not change, it is not because the notes are flimsy. It is because the model already did
+        the thinking earlier: as it first reads the input, it writes a conclusion into its notes,
+        and the final answer just reads that conclusion back. So the model’s notebook is a record
+        you can read and write — a record of what the model has already figured out. We hope that
+        way of seeing it proves useful well beyond editing and combining notes.
       </P>
 
       <div className="colophon">
@@ -71,12 +72,12 @@ export function Boundaries() {
           <a href={(constants.paper_meta as any).github} target="_blank" rel="noreferrer">
             github.com/19PINE-AI/programmable-kv
           </a>
-          . Every number shown is read from the released result records and run logs; prompts are
-          regenerated by the released deterministic harness builders. The handful of values that
-          exist only in the paper text are marked inline with a{' '}
+          . Every number you see here is read straight from the released results and run logs, and
+          the example prompts are regenerated by the released code, so they come out the same every
+          time. The few values that appear only in the paper’s text are flagged inline with a{' '}
           <span className="paper-const">⊙ from paper text</span> badge. Recorded model outputs are
-          shown exactly as the harness stored them (tool call, thinking-token count, truncated
-          answer head) — never reconstructed.
+          shown exactly as they were saved (tool call, count of thinking tokens, and the start of
+          the answer) — never made up after the fact.
         </p>
         <div className="citation-block">{`@article{li2026programmablekv,
   title  = {Models Take Notes at Prefill:

@@ -7,7 +7,7 @@ import { COLORS } from '../components/charts/core'
 import { fmt } from '../lib/format'
 import reach from '../data/reach.json'
 
-const META = { id: 'reach', num: '11', title: 'Reach: where the substrate holds' }
+const META = { id: 'reach', num: '11', title: 'Where this works' }
 
 interface Card {
   status: string
@@ -25,69 +25,73 @@ function VariantMap() {
 
   const cards: Card[] = [
     {
-      status: 'FREE', color: COLORS.green, title: 'throughput optimizations that keep per-token KV',
+      status: 'WORKS FREE', color: COLORS.green, title: 'speed tricks that keep one note per word',
       items: 'FlashAttention · paged attention / vLLM · GQA / MQA',
       body: (
-        <>The operations act on the cache <em>representation</em>, not the attention kernel — these
-        transfer with zero work, and every model in the study already uses them.</>
+        <>These are common tricks for making models run faster. Because our idea works on the{' '}
+        <em>notes themselves</em>, not on how the model reads them, it carries over with no extra
+        work — and every model we tested already uses these tricks.</>
       ),
     },
     {
-      status: 'ADAPTER', color: COLORS.blue, title: 'representation changes — small adapters, implemented & validated',
+      status: 'SMALL ADAPTER', color: COLORS.blue, title: 'a few designs that store notes a bit differently — easy to bridge',
       items: 'MLA (DeepSeek-V2) · interleaved M-RoPE (Qwen3-VL)',
       body: (
         <>
-          <b>MLA</b> caches a position-free latent plus a small decoupled-RoPE sub-vector{' '}
-          <code>k_pe</code>; the adapter re-rotates <em>only that sub-vector</em>. On
-          DeepSeek-Coder-V2-Lite: composed-vs-full agreement <b>{fmt(mla?.agreement, 2)}</b>, logit
-          cosine <b>{fmt(mla?.cos, 3)}</b> over {mla?.n} decisions. (On the weaker V2-Lite-Chat
-          checkpoint, agreement is {fmt(mlaWeak?.agreement, 2)} at cosine {fmt(mlaWeak?.cos, 3)} —
-          reported honestly; the paper cites the Coder result.)
+          Some models save space by storing each note in a compressed form, where a small piece of
+          the note records <em>where</em> the word sat in the text. When we move notes around, we
+          only need to update that small piece — a tiny bit of bridging code. On one DeepSeek model
+          this matched the from-scratch answer <b>{fmt(mla?.agreement, 2)}</b> of the time, a near-perfect{' '}
+          <b>{fmt(mla?.cos, 3)}</b> match on the model&rsquo;s raw scores, across {mla?.n} decisions.
+          (On a weaker version of the model it was {fmt(mlaWeak?.agreement, 2)} ({fmt(mlaWeak?.cos, 3)}) —
+          we report this honestly; the paper cites the stronger result.)
           <br />
-          <b>Interleaved M-RoPE</b>: moving an image re-rotates only the temporal axis — see the
-          multimodal panel below.
+          The same idea handles image inputs: moving an image only updates its position marker — see
+          the panel below.
         </>
       ),
     },
     {
-      status: 'FIXED', color: COLORS.purple, title: 'sliding-window attention (Gemma) — a cache-layout bug, fixed',
+      status: 'CONFIG FIX', color: COLORS.purple, title: 'models that normally keep only recent notes (Gemma) — one setting to change',
       items: 'Gemma-2 · Gemma-3',
       body: (
         <>
-          The default cache <em>truncates</em> sliding-window layers to the window, destroying the
-          per-token KV a splice needs beyond it. Keeping the full per-token KV and letting the
-          attention <em>mask</em> enforce the window restores uniform edit/splice semantics: the
-          previously-failing unified agent runs at agreement{' '}
-          <b>{fix.map((f) => fmt(f.agreement, 2)).join(' / ')}</b> ({fix.map((f) => f.label).join(', ')}).
-          The substrate requirement is per-token KV — not full attention.
+          By default these models throw away older notes to save memory, which leaves nothing to
+          move. If you simply tell the model to <em>keep</em> all its notes (it can still choose to
+          read only the recent ones), our idea works normally again: the agent that used to fail
+          now matches the from-scratch answer{' '}
+          <b>{fix.map((f) => fmt(f.agreement, 2)).join(' / ')}</b> of the time ({fix.map((f) => f.label).join(', ')}).
+          The only thing we need is that the model keeps one note per word.
         </>
       ),
     },
     {
-      status: 'PARTIAL', color: COLORS.orange, title: 'hybrid attention + SSM',
+      status: 'PARTIAL', color: COLORS.orange, title: 'hybrid models — half notebook, half running summary',
       items: 'Falcon-H1',
       body: (
-        <>The attention KV transplants, but the per-layer Mamba scan-state is recurrent, not
-        per-token — a correct transplant must re-scan the Mamba path and saves only the attention
-        fraction.</>
+        <>These models mix two styles: one part keeps a note per word (which we can move), and one
+        part keeps only a single running summary instead of separate notes. We can reuse the
+        note-keeping part, but the running-summary part has to be rebuilt — so we save only some of
+        the work.</>
       ),
     },
     {
-      status: 'OPEN', color: COLORS.gray, title: 'the 2026 sparse / compressed-attention frontier',
+      status: 'OPEN FRONTIER', color: COLORS.gray, title: 'newest 2026 designs that merge several words into one note',
       items: 'DeepSeek-V4 CSA/HCA · DeepSeek-V3.2 DSA',
       body: (
-        <>Sequence-dimension KV compression merges tokens into fewer-than-token entries, so edit
-        and splice become <em>block</em>-granular — analyzed but not implemented. DSA is MLA plus
-        top-k selection and inherits the MLA adapter directly.</>
+        <>To save even more memory, these brand-new designs bundle several words into a single note.
+        Our idea should still apply, but it would work in chunks rather than word-by-word — we have
+        worked this out on paper but not yet built it. One of them is just the compressed style
+        above with an extra filter, so it can reuse the same bridging code.</>
       ),
     },
     {
-      status: 'OUT OF SCOPE', color: COLORS.red, title: 'no per-token attention KV at all',
+      status: 'OUT OF SCOPE', color: COLORS.red, title: 'designs that keep no per-word notes at all',
       items: 'pure-recurrent (RWKV) · pure-SSM (Mamba) · diffusion LMs',
       body: (
-        <>The prompt-level erratum still applies as plain text, but there is no per-token cache to
-        edit or splice — §3&rsquo;s architecture bar shows the erratum&rsquo;s recovery decaying
-        exactly along this axis.</>
+        <>A few model designs keep only one running summary and never store a separate note per
+        word. You can still fix things by editing the text you feed in, but there are no per-word
+        notes to move — so this idea doesn&rsquo;t apply to them.</>
       ),
     },
   ]
@@ -131,10 +135,10 @@ function VisionHeat() {
       cols={cats}
       value={(r, c) => vis[r].by_category?.[cats[c]]?.agreement ?? null}
       colorOf={(v) => (v === null ? '#f0eee6' : ramp(v, [61, 111, 180]))}
-      colLabel="spliced image-KV vs. full re-encode — decision agreement by task category (120 VQA tasks per model)"
+      colLabel="reusing saved image notes vs. processing the image from scratch — how often they agree, by task type (120 image questions per model)"
       rowLabelWidth={150}
       tooltip={(r, c) =>
-        `${vis[r].label} · ${cats[c]}: agreement ${fmt(vis[r].by_category[cats[c]].agreement, 2)} (n=${vis[r].by_category[cats[c]].n})`}
+        `${vis[r].label} · ${cats[c]}: agree ${fmt(vis[r].by_category[cats[c]].agreement, 2)} (n=${vis[r].by_category[cats[c]].n})`}
     />
   )
 }
@@ -151,7 +155,7 @@ function VisionShift() {
         color: COLORS.blue,
       }))}
       domain={[0.5, 1.05]}
-      xLabel="position-shifted image (temporal-axis re-rotation only) vs. full — agreement"
+      xLabel="moving an image to a new spot (updating only its position marker) vs. from scratch — how often they agree"
       refX={[{ x: 1, label: 'identical' }]}
       labelWidth={165}
     />
@@ -162,41 +166,43 @@ export function Reach() {
   return (
     <Section meta={META}>
       <P>
-        Where exactly do these operations hold? The answer is a representational condition, not an
-        architectural family: <strong>anything that keeps one KV entry per token per layer</strong>.
-        The paper maps the 2025–26 attention landscape against that condition — click a row:
+        As it reads, a model writes down a short note about each word — a kind of running notebook.
+        Our whole approach edits and rearranges those notes. So the real question isn&rsquo;t which
+        brand of model you have; it&rsquo;s simply: <strong>does the model keep one note per word?</strong>{' '}
+        If it does, the idea works. Below we sort the recent models into six groups — click a row to
+        see why.
       </P>
 
       <Figure
-        label="The attention-variant map."
+        label="Which models this works on."
         caption={
           <>
-            Free / adapter / fixed / partial / open / out-of-scope. The two implemented adapters
-            (MLA&rsquo;s decoupled <code>k_pe</code> re-rotation, M-RoPE&rsquo;s temporal-axis
-            re-rotation) and the sliding-window cache fix each touch only the position-dependent
-            slice of the representation — the substrate does the rest.
+            From left to right: works for free, needs a small bridge, needs a setting changed, works
+            partially, an open frontier, and out of scope. In every case that needs a bit of work,
+            the only thing we touch is the small part of each note that records where the word sat —
+            the notes themselves carry the rest.
           </>
         }
       >
         <VariantMap />
       </Figure>
 
-      <H3>Images take notes too</H3>
+      <H3>Images get notes too</H3>
       <P>
-        In a vision-language agent, an image costs the vision tower <em>plus</em> prefilling
-        &gt;1k soft-tokens through the LM on every reuse. Image notes are position-portable just
-        like text notes: cache the image&rsquo;s LM-side KV once, splice it, re-run only the text.
+        Models that can see take notes about images, just like they do about words. Normally,
+        re-using an image means processing it all over again — slow work. Instead, we save the
+        image&rsquo;s notes once and reuse them, re-running only the text around it.
       </P>
 
       <Figure
         narrow
-        label="Image-KV transplant."
+        label="Reusing saved image notes."
         caption={
           <>
-            Near-lossless across perception, reasoning, and agentic VQA on four vision-language
-            models (agreement 0.958–1.0 overall) — and moving an image to a different trajectory
-            position needs only the temporal M-RoPE axis re-rotated, in both the sectioned
-            (Qwen2.5-VL) and interleaved (Qwen3-VL) layouts.
+            Almost no loss in quality across three kinds of image tasks on four vision-capable
+            models (they agree with the from-scratch answer 95.8%–100% of the time). And moving an
+            image to a new spot only takes updating its position marker — true for both ways these
+            models lay out their notes.
           </>
         }
       >
@@ -206,10 +212,11 @@ export function Reach() {
       </Figure>
 
       <Aside>
-        <b>Scale, quantization, MoE.</b> The transplant is faithful from 0.6B to 32B, on FP8
-        checkpoints, on a 30B-A3B Mixture-of-Experts, and on a 4-bit 70B (logit cosine 0.986) —
-        the unified agent of §9 spans all thirteen. Per-token KV, not model size, is the
-        load-bearing assumption.
+        <b>Big or small, compressed, or split into specialists.</b> Reusing notes stays faithful
+        across a wide range of model sizes, on models squeezed to use less memory (a 70B model
+        shrunk to 4 bits still matched at 0.986), and on models that route each word to different
+        specialist parts. The single agent of §9 spans all thirteen models we tested. What matters
+        is keeping one note per word — not how big the model is.
       </Aside>
     </Section>
   )

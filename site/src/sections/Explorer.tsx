@@ -5,7 +5,7 @@ import { Controls, ControlGroup, Seg, ModelPicker } from '../components/ui/Contr
 import { SegmentedPrompt } from '../components/diagrams/SegmentedPrompt'
 import prompts from '../data/prompts.json'
 
-const META = { id: 'explorer', num: '14', title: 'Prompts and test cases, verbatim' }
+const META = { id: 'explorer', num: '14', title: 'See the real prompts' }
 
 /** Plain prompt box with substring highlights (first occurrence each). */
 function HighlightedPrompt({ text, marks, maxHeight = 420 }: { text: string; marks: { substr: string; cls: string }[]; maxHeight?: number }) {
@@ -47,21 +47,21 @@ function ScenarioBrowser() {
             onChange={(k) => setKey(k)}
           />
         </ControlGroup>
-        <ControlGroup label="version">
+        <ControlGroup label="prompt version">
           <Seg
             options={['original', 'changed', 'erratum', 'hoist'] as const}
             value={treat}
             onChange={setTreat}
-            labels={{ original: 'original', changed: 'field changed', erratum: '+ erratum', hoist: 'hoisted' }}
+            labels={{ original: 'original', changed: 'one fact changed', erratum: 'note added at end', hoist: 'fact moved to end' }}
           />
         </ControlGroup>
       </Controls>
 
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', margin: '0 0 10px' }}>
         <code>{s.label}</code>: <span className="hl-field">{s.v_old}</span> → <span className="hl-diff">{s.v_new}</span>
-        &nbsp;·&nbsp; expected action flips <code>{s.exp_old}</code> → <code>{s.exp_new}</code>
-        {treat === 'erratum' && <> &nbsp;·&nbsp; the appended erratum is highlighted green at the end</>}
-        {treat === 'hoist' && <> &nbsp;·&nbsp; the mutable field is rewritten to sit at the end (prompt surgery)</>}
+        &nbsp;·&nbsp; the right answer changes from <code>{s.exp_old}</code> to <code>{s.exp_new}</code>
+        {treat === 'erratum' && <> &nbsp;·&nbsp; the correction note added at the end is highlighted green</>}
+        {treat === 'hoist' && <> &nbsp;·&nbsp; the changeable fact is rewritten so it now sits at the end</>}
       </div>
 
       {treat === 'original' ? (
@@ -86,7 +86,7 @@ function FieldTaxonomy() {
   return (
     <table className="data-table">
       <thead>
-        <tr><th>field</th><th>conditioning</th><th>old value</th><th>semantic flip</th><th># rules that branch on it</th></tr>
+        <tr><th>fact</th><th>how much it matters</th><th>old value</th><th>change tested</th><th># rules that depend on it</th></tr>
       </thead>
       <tbody>
         {fields.map((f) => (
@@ -128,11 +128,11 @@ function DissociationPair() {
         return (
           <div key={v.trigger}>
             <div style={{ fontFamily: 'var(--sans)', fontSize: 12, marginBottom: 6 }}>
-              trigger = <code>{v.trigger}</code> → conclusion: <b>{v.conclusion}</b>
+              one word changed: <code>{v.trigger}</code> → the answer becomes: <b>{v.conclusion}</b>
             </div>
             <div className="prompt-box" style={{ maxHeight: 260, fontSize: 11 }}>
               <span className="hl-field">{dis.field_label}: {dis.field_value}</span>
-              <span className="dim">  ← byte-identical{'\n\n'}</span>
+              <span className="dim">  ← exactly the same in both{'\n\n'}</span>
               {parts[0]}<span className="hl-diff">{v.trigger}</span>{parts.slice(1).join(v.trigger)}
               {'\n\n'}<span className="dim">user: {dis.request}</span>
             </div>
@@ -156,9 +156,9 @@ function SkillCard() {
         maxHeight={340}
       />
       <div style={{ fontFamily: 'var(--sans)', fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 8 }}>
-        Precompiled in isolation at positions 0…L−1, keys re-rotated to the target offset, spliced
-        after the system prompt. Correct decision: <b>{sk.correct}</b> — preserved by the
-        transplant (§2), including under chain-of-thought.
+        This skill was prepared on its own, then dropped into the prompt right after the system
+        instructions — like pasting in a pre-written note. The right decision is <b>{sk.correct}</b>,
+        and the model still gets it right after the transplant (§2), even when it reasons step by step.
       </div>
     </div>
   )
@@ -168,10 +168,10 @@ function RecordedOutcomes() {
   const recs = prompts.thinking as any[]
   const conds = ['oracle_new', 'stale_full', 'field_only', 'oracle_old'] as const
   const LBL: Record<string, string> = {
-    oracle_new: 'oracle (clean prefill, new value)',
-    stale_full: 'stale cache reused',
-    field_only: 'field-only in-place edit',
-    oracle_old: 'clean prefill of the OLD value',
+    oracle_new: 'fresh notes, new value (the gold standard)',
+    stale_full: 'old notes reused, never updated',
+    field_only: 'just the one fact patched in the notes',
+    oracle_old: 'fresh notes, but the old value',
   }
   return (
     <div style={{ display: 'grid', gap: 18 }}>
@@ -179,13 +179,13 @@ function RecordedOutcomes() {
         <div key={r.scenario}>
           <div style={{ fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 600, marginBottom: 6 }}>
             {r.scenario} <span style={{ color: 'var(--ink-faint)', fontWeight: 400 }}>
-              · {r.seq_len} tokens · field = {(r.field_recompute_frac * 100).toFixed(1)}% of the cache
-              · stale recovers: {r.stale_recovers ? 'yes' : 'no'} · field-only recovers (CoT): {r.field_only_recovers ? 'yes' : 'no'}
+              · {r.seq_len} tokens · the changed fact is {(r.field_recompute_frac * 100).toFixed(1)}% of the notes
+              · old notes get the right answer: {r.stale_recovers ? 'yes' : 'no'} · patching just the fact works (with step-by-step reasoning): {r.field_only_recovers ? 'yes' : 'no'}
             </span>
           </div>
           <table className="data-table">
             <thead>
-              <tr><th>cache state</th><th>tool chosen</th><th>thinking tokens</th><th>recorded answer head (verbatim, truncated by the harness)</th></tr>
+              <tr><th>state of the notes</th><th>tool chosen</th><th>thinking tokens</th><th>start of the recorded answer (word for word, cut off by the test harness)</th></tr>
             </thead>
             <tbody>
               {conds.filter((c) => r[c]).map((c) => (
@@ -204,19 +204,20 @@ function RecordedOutcomes() {
   )
 }
 
-const TABS = ['decision scenarios', 'field taxonomy', 'dissociation pair', 'transplant skill', 'recorded outcomes'] as const
+const TABS = ['decision scenarios', 'which facts matter', 'one word, two answers', 'transplanted skill', 'recorded outcomes'] as const
 
 export function Explorer() {
   const [tab, setTab] = useState<(typeof TABS)[number]>('decision scenarios')
   return (
     <Section meta={META}>
       <P>
-        Everything in this paper runs on prompts you can read. The harness builders are
-        deterministic, so the prompts below are regenerated <em>exactly</em> as the experiments
-        saw them — the mutable field, the gating rule, the erratum line, the transplanted skill,
-        and the recorded model outcomes. (Model outputs are stored as tool calls,
-        thinking-token counts, and a truncated answer head; full chains were not retained, and we
-        show only what was recorded.)
+        Everything in this study runs on prompts you can read for yourself. Poke around below.
+        Nothing here is faked or rebuilt for show: these are the exact prompts the model saw and
+        the exact answers it gave. As you change a fact, watch how the right answer changes with
+        it. Throughout, the "notes" means the model's working memory of the prompt — the running
+        set of notes it builds while reading (researchers call it the KV cache).
+        (For each answer we kept the tool the model picked, how many tokens it spent thinking, and
+        the opening of its reply. We did not save the full reply, so we only show what was recorded.)
       </P>
 
       <Figure narrow>
@@ -226,9 +227,9 @@ export function Explorer() {
           ))}
         </div>
         {tab === 'decision scenarios' && <ScenarioBrowser />}
-        {tab === 'field taxonomy' && <FieldTaxonomy />}
-        {tab === 'dissociation pair' && <DissociationPair />}
-        {tab === 'transplant skill' && <SkillCard />}
+        {tab === 'which facts matter' && <FieldTaxonomy />}
+        {tab === 'one word, two answers' && <DissociationPair />}
+        {tab === 'transplanted skill' && <SkillCard />}
         {tab === 'recorded outcomes' && <RecordedOutcomes />}
       </Figure>
     </Section>
