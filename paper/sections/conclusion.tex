@@ -7,9 +7,7 @@ downstream aggregator tokens, so the decision only reads those notes back. This 
 is---not a write-once byproduct of prefill, but a structured record of intermediate conclusions that we can
 read, amend, and rearrange. Two capabilities follow from the one mechanism: \emph{editing} the notes (a late,
 salient erratum in place of recomputation) and \emph{composing} them (repositioning and splicing a
-precompiled skill in $O(L)$ time); a keystone experiment shows both act on the same notes. The account holds
-wherever attention keeps per-token KV, up to the block-granular frontier of 2026 sparse-attention designs
-\citep{deepseekv32,deepseekv4}.
+precompiled skill in $O(L)$ time).
 
 The question this opens is larger than either operation. If prefill routinely deposits reusable conclusions
 into the cache, then much of what a model has worked out mid-context is already written down somewhere we can
@@ -20,5 +18,5 @@ composed and edited---exposing notes that are cleanly addressable, splice-able, 
 turn the cache from a linear, append-only log into a \emph{programmable} memory the system reads, writes, and
 rearranges. Once the KV cache is programmable rather than merely linear, context engineering changes
 shape significantly: \emph{skills, memory, and state become first-class, reusable cache objects} rather than text re-prefilled
-on every turn. We offer \emph{models take notes at prefill} as a first step toward that programmable KV
+on every turn. This paper is a first step toward the vision of programmable KV
 cache---a notebook the model keeps for itself, and one it can learn to read and edit.
