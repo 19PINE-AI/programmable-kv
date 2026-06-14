@@ -13,12 +13,12 @@ wherever attention keeps per-token KV, up to the block-granular frontier of 2026
 
 The question this opens is larger than either operation. If prefill routinely deposits reusable conclusions
 into the cache, then much of what a model has worked out mid-context is already written down somewhere we can
-inspect and overwrite---not buried in its weights, and not only spelled out in its generated text. Editing
+inspect and overwrite. Editing
 and composition are two uses of that record, and they work today even though no model was trained for them.
 The larger opportunity is to make this explicit: models trained to be \emph{aware} that their KV can be
 composed and edited---exposing notes that are cleanly addressable, splice-able, and revisable by design---would
 turn the cache from a linear, append-only log into a \emph{programmable} memory the system reads, writes, and
 rearranges. Once the KV cache is programmable rather than merely linear, context engineering changes
-character: skills, memory, and state become first-class, reusable cache objects rather than text re-prefilled
+shape significantly: \emph{skills, memory, and state become first-class, reusable cache objects} rather than text re-prefilled
 on every turn. We offer \emph{models take notes at prefill} as a first step toward that programmable KV
 cache---a notebook the model keeps for itself, and one it can learn to read and edit.
