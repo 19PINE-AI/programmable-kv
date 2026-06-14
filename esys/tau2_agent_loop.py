@@ -16,10 +16,11 @@ cancel/deny action, executed against the real tools (cancel_pending_order RAISES
 
 Run: MECH_ATTN=sdpa python esys/tau2_agent_loop.py --n 30
 """
+import os
 import argparse, os, sys, json, re
 import torch
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, "/home/ubuntu/tau2-bench/src")
+sys.path.insert(0, os.environ.get("TAU2_SRC", os.path.expanduser("~/tau2-bench/src")))
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.cache_utils import DynamicCache
 from tau2.domains.retail.environment import get_environment

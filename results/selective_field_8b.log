@@ -1,21 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.83it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:01,  1.95it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:01<00:01,  1.96it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:01<00:00,  2.09it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.75it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:02<00:00,  2.35it/s]
-  account_role/A4471 done
-  account_role/B8820 done
-  safety_mode/A4471 done
-  safety_mode/B8820 done
-
-==== FIELD + SELECTIVE (k=32) — BOTH MODES — Qwen/Qwen3-8B ====
-  [non_reasoning] (n=4)
-     stale                  P_correct=0.00 CI(0, 0.49)
-     full                   P_correct=1.00 CI(0.51, 1)
-     erratum                P_correct=1.00 CI(0.51, 1)
-     field_only             P_correct=0.00 CI(0, 0.49)
-     field+attndiff@32      P_correct=0.00 CI(0, 0.49)
-     field+decattn@32       P_correct=0.50 CI(0.15, 0.85)
-  [reasoning] (n=12)
-     full                   P_correct=1.00 CI(0.76, 1)
-     erratum                P_correct=1.00 CI(0.76, 1)
-     field_only             P_correct=1.00 CI(0.76, 1)
-     field+attndiff@32      P_correct=0.83 CI(0.55, 0.95)
-     field+decattn@32       P_correct=1.00 CI(0.76, 1)
-SELECTIVE_FIELD_DONE

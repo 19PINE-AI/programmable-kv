@@ -1,8 +1,9 @@
 # Editable KV cache, explained from scratch
 
 *A gentle walkthrough of what this project is, the problem it solves, and what we
-found. No prior knowledge assumed. The dense technical version is
-[`FINDINGS_FINAL.md`](FINDINGS_FINAL.md).*
+found. No prior knowledge assumed. The full technical version is the paper
+([`../paper/main.pdf`](../paper/main.pdf)); the mechanistic deep-dive is
+[`MECHANISM.md`](MECHANISM.md).*
 
 ---
 

@@ -1,12 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:  14%|█▍        | 1/7 [00:00<00:05,  1.01it/s]Loading checkpoint shards:  29%|██▊       | 2/7 [00:01<00:04,  1.16it/s]Loading checkpoint shards:  43%|████▎     | 3/7 [00:02<00:03,  1.23it/s]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:03<00:02,  1.28it/s]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:03<00:01,  1.32it/s]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:04<00:00,  1.34it/s]Loading checkpoint shards: 100%|██████████| 7/7 [00:05<00:00,  1.21it/s]Loading checkpoint shards: 100%|██████████| 7/7 [00:05<00:00,  1.23it/s]
-  [account_role/A4471] inplace_base=0/2 block_cot_field=0/2 block_dec_field=0/2 block_cot_gate=0/2 | CoT->field=0.001 CoT->gate=0.000
-  [safety_mode/A4471] inplace_base=2/2 block_cot_field=0/2 block_dec_field=2/2 block_cot_gate=2/2 | CoT->field=0.001 CoT->gate=0.000
-
-==== D4 REASONING RE-READ SUMMARY ====
-  inplace_base       P_correct=0.5 CI(0.15, 0.85) (n=4)
-  block_cot_field    P_correct=0.0 CI(0, 0.49) (n=4)
-  block_dec_field    P_correct=0.5 CI(0.15, 0.85) (n=4)
-  block_cot_gate     P_correct=0.5 CI(0.15, 0.85) (n=4)
-  CoT->field attn mass=0.0007  CoT->gate band=0.0002
-  HYPOTHESIS: block_cot_field collapses while block_dec_field & block_cot_gate hold
-D4_REASONING_REREAD_DONE

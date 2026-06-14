@@ -1,13 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.47it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.33it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.31it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.43it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.40it/s]
-  [0/108] full_acc~1.00 pre_acc~0.00
-  [20/108] full_acc~1.00 pre_acc~0.48
-  [40/108] full_acc~1.00 pre_acc~0.46
-  [60/108] full_acc~1.00 pre_acc~0.41
-  [80/108] full_acc~1.00 pre_acc~0.43
-  [100/108] full_acc~1.00 pre_acc~0.44
-
-=== AGENTIC TOOL-CALLING (transplanted tool-defs), unsloth/gemma-2-9b-it, n=108 ===
-  full fn+arg acc      = 1.0 CI[1.0, 1.0]
-  precompiled fn+arg   = 0.435 CI[0.343, 0.528]
-  tool-call agreement  = 0.454 CI[0.361, 0.546]
-AGENTIC_DONE

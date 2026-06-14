@@ -1,18 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:06,  1.65s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.23s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:01,  1.04it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:04<00:01,  1.07s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:04<00:00,  1.22it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:04<00:00,  1.03it/s]
-=== COMPOSE-THEN-EDIT keystone (Qwen/Qwen3-8B) ===
-  account   recomputed: in_place=+0.24 sel@32=+0.48 err=+1.38 | composed: in_place=+0.78 sel@32=+0.89 err=+0.22
-  order     recomputed: in_place=+0.44 sel@32=+0.72 err=-0.58 | composed: in_place=-0.43 sel@32=+0.13 err=-0.07
-  subscription recomputed: in_place=+0.04 sel@32=+0.06 err=+3.08 | composed: in_place=+0.07 sel@32=+0.69 err=+2.16
-  door      recomputed: in_place=-0.11 sel@32=+0.93 err=+2.20 | composed: in_place=+0.36 sel@32=+0.64 err=+4.86
-  payout    recomputed: in_place=-0.31 sel@32=+0.35 err=+2.88 | composed: in_place=-0.06 sel@32=+0.00 err=+1.83
-  post      recomputed: in_place=-0.68 sel@32=+0.52 err=+0.36 | composed: in_place=+0.50 sel@32=+2.50 err=+1.25
-  ship      recomputed: in_place=-1.22 sel@32=-1.67 err=-2.67 | composed: in_place=-0.57 sel@32=-0.14 err=-2.71
-  login     recomputed: in_place=-0.50 sel@32=+1.44 err=+3.75 | composed: in_place=+0.92 sel@32=+4.25 err=+15.17
-
-  MEAN recovery (n=8, clean flips=0/8):
-  method       recomputed     composed
-  in_place         -0.262        0.196
-  sel@8            -0.503        0.346
-  sel@32            0.354        1.119
-  erratum           1.301        2.839
-COMPOSE_EDIT_DONE

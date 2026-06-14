@@ -17,7 +17,7 @@ import vllm.platforms as _P  # NVML-broken-box workaround (see §10.1); harmless
 _P.builtin_platform_plugins["cuda"] = lambda: "vllm.platforms.cuda.CudaPlatform"
 _P._current_platform = None
 from vllm import LLM, SamplingParams
-TAU2 = "/home/ubuntu/tau2-bench/data/tau2/domains/retail/policy.md"
+TAU2 = os.environ.get("TAU2_POLICY", os.path.expanduser("~/tau2-bench/data/tau2/domains/retail/policy.md"))
 
 
 def ttfts(outs):

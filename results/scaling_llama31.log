@@ -1,9 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:03,  1.14s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:02<00:01,  1.02it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.21it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.79it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.43it/s]
-=== TTFT scaling: full vs precompiled (unsloth/Meta-Llama-3.1-8B-Instruct) ===
-  skill_tok   full_ms  precomp_ms  speedup
-        500      82.4        62.1    1.33x
-       2000     214.3        71.9    2.98x
-       8000     457.8        55.3    8.28x
-      16000    1039.7        94.5   11.00x
-      32000    2508.8       184.0   13.64x
-COMPOSABLE_KV_DONE

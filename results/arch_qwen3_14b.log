@@ -1,6 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█▎        | 1/8 [00:00<00:03,  2.17it/s]Loading checkpoint shards:  25%|██▌       | 2/8 [00:00<00:02,  2.12it/s]Loading checkpoint shards:  38%|███▊      | 3/8 [00:01<00:02,  2.06it/s]Loading checkpoint shards:  50%|█████     | 4/8 [00:01<00:01,  2.02it/s]Loading checkpoint shards:  62%|██████▎   | 5/8 [00:02<00:01,  2.16it/s]Loading checkpoint shards:  75%|███████▌  | 6/8 [00:02<00:00,  2.06it/s]Loading checkpoint shards:  88%|████████▊ | 7/8 [00:03<00:00,  2.04it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:03<00:00,  2.45it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:03<00:00,  2.21it/s]
-=== Qwen3-14B: Qwen/Qwen3-14B (K=6 samples/scenario) ===
-The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
-  [non_reasoning] oracle_new=0.0 stale_old=0.0 | discriminating=0/24 | ERRATUM_RECOVERY=None CINone
-  [reasoning    ] oracle_new=1.0 stale_old=0.958 | discriminating=23/24 | ERRATUM_RECOVERY=0.957 CI[0.87, 1.0]
-ARCH_ERRATUM_V2_DONE

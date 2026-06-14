@@ -1,47 +1,0 @@
-Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]Fetching 12 files:   8%|▊         | 1/12 [05:07<56:26, 307.88s/it]Fetching 12 files:  17%|█▋        | 2/12 [05:09<21:18, 127.84s/it]Fetching 12 files:  25%|██▌       | 3/12 [05:19<11:04, 73.85s/it] Fetching 12 files:  75%|███████▌  | 9/12 [06:35<01:15, 25.19s/it]Fetching 12 files:  83%|████████▎ | 10/12 [07:06<00:52, 26.08s/it]Fetching 12 files:  92%|█████████▏| 11/12 [07:07<00:21, 21.41s/it]Fetching 12 files: 100%|██████████| 12/12 [07:07<00:00, 35.63s/it]
-Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:02<00:22,  2.04s/it]Loading checkpoint shards:  17%|█▋        | 2/12 [00:03<00:15,  1.55s/it]Loading checkpoint shards:  25%|██▌       | 3/12 [00:04<00:13,  1.46s/it]Loading checkpoint shards:  33%|███▎      | 4/12 [00:05<00:10,  1.34s/it]Loading checkpoint shards:  42%|████▏     | 5/12 [00:06<00:09,  1.30s/it]Loading checkpoint shards:  50%|█████     | 6/12 [00:08<00:07,  1.30s/it]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:09<00:06,  1.32s/it]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:10<00:05,  1.30s/it]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:12<00:03,  1.27s/it]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:13<00:02,  1.25s/it]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:14<00:01,  1.19s/it]Loading checkpoint shards: 100%|██████████| 12/12 [00:14<00:00,  1.16it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:14<00:00,  1.21s/it]
-/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py:1014: UserWarning: `output_attentions=True` is not supported with `attn_implementation` other than ['eager', 'eager_paged', 'flex_attention']. Please use `model.set_attn_implementation('eager')` to enable capturing attention outputs.
-  warnings.warn(
-`sdpa` attention does not support `output_attentions=True` or `head_mask`. Please set your attention to `eager` if you want any of these features.
-  [account_role/A4471] L=851 field_only=2.301 full_down=3.26 suffix@0.1=-1.486 suffix@0.3=0.406 top_pos_region=field->gate
-  [account_role/B8820] L=851 field_only=0.276 full_down=0.57 suffix@0.1=0.441 suffix@0.3=0.419 top_pos_region=gate->convo
-  [safety_mode/A4471] L=845 field_only=-0.733 full_down=-4.72 suffix@0.1=7.496 suffix@0.3=2.955 top_pos_region=gate->convo
-  [safety_mode/B8820] L=845 field_only=0.910 full_down=3.57 suffix@0.1=1.582 suffix@0.3=1.762 top_pos_region=gate->convo
-
-==== D1 CAUSAL PATCHING SUMMARY ====
-n=4 instances
-FIELD-ONLY recovery (= in_place): 0.689 CI(0.689, 0.689)  (small => why in_place fails)
-FULL-DOWNSTREAM recovery (sanity): 0.669 CI(0.669, 0.669)
-REGION mean single-pos recovery: {'field': -0.417, 'field->gate': 0.989, 'gate->convo': 0.289, 'convo->decision': 0.177, 'decision': 0.696}
-strongest single-site region counts: {'field->gate': 1, 'gate->convo': 3}
-LAYER-band recovery: {'early': 0.452, 'mid': 0.0, 'late': 0.0}
-CUMULATIVE SUFFIX recovery (patch last fraction of downstream -> recovery):
-   suffix 0.02: 0.05 CI(0.053, 0.053)
-   suffix 0.05: -0.95 CI(-0.95, -0.95)
-   suffix  0.1: 2.01 CI(2.008, 2.008)
-   suffix  0.2: -1.19 CI(-1.192, -1.192)
-   suffix  0.3: 1.39 CI(1.385, 1.385)
-   suffix  0.5: 3.68 CI(3.679, 3.679)
-   suffix  0.7: -0.08 CI(-0.08, -0.08)
-   suffix  0.9: 2.38 CI(2.384, 2.384)
-   suffix  1.0: 0.67 CI(0.669, 0.669)
-CUMULATIVE PREFIX recovery (patch first fraction of downstream -> recovery):
-   prefix 0.02: 2.93 CI(2.932, 2.932)
-   prefix 0.05: 0.71 CI(0.71, 0.71)
-   prefix  0.1: 0.62 CI(0.618, 0.618)
-   prefix  0.2: -0.68 CI(-0.678, -0.678)
-   prefix  0.3: -0.35 CI(-0.348, -0.348)
-   prefix  0.5: 1.76 CI(1.758, 1.758)
-   prefix  0.7: 0.34 CI(0.336, 0.336)
-   prefix  0.9: 2.00 CI(1.995, 1.995)
-   prefix  1.0: 0.67 CI(0.669, 0.669)
-LOCALITY top-k (non-additive ranking; weak by construction):
-   top-  1 pos -> 7.40 CI(7.396, 7.397)
-   top-  2 pos -> 2.17 CI(2.172, 2.172)
-   top-  4 pos -> 1.38 CI(1.379, 1.379)
-   top-  8 pos -> -0.43 CI(-0.433, -0.433)
-   top- 16 pos -> 0.15 CI(0.153, 0.153)
-   top- 32 pos -> -1.33 CI(-1.335, -1.334)
-   top- 64 pos -> 3.29 CI(3.292, 3.292)
-   top-128 pos -> 0.61 CI(0.611, 0.612)
-D1_CAUSAL_PATCH_DONE

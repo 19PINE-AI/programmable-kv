@@ -1,19 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.54s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.28s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.32s/it]
-  retail_refund done (3)
-  airline_cancel done (6)
-  deploy_guard done (9)
-  bank_withdraw done (12)
-  doc_access done (15)
-  rx_safety done (18)
-  customs_route done (21)
-  oncall_route done (24)
-
-==== DIVERSE K-SWEEP (field+selective under REASONING) — deepseek-ai/DeepSeek-R1-Distill-Llama-8B (n=24) ====
-  field+sel@0   P_correct=0.79 CI(0.6, 0.91)
-  field+sel@4   P_correct=0.71 CI(0.51, 0.85)
-  field+sel@8   P_correct=0.75 CI(0.55, 0.88)
-  field+sel@16  P_correct=0.79 CI(0.6, 0.91)
-  field+sel@32  P_correct=0.83 CI(0.64, 0.93)
-  field+sel@64  P_correct=0.79 CI(0.6, 0.91)
-  full=0.79  stale=0.00  => K* (>=full) = 0
-DIVERSE_KSWEEP_DONE

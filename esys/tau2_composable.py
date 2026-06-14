@@ -9,6 +9,7 @@ decision ("an order can be cancelled only if status is pending") on the real pol
 Metrics: decision correctness (cancel/deny) + composed==full agreement + TTFT saved, over several models.
 Run: MECH_ATTN=sdpa python esys/tau2_composable.py --model unsloth/Meta-Llama-3.1-8B-Instruct
 """
+import os
 import argparse, os, sys, json, time
 import torch
 sys.path.insert(0, os.path.dirname(__file__))
@@ -17,7 +18,7 @@ from transformers.cache_utils import DynamicCache
 from composable_kv import (load_lm, prefill, cache_slice, cache_concat, precompute_chunk,
                            repositioned_chunk_cache, forward_suffix)
 
-TAU2 = "/home/ubuntu/tau2-bench/data/tau2/domains/retail/policy.md"
+TAU2 = os.environ.get("TAU2_POLICY", os.path.expanduser("~/tau2-bench/data/tau2/domains/retail/policy.md"))
 CONVO = (
     "\n\n# Conversation\n"
     "user: Hi, I'm Yusuf Rossi, zip 19122. I'd like to cancel order #W2378156, ordered by mistake.\n"

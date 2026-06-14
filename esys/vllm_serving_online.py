@@ -25,6 +25,7 @@ bound; erratum is cache-bound). Run:
   python esys/vllm_serving_online.py --model Qwen/Qwen3-8B --tag qwen3_8b \
       --rates 2,4,8,16,32 --pad_tokens 6000 --max_new 96 --n 96
 """
+import os
 import argparse, asyncio, json, os, time, statistics, uuid
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 os.environ.setdefault("VLLM_ENABLE_V1_MULTIPROCESSING", "0")
@@ -35,7 +36,7 @@ _P._current_platform = None
 import numpy as np
 from vllm import AsyncLLMEngine, AsyncEngineArgs, SamplingParams
 
-TAU2 = "/home/ubuntu/tau2-bench/data/tau2/domains/retail/policy.md"
+TAU2 = os.environ.get("TAU2_POLICY", os.path.expanduser("~/tau2-bench/data/tau2/domains/retail/policy.md"))
 
 
 def pctl(xs, p):

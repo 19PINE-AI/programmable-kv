@@ -62,7 +62,7 @@
   "source": "paper \u00a77 (Reach): the window-truncated default cache breaks splices beyond the window; no agreement number was recorded pre-fix"
  },
  "timing_depths": {
-  "source": "deep-mechanism EXP2 (FINDINGS_MECHANISM_DEEP / paper \u00a73): write = first layer where the aggregator's conclusion probe reaches 0.9; commit = mean logit-lens commit layer at the decision token",
+  "source": "deep-mechanism EXP2 (paper \u00a73): write = first layer where the aggregator's conclusion probe reaches 0.9; commit = mean logit-lens commit layer at the decision token",
   "rows": [
    {
     "label": "Qwen3-8B",

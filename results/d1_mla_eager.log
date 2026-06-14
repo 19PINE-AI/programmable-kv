@@ -1,29 +1,0 @@
-/home/ubuntu/.local/lib/python3.10/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
-  raw_cnt = _raw_device_count_nvml()
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:03,  1.28s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:02<00:02,  1.27s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:03<00:01,  1.34s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:04<00:00,  1.13s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:04<00:00,  1.19s/it]
-[load] knockout install skipped (AttributeError); running plain eager
-past_key_values should not be None in from_legacy_cache()
-Traceback (most recent call last):
-  File "/home/ubuntu/editable-kv/patchkv/esys/mech_causal_patch.py", line 283, in <module>
-    main()
-  File "/home/ubuntu/editable-kv/patchkv/esys/mech_causal_patch.py", line 210, in main
-    r = run_instance(model, tok, scn, oid, quick=args.quick)
-  File "/home/ubuntu/editable-kv/patchkv/esys/mech_causal_patch.py", line 110, in run_instance
-    co = prefill(model, old_ids); cn = prefill(model, new_ids)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/mech_suite.py", line 76, in prefill
-    return model(input_ids=ids.to("cuda"), use_cache=True).past_key_values
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.cache/huggingface/modules/transformers_modules/deepseek_hyphen_ai/DeepSeek_hyphen_V2_hyphen_Lite_hyphen_Chat/85864749cd611b4353ce1decdb286193298f64c7/modeling_deepseek.py", line 1675, in forward
-    outputs = self.model(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.cache/huggingface/modules/transformers_modules/deepseek_hyphen_ai/DeepSeek_hyphen_V2_hyphen_Lite_hyphen_Chat/85864749cd611b4353ce1decdb286193298f64c7/modeling_deepseek.py", line 1490, in forward
-    past_key_values_length = past_key_values.get_usable_length(seq_length)
-AttributeError: 'DynamicCache' object has no attribute 'get_usable_length'. Did you mean: 'get_seq_length'?

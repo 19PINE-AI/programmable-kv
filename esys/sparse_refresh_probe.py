@@ -3,7 +3,7 @@ onward', or just field + gate + recency (skipping the neutral middle)?
 
 Faithfully recomputes arbitrary spans IN POSITION ORDER against the current
 working cache (so each refreshed span attends to whatever has already been
-refreshed). Answers a correction to FINDINGS_EXTENSIONS.md: the sufficient refresh
+refreshed). Refines the blast-radius result (see the paper, §3): the sufficient refresh
 is governed by the field's conditioning BREADTH (~E1 blast radius), not placement
 alone. Moderate fields (safety_mode) recover from a ~6% sparse set; broad fields
 (account_role) need ~everything after the field.

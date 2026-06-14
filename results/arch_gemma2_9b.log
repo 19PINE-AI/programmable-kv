@@ -1,6 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  1.65it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.53it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.52it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.70it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.64it/s]
-=== Gemma-2-9B: unsloth/gemma-2-9b-it (K=6 samples/scenario) ===
-  [non_reasoning] oracle_new=1.0 stale_old=1.0 | discriminating=24/24 | ERRATUM_RECOVERY=1.0 CI[1.0, 1.0]
-  [reasoning    ] oracle_new=1.0 stale_old=1.0 | discriminating=24/24 | ERRATUM_RECOVERY=1.0 CI[1.0, 1.0]
-ARCH_ERRATUM_V2_DONE
-ERR_GEMMA2_DONE

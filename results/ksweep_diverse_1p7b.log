@@ -1,19 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.02s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.81it/s]
-  retail_refund done (4)
-  airline_cancel done (8)
-  deploy_guard done (12)
-  bank_withdraw done (16)
-  doc_access done (20)
-  rx_safety done (24)
-  customs_route done (28)
-  oncall_route done (32)
-
-==== DIVERSE K-SWEEP (field+selective under REASONING) — Qwen/Qwen3-1.7B (n=32) ====
-  field+sel@0   P_correct=0.59 CI(0.42, 0.74)
-  field+sel@4   P_correct=0.56 CI(0.39, 0.72)
-  field+sel@8   P_correct=0.59 CI(0.42, 0.74)
-  field+sel@16  P_correct=0.56 CI(0.39, 0.72)
-  field+sel@32  P_correct=0.56 CI(0.39, 0.72)
-  field+sel@64  P_correct=0.50 CI(0.34, 0.66)
-  full=0.72  stale=0.00  => K* (>=full) = None
-DIVERSE_KSWEEP_DONE

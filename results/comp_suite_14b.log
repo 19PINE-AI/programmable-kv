@@ -1,36 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]
-Traceback (most recent call last):
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 408, in <module>
-    main()
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 379, in main
-    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda",
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 604, in from_pretrained
-    return model_class.from_pretrained(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 277, in _wrapper
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 5048, in from_pretrained
-    ) = cls._load_pretrained_model(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 5468, in _load_pretrained_model
-    _error_msgs, disk_offload_index = load_shard_file(args)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 843, in load_shard_file
-    disk_offload_index = _load_state_dict_into_meta_model(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_utils.py", line 770, in _load_state_dict_into_meta_model
-    _load_parameter_into_model(model, param_name, param.to(param_device))
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.45 GiB. GPU 0 has a total capacity of 94.97 GiB of which 1.45 GiB is free. Process 2353272 has 16.60 GiB memory in use. Process 2364181 has 22.80 GiB memory in use. Process 2386097 has 29.71 GiB memory in use. Process 2386347 has 23.85 GiB memory in use. Including non-PyTorch memory, this process has 550.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█▎        | 1/8 [00:01<00:07,  1.07s/it]Loading checkpoint shards:  25%|██▌       | 2/8 [00:01<00:05,  1.12it/s]Loading checkpoint shards:  38%|███▊      | 3/8 [00:02<00:03,  1.26it/s]Loading checkpoint shards:  50%|█████     | 4/8 [00:03<00:02,  1.37it/s]Loading checkpoint shards:  62%|██████▎   | 5/8 [00:03<00:02,  1.48it/s]Loading checkpoint shards:  75%|███████▌  | 6/8 [00:04<00:01,  1.30it/s]Loading checkpoint shards:  88%|████████▊ | 7/8 [00:06<00:00,  1.05it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:06<00:00,  1.20it/s]Loading checkpoint shards: 100%|██████████| 8/8 [00:06<00:00,  1.22it/s]
-=== COMPOSE-THEN-EDIT keystone (Qwen/Qwen3-14B) ===
-  account   recomputed: in_place=-0.30 sel@32=+1.18 err=+0.90 | composed: in_place=-0.20 sel@32=+1.29 err=+2.71
-  order     recomputed: in_place=-0.55 sel@32=+1.02 err=-0.41 | composed: in_place=+0.04 sel@32=+0.70 err=+2.00
-  subscription recomputed: in_place=-0.02 sel@32=+0.96 err=-0.16 | composed: in_place=+0.13 sel@32=+1.28 err=-3.68
-  door      recomputed: in_place=-0.06 sel@32=+0.18 err=+3.15 | composed: in_place=-0.38 sel@32=-2.00 err=+27.75
-
-  MEAN recovery (n=4, clean flips=0/4):
-  method       recomputed     composed
-  in_place         -0.234       -0.102
-  sel@8             0.751        1.729
-  sel@32            0.837        0.318
-  erratum           0.871        7.194
-COMPOSE_EDIT_DONE
-SUITE_14B_DONE

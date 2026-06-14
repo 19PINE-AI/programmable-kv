@@ -1,5 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:01,  1.64it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.65it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.64it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.64it/s]
-=== Mistral-7B: mistralai/Mistral-7B-Instruct-v0.3 (K=6 samples/scenario) ===
-  [non_reasoning] oracle_new=1.0 stale_old=1.0 | discriminating=24/24 | ERRATUM_RECOVERY=1.0 CI[1.0, 1.0]
-  [reasoning    ] oracle_new=1.0 stale_old=1.0 | discriminating=24/24 | ERRATUM_RECOVERY=1.0 CI[1.0, 1.0]
-ARCH_ERRATUM_V2_DONE

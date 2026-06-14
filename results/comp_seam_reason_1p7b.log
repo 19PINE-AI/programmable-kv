@@ -1,17 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.13s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.82it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.57it/s]
-=== SEAM-REPAIR (Qwen/Qwen3-1.7B) ===
-  seam-repair: logit cos to full vs #recomputed-start-tokens K
-    K=  0: cos=0.9887
-    K=  2: cos=0.9987
-    K=  4: cos=0.9988
-    K=  8: cos=0.9988
-    K= 16: cos=0.9991
-    K= 32: cos=0.9991
-=== REASONING CORRECTNESS (Qwen/Qwen3-1.7B) ===
-  refund: done
-  access: done
-  deploy: done
-  rx: done
-  [reasoning] full_correct=16/16 precompiled_correct=16/16 agree=16/16
-COMPOSABLE_KV_DONE
-SEAM_REASON_1P7B_DONE

@@ -2,8 +2,12 @@
 torch>=2.1
 transformers>=4.45
 numpy
+accelerate            # device_map model loading used throughout the harness
 scikit-learn          # linear probes / SAE features in the circuit analysis
 pillow                # multimodal (image-KV) experiments
+
+# Quantized checkpoints (4-bit / int8 variants) — optional:
+# bitsandbytes
 
 # Figures (paper/figs/*.py, mem/make_figs.py, esys/make_*.py).
 matplotlib

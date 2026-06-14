@@ -1,38 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.36s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.12s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.15s/it]
-=== SKILL feasibility (deepseek-ai/DeepSeek-R1-Distill-Llama-8B) ===
-  --- self-contained skills ---
-  refund     skill_tok= 605 | full=wrong   reposition=wrong  (cos0.98) naive=wrong  (cos0.98) | agree=True
-  access     skill_tok= 606 | full=wrong   reposition=wrong  (cos0.97) naive=wrong  (cos0.97) | agree=True
-  deploy     skill_tok= 596 | full=correct reposition=correct(cos0.97) naive=correct(cos0.96) | agree=True
-  rx         skill_tok= 603 | full=wrong   reposition=wrong  (cos0.98) naive=wrong  (cos0.98) | agree=True
-  [self-contained] full_correct=1/4 precompiled_correct=1/4 | reposition==full: 4/4 (cos0.975) | naive==full: 4/4 (cos0.971)
-  TTFT: full median=77.2ms  precompiled median=83.9ms
-=== MULTI-SKILL LIBRARY composition (deepseek-ai/DeepSeek-R1-Distill-Llama-8B) ===
-  #skills     full  composed  agree  full_ms  comp_ms  speedup
-        1    grant     grant   True     67.7     53.1    1.27x
-        2    grant     grant   True    113.5     67.1    1.69x
-        3    grant     grant   True    168.4     65.2    2.58x
-        4    grant     grant   True    247.2     94.1    2.63x
-=== TTFT scaling: full vs precompiled (deepseek-ai/DeepSeek-R1-Distill-Llama-8B) ===
-  skill_tok   full_ms  precomp_ms  speedup
-        500      91.6        75.7    1.21x
-       2000     304.5       104.6    2.91x
-       8000    1291.2       158.2    8.16x
-      16000    2400.8       255.6    9.39x
-      32000    6056.7       501.6   12.08x
-COMPOSABLE_KV_DONE
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.13s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.05s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.07s/it]
-=== COMPOSE-THEN-EDIT keystone (deepseek-ai/DeepSeek-R1-Distill-Llama-8B) ===
-  account   recomputed: in_place=+0.12 sel@32=+0.61 err=+1.06 | composed: in_place=+0.14 sel@32=+0.63 err=+0.70
-  order     recomputed: in_place=-0.03 sel@32=+0.38 err=+1.72 | composed: in_place=+0.00 sel@32=+0.38 err=+2.09
-  subscription recomputed: in_place=+0.09 sel@32=+0.61 err=+0.91 | composed: in_place=+0.12 sel@32=+0.60 err=+1.00
-  door      recomputed: in_place=+0.00 sel@32=+0.43 err=+1.29 | composed: in_place=+0.00 sel@32=+0.17 err=+1.17
-
-  MEAN recovery (n=4, clean flips=1/4):
-  method       recomputed     composed
-  in_place          0.043        0.065
-  sel@8             0.549        0.329
-  sel@32            0.506        0.442
-  erratum           1.246        1.240
-COMPOSE_EDIT_DONE
-SUITE_DSR1_DONE

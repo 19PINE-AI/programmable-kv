@@ -6,7 +6,7 @@ Fidelity rule: every number the site shows comes from a released result record
 (e1/contexts.py, e2/scenarios.py), or — where a quantity exists only in the
 paper text — from constants.json entries that carry an explicit `source` label.
 
-Run:  python3 site/data/build_data.py   (from the patchkv root or anywhere)
+Run:  python3 site/data/build_data.py   (from the repo root or anywhere)
 Writes: site/src/data/*.json and prints an assertion table vs paper claims.
 """
 
@@ -17,7 +17,7 @@ import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PATCHKV = os.path.dirname(os.path.dirname(HERE))  # .../patchkv
+PATCHKV = os.path.dirname(os.path.dirname(HERE))  # repo root
 R = os.path.join(PATCHKV, "results")
 M = os.path.join(PATCHKV, "mem", "results")
 OUT = os.path.join(os.path.dirname(HERE), "src", "data")
@@ -1022,7 +1022,7 @@ def build_constants():
                        "beyond the window; no agreement number was recorded pre-fix",
         },
         "timing_depths": {
-            "source": "deep-mechanism EXP2 (FINDINGS_MECHANISM_DEEP / paper §3): write = first layer "
+            "source": "deep-mechanism EXP2 (paper §3): write = first layer "
                        "where the aggregator's conclusion probe reaches 0.9; commit = mean logit-lens "
                        "commit layer at the decision token",
             "rows": [

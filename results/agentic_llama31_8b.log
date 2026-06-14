@@ -1,13 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:03,  1.10s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:02<00:02,  1.13s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:03<00:01,  1.13s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.27it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.10it/s]
-  [0/108] full_acc~1.00 pre_acc~1.00
-  [20/108] full_acc~1.00 pre_acc~1.00
-  [40/108] full_acc~1.00 pre_acc~1.00
-  [60/108] full_acc~1.00 pre_acc~1.00
-  [80/108] full_acc~1.00 pre_acc~1.00
-  [100/108] full_acc~1.00 pre_acc~1.00
-
-=== AGENTIC TOOL-CALLING (transplanted tool-defs), unsloth/Meta-Llama-3.1-8B-Instruct, n=108 ===
-  full fn+arg acc      = 1.0 CI[1.0, 1.0]
-  precompiled fn+arg   = 1.0 CI[1.0, 1.0]
-  tool-call agreement  = 1.0 CI[1.0, 1.0]
-AGENTIC_DONE

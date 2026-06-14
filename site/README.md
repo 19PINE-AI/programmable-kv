@@ -26,7 +26,7 @@ running the Python step.
 ## Data fidelity
 
 - Every chart reads from `src/data/*.json`, extracted 1:1 from
-  `patchkv/results/*.json`, `patchkv/mem/results/`, and the run logs
+  `results/*.json`, `mem/results/`, and the run logs
   (`comp_div_*.log`, parsed).
 - Prompts in the explorer are regenerated verbatim by the deterministic harness
   builders (`e1/contexts.py`, `e2/scenarios.py`).

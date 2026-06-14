@@ -16,6 +16,7 @@ Two arms over N requests sharing one long policy prefix (field placed EARLY), pr
 We prime the cache with the shared prefix, then measure per-request latency, total throughput,
 and vLLM's reported prefix-cache hit rate. Run: python esys/vllm_editkv_serving.py
 """
+import os
 import argparse, os, sys, time, json
 # This machine's NVML userspace lib (595.71) mismatches the kernel driver (595.58), so NVML
 # init fails and breaks vLLM's NVML-based platform detection (torch.cuda itself works fine).
@@ -26,7 +27,7 @@ import vllm.platforms as _P
 _P.builtin_platform_plugins["cuda"] = lambda: "vllm.platforms.cuda.CudaPlatform"
 _P._current_platform = None
 
-TAU2 = "/home/ubuntu/tau2-bench/data/tau2/domains/retail/policy.md"
+TAU2 = os.environ.get("TAU2_POLICY", os.path.expanduser("~/tau2-bench/data/tau2/domains/retail/policy.md"))
 
 
 def main():

@@ -97,8 +97,8 @@ attention sublayers and fall in the supported class.
   handle length changes transparently.
 - Built on HF `DynamicCache`; the per-edit cache is cloned for safety. For production
   throughput, the `ERRATUM` mode is *append-only*, so it composes directly with a paged-attention
-  engine's prefix caching (vLLM automatic prefix caching gives **16.4× throughput** vs putting the
-  new value back in the prefix — see `esys/vllm_editkv_serving.py`). A naive in-prefix field edit
+  engine's prefix caching: the static prefix stays a cache hit, driving large serving-throughput gains
+  (the paper's online benchmark reports up to **14.5×**; see `esys/vllm_*`). A naive in-prefix field edit
   invalidates downstream cache blocks, which is exactly why the erratum is the serving-friendly mode.
 - **Repeated edits to one field:** apply a *single* erratum for the **current** value rather than
   stacking the edit history — a non-monotonic history (e.g. `A→B→A`) can let a salient intermediate

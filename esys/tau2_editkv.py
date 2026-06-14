@@ -11,6 +11,7 @@ token still competes) and only field+erratum recovers to the oracle — motivati
 field+erratum as the robust default and the diagnostic's field+erratum reference.
 Run: MECH_ATTN=sdpa python esys/tau2_editkv.py
 """
+import os
 import argparse, os, sys, json
 import torch
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -18,7 +19,7 @@ from editkv import EditableContext, Mode
 from editkv.diagnostics import needs_erratum
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-TAU2 = "/home/ubuntu/tau2-bench/data/tau2/domains/retail/policy.md"
+TAU2 = os.environ.get("TAU2_POLICY", os.path.expanduser("~/tau2-bench/data/tau2/domains/retail/policy.md"))
 # tau2 retail policy: "an order can only be cancelled if its status is 'pending'."
 # The mutable field is order_status; it changes pending -> processed mid-conversation.
 STATUS_OLD = "pending"      # -> cancel allowed

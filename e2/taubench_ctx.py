@@ -10,9 +10,10 @@ downstream of the field -- the most favorable case for leave-stale.
 
 Scenarios flip a field and (for high-conditioning ones) the correct action flips.
 """
+import os
 import json, os
 
-TB = "/home/ubuntu/tau-bench/tau_bench/envs/retail"
+TB = os.environ.get("TAUBENCH_RETAIL", os.path.expanduser("~/tau-bench/tau_bench/envs/retail"))
 WIKI = open(os.path.join(TB, "wiki.md")).read()
 _ORDERS = json.load(open(os.path.join(TB, "data", "orders.json")))
 

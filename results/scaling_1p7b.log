@@ -1,9 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  1.52it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  3.00it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.62it/s]
-=== TTFT scaling: full vs precompiled (Qwen/Qwen3-1.7B) ===
-  skill_tok   full_ms  precomp_ms  speedup
-        500      11.8        25.6    0.46x
-       2000      33.4        26.3    1.27x
-       8000     128.7        41.4    3.11x
-      16000     332.1        76.1    4.37x
-      32000     867.2       157.0    5.52x
-COMPOSABLE_KV_DONE

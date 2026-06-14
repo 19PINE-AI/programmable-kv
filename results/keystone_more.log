@@ -1,29 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  1.22it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.44it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  2.12it/s]
-=== COMPOSE-THEN-EDIT keystone (Qwen/Qwen3-1.7B) ===
-  account   recomputed: in_place=-1.00 sel@32=-1.80 err=-11.60 | composed: in_place=+0.32 sel@32=+0.52 err=+0.48
-  order     recomputed: in_place=+0.22 sel@32=+0.23 err=+0.27 | composed: in_place=-0.67 sel@32=+2.88 err=+0.03
-  subscription recomputed: in_place=+0.59 sel@32=+0.76 err=+7.55 | composed: in_place=-0.12 sel@32=+0.10 err=+2.58
-  door      recomputed: in_place=+0.08 sel@32=+0.14 err=+0.89 | composed: in_place=-0.05 sel@32=+0.22 err=+0.72
-
-  MEAN recovery (n=4, clean flips=0/4):
-  method       recomputed     composed
-  in_place         -0.028       -0.128
-  sel@8            -0.461        0.807
-  sel@32           -0.168        0.930
-  erratum          -0.722        0.950
-COMPOSE_EDIT_DONE
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:01,  1.55it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.52it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.57it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.56it/s]
-=== COMPOSE-THEN-EDIT keystone (mistralai/Mistral-7B-Instruct-v0.3) ===
-  account   recomputed: in_place=+0.04 sel@32=+0.72 err=+1.00 | composed: in_place=+0.00 sel@32=+0.52 err=+1.13
-  order     recomputed: in_place=-0.00 sel@32=+0.81 err=+0.89 | composed: in_place=-0.01 sel@32=+0.77 err=+0.75
-  subscription recomputed: in_place=+0.01 sel@32=+0.80 err=+1.03 | composed: in_place=-0.01 sel@32=+0.52 err=+0.77
-  door      recomputed: in_place=+0.11 sel@32=+0.53 err=+0.99 | composed: in_place=+0.14 sel@32=+0.44 err=+1.07
-
-  MEAN recovery (n=4, clean flips=4/4):
-  method       recomputed     composed
-  in_place          0.038        0.032
-  sel@8             0.615        0.492
-  sel@32            0.715        0.562
-  erratum           0.978        0.930
-COMPOSE_EDIT_DONE
-KEYSTONE_MORE_DONE

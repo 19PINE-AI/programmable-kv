@@ -1,473 +1,0 @@
-VL batch done; starting G5 large models
-########## unsloth/gemma-3-27b-it ##########
-Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:10,  1.01it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:02<00:11,  1.17s/it]Loading checkpoint shards:  25%|██▌       | 3/12 [00:03<00:10,  1.22s/it]Loading checkpoint shards:  33%|███▎      | 4/12 [00:04<00:09,  1.22s/it]Loading checkpoint shards:  42%|████▏     | 5/12 [00:06<00:08,  1.23s/it]Loading checkpoint shards:  50%|█████     | 6/12 [00:07<00:07,  1.24s/it]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:08<00:06,  1.27s/it]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:09<00:05,  1.30s/it]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:11<00:03,  1.30s/it]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:12<00:02,  1.31s/it]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:14<00:01,  1.33s/it]Loading checkpoint shards: 100%|██████████| 12/12 [00:14<00:00,  1.04it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:14<00:00,  1.18s/it]
-=== SKILL feasibility (unsloth/gemma-3-27b-it) ===
-  --- self-contained skills ---
-  refund     skill_tok= 640 | full=correct reposition=correct(cos0.94) naive=correct(cos0.94) | agree=True
-  access     skill_tok= 642 | full=correct reposition=correct(cos0.98) naive=correct(cos0.98) | agree=True
-  deploy     skill_tok= 630 | full=correct reposition=correct(cos0.97) naive=correct(cos0.97) | agree=True
-  rx         skill_tok= 634 | full=correct reposition=correct(cos0.98) naive=correct(cos0.98) | agree=True
-  loan       skill_tok= 624 | full=correct reposition=correct(cos0.94) naive=correct(cos0.95) | agree=True
-  legal      skill_tok= 615 | full=correct reposition=correct(cos0.97) naive=correct(cos0.97) | agree=True
-  incident   skill_tok= 613 | full=correct reposition=correct(cos0.95) naive=correct(cos0.95) | agree=True
-  visa       skill_tok= 614 | full=correct reposition=correct(cos0.91) naive=correct(cos0.91) | agree=True
-  [self-contained] full_correct=8/8 precompiled_correct=8/8 | reposition==full: 8/8 (cos0.955) | naive==full: 8/8 (cos0.955)
-  TTFT: full median=146.0ms  precompiled median=106.9ms
-COMPOSABLE_KV_DONE
-Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:04,  2.41it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:00<00:05,  1.96it/s]Loading checkpoint shards:  25%|██▌       | 3/12 [00:01<00:04,  1.88it/s]Loading checkpoint shards:  33%|███▎      | 4/12 [00:02<00:04,  1.89it/s]Loading checkpoint shards:  42%|████▏     | 5/12 [00:02<00:03,  1.88it/s]Loading checkpoint shards:  50%|█████     | 6/12 [00:03<00:03,  1.89it/s]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:03<00:02,  1.82it/s]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:04<00:02,  1.76it/s]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:04<00:01,  1.70it/s]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:05<00:01,  1.65it/s]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:06<00:00,  1.65it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:06<00:00,  1.91it/s]
-=== COMPOSE-THEN-EDIT keystone (unsloth/gemma-3-27b-it) ===
-  account   recomputed: in_place=+0.00 sel@32=+0.91 err=+0.92 | composed: in_place=+0.00 sel@32=+0.82 err=+7.21
-  order     recomputed: in_place=-0.00 sel@32=+0.94 err=+0.94 | composed: in_place=+0.00 sel@32=+0.94 err=+6.33
-  subscription recomputed: in_place=-0.01 sel@32=+0.90 err=+0.92 | composed: in_place=+0.00 sel@32=+1.00 err=+41.80
-  door      recomputed: in_place=+0.00 sel@32=+0.91 err=+0.91 | composed: in_place=+0.07 sel@32=+0.73 err=+18.10
-  payout    recomputed: in_place=+0.00 sel@32=+0.84 err=+0.85 | composed: in_place=+0.00 sel@32=+0.73 err=+3.78
-  post      recomputed: in_place=-0.01 sel@32=+0.64 err=+0.93 | composed: in_place=+0.00 sel@32=+0.67 err=+1.72
-  ship      skipped (token-length mismatch)
-  login     recomputed: in_place=-0.01 sel@32=+0.72 err=+0.80 | composed: in_place=-0.03 sel@32=+0.74 err=+1.61
-
-  MEAN recovery (n=7, clean flips=7/7):
-  method       recomputed     composed
-  in_place         -0.003        0.005
-  sel@8             0.699        0.745
-  sel@32            0.837        0.806
-  erratum           0.893       11.508
-COMPOSE_EDIT_DONE
-Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:04,  2.40it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:00<00:05,  1.96it/s]Loading checkpoint shards:  25%|██▌       | 3/12 [00:01<00:04,  1.88it/s]Loading checkpoint shards:  33%|███▎      | 4/12 [00:02<00:04,  1.89it/s]Loading checkpoint shards:  42%|████▏     | 5/12 [00:02<00:03,  1.88it/s]Loading checkpoint shards:  50%|█████     | 6/12 [00:03<00:03,  1.89it/s]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:03<00:02,  1.83it/s]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:04<00:02,  1.77it/s]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:04<00:01,  1.73it/s]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:05<00:01,  1.70it/s]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:06<00:00,  1.67it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:06<00:00,  1.93it/s]
-  [0/104] early full~1.00 pre~0.00
-  [25/104] early full~0.92 pre~0.00
-  [50/104] early full~0.92 pre~0.00
-  [75/104] early full~0.92 pre~0.01
-  [100/104] early full~0.91 pre~0.02
-
-=== FACTS/RAG transplant (unsloth/gemma-3-27b-it, n=104) ===
-  [early] full=0.913 CI[0.856, 0.962] | precompiled=0.019 CI[0.0, 0.048] | agree=0.106 CI[0.048, 0.173]
-  [late ] full=0.923 CI[0.865, 0.971] | precompiled=0.029 CI[0.0, 0.067] | agree=0.106 CI[0.048, 0.173]
-FACTS_DONE
-Loading checkpoint shards:   0%|          | 0/12 [00:00<?, ?it/s]Loading checkpoint shards:   8%|▊         | 1/12 [00:00<00:04,  2.46it/s]Loading checkpoint shards:  17%|█▋        | 2/12 [00:00<00:05,  2.00it/s]Loading checkpoint shards:  25%|██▌       | 3/12 [00:01<00:04,  1.93it/s]Loading checkpoint shards:  33%|███▎      | 4/12 [00:02<00:04,  1.93it/s]Loading checkpoint shards:  42%|████▏     | 5/12 [00:02<00:03,  1.91it/s]Loading checkpoint shards:  50%|█████     | 6/12 [00:03<00:03,  1.92it/s]Loading checkpoint shards:  58%|█████▊    | 7/12 [00:03<00:02,  1.85it/s]Loading checkpoint shards:  67%|██████▋   | 8/12 [00:04<00:02,  1.80it/s]Loading checkpoint shards:  75%|███████▌  | 9/12 [00:04<00:01,  1.77it/s]Loading checkpoint shards:  83%|████████▎ | 10/12 [00:05<00:01,  1.74it/s]Loading checkpoint shards:  92%|█████████▏| 11/12 [00:06<00:00,  1.71it/s]Loading checkpoint shards: 100%|██████████| 12/12 [00:06<00:00,  1.97it/s]
-  [0/108] full_acc~1.00 pre_acc~0.00
-  [20/108] full_acc~1.00 pre_acc~0.48
-  [40/108] full_acc~1.00 pre_acc~0.51
-  [60/108] full_acc~1.00 pre_acc~0.49
-  [80/108] full_acc~1.00 pre_acc~0.48
-  [100/108] full_acc~1.00 pre_acc~0.49
-
-=== AGENTIC TOOL-CALLING (transplanted tool-defs), unsloth/gemma-3-27b-it, n=108 ===
-  full fn+arg acc      = 1.0 CI[1.0, 1.0]
-  precompiled fn+arg   = 0.481 CI[0.389, 0.574]
-  tool-call agreement  = 0.481 CI[0.389, 0.574]
-AGENTIC_DONE
-DONE_gemma3_27b
-########## Qwen/Qwen3-32B-FP8 ##########
-Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:  14%|█▍        | 1/7 [00:01<00:10,  1.69s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:03<00:07,  1.49s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:04<00:05,  1.42s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:05<00:04,  1.40s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:07<00:02,  1.38s/it]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:08<00:01,  1.39s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:10<00:00,  1.46s/it]Loading checkpoint shards: 100%|██████████| 7/7 [00:10<00:00,  1.44s/it]
-=== SKILL feasibility (Qwen/Qwen3-32B-FP8) ===
-  --- self-contained skills ---
-  refund     skill_tok= 616 | full=wrong   reposition=wrong  (cos0.94) naive=wrong  (cos0.95) | agree=True
-  access     skill_tok= 617 | full=correct reposition=correct(cos0.90) naive=correct(cos0.89) | agree=True
-  deploy     skill_tok= 607 | full=correct reposition=correct(cos0.95) naive=correct(cos0.95) | agree=True
-  rx         skill_tok= 614 | full=correct reposition=correct(cos0.90) naive=correct(cos0.90) | agree=True
-  loan       skill_tok= 600 | full=wrong   reposition=wrong  (cos0.87) naive=wrong  (cos0.87) | agree=True
-  legal      skill_tok= 597 | full=wrong   reposition=wrong  (cos0.90) naive=wrong  (cos0.89) | agree=True
-  incident   skill_tok= 591 | full=wrong   reposition=wrong  (cos0.92) naive=wrong  (cos0.92) | agree=True
-  visa       skill_tok= 593 | full=correct reposition=wrong  (cos0.91) naive=wrong  (cos0.90) | agree=False
-  [self-contained] full_correct=4/8 precompiled_correct=3/8 | reposition==full: 7/8 (cos0.912) | naive==full: 7/8 (cos0.909)
-  TTFT: full median=353.5ms  precompiled median=174.5ms
-COMPOSABLE_KV_DONE
-Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:  14%|█▍        | 1/7 [00:00<00:05,  1.03it/s]Loading checkpoint shards:  29%|██▊       | 2/7 [00:01<00:03,  1.34it/s]Loading checkpoint shards:  43%|████▎     | 3/7 [00:02<00:02,  1.50it/s]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:02<00:01,  1.54it/s]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:03<00:01,  1.57it/s]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:03<00:00,  1.60it/s]Loading checkpoint shards: 100%|██████████| 7/7 [00:04<00:00,  1.39it/s]Loading checkpoint shards: 100%|██████████| 7/7 [00:04<00:00,  1.43it/s]
-=== COMPOSE-THEN-EDIT keystone (Qwen/Qwen3-32B-FP8) ===
-  account   recomputed: in_place=+0.08 sel@32=+0.69 err=+1.07 | composed: in_place=+0.24 sel@32=+1.24 err=+0.38
-  order     recomputed: in_place=-0.14 sel@32=+1.13 err=+0.55 | composed: in_place=-0.31 sel@32=+0.83 err=+0.79
-  subscription recomputed: in_place=+0.17 sel@32=+1.27 err=-0.45 | composed: in_place=-0.18 sel@32=+1.06 err=+0.62
-  door      recomputed: in_place=-0.11 sel@32=-0.00 err=+5.84 | composed: in_place=+0.48 sel@32=-2.73 err=-6.67
-  payout    recomputed: in_place=+0.05 sel@32=+0.91 err=+1.43 | composed: in_place=+0.44 sel@32=+1.16 err=+2.10
-  post      recomputed: in_place=+0.19 sel@32=+0.50 err=+0.42 | composed: in_place=-0.09 sel@32=+0.66 err=+0.93
-  ship      recomputed: in_place=+1.04 sel@32=+1.62 err=+2.49 | composed: in_place=-1.49 sel@32=+0.97 err=+1.32
-  login     recomputed: in_place=+0.05 sel@32=+0.16 err=+0.88 | composed: in_place=-1.47 sel@32=+0.65 err=-0.33
-
-  MEAN recovery (n=8, clean flips=2/8):
-  method       recomputed     composed
-  in_place          0.166       -0.298
-  sel@8             0.855        0.298
-  sel@32            0.784        0.480
-  erratum           1.528       -0.107
-COMPOSE_EDIT_DONE
-Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:  14%|█▍        | 1/7 [00:00<00:05,  1.11it/s]Loading checkpoint shards:  29%|██▊       | 2/7 [00:01<00:03,  1.37it/s]Loading checkpoint shards:  43%|████▎     | 3/7 [00:02<00:02,  1.51it/s]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:02<00:01,  1.55it/s]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:03<00:01,  1.57it/s]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:03<00:00,  1.59it/s]Loading checkpoint shards: 100%|██████████| 7/7 [00:04<00:00,  1.40it/s]Loading checkpoint shards: 100%|██████████| 7/7 [00:04<00:00,  1.45it/s]
-  [0/104] early full~0.00 pre~0.00
-  [25/104] early full~0.00 pre~0.00
-  [50/104] early full~0.00 pre~0.00
-  [75/104] early full~0.00 pre~0.00
-  [100/104] early full~0.00 pre~0.00
-
-=== FACTS/RAG transplant (Qwen/Qwen3-32B-FP8, n=104) ===
-  [early] full=0.000 CI[0.0, 0.0] | precompiled=0.000 CI[0.0, 0.0] | agree=1.000 CI[1.0, 1.0]
-  [late ] full=0.000 CI[0.0, 0.0] | precompiled=0.000 CI[0.0, 0.0] | agree=1.000 CI[1.0, 1.0]
-FACTS_DONE
-Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:  14%|█▍        | 1/7 [00:00<00:05,  1.13it/s]Loading checkpoint shards:  29%|██▊       | 2/7 [00:01<00:03,  1.39it/s]Loading checkpoint shards:  43%|████▎     | 3/7 [00:02<00:02,  1.53it/s]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:02<00:01,  1.57it/s]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:03<00:01,  1.59it/s]Loading checkpoint shards:  86%|████████▌ | 6/7 [00:03<00:00,  1.55it/s]Loading checkpoint shards: 100%|██████████| 7/7 [00:04<00:00,  1.38it/s]Loading checkpoint shards: 100%|██████████| 7/7 [00:04<00:00,  1.44it/s]
-  [0/108] full_acc~1.00 pre_acc~1.00
-  [20/108] full_acc~0.90 pre_acc~0.95
-  [40/108] full_acc~0.95 pre_acc~0.98
-  [60/108] full_acc~0.95 pre_acc~0.97
-  [80/108] full_acc~0.95 pre_acc~0.98
-  [100/108] full_acc~0.96 pre_acc~0.98
-
-=== AGENTIC TOOL-CALLING (transplanted tool-defs), Qwen/Qwen3-32B-FP8, n=108 ===
-  full fn+arg acc      = 0.954 CI[0.907, 0.991]
-  precompiled fn+arg   = 0.972 CI[0.935, 1.0]
-  tool-call agreement  = 1.0 CI[1.0, 1.0]
-AGENTIC_DONE
-DONE_qwen3_32b
-########## Qwen/Qwen3-30B-A3B ##########
-Loading checkpoint shards:   0%|          | 0/16 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▋         | 1/16 [00:01<00:17,  1.16s/it]Loading checkpoint shards:  12%|█▎        | 2/16 [00:02<00:16,  1.17s/it]Loading checkpoint shards:  19%|█▉        | 3/16 [00:03<00:15,  1.20s/it]Loading checkpoint shards:  25%|██▌       | 4/16 [00:05<00:15,  1.30s/it]Loading checkpoint shards:  31%|███▏      | 5/16 [00:06<00:14,  1.29s/it]Loading checkpoint shards:  38%|███▊      | 6/16 [00:07<00:13,  1.30s/it]Loading checkpoint shards:  44%|████▍     | 7/16 [00:08<00:11,  1.28s/it]Loading checkpoint shards:  50%|█████     | 8/16 [00:10<00:11,  1.44s/it]Loading checkpoint shards:  56%|█████▋    | 9/16 [00:11<00:09,  1.39s/it]Loading checkpoint shards:  62%|██████▎   | 10/16 [00:13<00:08,  1.40s/it]Loading checkpoint shards:  69%|██████▉   | 11/16 [00:14<00:06,  1.36s/it]Loading checkpoint shards:  75%|███████▌  | 12/16 [00:15<00:05,  1.33s/it]Loading checkpoint shards:  81%|████████▏ | 13/16 [00:17<00:03,  1.30s/it]Loading checkpoint shards:  88%|████████▊ | 14/16 [00:18<00:02,  1.26s/it]Loading checkpoint shards:  94%|█████████▍| 15/16 [00:19<00:01,  1.26s/it]Loading checkpoint shards: 100%|██████████| 16/16 [00:19<00:00,  1.03it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:19<00:00,  1.24s/it]
-=== SKILL feasibility (Qwen/Qwen3-30B-A3B) ===
-  --- self-contained skills ---
-  refund     skill_tok= 616 | full=wrong   reposition=wrong  (cos0.91) naive=wrong  (cos0.87) | agree=True
-  access     skill_tok= 617 | full=wrong   reposition=correct(cos0.90) naive=correct(cos0.92) | agree=False
-  deploy     skill_tok= 607 | full=wrong   reposition=wrong  (cos0.89) naive=wrong  (cos0.89) | agree=True
-  rx         skill_tok= 614 | full=wrong   reposition=wrong  (cos0.92) naive=wrong  (cos0.93) | agree=True
-  loan       skill_tok= 600 | full=wrong   reposition=wrong  (cos0.89) naive=wrong  (cos0.87) | agree=True
-  legal      skill_tok= 597 | full=correct reposition=correct(cos0.87) naive=correct(cos0.85) | agree=True
-  incident   skill_tok= 591 | full=wrong   reposition=wrong  (cos0.91) naive=wrong  (cos0.90) | agree=True
-  visa       skill_tok= 593 | full=wrong   reposition=wrong  (cos0.93) naive=wrong  (cos0.89) | agree=True
-  [self-contained] full_correct=1/8 precompiled_correct=2/8 | reposition==full: 7/8 (cos0.902) | naive==full: 7/8 (cos0.888)
-  TTFT: full median=561.3ms  precompiled median=572.1ms
-COMPOSABLE_KV_DONE
-Loading checkpoint shards:   0%|          | 0/16 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▋         | 1/16 [00:00<00:08,  1.85it/s]Loading checkpoint shards:  12%|█▎        | 2/16 [00:01<00:08,  1.74it/s]Loading checkpoint shards:  19%|█▉        | 3/16 [00:01<00:07,  1.70it/s]Loading checkpoint shards:  25%|██▌       | 4/16 [00:02<00:07,  1.64it/s]Loading checkpoint shards:  31%|███▏      | 5/16 [00:02<00:06,  1.64it/s]Loading checkpoint shards:  38%|███▊      | 6/16 [00:03<00:06,  1.57it/s]Loading checkpoint shards:  44%|████▍     | 7/16 [00:04<00:05,  1.62it/s]Loading checkpoint shards:  50%|█████     | 8/16 [00:04<00:04,  1.64it/s]Loading checkpoint shards:  56%|█████▋    | 9/16 [00:05<00:04,  1.66it/s]Loading checkpoint shards:  62%|██████▎   | 10/16 [00:06<00:03,  1.65it/s]Loading checkpoint shards:  69%|██████▉   | 11/16 [00:06<00:03,  1.64it/s]Loading checkpoint shards:  75%|███████▌  | 12/16 [00:07<00:02,  1.65it/s]Loading checkpoint shards:  81%|████████▏ | 13/16 [00:07<00:01,  1.59it/s]Loading checkpoint shards:  88%|████████▊ | 14/16 [00:08<00:01,  1.61it/s]Loading checkpoint shards:  94%|█████████▍| 15/16 [00:09<00:00,  1.62it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:09<00:00,  2.10it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:09<00:00,  1.72it/s]
-=== COMPOSE-THEN-EDIT keystone (Qwen/Qwen3-30B-A3B) ===
-  account   recomputed: in_place=-0.40 sel@32=+0.50 err=+0.60 | composed: in_place=-55.50 sel@32=-3.75 err=+112.50
-  order     recomputed: in_place=+0.01 sel@32=+0.88 err=+0.61 | composed: in_place=-0.15 sel@32=+0.84 err=+0.98
-  subscription recomputed: in_place=+0.42 sel@32=+0.71 err=+0.75 | composed: in_place=+0.38 sel@32=+2.07 err=-0.40
-  door      recomputed: in_place=-0.35 sel@32=+0.60 err=+0.83 | composed: in_place=-0.05 sel@32=+0.78 err=+0.53
-  payout    recomputed: in_place=-0.96 sel@32=+1.56 err=+0.19 | composed: in_place=+0.07 sel@32=+1.46 err=+0.22
-  post      recomputed: in_place=-0.15 sel@32=+1.49 err=-0.68 | composed: in_place=-0.01 sel@32=+0.48 err=+0.50
-  ship      recomputed: in_place=-0.00 sel@32=+1.12 err=-0.78 | composed: in_place=+0.06 sel@32=+1.47 err=+0.63
-  login     recomputed: in_place=-0.01 sel@32=-0.19 err=-2.48 | composed: in_place=+2.89 sel@32=+3.07 err=-1.86
-
-  MEAN recovery (n=8, clean flips=1/8):
-  method       recomputed     composed
-  in_place         -0.181       -6.540
-  sel@8             0.443       -2.876
-  sel@32            0.832        0.801
-  erratum          -0.121       14.137
-COMPOSE_EDIT_DONE
-Loading checkpoint shards:   0%|          | 0/16 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▋         | 1/16 [00:00<00:08,  1.83it/s]Loading checkpoint shards:  12%|█▎        | 2/16 [00:01<00:08,  1.73it/s]Loading checkpoint shards:  19%|█▉        | 3/16 [00:01<00:07,  1.69it/s]Loading checkpoint shards:  25%|██▌       | 4/16 [00:02<00:07,  1.64it/s]Loading checkpoint shards:  31%|███▏      | 5/16 [00:03<00:06,  1.59it/s]Loading checkpoint shards:  38%|███▊      | 6/16 [00:03<00:06,  1.57it/s]Loading checkpoint shards:  44%|████▍     | 7/16 [00:04<00:05,  1.53it/s]Loading checkpoint shards:  50%|█████     | 8/16 [00:04<00:05,  1.57it/s]Loading checkpoint shards:  56%|█████▋    | 9/16 [00:05<00:04,  1.61it/s]Loading checkpoint shards:  62%|██████▎   | 10/16 [00:06<00:03,  1.62it/s]Loading checkpoint shards:  69%|██████▉   | 11/16 [00:06<00:03,  1.63it/s]Loading checkpoint shards:  75%|███████▌  | 12/16 [00:07<00:02,  1.63it/s]Loading checkpoint shards:  81%|████████▏ | 13/16 [00:08<00:01,  1.61it/s]Loading checkpoint shards:  88%|████████▊ | 14/16 [00:08<00:01,  1.62it/s]Loading checkpoint shards:  94%|█████████▍| 15/16 [00:09<00:00,  1.64it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:09<00:00,  2.13it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:09<00:00,  1.70it/s]
-  [0/104] early full~0.00 pre~0.00
-  [25/104] early full~0.00 pre~0.00
-  [50/104] early full~0.00 pre~0.00
-  [75/104] early full~0.00 pre~0.00
-  [100/104] early full~0.00 pre~0.00
-
-=== FACTS/RAG transplant (Qwen/Qwen3-30B-A3B, n=104) ===
-  [early] full=0.000 CI[0.0, 0.0] | precompiled=0.000 CI[0.0, 0.0] | agree=1.000 CI[1.0, 1.0]
-  [late ] full=0.000 CI[0.0, 0.0] | precompiled=0.000 CI[0.0, 0.0] | agree=1.000 CI[1.0, 1.0]
-FACTS_DONE
-Loading checkpoint shards:   0%|          | 0/16 [00:00<?, ?it/s]Loading checkpoint shards:   6%|▋         | 1/16 [00:00<00:07,  1.91it/s]Loading checkpoint shards:  12%|█▎        | 2/16 [00:01<00:08,  1.73it/s]Loading checkpoint shards:  19%|█▉        | 3/16 [00:01<00:07,  1.73it/s]Loading checkpoint shards:  25%|██▌       | 4/16 [00:02<00:07,  1.68it/s]Loading checkpoint shards:  31%|███▏      | 5/16 [00:02<00:06,  1.70it/s]Loading checkpoint shards:  38%|███▊      | 6/16 [00:03<00:06,  1.65it/s]Loading checkpoint shards:  44%|████▍     | 7/16 [00:04<00:05,  1.69it/s]Loading checkpoint shards:  50%|█████     | 8/16 [00:04<00:04,  1.71it/s]Loading checkpoint shards:  56%|█████▋    | 9/16 [00:05<00:04,  1.72it/s]Loading checkpoint shards:  62%|██████▎   | 10/16 [00:05<00:03,  1.69it/s]Loading checkpoint shards:  69%|██████▉   | 11/16 [00:06<00:02,  1.69it/s]Loading checkpoint shards:  75%|███████▌  | 12/16 [00:07<00:02,  1.70it/s]Loading checkpoint shards:  81%|████████▏ | 13/16 [00:07<00:01,  1.68it/s]Loading checkpoint shards:  88%|████████▊ | 14/16 [00:08<00:01,  1.68it/s]Loading checkpoint shards:  94%|█████████▍| 15/16 [00:08<00:00,  1.68it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:08<00:00,  2.19it/s]Loading checkpoint shards: 100%|██████████| 16/16 [00:08<00:00,  1.78it/s]
-  [0/108] full_acc~1.00 pre_acc~1.00
-  [20/108] full_acc~1.00 pre_acc~1.00
-  [40/108] full_acc~1.00 pre_acc~0.98
-  [60/108] full_acc~1.00 pre_acc~0.98
-  [80/108] full_acc~1.00 pre_acc~0.98
-  [100/108] full_acc~1.00 pre_acc~0.97
-
-=== AGENTIC TOOL-CALLING (transplanted tool-defs), Qwen/Qwen3-30B-A3B, n=108 ===
-  full fn+arg acc      = 1.0 CI[1.0, 1.0]
-  precompiled fn+arg   = 0.972 CI[0.935, 1.0]
-  tool-call agreement  = 1.0 CI[1.0, 1.0]
-AGENTIC_DONE
-DONE_qwen3_30a3b
-########## RedHatAI/Meta-Llama-3.1-70B-Instruct-FP8 ##########
-Compressing model: 0it [00:00, ?it/s]Compressing model: 218it [00:00, 2178.44it/s]Compressing model: 436it [00:00, 1832.26it/s]Compressing model: 560it [00:00, 1723.31it/s]
-Loading checkpoint shards:   0%|          | 0/15 [00:00<?, ?it/s]Loading checkpoint shards:   7%|▋         | 1/15 [00:01<00:17,  1.27s/it]Loading checkpoint shards:  13%|█▎        | 2/15 [00:02<00:17,  1.31s/it]Loading checkpoint shards:  20%|██        | 3/15 [00:04<00:16,  1.37s/it]Loading checkpoint shards:  27%|██▋       | 4/15 [00:05<00:16,  1.47s/it]Loading checkpoint shards:  33%|███▎      | 5/15 [00:06<00:14,  1.40s/it]Loading checkpoint shards:  40%|████      | 6/15 [00:08<00:12,  1.37s/it]Loading checkpoint shards:  47%|████▋     | 7/15 [00:09<00:10,  1.34s/it]Loading checkpoint shards:  53%|█████▎    | 8/15 [00:10<00:09,  1.35s/it]Loading checkpoint shards:  60%|██████    | 9/15 [00:13<00:11,  1.87s/it]Loading checkpoint shards:  67%|██████▋   | 10/15 [00:15<00:08,  1.72s/it]Loading checkpoint shards:  73%|███████▎  | 11/15 [00:16<00:06,  1.62s/it]Loading checkpoint shards:  80%|████████  | 12/15 [00:18<00:04,  1.53s/it]Loading checkpoint shards:  87%|████████▋ | 13/15 [00:19<00:02,  1.45s/it]Loading checkpoint shards:  93%|█████████▎| 14/15 [00:20<00:01,  1.43s/it]Loading checkpoint shards: 100%|██████████| 15/15 [00:21<00:00,  1.34s/it]Loading checkpoint shards: 100%|██████████| 15/15 [00:21<00:00,  1.46s/it]
-=== SKILL feasibility (RedHatAI/Meta-Llama-3.1-70B-Instruct-FP8) ===
-  --- self-contained skills ---
-Traceback (most recent call last):
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 537, in <module>
-    main()
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 505, in main
-    run_experiment(model, tok)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 273, in run_experiment
-    full_cache = prefill(model, ids[:, :L - 1])
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 65, in prefill
-    return model(input_ids=ids.to("cuda"), use_cache=True).past_key_values
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 918, in wrapper
-    output = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 459, in forward
-    outputs: BaseModelOutputWithPast = self.model(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 1072, in wrapper
-    outputs = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 395, in forward
-    hidden_states = decoder_layer(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_layers.py", line 94, in __call__
-    return super().__call__(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 309, in forward
-    hidden_states = self.mlp(hidden_states)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 155, in forward
-    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 369, in wrapped_forward
-    output = forward_func_orig.__get__(self, self.__class__)(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/linear/compressed_linear.py", line 85, in forward
-    weight_data = self.compressor.decompress_module(self)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/compressors/base.py", line 177, in decompress_module
-    decompressed_weight = self.decompress_weight(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/compressors/quantized_compressors/naive_quantized.py", line 142, in decompress_weight
-    decompressed_weight = dequantize(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 132, in dequantize
-    return _process_quantization(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 328, in _process_quantization
-    output = _dequantize(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 486, in _dequantize
-    dequant_value = dequant_value * scale
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 448.00 MiB. GPU 0 has a total capacity of 94.97 GiB of which 349.31 MiB is free. Including non-PyTorch memory, this process has 94.62 GiB memory in use. Of the allocated memory 90.69 GiB is allocated by PyTorch, and 3.26 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-Compressing model: 0it [00:00, ?it/s]Compressing model: 225it [00:00, 2231.39it/s]Compressing model: 449it [00:00, 1827.36it/s]Compressing model: 560it [00:00, 1736.96it/s]
-Loading checkpoint shards:   0%|          | 0/15 [00:00<?, ?it/s]Loading checkpoint shards:   7%|▋         | 1/15 [00:00<00:10,  1.36it/s]Loading checkpoint shards:  13%|█▎        | 2/15 [00:01<00:08,  1.45it/s]Loading checkpoint shards:  20%|██        | 3/15 [00:02<00:07,  1.50it/s]Loading checkpoint shards:  27%|██▋       | 4/15 [00:02<00:07,  1.57it/s]Loading checkpoint shards:  33%|███▎      | 5/15 [00:03<00:06,  1.66it/s]Loading checkpoint shards:  40%|████      | 6/15 [00:03<00:05,  1.73it/s]Loading checkpoint shards:  47%|████▋     | 7/15 [00:04<00:04,  1.75it/s]Loading checkpoint shards:  53%|█████▎    | 8/15 [00:04<00:04,  1.74it/s]Loading checkpoint shards:  60%|██████    | 9/15 [00:05<00:03,  1.74it/s]Loading checkpoint shards:  67%|██████▋   | 10/15 [00:05<00:02,  1.72it/s]Loading checkpoint shards:  73%|███████▎  | 11/15 [00:06<00:02,  1.68it/s]Loading checkpoint shards:  80%|████████  | 12/15 [00:07<00:01,  1.68it/s]Loading checkpoint shards:  87%|████████▋ | 13/15 [00:07<00:01,  1.70it/s]Loading checkpoint shards:  93%|█████████▎| 14/15 [00:08<00:00,  1.66it/s]Loading checkpoint shards: 100%|██████████| 15/15 [00:09<00:00,  1.68it/s]Loading checkpoint shards: 100%|██████████| 15/15 [00:09<00:00,  1.66it/s]
-=== COMPOSE-THEN-EDIT keystone (RedHatAI/Meta-Llama-3.1-70B-Instruct-FP8) ===
-Traceback (most recent call last):
-  File "/home/ubuntu/editable-kv/patchkv/esys/compose_edit.py", line 200, in <module>
-    main()
-  File "/home/ubuntu/editable-kv/patchkv/esys/compose_edit.py", line 176, in main
-    r = one_instance(model, tok, inst, KS)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/compose_edit.py", line 132, in one_instance
-    skill_A_chunk = precompute_chunk(model, ids_A[:, a:b])
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 88, in precompute_chunk
-    return prefill(model, chunk_ids)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 65, in prefill
-    return model(input_ids=ids.to("cuda"), use_cache=True).past_key_values
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 918, in wrapper
-    output = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 459, in forward
-    outputs: BaseModelOutputWithPast = self.model(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 1072, in wrapper
-    outputs = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 395, in forward
-    hidden_states = decoder_layer(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_layers.py", line 94, in __call__
-    return super().__call__(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 309, in forward
-    hidden_states = self.mlp(hidden_states)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 155, in forward
-    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 369, in wrapped_forward
-    output = forward_func_orig.__get__(self, self.__class__)(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/linear/compressed_linear.py", line 85, in forward
-    weight_data = self.compressor.decompress_module(self)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/compressors/base.py", line 177, in decompress_module
-    decompressed_weight = self.decompress_weight(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/compressors/quantized_compressors/naive_quantized.py", line 142, in decompress_weight
-    decompressed_weight = dequantize(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 132, in dequantize
-    return _process_quantization(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 328, in _process_quantization
-    output = _dequantize(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 486, in _dequantize
-    dequant_value = dequant_value * scale
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 448.00 MiB. GPU 0 has a total capacity of 94.97 GiB of which 353.31 MiB is free. Including non-PyTorch memory, this process has 94.62 GiB memory in use. Of the allocated memory 90.64 GiB is allocated by PyTorch, and 3.31 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-Compressing model: 0it [00:00, ?it/s]Compressing model: 225it [00:00, 2229.46it/s]Compressing model: 448it [00:00, 1856.33it/s]Compressing model: 560it [00:00, 1747.20it/s]
-Loading checkpoint shards:   0%|          | 0/15 [00:00<?, ?it/s]Loading checkpoint shards:   7%|▋         | 1/15 [00:00<00:09,  1.41it/s]Loading checkpoint shards:  13%|█▎        | 2/15 [00:01<00:08,  1.55it/s]Loading checkpoint shards:  20%|██        | 3/15 [00:01<00:07,  1.57it/s]Loading checkpoint shards:  27%|██▋       | 4/15 [00:02<00:06,  1.62it/s]Loading checkpoint shards:  33%|███▎      | 5/15 [00:03<00:05,  1.69it/s]Loading checkpoint shards:  40%|████      | 6/15 [00:03<00:05,  1.75it/s]Loading checkpoint shards:  47%|████▋     | 7/15 [00:04<00:04,  1.76it/s]Loading checkpoint shards:  53%|█████▎    | 8/15 [00:04<00:03,  1.76it/s]Loading checkpoint shards:  60%|██████    | 9/15 [00:05<00:03,  1.76it/s]Loading checkpoint shards:  67%|██████▋   | 10/15 [00:06<00:03,  1.57it/s]Loading checkpoint shards:  73%|███████▎  | 11/15 [00:06<00:02,  1.58it/s]Loading checkpoint shards:  80%|████████  | 12/15 [00:07<00:01,  1.58it/s]Loading checkpoint shards:  87%|████████▋ | 13/15 [00:07<00:01,  1.63it/s]Loading checkpoint shards:  93%|█████████▎| 14/15 [00:08<00:00,  1.62it/s]Loading checkpoint shards: 100%|██████████| 15/15 [00:09<00:00,  1.64it/s]Loading checkpoint shards: 100%|██████████| 15/15 [00:09<00:00,  1.64it/s]
-Traceback (most recent call last):
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_facts.py", line 133, in <module>
-    main()
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_facts.py", line 113, in main
-    fc = ans in answer_text(model, tok, ids)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_facts.py", line 79, in answer_text
-    cache = cache_slice(cache_full, 0, L - 1) if cache_full is not None else prefill(model, ids[:, :L - 1])
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 65, in prefill
-    return model(input_ids=ids.to("cuda"), use_cache=True).past_key_values
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 918, in wrapper
-    output = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 459, in forward
-    outputs: BaseModelOutputWithPast = self.model(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 1072, in wrapper
-    outputs = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 395, in forward
-    hidden_states = decoder_layer(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_layers.py", line 94, in __call__
-    return super().__call__(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 309, in forward
-    hidden_states = self.mlp(hidden_states)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 155, in forward
-    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 369, in wrapped_forward
-    output = forward_func_orig.__get__(self, self.__class__)(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/linear/compressed_linear.py", line 85, in forward
-    weight_data = self.compressor.decompress_module(self)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/compressors/base.py", line 177, in decompress_module
-    decompressed_weight = self.decompress_weight(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/compressors/quantized_compressors/naive_quantized.py", line 142, in decompress_weight
-    decompressed_weight = dequantize(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 132, in dequantize
-    return _process_quantization(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 328, in _process_quantization
-    output = _dequantize(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 486, in _dequantize
-    dequant_value = dequant_value * scale
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 448.00 MiB. GPU 0 has a total capacity of 94.97 GiB of which 353.31 MiB is free. Including non-PyTorch memory, this process has 94.62 GiB memory in use. Of the allocated memory 90.64 GiB is allocated by PyTorch, and 3.31 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-Compressing model: 0it [00:00, ?it/s]Compressing model: 204it [00:00, 2007.41it/s]Compressing model: 405it [00:00, 1848.84it/s]Compressing model: 560it [00:00, 1702.00it/s]
-Loading checkpoint shards:   0%|          | 0/15 [00:00<?, ?it/s]Loading checkpoint shards:   7%|▋         | 1/15 [00:00<00:10,  1.40it/s]Loading checkpoint shards:  13%|█▎        | 2/15 [00:01<00:08,  1.53it/s]Loading checkpoint shards:  20%|██        | 3/15 [00:01<00:07,  1.56it/s]Loading checkpoint shards:  27%|██▋       | 4/15 [00:02<00:06,  1.60it/s]Loading checkpoint shards:  33%|███▎      | 5/15 [00:03<00:05,  1.69it/s]Loading checkpoint shards:  40%|████      | 6/15 [00:03<00:05,  1.75it/s]Loading checkpoint shards:  47%|████▋     | 7/15 [00:04<00:04,  1.77it/s]Loading checkpoint shards:  53%|█████▎    | 8/15 [00:04<00:03,  1.76it/s]Loading checkpoint shards:  60%|██████    | 9/15 [00:05<00:03,  1.76it/s]Loading checkpoint shards:  67%|██████▋   | 10/15 [00:05<00:02,  1.73it/s]Loading checkpoint shards:  73%|███████▎  | 11/15 [00:06<00:02,  1.69it/s]Loading checkpoint shards:  80%|████████  | 12/15 [00:07<00:01,  1.69it/s]Loading checkpoint shards:  87%|████████▋ | 13/15 [00:07<00:01,  1.70it/s]Loading checkpoint shards:  93%|█████████▎| 14/15 [00:08<00:00,  1.67it/s]Loading checkpoint shards: 100%|██████████| 15/15 [00:08<00:00,  1.68it/s]Loading checkpoint shards: 100%|██████████| 15/15 [00:08<00:00,  1.68it/s]
-Traceback (most recent call last):
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_agentic.py", line 127, in <module>
-    main()
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_agentic.py", line 105, in main
-    chunk = precompute_chunk(model, ids[:, a:b])
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 88, in precompute_chunk
-    return prefill(model, chunk_ids)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 65, in prefill
-    return model(input_ids=ids.to("cuda"), use_cache=True).past_key_values
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 918, in wrapper
-    output = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 459, in forward
-    outputs: BaseModelOutputWithPast = self.model(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 1072, in wrapper
-    outputs = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 395, in forward
-    hidden_states = decoder_layer(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/modeling_layers.py", line 94, in __call__
-    return super().__call__(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 309, in forward
-    hidden_states = self.mlp(hidden_states)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/llama/modeling_llama.py", line 155, in forward
-    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 369, in wrapped_forward
-    output = forward_func_orig.__get__(self, self.__class__)(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/linear/compressed_linear.py", line 85, in forward
-    weight_data = self.compressor.decompress_module(self)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/compressors/base.py", line 177, in decompress_module
-    decompressed_weight = self.decompress_weight(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/compressors/quantized_compressors/naive_quantized.py", line 142, in decompress_weight
-    decompressed_weight = dequantize(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 132, in dequantize
-    return _process_quantization(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 328, in _process_quantization
-    output = _dequantize(
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/compressed_tensors/quantization/lifecycle/forward.py", line 486, in _dequantize
-    dequant_value = dequant_value * scale
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 448.00 MiB. GPU 0 has a total capacity of 94.97 GiB of which 189.31 MiB is free. Including non-PyTorch memory, this process has 94.78 GiB memory in use. Of the allocated memory 90.72 GiB is allocated by PyTorch, and 3.39 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-DONE_llama31_70b_fp8
-===G5_DONE===

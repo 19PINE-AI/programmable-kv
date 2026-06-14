@@ -1,32 +1,0 @@
-Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files:  25%|██▌       | 1/4 [01:57<05:51, 117.24s/it]Fetching 4 files:  50%|█████     | 2/4 [02:00<01:39, 49.93s/it] Fetching 4 files: 100%|██████████| 4/4 [02:00<00:00, 30.01s/it]
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  1.65it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.64it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.62it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.32it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.01it/s]
-=== SKILL feasibility (unsloth/Meta-Llama-3.1-8B-Instruct) ===
-  --- self-contained skills ---
-  refund     skill_tok= 605 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
-  access     skill_tok= 606 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
-  deploy     skill_tok= 596 | full=correct reposition=correct(cos0.99) naive=correct(cos0.99) | agree=True
-  rx         skill_tok= 603 | full=correct reposition=correct(cos1.00) naive=correct(cos0.99) | agree=True
-  [self-contained] full_correct=4/4 precompiled_correct=4/4 | reposition==full: 4/4 (cos0.993) | naive==full: 4/4 (cos0.992)
-  TTFT: full median=40.9ms  precompiled median=34.2ms
-=== MULTI-SKILL LIBRARY composition (unsloth/Meta-Llama-3.1-8B-Instruct) ===
-  #skills     full  composed  agree  full_ms  comp_ms  speedup
-        1     deny      deny   True     39.2     34.2    1.14x
-        2     deny      deny   True     59.4     38.4    1.55x
-        3     deny      deny   True     90.3     42.5    2.12x
-        4     deny      deny   True    115.0     47.0    2.45x
-COMPOSABLE_KV_DONE
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  1.67it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.65it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.62it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.32it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  2.02it/s]
-=== COMPOSE-THEN-EDIT keystone (unsloth/Meta-Llama-3.1-8B-Instruct) ===
-  account   recomputed: in_place=+0.09 sel@32=+0.89 err=+1.04 | composed: in_place=+0.08 sel@32=+0.87 err=+1.15
-  order     recomputed: in_place=+0.00 sel@32=+0.71 err=+0.93 | composed: in_place=+0.01 sel@32=+0.81 err=+1.09
-  subscription recomputed: in_place=+0.02 sel@32=+0.88 err=+1.50 | composed: in_place=-0.01 sel@32=+0.90 err=+1.33
-  door      recomputed: in_place=+0.08 sel@32=+0.85 err=+0.97 | composed: in_place=+0.07 sel@32=+0.84 err=+0.95
-
-  MEAN recovery (n=4, clean flips=3/4):
-  method       recomputed     composed
-  in_place          0.048        0.038
-  sel@8             0.648        0.669
-  sel@32            0.834        0.856
-  erratum           1.112        1.129
-COMPOSE_EDIT_DONE
-DONE_LLAMA31

@@ -18,10 +18,11 @@ Two arms per order: A) status stays pending (control, correct=cancel); B) pendin
 Reports P(correct terminal action) + tool-consistency + recompute fraction, with Wilson CIs.
 Run: MECH_ATTN=sdpa python esys/tau2_episode.py --n 20
 """
+import os
 import argparse, os, sys, json, math
 import torch
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, "/home/ubuntu/tau2-bench/src")
+sys.path.insert(0, os.environ.get("TAU2_SRC", os.path.expanduser("~/tau2-bench/src")))
 from editkv import EditableContext, Mode
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tau2.domains.retail.environment import get_environment

@@ -1,60 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:01,  1.31it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.34it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.97it/s]
-=== SKILL feasibility (Qwen/Qwen3-4B) ===
-  --- self-contained skills ---
-  refund     skill_tok= 616 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
-  access     skill_tok= 617 | full=correct reposition=correct(cos1.00) naive=correct(cos1.00) | agree=True
-  deploy     skill_tok= 607 | full=wrong   reposition=wrong  (cos1.00) naive=wrong  (cos1.00) | agree=True
-  rx         skill_tok= 614 | full=wrong   reposition=wrong  (cos1.00) naive=wrong  (cos1.00) | agree=True
-  [self-contained] full_correct=2/4 precompiled_correct=2/4 | reposition==full: 4/4 (cos0.999) | naive==full: 4/4 (cos0.999)
-  TTFT: full median=88.8ms  precompiled median=67.9ms
-=== MULTI-SKILL LIBRARY composition (Qwen/Qwen3-4B) ===
-  #skills     full  composed  agree  full_ms  comp_ms  speedup
-        1     deny     grant  False     82.0     68.1    1.20x
-        2     deny     grant  False     89.2     65.8    1.36x
-        3    grant     grant   True    124.8     82.0    1.52x
-        4    grant     grant   True    192.2     90.6    2.12x
-=== TTFT scaling: full vs precompiled (Qwen/Qwen3-4B) ===
-  skill_tok   full_ms  precomp_ms  speedup
-        500      55.2        56.8    0.97x
-       2000     141.2        59.3    2.38x
-       8000     706.4       127.1    5.56x
-      16000    1749.3       213.6    8.19x
-Traceback (most recent call last):
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 408, in <module>
-    main()
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 401, in main
-    sc = run_scaling(model, tok)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 292, in run_scaling
-    model(input_ids=full_ids, use_cache=True)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/utils/generic.py", line 918, in wrapper
-    output = func(self, *args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 494, in forward
-    logits = self.lm_head(hidden_states[:, slice_indices, :])
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 134, in forward
-    return F.linear(input, self.weight, self.bias)
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.06 GiB. GPU 0 has a total capacity of 94.97 GiB of which 6.85 GiB is free. Process 2353272 has 16.60 GiB memory in use. Process 2364181 has 22.80 GiB memory in use. Including non-PyTorch memory, this process has 26.63 GiB memory in use. Process 2386668 has 22.06 GiB memory in use. Of the allocated memory 25.24 GiB is allocated by PyTorch, and 741.87 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:01,  1.58it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.29it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  1.95it/s]
-=== COMPOSE-THEN-EDIT keystone (Qwen/Qwen3-4B) ===
-  account   recomputed: in_place=+1.00 sel@32=+1.50 err=-0.50 | composed: in_place=+0.33 sel@32=+0.33 err=+3.33
-  order     recomputed: in_place=+1.00 sel@32=-1.50 err=+7.00 | composed: in_place=-0.00 sel@32=+1.62 err=+1.62
-  subscription recomputed: in_place=+0.21 sel@32=+0.43 err=+0.86 | composed: in_place=+0.27 sel@32=+0.55 err=+1.09
-  door      recomputed: in_place=+1.00 sel@32=+3.00 err=+2.00 | composed: in_place=-0.25 sel@32=+1.00 err=+0.25
-
-  MEAN recovery (n=4, clean flips=0/4):
-  method       recomputed     composed
-  in_place          0.804        0.089
-  sel@8             0.571        1.122
-  sel@32            0.857        0.876
-  erratum           2.339        1.575
-COMPOSE_EDIT_DONE
-SUITE_4B_DONE

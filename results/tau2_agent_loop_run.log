@@ -1,46 +1,0 @@
-2026-06-06 02:44:38.722 | WARNING  | tau2.utils.utils:<module>:15 - No .env file found
-2026-06-06 02:44:38.723 | INFO     | tau2.utils.utils:<module>:28 - Using data directory from source: /home/ubuntu/tau2-bench/data
-2026-06-06 02:44:40.916 | INFO     | tau2.utils.llm_utils:<module>:102 - LiteLLM: Cache is disabled
-2026-06-06 02:44:40.962 | DEBUG    | tau2.registry:<module>:281 - Registering default components...
-2026-06-06 02:44:40.963 | DEBUG    | tau2.registry:<module>:292 - Voice dependencies not installed, skipping voice user registration
-2026-06-06 02:44:40.963 | DEBUG    | tau2.registry:<module>:350 - Default components registered successfully. Registry info: {
-  "domains": [
-    "mock",
-    "airline",
-    "retail",
-    "telecom",
-    "telecom-workflow",
-    "banking_knowledge"
-  ],
-  "agents": [
-    "llm_agent",
-    "llm_agent_gt",
-    "llm_agent_solo",
-    "discrete_time_audio_native_agent"
-  ],
-  "users": [
-    "user_simulator",
-    "dummy_user"
-  ],
-  "task_sets": [
-    "mock",
-    "airline",
-    "retail",
-    "telecom_full",
-    "telecom_small",
-    "telecom",
-    "telecom-workflow",
-    "banking_knowledge"
-  ]
-}
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:03,  1.19it/s]Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:02,  1.32it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:02<00:01,  1.25it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:03<00:00,  1.31it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.73it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.49it/s]
-  ...10/30
-  ...20/30
-  ...30/30
-
-==== τ²-BENCH MULTI-TURN AGENT LOOP (30 real orders; correct terminal action = DENY) ====
-  strategy          task_success  recompute(tok)   vs full  actions
-  full_reprefill            1.00           11550     1.00x  {'deny': 30}
-  erratum                   0.70            6330     0.55x  {'cancel_pending_order': 9, 'deny': 21}
-  stale                     0.00            5640     0.49x  {'cancel_pending_order': 30}
-TAU2_AGENT_LOOP_DONE

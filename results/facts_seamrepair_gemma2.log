@@ -1,15 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:04,  1.44s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:02<00:02,  1.47s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:04<00:01,  1.49s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:05<00:00,  1.36s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:05<00:00,  1.40s/it]
-  [0/104] full~1.00 K0~1.00 K16~1.00
-  [25/104] full~0.96 K0~0.73 K16~0.62
-  [50/104] full~0.96 K0~0.71 K16~0.65
-  [75/104] full~0.95 K0~0.70 K16~0.63
-  [100/104] full~0.95 K0~0.69 K16~0.63
-
-=== SEAM-REPAIR (facts/RAG, unsloth/gemma-2-9b-it, n=104) full_acc=0.952 ===
-  K=  0 (recomputed seam tokens): acc=0.692 CI[0.606, 0.779]
-  K=  4 (recomputed seam tokens): acc=0.692 CI[0.606, 0.779]
-  K=  8 (recomputed seam tokens): acc=0.692 CI[0.606, 0.779]
-  K= 16 (recomputed seam tokens): acc=0.644 CI[0.548, 0.731]
-  K= 32 (recomputed seam tokens): acc=0.885 CI[0.817, 0.942]
-  K= 64 (recomputed seam tokens): acc=0.913 CI[0.856, 0.962]
-SEAMREPAIR_DONE

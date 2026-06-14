@@ -1,25 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  1.60it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.54it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.56it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.75it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.68it/s]
-=== MULTI-SKILL LIBRARY composition (unsloth/gemma-2-9b-it) ===
-  #skills     full  composed  agree  full_ms  comp_ms  speedup
-        1     deny      deny   True    258.0     84.8    3.04x
-        2     deny      deny   True     83.1     72.2    1.15x
-        3     deny      deny   True    126.9     96.1    1.32x
-        4     deny      deny   True    159.4    143.0    1.11x
-=== TTFT scaling: full vs precompiled (unsloth/gemma-2-9b-it) ===
-  skill_tok   full_ms  precomp_ms  speedup
-        500      47.7        44.5    1.07x
-       2000     135.2        52.8    2.56x
-Traceback (most recent call last):
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 523, in <module>
-    main()
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 516, in main
-    sc = run_scaling(model, tok)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 316, in run_scaling
-    rep = repositioned_chunk_cache(model, skill_alone, Lskill, a)
-  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "/home/ubuntu/editable-kv/patchkv/esys/composable_kv.py", line 82, in repositioned_chunk_cache
-    raw = k * cs - rotate_half(k) * ss
-RuntimeError: The size of tensor a (4095) must match the size of tensor b (8000) at non-singleton dimension 2

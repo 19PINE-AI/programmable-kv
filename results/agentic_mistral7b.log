@@ -1,13 +1,0 @@
-Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:01<00:02,  1.15s/it]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:02<00:01,  1.10s/it]Loading checkpoint shards: 100%|██████████| 3/3 [00:02<00:00,  1.11it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:02<00:00,  1.04it/s]
-  [0/108] full_acc~1.00 pre_acc~1.00
-  [20/108] full_acc~1.00 pre_acc~1.00
-  [40/108] full_acc~1.00 pre_acc~1.00
-  [60/108] full_acc~1.00 pre_acc~1.00
-  [80/108] full_acc~1.00 pre_acc~1.00
-  [100/108] full_acc~1.00 pre_acc~1.00
-
-=== AGENTIC TOOL-CALLING (transplanted tool-defs), mistralai/Mistral-7B-Instruct-v0.3, n=108 ===
-  full fn+arg acc      = 1.0 CI[1.0, 1.0]
-  precompiled fn+arg   = 1.0 CI[1.0, 1.0]
-  tool-call agreement  = 1.0 CI[1.0, 1.0]
-AGENTIC_DONE

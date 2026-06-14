@@ -27,6 +27,12 @@ python esys/weight_editing_compare.py --model Llama-3.1-8B
 | **Agentic** | `tau2_*.py`, `taubench_thinking.py` | tau2-bench retail environment (needs `tau2-bench` installed) |
 | **Figures** | `make_figures.py`, `make_composable_figures.py`, `make_ksweep_figure.py`, `make_scorecards.py` | regenerate esys-owned figures from `results/` |
 
-`*_common.py` modules are shared machinery (imported, not run directly). Reproducibility
-note: experiments ran on a single RTX PRO 6000 (Blackwell, 96 GB) with the official
+`*_common.py` modules are shared machinery (imported, not run directly).
+
+The agentic scripts (`tau2_*.py`, some `vllm_*.py`) need [tau2-bench](https://github.com/sierra-research/tau2-bench)
+installed. They look for it under `~/tau2-bench` by default; override with environment variables
+`TAU2_SRC` (the `src/` dir), `TAU2_POLICY` (the retail `policy.md`), and `TAUBENCH_RETAIL` if your
+checkout lives elsewhere.
+
+Reproducibility note: experiments ran on a single RTX PRO 6000 (Blackwell, 96 GB) with the official
 HuggingFace checkpoints listed in the paper's appendix.
