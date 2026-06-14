@@ -31,7 +31,13 @@ across scale---see \Cref{app:memory-agent}.)
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_e1_placement}
-\caption{\textbf{E1 --- placement and the pre-digestion cost (Qwen3-4B, CoT).} Reading memory \emph{late} carries a small, statistically significant accuracy cost vs.\ \emph{early} that \emph{grows with memory length}; late placement is still preferred because it enables $O(L)$ editing/transplant (efficiency quantified in E5).}
+\caption{\textbf{E1 --- placement and the pre-digestion cost.} Decision accuracy vs.\ integration depth
+(\texttt{n\_facts}) for memory read \emph{early} (solid) vs.\ \emph{late} (dashed), across all evaluated
+models, under (a) direct answering and (b) chain-of-thought. Direct answering is at chance for the
+reasoning-native Qwen3 models (so CoT is the operative regime); under CoT, late placement forgoes
+prefill-time pre-digestion and carries a small accuracy cost vs.\ early that the text quantifies on Qwen3-4B
+(GEE-logistic, growing with memory length). Late placement is still preferred because it enables $O(L)$
+editing/transplant (efficiency quantified in E5).}
 \label{fig:mem-e1}
 \end{figure}
 

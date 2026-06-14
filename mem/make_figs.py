@@ -115,17 +115,23 @@ def fig_e1_placement():
     recs = load("e1")
     if not recs:
         return
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.55))
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.6))
     models = sorted(set(r["model"] for r in recs))
-    for ax, reg in zip(axes, ["direct", "cot"]):
+    for i, (ax, reg) in enumerate(zip(axes, ["direct", "cot"])):
         for m in models:
             for pl, ls in [("early", "-o"), ("late", "--s")]:
                 nfs = sorted(set(r["n_facts"] for r in recs if r["model"] == m))
                 ys = [np.mean([r["correct"] for r in recs if r["model"] == m and r["reasoning"] == reg and r["placement"] == pl and r["n_facts"] == nf] or [np.nan]) for nf in nfs]
-                ax.plot(nfs, ys, ls, ms=4, label=f"{short(m)} {pl}")
+                # label only once (panel a) so the shared legend has no duplicates
+                ax.plot(nfs, ys, ls, ms=4, label=(f"{short(m)} {pl}" if i == 0 else None))
         ax.set_xlabel("integration depth (n_facts)"); ax.set_ylabel("decision accuracy")
-        ax.set_title(f"({'a' if reg=='direct' else 'b'}) {reg}"); ax.set_ylim(0, 1.05); ax.legend(fontsize=6)
-    plt.tight_layout(); plt.savefig(os.path.join(F, "fig_e1_placement.pdf")); plt.close()
+        ax.set_title(f"({'a' if reg=='direct' else 'b'}) {reg}"); ax.set_ylim(0, 1.05)
+    # one shared legend outside (below) both panels -- no overlap with the lines
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=4, fontsize=6, frameon=False,
+               bbox_to_anchor=(0.5, 0.0), columnspacing=1.0, handlelength=1.7, handletextpad=0.5)
+    fig.tight_layout(rect=[0, 0.24, 1, 1])
+    plt.savefig(os.path.join(F, "fig_e1_placement.pdf")); plt.close()
     print("wrote fig_e1_placement.pdf")
 
 
