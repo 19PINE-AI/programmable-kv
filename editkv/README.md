@@ -32,7 +32,7 @@ ctx.generate("account_role", "suspended_user", Mode.AUTO, decision_prompt="\nDec
 |---|---|---|---|
 | `Mode.IN_PLACE` | recompute only the changed field's KV (exact — it attends only to the unchanged prefix) and overwrite it; leave the rest stale | ~field tokens (~0.1%) | low-conditioning fields (time/ids/counters); reasoning models in benign contexts |
 | `Mode.ERRATUM` | leave the cache stale; append a salient trigger (`[STATE UPDATE] <field> → <new>; overrides any earlier value and conclusion`); recompute only that span | ~tens of tokens (few %) | robust for short/medium contexts and length-changing edits; **can miss when the field is buried early in a long policy** (the stale field token still competes) |
-| `Mode.FIELD_PLUS_ERRATUM` | both — refresh the field token *and* append the override | ~field + trigger | **the robust default**: recovers even in long real-policy contexts where erratum alone reverts (see the tau2-bench result in `../PAPER.md` §6) |
+| `Mode.FIELD_PLUS_ERRATUM` | both — refresh the field token *and* append the override | ~field + trigger | **the robust default**: recovers even in long real-policy contexts where erratum alone reverts (see the tau2-bench result in the paper's systems section, [`../paper/main.pdf`](../paper/main.pdf)) |
 | `Mode.AUTO` | run the diagnostic, pick `in_place` or `field+erratum` per-edit | +1 short probe | when you want the cheapest *correct* option automatically |
 | `Mode.STALE` / `Mode.FULL_REPREFILL` | baselines (floor / ceiling) | 0 / 100% | evaluation |
 
@@ -40,7 +40,7 @@ ctx.generate("account_role", "suspended_user", Mode.AUTO, decision_prompt="\nDec
 directly and ~50% to downstream tokens that *memoized the field's implications at prefill
 time*. Refreshing the field's KV doesn't update that memoized downstream, so the decision
 reverts to the old value. The erratum injects a recent, explicit override the decision
-attends to — which is why it's robust. (See `../MECHANISM.md`, `../PAPER.md`.)
+attends to — which is why it's robust. (See [`../docs/MECHANISM.md`](../docs/MECHANISM.md) and the paper, [`../paper/main.pdf`](../paper/main.pdf).)
 
 ## The diagnostic — do I actually need the erratum?
 
@@ -56,7 +56,7 @@ It decodes the next decision under the in-place edit and under the robust refere
 (`field+erratum`); if they disagree, the field conditions the decision through the stale
 downstream and the cheap in-place edit is insufficient — escalate to `field+erratum`. (We
 reference `field+erratum`, not erratum alone, because on long real policies erratum alone
-can itself revert — so it is not a safe ground truth; see `../PAPER.md` §6.) Both caches are
+can itself revert — so it is not a safe ground truth; see the paper, [`../paper/main.pdf`](../paper/main.pdf).) Both caches are
 cheap, so it's a ~2-short-decode runtime check. `blast_radius()` is an even cheaper
 one-forward pre-filter.
 

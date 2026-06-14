@@ -41,5 +41,5 @@ running the Python step.
 ## Attribution
 
 Author: **Bojie Li** (Pine AI). Code and result records:
-<https://github.com/bojieli/programmable-kv>. Deployed at
+<https://github.com/19PINE-AI/programmable-kv>. Deployed at
 <https://01.me/research/programmable-kv/>.

@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the paper below."
+title: "Models Take Notes at Prefill: KV Cache Can Be Editable and Composable"
+authors:
+  - family-names: Li
+    given-names: Bojie
+    affiliation: Pine AI
+repository-code: "https://github.com/19PINE-AI/programmable-kv"
+url: "https://01.me/research/programmable-kv/"
+license: Apache-2.0
+year: 2026
+preferred-citation:
+  type: article
+  title: "Models Take Notes at Prefill: KV Cache Can Be Editable and Composable"
+  authors:
+    - family-names: Li
+      given-names: Bojie
+      affiliation: Pine AI
+  year: 2026
+  notes: "Preprint. Under review."
+  url: "https://github.com/19PINE-AI/programmable-kv"

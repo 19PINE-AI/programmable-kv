@@ -7,8 +7,8 @@
 > — every figure is driven by the released result records; walk the mechanism, the
 > circuit, and every experiment interactively.
 >
-> 📄 **Paper:** [`paper/main.pdf`](paper/main.pdf) (32 pp., preprint — under review)
-> · 🧑‍🏫 **Gentle intro:** [`EXPLAINER.md`](EXPLAINER.md)
+> 📄 **Paper:** [`paper/main.pdf`](paper/main.pdf) (33 pp., preprint — under review)
+> · 🧑‍🏫 **Gentle intro:** [`docs/EXPLAINER.md`](docs/EXPLAINER.md)
 
 ---
 
@@ -36,10 +36,12 @@ a first-class object you can **program**:
   **0.90–0.999**) at **O(L)** instead of O(L²) time-to-first-token (**13.9×** at 32k).
 
 A *keystone* experiment — editing a field **inside** a transplanted skill — shows the two
-operations act on one substrate; a unified edit+compose agent stays decision-identical to
-full recompute across thirteen models. The substrate is any per-token attention KV cache:
-validated across scale, quantization, MoE, and multimodal image caches, with small
-adapters for MLA, interleaved M-RoPE, and sliding-window attention.
+operations act on the same notes; a unified edit+compose agent stays decision-identical to
+full recompute across thirteen models. The approach applies to any per-token attention KV
+cache: validated across scale, quantization, MoE, and multimodal image caches, with small
+adapters for MLA, interleaved M-RoPE, and sliding-window attention. The longer-term vision
+is a KV cache that is **programmable by design** — models trained to expose composable,
+editable notes rather than relying on the mechanism arising for free.
 
 ## Repository layout
 
@@ -47,28 +49,38 @@ adapters for MLA, interleaved M-RoPE, and sliding-window attention.
 |------|------------|
 | [`paper/`](paper/) | LaTeX source (`main.tex`), figures, and the built `main.pdf` |
 | [`site/`](site/) | The interactive companion website (Vite + React) — see [`site/README.md`](site/README.md) |
-| [`e1/`](e1/), [`e2/`](e2/) | Mechanism harness: blast-radius capture, gated-decision scenarios, cache machinery |
-| [`esys/`](esys/) | Main experiment system: deep-mechanism controls, the component circuit, the editing frontier, composable transplant, weight-editing comparison, and online serving |
-| [`editkv/`](editkv/) | Core editable-KV module (`patchkv_cache`: exact field refresh + optional recency recompute) |
-| [`mem/`](mem/) | User-memory application (E1–E5, LoCoMo external validity, cross-referential test) |
+| [`e1/`](e1/), [`e2/`](e2/) | Mechanism harness: blast-radius capture, gated-decision scenarios, cache machinery (each has a `README.md`) |
+| [`esys/`](esys/) | Main experiment system: deep-mechanism controls, the component circuit, the editing frontier, composable transplant, weight-editing comparison, and online serving (see [`esys/README.md`](esys/README.md)) |
+| [`editkv/`](editkv/) | Core editable-KV module (`EditableContext`: in-place edit + erratum, with a per-edit diagnostic) — see [`editkv/README.md`](editkv/README.md) |
+| [`mem/`](mem/) | User-memory application (E1–E5, LoCoMo external validity, cross-referential test) — see [`mem/README.md`](mem/README.md) |
 | [`results/`](results/) | Result records (JSON) and raw run logs — the source of every number on the site |
 | [`figures/`](figures/), [`plots/`](plots/) | Generated figures |
+| [`docs/`](docs/) | Background notes: gentle intro + the mechanistic account |
+| `requirements.txt`, [`LICENSE`](LICENSE) | Python dependencies; Apache-2.0 license |
 
 ### Background notes
 
-[`EXPLAINER.md`](EXPLAINER.md) (no background assumed) · [`MECHANISM.md`](MECHANISM.md)
-(the mechanistic account) · `FINDINGS_*.md` (per-phase result logs) · [`PAPER.md`](PAPER.md)
-(extended write-up).
+[`docs/EXPLAINER.md`](docs/EXPLAINER.md) (no background assumed) ·
+[`docs/MECHANISM.md`](docs/MECHANISM.md) (the mechanistic account). The paper
+([`paper/main.pdf`](paper/main.pdf)) is the canonical write-up.
 
 ## Reproduce
 
 ```bash
+# 0. dependencies (Python 3.9+); see requirements.txt for optional vllm / tau2-bench
+pip install -r requirements.txt
+pip install -e editkv             # the standalone editable-KV module
+
 # the paper
 cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
 
 # the figures (run with the repo root as cwd)
 python paper/figs/make_figures.py
 python paper/figs/make_circuit_figure.py
+
+# reproduce experiments from scratch (records land in results/; see each dir's README)
+python esys/mech_suite.py --model Qwen/Qwen3-8B    # mechanism probes  (esys/README.md)
+python e2/run_recovery.py --model Llama-3.1-8B      # editing recovery  (e2/README.md)
 
 # the interactive site
 cd site
@@ -83,8 +95,8 @@ drivers each take a `--model` flag.
 ## Status & attribution
 
 **Bojie Li** · Pine AI · preprint, under review. Code and interactive companion:
-<https://github.com/bojieli/programmable-kv>. A reproducibility statement and the full
-model list are in the paper's appendix.
+<https://github.com/19PINE-AI/programmable-kv>. A reproducibility statement and the full
+model list are in the paper's appendix. Released under **Apache-2.0** (see [`LICENSE`](LICENSE)).
 
 ```bibtex
 @article{li2026programmablekv,
@@ -92,6 +104,6 @@ model list are in the paper's appendix.
   author = {Li, Bojie},
   note   = {Preprint. Under review.},
   year   = {2026},
-  url    = {https://github.com/bojieli/programmable-kv}
+  url    = {https://github.com/19PINE-AI/programmable-kv}
 }
 ```

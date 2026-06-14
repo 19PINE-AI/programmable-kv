@@ -23,3 +23,5 @@ mem/results/*_run.log
 # node / vite build artifacts
 node_modules/
 site/dist/
+# arXiv submission bundle (regenerate locally via the paper build; not version-controlled)
+paper/arxiv-submission.tar.gz

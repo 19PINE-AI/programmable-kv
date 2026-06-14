@@ -1043,7 +1043,7 @@ def build_constants():
             "status": "Preprint. Under review.",
             "author": "Bojie Li",
             "affiliation": "Pine AI",
-            "github": "https://github.com/bojieli/programmable-kv",
+            "github": "https://github.com/19PINE-AI/programmable-kv",
         },
     })
 

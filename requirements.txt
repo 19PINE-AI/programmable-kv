@@ -1,0 +1,19 @@
+# Core: mechanism / editing / composing experiments and the editkv module.
+torch>=2.1
+transformers>=4.45
+numpy
+scikit-learn          # linear probes / SAE features in the circuit analysis
+pillow                # multimodal (image-KV) experiments
+
+# Figures (paper/figs/*.py, mem/make_figs.py, esys/make_*.py).
+matplotlib
+
+# Online serving benchmark (esys/vllm_*.py) — heavy, optional.
+# Install separately if you only want the mechanism/editing results:
+#   pip install "vllm>=0.6"
+# vllm>=0.6
+
+# Agentic environment (esys/tau2_*.py) uses tau2-bench, installed separately:
+#   pip install tau2-bench        # https://github.com/sierra-research/tau2-bench
+#
+# The LoCoMo dataset (mem/) is downloaded at runtime, not redistributed here.

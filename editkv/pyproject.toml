@@ -14,7 +14,7 @@ keywords = ["llm", "kv-cache", "inference", "agents", "prefix-caching", "serving
 dependencies = ["torch>=2.1", "transformers>=4.45"]
 
 [project.urls]
-Homepage = "https://github.com/bojieli/editable-kv"
+Homepage = "https://github.com/19PINE-AI/programmable-kv"
 
 [tool.setuptools]
 py-modules = ["core", "diagnostics", "example", "test_editkv"]

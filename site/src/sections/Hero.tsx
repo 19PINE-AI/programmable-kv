@@ -32,7 +32,7 @@ export function Hero() {
           <span>
             <b>Code</b>{' '}
             <a href={(constants.paper_meta as any).github} target="_blank" rel="noreferrer">
-              github.com/bojieli/programmable-kv
+              github.com/19PINE-AI/programmable-kv
             </a>
           </span>
         </div>
