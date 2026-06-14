@@ -176,14 +176,24 @@ def fig_editable():
     axs[0].set_title("(a) stickiness is scale-dependent", fontsize=8.5, loc="left")
 
     # (b) K-sweep: P_correct vs K, several models
+    from matplotlib.ticker import ScalarFormatter, NullLocator
+    allks = set()
     for tag, lab, col in [("qwen3_8b", "8B", C["blue"]), ("qwen3_4b", "4B", C["red"]),
                           ("qwen3_14b", "14B", C["green"]), ("qwen3_1p7b", "1.7B", C["orange"])]:
         f = os.path.join(R, f"ksweep_diverse_{tag}.json")
         if not os.path.exists(f): continue
         d = J(f"ksweep_diverse_{tag}.json")["K_correct"]
         ks = sorted(int(k) for k in d); ys = [d[str(k)]["P_correct"] for k in ks]
+        allks.update(ks)
         axs[1].plot(ks, ys, "-o", label=lab, color=col)
-    axs[1].set_xscale("symlog"); axs[1].set_xlabel("$K$ (selective-recompute tokens)")
+    # symlog keeps K=0 and small K legible, but label the actual K values (0, 8, 16, ...) not 10^x
+    axs[1].set_xscale("symlog", linthresh=1)
+    allks = sorted(allks)
+    axs[1].set_xticks(allks)
+    axs[1].xaxis.set_major_formatter(ScalarFormatter())
+    axs[1].xaxis.set_minor_locator(NullLocator())
+    axs[1].tick_params(axis="x", labelsize=6.5)
+    axs[1].set_xlabel("$K$ (selective-recompute tokens)")
     axs[1].set_ylim(0.0, 1.06)
     axs[1].set_ylabel("P(correct), CoT")
     axs[1].legend(ncol=4, loc="lower center", fontsize=6.0, columnspacing=1.0, handlelength=1.2); despine(axs[1])
@@ -439,22 +449,36 @@ def fig_overview():
 # FIG OPERATIONS — edit (append erratum) vs compose (reposition+splice) on the cache
 # =====================================================================================
 def fig_operations():
-    fig, axs = plt.subplots(2, 1, figsize=(7.2, 2.7));
-    def cell(ax, x, lab, col, w=0.9, y=0.0, h=0.8, tc="black", fs=6.6):
+    fig, axs = plt.subplots(2, 1, figsize=(7.2, 3.5), gridspec_kw={"height_ratios": [1.7, 1.0]})
+    def cell(ax, x, lab, col, w=0.9, y=0.0, h=0.8, tc="black", fs=6.6, ec="#3a3a3a", lw=0.7):
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.01,rounding_size=0.05",
-                     fc=col, ec="#3a3a3a", lw=0.7))
+                     fc=col, ec=ec, lw=lw))
         ax.text(x+w/2, y+h/2, lab, ha="center", va="center", fontsize=fs, color=tc)
-    # (a) EDIT
-    ax = axs[0]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.4, 1.5)
+    RC = C["red"]  # recompute-highlight edge color
+    # (a) EDIT -- two ways to amend the stale notes on one cache
+    ax = axs[0]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.45, 3.15)
+    ax.text(0.2, 2.86, "(a) Editable: two ways to amend the stale notes", fontsize=8.2, fontweight="bold")
+    # strip 1: field+selective -- recompute the field plus the top-K affected downstream notes
+    ax.text(0.2, 2.36, "field+selective ($O(K)$): recompute the field $+$ top-$K$ affected notes",
+            fontsize=6.8, color=C["blue"])
+    s1 = [("sys","#E8E8E8","black",False),("field=new",C["orange"],"white",True),("rule","#E8E8E8","black",False),
+          ("note*",C["sky"],"white",True),("notes",C["sky"],"white",False),("dec.",C["green"],"white",False)]
     xs = 0.2
-    for lab, col, tc in [("sys","#E8E8E8","black"),("field=old",C["orange"],"white"),("rule","#E8E8E8","black"),
-                         ("notes",C["sky"],"white"),("notes",C["sky"],"white"),("dec.",C["green"],"white")]:
-        cell(ax, xs, lab, col, tc=tc); xs += 1.0
-    cell(ax, xs+0.25, "ERRATUM", C["red"], w=1.5, tc="white");
-    ax.add_patch(FancyArrowPatch((xs-0.05,0.4),(xs+0.25,0.4), arrowstyle="-|>", mutation_scale=10, lw=1.4, color=C["red"]))
-    ax.text(0.2, 1.25, "(a) Editable: append a salient erratum (O(1)); reuse the whole prefix",
-            fontsize=8.2, fontweight="bold")
-    ax.text(xs+1.0, -0.3, "amends the stale notes", fontsize=6.5, color=C["red"], ha="center")
+    for lab, col, tc, rec in s1:
+        cell(ax, xs, lab, col, y=1.58, h=0.66, tc=tc,
+             ec=(RC if rec else "#3a3a3a"), lw=(1.8 if rec else 0.7)); xs += 1.0
+    ax.text(xs+0.15, 1.91, "red outline $=$ recomputed; rest reused stale", fontsize=6.2, color=RC, va="center")
+    # strip 2: erratum -- append one salient correction, reuse the whole prefix
+    ax.text(0.2, 1.06, "erratum ($O(1)$): append a salient correction; reuse the whole prefix",
+            fontsize=6.8, color=RC)
+    s2 = [("sys","#E8E8E8","black"),("field=old",C["orange"],"white"),("rule","#E8E8E8","black"),
+          ("notes",C["sky"],"white"),("notes",C["sky"],"white"),("dec.",C["green"],"white")]
+    xs = 0.2
+    for lab, col, tc in s2:
+        cell(ax, xs, lab, col, y=0.3, h=0.66, tc=tc); xs += 1.0
+    cell(ax, xs+0.25, "ERRATUM", C["red"], w=1.5, y=0.3, h=0.66, tc="white")
+    ax.add_patch(FancyArrowPatch((xs-0.05,0.63),(xs+0.25,0.63), arrowstyle="-|>", mutation_scale=10, lw=1.4, color=C["red"]))
+    ax.text(xs+1.0, 0.04, "amends the stale notes", fontsize=6.2, color=C["red"], ha="center")
     # (b) COMPOSE
     ax = axs[1]; ax.axis("off"); ax.set_xlim(0, 12); ax.set_ylim(-0.5, 2.15)
     ax.text(0.2, 1.95, "(b) Composable: reposition + splice precompiled notes (O(L)); skip reprefill",

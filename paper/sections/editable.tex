@@ -12,9 +12,11 @@ that the conclusion was already memoized after it.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{fig_operations}
-\caption{\textbf{Two cache operations.} (a) \emph{Editable}: append a salient erratum that amends the
-stale notes ($O(1)$ extra work, the whole prefix is reused). (b) \emph{Composable}: precompute a skill's
-KV in isolation, RoPE-reposition it to the target positions, and splice it in ($O(L)$, no reprefill).}
+\caption{\textbf{Two cache operations.} (a) \emph{Editable}, two ways to amend the stale notes:
+\fieldsel{} recomputes the field plus the top-$K$ highest-effect downstream notes ($O(K)$; recomputed cells
+outlined in red, the rest reused stale), while the \texttt{erratum} appends one salient correction ($O(1)$,
+the whole prefix is reused). (b) \emph{Composable}: precompute a skill's KV in isolation, RoPE-reposition it
+to the target positions, and splice it in ($O(L)$, no reprefill).}
 \label{fig:ops}
 \end{figure}
 
@@ -29,6 +31,18 @@ template in \Cref{app:examples}). The erratum is the cheap, robust default: appe
 (\texttt{field+erratum}) it matches the strong \emph{hoist-to-end} oracle \emph{without rewriting the
 prompt} (P(correct) $1.00$ on the gated-task frontier, \Cref{fig:overview}a; \Cref{tab:frontier}), and being
 append-only it composes with prefix caching (\Cref{sec:systems}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{fig3_editable}
+\caption{\textbf{Editing is model-dependent} (the editing landscape and the chain-of-thought split are
+previewed in \Cref{fig:overview}). (a) \emph{Given} chain-of-thought (which gates whether the edit works at all), the
+residual stickiness is model-dependent: the near-free field-only recovery varies non-monotonically across
+model sizes. (b)
+\texttt{field+selective}@$K$: the minimal recompute $K^\star$ to reach full quality is likewise
+model-dependent.}
+\label{fig:edit}
+\end{figure}
 
 \paragraph{Chain-of-thought, not model size, gates the cheapest edit.} A third, near-free option---refresh
 the field's own KV alone (${\sim}1\%$ compute) and nothing else---works only when some later computation
@@ -87,15 +101,3 @@ LoRA fine-tune & \ding{51} & $3.1$\,s & $1.0$ & $0.5$ \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{fig3_editable}
-\caption{\textbf{Editing is model-dependent} (the editing landscape and the chain-of-thought split are
-previewed in \Cref{fig:overview}). (a) \emph{Given} chain-of-thought (which gates whether the edit works at all), the
-residual stickiness is model-dependent: the near-free field-only recovery varies non-monotonically across
-model sizes. (b)
-\texttt{field+selective}@$K$: the minimal recompute $K^\star$ to reach full quality is likewise
-model-dependent.}
-\label{fig:edit}
-\end{figure}
