@@ -1,7 +1,7 @@
 """Is the erratum weaker on PURE SSM (no attention to "look back" at the override)?
 
-Finding from arch_erratum.py: on pure Mamba the oracle flips (the model tracks the field) but the
-standard erratum FAILS to override, while hybrid (Falcon-H1) and attention models recover. Mechanism
+Earlier finding (pure-SSM erratum strength): on pure Mamba the oracle flips (the model tracks the field)
+but the standard erratum FAILS to override, while hybrid (Falcon-H1) and attention models recover. Mechanism
 (§7): the erratum works because the decision ATTENDS to the recent authoritative override; a pure
 SSM has only a fixed-size recurrent state with no look-back. We confirm by sweeping erratum strength
 (weak -> very strong/imperative) across one model per architecture class and reporting which

@@ -1,5 +1,11 @@
 # Why field-only editing hedges: a mechanistic account (attention-level)
 
+> **Note.** This is an early exploratory lab note (single model, single scenario, one
+> forward pass) kept for context. The **rigorous, replicated account is the paper**
+> ([`../paper/main.pdf`](../paper/main.pdf), §3 and the circuit appendix): the same
+> mechanism, established causally across four model families with confidence intervals.
+> Read this only if you want the original attention-level intuition behind that result.
+
 > Preliminary mechanistic study (Qwen3-8B, account_role, non-thinking single-decode so
 > the action is one forward). Causal evidence via KV-patching and attention-knockout.
 > `esys/mech_attention.py`, `results/mech_attention_qwen3_8b.json`. n=1 greedy forward,

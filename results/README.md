@@ -25,5 +25,6 @@ study produced it; the driver scripts live in `../esys/`, `../e1/`, `../e2/` (se
 | `e1_*`, `e2*_*`, `recovery_*`, `selection_*` | the early exploratory harness (Qwen-1.5B/7B) | `e1/`, `e2/` |
 
 `raw_qwen1p5b/` and `raw_qwen7b/` hold raw outputs from those early exploratory runs.
-`*_smoke` files are tiny smoke-test outputs (not used by any figure). User-memory records
-(E1–E5, LoCoMo) live separately in `../mem/results/` as `.jsonl`.
+`selective_Ksweep_*_par.json` are the canonical inputs to the `field+selective@K` figure
+(`esys/make_ksweep_figure.py`). User-memory records (E1–E5, LoCoMo) live separately in
+`../mem/results/` as `.jsonl`.

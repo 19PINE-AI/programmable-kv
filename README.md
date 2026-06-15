@@ -53,8 +53,8 @@ editable notes rather than relying on the mechanism arising for free.
 | [`esys/`](esys/) | Main experiment system: deep-mechanism controls, the component circuit, the editing frontier, composable transplant, weight-editing comparison, and online serving (see [`esys/README.md`](esys/README.md)) |
 | [`editkv/`](editkv/) | Core editable-KV module (`EditableContext`: in-place edit + erratum, with a per-edit diagnostic) — see [`editkv/README.md`](editkv/README.md) |
 | [`mem/`](mem/) | User-memory application (E1–E5, LoCoMo external validity, cross-referential test) — see [`mem/README.md`](mem/README.md) |
-| [`results/`](results/) | Result records (JSON) and raw run logs — the source of every number on the site |
-| [`figures/`](figures/), [`plots/`](plots/) | Generated figures |
+| [`results/`](results/) | Result records (JSON) — the source of every number in the paper and on the site; see [`results/README.md`](results/README.md) for the filename→experiment legend |
+| [`figures/`](figures/), [`plots/`](plots/) | Generated figures: standalone paper-style renders (`figures/`) and legacy exploratory plots from the early Qwen-1.5B/7B runs (`plots/`) |
 | [`docs/`](docs/) | Background notes: gentle intro + the mechanistic account |
 | `requirements.txt`, [`LICENSE`](LICENSE) | Python dependencies; Apache-2.0 license |
 
@@ -77,6 +77,9 @@ cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
 # the figures (run with the repo root as cwd)
 python paper/figs/make_figures.py
 python paper/figs/make_circuit_figure.py
+python paper/figs/make_appendix_figures.py
+python paper/figs/make_horizon_figure.py
+python mem/make_figs.py            # user-memory (E1–E5, LoCoMo) figures
 
 # reproduce experiments from scratch (records land in results/; see each dir's README)
 python esys/mech_suite.py --model Qwen/Qwen3-8B    # mechanism probes  (esys/README.md)
