@@ -1044,6 +1044,8 @@ def build_constants():
             "author": "Bojie Li",
             "affiliation": "Pine AI",
             "github": "https://github.com/19PINE-AI/programmable-kv",
+            "arxiv": "https://arxiv.org/abs/2606.17107",
+            "arxiv_id": "2606.17107",
         },
     })
 

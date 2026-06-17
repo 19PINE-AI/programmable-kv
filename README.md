@@ -7,7 +7,7 @@
 > — every figure is driven by the released result records; walk the mechanism, the
 > circuit, and every experiment interactively.
 >
-> 📄 **Paper:** [`paper/main.pdf`](paper/main.pdf) (33 pp., preprint — under review)
+> 📄 **Paper:** [arXiv:2606.17107](https://arxiv.org/abs/2606.17107) (33 pp.)
 > · 🧑‍🏫 **Gentle intro:** [`docs/EXPLAINER.md`](docs/EXPLAINER.md)
 
 ---
@@ -62,7 +62,7 @@ editable notes rather than relying on the mechanism arising for free.
 
 [`docs/EXPLAINER.md`](docs/EXPLAINER.md) (no background assumed) ·
 [`docs/MECHANISM.md`](docs/MECHANISM.md) (the mechanistic account). The paper
-([`paper/main.pdf`](paper/main.pdf)) is the canonical write-up.
+([arXiv:2606.17107](https://arxiv.org/abs/2606.17107)) is the canonical write-up.
 
 ## Reproduce
 
@@ -97,16 +97,20 @@ drivers each take a `--model` flag.
 
 ## Status & attribution
 
-**Bojie Li** · Pine AI · preprint, under review. Code and interactive companion:
-<https://github.com/19PINE-AI/programmable-kv>. A reproducibility statement and the full
-model list are in the paper's appendix. Released under **Apache-2.0** (see [`LICENSE`](LICENSE)).
+**Bojie Li** · Pine AI · arXiv preprint [2606.17107](https://arxiv.org/abs/2606.17107).
+Code and interactive companion: <https://github.com/19PINE-AI/programmable-kv>. A
+reproducibility statement and the full model list are in the paper's appendix. Released
+under **Apache-2.0** (see [`LICENSE`](LICENSE)).
 
 ```bibtex
 @article{li2026programmablekv,
-  title  = {Models Take Notes at Prefill: KV Cache Can Be Editable and Composable},
-  author = {Li, Bojie},
-  note   = {Preprint. Under review.},
-  year   = {2026},
-  url    = {https://github.com/19PINE-AI/programmable-kv}
+  title         = {Models Take Notes at Prefill: KV Cache Can Be Editable and Composable},
+  author        = {Li, Bojie},
+  year          = {2026},
+  eprint        = {2606.17107},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  doi           = {10.48550/arXiv.2606.17107},
+  url           = {https://arxiv.org/abs/2606.17107}
 }
 ```

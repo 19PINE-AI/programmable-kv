@@ -9,6 +9,13 @@ repository-code: "https://github.com/19PINE-AI/programmable-kv"
 url: "https://01.me/research/programmable-kv/"
 license: Apache-2.0
 year: 2026
+identifiers:
+  - type: other
+    value: "arXiv:2606.17107"
+    description: "The arXiv preprint of this work."
+  - type: doi
+    value: "10.48550/arXiv.2606.17107"
+    description: "The arXiv DOI of this work."
 preferred-citation:
   type: article
   title: "Models Take Notes at Prefill: KV Cache Can Be Editable and Composable"
@@ -18,4 +25,5 @@ preferred-citation:
       affiliation: Pine AI
   year: 2026
   notes: "Preprint. Under review."
-  url: "https://github.com/19PINE-AI/programmable-kv"
+  doi: "10.48550/arXiv.2606.17107"
+  url: "https://arxiv.org/abs/2606.17107"

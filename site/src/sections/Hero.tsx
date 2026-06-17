@@ -33,6 +33,12 @@ export function Hero() {
           <span><b>Author</b> {(constants.paper_meta as any).author} · {(constants.paper_meta as any).affiliation}</span>
           <span><b>Status</b> {constants.paper_meta.status}</span>
           <span>
+            <b>Paper</b>{' '}
+            <a href={(constants.paper_meta as any).arxiv} target="_blank" rel="noreferrer">
+              arXiv:{(constants.paper_meta as any).arxiv_id}
+            </a>
+          </span>
+          <span>
             <b>Code</b>{' '}
             <a href={(constants.paper_meta as any).github} target="_blank" rel="noreferrer">
               github.com/19PINE-AI/programmable-kv

@@ -68,7 +68,11 @@ export function Boundaries() {
         <p>
           This page is the interactive companion to <em>{constants.paper_meta.title}</em> by{' '}
           {(constants.paper_meta as any).author} ({(constants.paper_meta as any).affiliation}),{' '}
-          {constants.paper_meta.status.toLowerCase()} Code and result records:{' '}
+          {constants.paper_meta.status.toLowerCase()} Paper:{' '}
+          <a href={(constants.paper_meta as any).arxiv} target="_blank" rel="noreferrer">
+            arXiv:{(constants.paper_meta as any).arxiv_id}
+          </a>
+          . Code and result records:{' '}
           <a href={(constants.paper_meta as any).github} target="_blank" rel="noreferrer">
             github.com/19PINE-AI/programmable-kv
           </a>
@@ -80,12 +84,15 @@ export function Boundaries() {
           the answer) — never made up after the fact.
         </p>
         <div className="citation-block">{`@article{li2026programmablekv,
-  title  = {Models Take Notes at Prefill:
-            KV Cache Can Be Editable and Composable},
-  author = {Li, Bojie},
-  note   = {Preprint. Under review.},
-  year   = {2026},
-  url    = {https://github.com/19PINE-AI/programmable-kv}
+  title         = {Models Take Notes at Prefill:
+                   KV Cache Can Be Editable and Composable},
+  author        = {Li, Bojie},
+  year          = {2026},
+  eprint        = {2606.17107},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  doi           = {10.48550/arXiv.2606.17107},
+  url           = {https://arxiv.org/abs/2606.17107}
 }`}</div>
       </div>
     </Section>
