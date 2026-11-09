@@ -326,12 +326,13 @@ export function Circuit() {
         label="Experiment 3 — the one setting that carries the conclusion."
         caption={
           <>
-            Inside the note there's essentially a single dial that records which conclusion the
-            model reached. Copy just that one dial from another run and the decision follows it —
-            almost as well as copying the whole note, and far better than copying some random dial.
+            Inside the note there's a single dial that records part of which conclusion the
+            model reached. Copy just that one dial from another run and the decision partly follows
+            it — far better than copying some random dial, though well short of copying the whole
+            note, because the conclusion is also stored in other, overlapping ways.
             The effect peaks mid-way through the model, exactly where our earlier timing analysis
-            said the note gets written. So the note has simple structure — but, as the next panels
-            show, no single ingredient is the whole story.
+            said the note gets written. So the note has some simple structure — but, as the next
+            panels show, no single ingredient is the whole story.
           </>
         }
       >
@@ -378,6 +379,27 @@ export function Circuit() {
       >
         <Sae />
       </Figure>
+
+      <H3>Down to single neurons: tidy names, poor predictions</H3>
+      <P>
+        We also went one level finer, to the individual units inside the per-position processing
+        layers (&ldquo;neurons&rdquo;; Llama-3.1-8B has about 459,000 of them). Three things stand
+        out. First, the look-back channels really do the writing: copying all of their output at
+        the note positions brings back 0.89 of the decision, against 0.39 for all of the
+        per-position processing. Second, no small group of neurons carries the note. The ten most
+        important neurons account for under 1% of the effect, and half of it is spread over about
+        28,000 of them. Third, a neuron can have a tidy name without that name explaining it. An AI
+        labeller gave 96 of the top 100 neurons a clean one- or two-part description. But when an AI
+        predicts each neuron's activity from its description and we put those predictions back into
+        the model, the top 30 bring back 0.03 of the decision, against 0.30 for the real neurons.
+        (This check is known as Gao's simulation–substitution test.)
+      </P>
+      <P>
+        The reading side stays simple. Removing all twelve reading channels together costs about
+        the same as adding up what each costs alone (0.49 against 0.52 of the decision), so they
+        work side by side, independently. These neuron-level results come from one model, with one
+        AI as labeller and predictor; the details are in the paper's appendix.
+      </P>
 
       <Aside>
         <b>Why this matters for what comes next.</b> Because the writing is spread all over the

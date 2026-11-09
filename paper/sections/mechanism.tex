@@ -54,8 +54,8 @@ downstream tokens' residual stream at prefill time---i.e.\ the model has already
 written down} the answer, not merely copied the field.
 
 \paragraph{(4) Knockout and dose-response.} Ablating the high-effect downstream tokens flips the decision
-back to stale, and the effect grows with the number/position of memoizing tokens, ruling out a diffuse
-explanation: specific aggregator/delimiter positions carry the conclusion. This mirrors the delimiter-token
+back to stale, and the effect grows with the number/position of memoizing tokens, ruling out a positionally
+diffuse explanation: specific aggregator/delimiter positions carry the conclusion. This mirrors the delimiter-token
 aggregation reported by \citet{lindsey2025biology} for forward planning; here the stored quantity is a
 backward-looking, field-conditioned \emph{conclusion}.
 
@@ -88,7 +88,8 @@ exists at prefill, ahead of the read.
 
 \textbf{(iii) A few specific tokens carry it.} Transplanting the eight \emph{highest-effect} downstream
 positions recovers $0.74$--$0.79$ of the decision, while eight \emph{random} downstream positions recover
-${\le}0.035$: the conclusion lives in a few specific aggregator tokens, not a diffuse code.
+${\le}0.035$: the conclusion lives in a few specific aggregator tokens, not spread over the whole downstream.
+(Within those tokens the code is diffuse across neurons; see the circuit paragraph below.)
 
 \textbf{(iv) The decision follows the note, even when the note is wrong.} Injecting a \emph{false} note (the
 opposite conclusion's downstream KV) into an otherwise-consistent cache makes the decision follow the written
@@ -112,19 +113,38 @@ Gemma-2, Mistral; \Cref{app:deepmech}).
 further interventions (\Cref{app:circuit}; replicated across Llama-3.1, Qwen3, Gemma-2, and Mistral) show
 \emph{which components} write and read it. The pattern is \emph{distributed write, concentrated read}.
 
-\textbf{Write (many components, mid layers).} Mid-layer \emph{attention}---not the MLPs---does most of the
-writing onto the aggregator tokens ($\approx0.6$ of the write on Llama). The conclusion is stored
-\emph{redundantly}: it is easy to \emph{decode} (a trained sparse-autoencoder feature separates the two
-conclusions at AUC $1.0$), yet its causal content is spread across ${\sim}10$--$30$ features along a shared
-low-rank direction (that direction carries $\approx25\times$ the decision-effect of a random one).
+\textbf{Write (many components, mid layers).} Mid-layer \emph{attention} does most of the writing onto the
+aggregator tokens. On Llama it contributes $\approx0.6$ of the direct write, and patching every attention
+output at the top-$8$ note positions restores $0.89$ of the decision, against $0.39$ for every MLP output.
+The conclusion is stored \emph{redundantly}. Several write heads each hold an overlapping copy: their
+single-head sufficiencies sum to twice their joint effect. The conclusion is also easy to \emph{decode}
+(a trained sparse-autoencoder feature separates the two conclusions at AUC $1.0$), yet its causal content
+is spread across ${\sim}10$--$30$ features along a shared low-rank direction (that direction carries
+$\approx25\times$ the decision-effect of a random one).
 
 \textbf{Read (few components, late layers).} A small, nameable set of late \emph{read heads}---those
 attending from the decision token back to the aggregators---funnels the stored conclusion into the output
 logit ($12$ such heads recover $0.78$ of the decision; the same number of random heads recover $\approx0$).
+The read heads act additively and independently. Ablating all twelve together removes $0.49$ of the
+decision, close to the $0.52$ sum of their single-head ablations, and none of them takes over when
+another is removed.
+
+\textbf{Neurons: legible, but neither few nor predictable.} At the finest grain (\Cref{app:neurons};
+Llama-3.1-8B, $458{,}752$ MLP neurons), the MLP share of the write is diffuse. The ten neurons with the
+largest attribution carry under $1\%$ of the total, and half of it needs ${\sim}28$k neurons (${\sim}27$k on
+Qwen3-8B). Patching the top $30$ neurons recovers $0.30$ of the decision and the top $300$ recover $0.72$;
+random neurons recover $\approx0$. Negative activations matter in aggregate (zeroing every negative
+activation at the note positions removes $0.55$ of the decision, every positive one $0.70$), but the eight
+most important negative-side neurons remove only $0.011$. An LLM labeller gives $96$ of the top $100$
+neurons a coherent one- or two-part label. Yet these labels fail \emph{Gao's simulation--substitution test}:
+replacing a neuron's real activations with ones an LLM predicts from its label should preserve its effect
+if the label explains it. Simulated activations of the top $30$ recover $0.03$ of the decision, against $0.30$
+for the real ones. A neuron label can read cleanly without explaining what the neuron does.
 
 \textbf{Control.} Causal scrubbing confirms the note alone governs the decision: resampling it to the
 opposite conclusion flips the decision, while resampling everything else leaves it unchanged. As at the
 token level, the single feature that best \emph{decodes} the conclusion is not by itself \emph{causally}
-sufficient---decodability and causation come apart, now among individual features. With the mechanism
+sufficient---decodability and causation come apart, now among individual features and, as the neuron
+labels show, between how legible a unit is and what it does. With the mechanism
 established, the rest of the paper turns it into capabilities: the cache is editable (\Cref{sec:editable})
 and composable (\Cref{sec:composable}).

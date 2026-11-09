@@ -251,6 +251,9 @@ $0.46$, Qwen \texttt{26.25} at $0.43$, Gemma \texttt{26.9} at $0.47$, Mistral \t
 top heads saturates at $0.28/0.08/0.24/0.11$ (Llama/Qwen/Gemma/Mistral), because the write is spread over
 \emph{many} aggregator tokens (the suffix-concentration of \Cref{sec:mechanism}), so patching one position
 under-counts it. The decision-side read is thus a tight bottleneck; the write is diffuse.
+Ablating heads jointly versus one at a time (\Cref{app:neurons}) sharpens both halves: the twelve read heads
+are additive (joint drop $0.49$ vs.\ summed single drops $0.52$) with no compensation among them, while the
+write heads are partly redundant (single-head sufficiencies sum to $2\times$ their joint sufficiency).
 
 \paragraph{(2) A causal conclusion direction (\Cref{fig:circuit}b).} A single difference-of-means direction
 $\hat d$ on the aggregator residual (fit \emph{leave-one-scenario-out}, field-balanced) transfers the
@@ -288,12 +291,15 @@ residual into per-layer attention- and MLP-block contributions (exact: the embed
 the pair), attention contributes the majority of the write at the causal conclusion layer---$0.62/0.60$ at
 Llama L12/L14, and a striking $0.82$--$0.92$ on Gemma-2-9B---with Qwen3-8B ($0.44$--$0.56$) and Mistral-7B
 ($0.42$--$0.66$) closer to parity. Attention is the primary or co-primary writer that routes the field/rule
-information onto the aggregator in every family, with the MLPs contributing the remainder.
+information onto the aggregator in every family, with the MLPs contributing the remainder. A
+whole-block patch on Llama-3.1-8B ($24$ pairs; \Cref{app:neurons}) agrees: patching every attention
+output at the top-$8$ aggregators recovers $0.89$ of the decision, every MLP output $0.39$ (the two need not
+sum to $1$, since the blocks interact).
 
 \paragraph{Summary.} The picture is a \emph{distributed write, concentrated read}: at mid layers,
 attention routes the field-conditioned conclusion onto aggregator tokens (Exp.\ 5), in a redundant code that is
 sparsely decodable but causally spread over ${\sim}10$--$30$ features / a shared low-rank direction (Exp.\
-2--3); a small, nameable set of late read heads then funnels it into the decision logit (Exp.\ 1), and
+2--3) and over tens of thousands of MLP neurons (\Cref{app:neurons}); a small, nameable set of late read heads then funnels it into the decision logit (Exp.\ 1), and
 causal scrubbing confirms the note alone governs the decision (Exp.\ 4). This connects the
 ``models take notes'' account to the head-level circuits of \citet{wang2023ioi} and to delimiter-token
 aggregation \citep{lindsey2025biology}, while remaining a statement about the \emph{KV cache} an inference
@@ -334,6 +340,128 @@ conclusion perfectly (AUC$=1.0$) yet is not causally sufficient alone---the caus
 features. (f) Read heads with the largest causal effect are those that attend decision$\to$aggregator.}
 \label{fig:circuit}
 \end{figure}
+
+\section{Neuron-level anatomy of the note}
+\label{app:neurons}
+\Cref{app:circuit} resolves the note to heads, a direction, and SAE features. This appendix goes one level
+finer, to individual MLP neurons, and asks three questions: who writes the note, whether a few neurons carry
+it, and whether neurons that \emph{read} as clean actually \emph{explain} it. Scripts, records, and a
+number-by-number map are in \texttt{followup/} (\texttt{followup/README.md}).
+
+\paragraph{Setup.} Llama-3.1-8B-Instruct (bf16) on the polarity task's full $2{\times}2$: $3$ scenarios $\times$
+$4$ order ids $\times$ $2$ field values $=24$ SAFE/UNSAFE pairs, each with the field byte-identical and only the
+rule trigger flipped. The score is $S=\text{logit}[\text{safe}]-\text{logit}[\text{unsafe}]$ at the decision
+token, and every effect is normalized by $S_\text{SAFE}-S_\text{UNSAFE}$. The note positions are the top-$8$
+aggregators ranked by KV-patch effect. A \emph{neuron} is one SwiGLU intermediate unit (an input to the MLP
+down-projection): $32\times14{,}336=458{,}752$ of them. We rank neurons by attribution patching (AtP)
+\citep{kramar2024atp}, $(a_\text{SAFE}-a_\text{UNSAFE})\cdot\partial S/\partial a$ at the note positions, a
+first-order estimate of each neuron's patch effect. Rankings use $18$ pairs ($3$ order ids); every result is
+reported on all $24$, and the held-out order id agrees (top-$30$ patch $0.29$ vs.\ $0.30$). The baseline
+reproduces \Cref{app:deepmech}: top-$8$ transplant $0.793$ ($9$ pairs; paper $0.79$) vs.\ $0.017$ for random-$8$,
+and field-only recovery $-0.021$ (paper $-0.028$). Qwen3-8B replicates the attribution and patching steps.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{fig10_neurons}
+\caption{\textbf{The note at neuron level} (Llama-3.1-8B unless marked; $24$ pairs). (a) Patching the
+top-$k$ MLP neurons (by AtP) at the note positions from SAFE into UNSAFE recovers the decision gradually; random
+layer-matched neurons recover $\approx0$. Dashed: patching every attention output (green) or every MLP
+output (pink) at the same positions. (b) Cumulative share of $|$AtP$|$ mass held by the top-$k$ neurons;
+diamonds mark $50\%$. (c) Per-layer share of $|$AtP$|$. (d) Share of the decision lost when positive
+or negative activations are zeroed in both prompts, for all neurons and for the $8$ most important
+negative-side and positive-side neurons (black ticks: sign-matched random neurons). (e) Removing a set of
+carriers jointly vs.\ summing one-at-a-time removals; numbers above the bars give the fraction of the joint
+effect that single removals capture. (f) Gao's simulation--substitution test: patching real activations vs.\
+activations an LLM simulates from each neuron's label.}
+\label{fig:neurons}
+\end{figure}
+
+\paragraph{Attention writes; the MLP share is diffuse.} Patching every attention output at the note
+positions recovers $0.89$ of the decision; patching every MLP output recovers $0.39$ (AtP puts attention's
+share at $0.78$). Within the MLPs no small set carries the note (\Cref{fig:neurons}a--b). The top $10$ neurons
+hold $0.9\%$ of the $|$AtP$|$ mass, the top $30$ hold $1.9\%$, and $50\%$ needs $28{,}129$ neurons ($27{,}304$
+on Qwen3-8B). Patching the top $1/10/30/100/300$ recovers $0.03/0.15/0.30/0.52/0.72$ of the decision
+(Qwen3-8B: $0.03/0.16/0.25/0.39/0.55$), while layer-matched random neurons stay within $\pm0.01$. Signed
+contributions cancel: the top-$300$ patch ($0.72$) exceeds the all-neuron patch ($0.39$) because the
+remaining neurons push the other way. The $30$-neuron result mirrors the SAE result of \Cref{app:circuit}
+($30$ features recover $0.54$). The MLP write peaks at layers $11$--$16$ on Llama (L13 and L14 together hold
+${\approx}26\%$ of $|$AtP$|$) and at L17--22 on Qwen3-8B (\Cref{fig:neurons}c), the same mid-depth band where
+the note becomes decodable (\Cref{app:deepmech}).
+
+\paragraph{Activation sign.} SwiGLU neurons take both signs, and the negative side matters in aggregate
+(\Cref{fig:neurons}d). Zeroing every negative activation at the note positions removes $0.55$ of the
+decision, zeroing every positive one removes $0.70$, and zeroing both removes $0.92$; negative activations
+also carry $0.36$--$0.49$ of the $|$AtP$|$ of the top $10$ to top $1{,}000$ neurons. But the negative side is not concentrated: the $8$ most
+important negative-side neurons remove $0.011$ (sign-matched random: $0.005$), and the $8$ most important
+positive-side ones remove $0.065$.
+
+\paragraph{Joint versus one-at-a-time ablation.} For each carrier type we compare removing the whole set at
+once with the sum of removing each member alone (\Cref{tab:additivity}, \Cref{fig:neurons}e). A ratio of
+joint to summed drop near $1$ means the members act independently; above $1$, single ablations undercount;
+below $1$, members overlap. Decision logits are computed in fp32, and baselines use the same batch size as the
+ablated runs, since bf16 batch numerics otherwise add a $+0.06$ bias. The \emph{read heads} are additive
+($0.95$). Removing one does not make the others take over (compensation $-0.04$), and the remaining
+downstream heads absorb only $0.17$ of an ablated head's direct effect. On the write side, single-head
+\emph{sufficiencies} sum to $2\times$ the joint sufficiency (ratio $0.50$): several write heads each carry an
+overlapping copy of the note. For \emph{MLP neurons} the opposite holds. One-at-a-time ablations capture only
+$0.53$ of the joint effect of the top $30$ ($0.097$ vs.\ $0.181$ of the decision), so per-neuron audits
+understate what neurons do by about half. This is not compensation among the measured neurons, whose
+attribution barely moves when one is removed (ratio $+0.007$); it points to a threshold-like combination
+downstream, though backup outside the measured set is not ruled out. The margin is thin: the joint-minus-sum
+CI is $[-0.011, +0.178]$.
+
+\begin{table}[tbp]
+\centering\small
+\caption{\textbf{Joint vs.\ one-at-a-time ablation} (Llama-3.1-8B, $24$ pairs; pooled over pairs, $95\%$
+bootstrap CIs). Drops are shares of the decision lost on the clean run. Ratio $=1$: additive; $>1$: single
+ablations undercount; $<1$: overlap. Sufficiency ratio: the same comparison for patching SAFE values into
+the UNSAFE run. The MLP necessity ratio is unstable (summed single drops near $0$ in some pairs), so we report
+the singles' capture instead.}
+\label{tab:additivity}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+carrier & joint drop & $\Sigma$ single drops & singles capture & suff.\ ratio (joint/$\Sigma$) \\
+\midrule
+aggregator positions (16) & $0.837$ & $0.764$ & $0.91$ $[0.83, 0.99]$ & $0.79$ $[0.73, 0.86]$ \\
+write heads (15)          & $0.249$ & $0.212$ & $0.85$ $[0.59, 1.10]$ & $0.50$ $[0.47, 0.54]$ \\
+MLP neurons (30)          & $0.181$ & $0.097$ & $0.53$ $[-0.02, 1.06]$ & $0.80$ $[0.66, 1.00]$ \\
+SAE L14 features (30)     & $0.305$ & $0.233$ & $0.76$ $[0.51, 1.00]$ & $1.16$ $[1.02, 1.32]$ \\
+read heads (12)           & $0.490$ & $0.518$ & $1.06$ $[1.01, 1.11]$ & $0.84$ $[0.81, 0.87]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Legible labels, failed explanations.} An LLM labeller (MiMo-v2.6-pro) labels each of the top-$100$
+neurons from its $20$ strongest positive and $15$ strongest negative contexts in $2.5$M tokens of
+FineWeb-Edu, blind to our task. It calls $26$ ``one job'' and $70$ ``two related jobs'', i.e.\ $96$ of $100$
+read as clean. Legibility does not single them out: $100$ layer-matched random neurons score the same ($10$
+and $90$). Apart from the top neuron (L25.11382, labelled ``refusal / declining to comply''), the labels
+describe generic clause-boundary, continuation and connective detectors that say nothing about the
+conclusion. We then apply \emph{Gao's simulation--substitution test}, the substitution form of simulation-based
+explanation scoring \citep{bills2023explain}. The same LLM predicts each neuron's per-token activation from
+its label alone (an integer in $[-10,10]$, mapped to activation units by a per-neuron linear fit). We then
+replace the real activations with the simulated ones and measure how much of the mean-ablation damage this
+avoids. The labels fail (\Cref{fig:neurons}f). The median correlation between simulated and real
+activations is $0.01$ for the top-$100$ neurons ($0.09$ for random ones), and on general text the median
+neuron avoids none of the damage ($+0.00$). At the decision, simulated activations of the top $30$ recover
+$0.03$ of the decision against $0.30$ for the real ones (top $100$: $0.07$ vs.\ $0.52$), and substituting
+them does more damage than mean-ablating the neurons. Even the clean ``refusal'' neuron peaks on the token
+\emph{before} the verb (it predicts ``refused'' rather than responding to it), which its label misses. This is
+the decode-vs.-cause gap of \Cref{sec:mechanism} once more: a unit can be named convincingly without the name
+predicting its behavior.
+
+\paragraph{Do the read heads read neuron directions?} Projecting each top neuron's output through a read
+head's OV circuit onto the safe-vs.-unsafe unembedding difference, $9$ of the $12$ read heads show no
+preference for note neurons over layer-matched random ones. Three of the latest heads ($31.1$, $30.26$,
+$30.24$) prefer them in some scenarios. The note is therefore re-encoded, through attention at the
+aggregators and in later layers, before the read heads pick it up; the read side does not tap individual
+neurons.
+
+\paragraph{Scope.} The full neuron-level analysis is on one model (Llama-3.1-8B); Qwen3-8B replicates only the
+attribution and patching steps. The neuron undercount is borderline at $95\%$. Labels and simulations come
+from a single LLM (MiMo-v2.6-pro) with an integer scale and a linear calibration, so a stronger explainer
+or simulator could narrow the gap, although real activations currently recover seven to ten times
+more of the decision than simulated ones.
 
 \section{Editing: the baseline frontier and the K-sweep}
 \label{app:edit}

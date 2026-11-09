@@ -51,7 +51,11 @@ rotary position embeddings \citep{su2024rope} and their extensions \citep{peng20
 \paragraph{Activation-level interventions.} Beyond weight editing, a body of work intervenes on
 \emph{activations}: steering and inference-time interventions \citep{li2023iti}, task and function vectors
 \citep{ilharco2023taskvectors,todd2024functionvectors}, and the causal-mediation/activation-patching
-methodology we adapt \citep{vig2020causal}. These edit residual-stream directions to change behavior; we
+methodology we adapt \citep{vig2020causal}, with attribution patching as its first-order approximation
+\citep{kramar2024atp}. At the level of single units, LLM-written neuron explanations are scored by how well
+activations simulated from the explanation match the real ones \citep{bills2023explain}; we use the
+stricter substitution form of that test to check whether legible labels explain the neurons that write our
+notes (\Cref{app:neurons}). Steering methods edit residual-stream directions to change behavior; we
 instead read and write the \emph{KV cache} itself---the per-token activations a serving system already
 persists---which is what makes the intervention both interpretable and deployable.
 

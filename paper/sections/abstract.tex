@@ -3,8 +3,10 @@ field invalidates the entire downstream cache.
 Yet overwriting the field's own key/value vectors and reusing the rest leaves the model acting on
 the \emph{old} value. The reason, established causally across four model families: at prefill the model
 has already written the \emph{field-conditioned conclusion} onto downstream
-\emph{notes}; the field's own key/value drives under $1\%$ of the decision. Read as a
-notebook of memoized conclusions, two capabilities follow.
+\emph{notes}; the field's own key/value drives under $1\%$ of the decision. Attention does most
+of the writing, spread over many heads and tens of thousands of MLP neurons rather than a nameable few; a
+dozen late heads read the notes back additively. Read as a notebook of memoized conclusions, two capabilities
+follow.
 \textbf{(1) It is editable.} A salient \emph{erratum} amends the notes;
 and with \emph{chain-of-thought}, editing the field alone recovers the decision ($1.00$ at
 $8$B, ${\sim}1\%$ compute), while without CoT it is ignored.
