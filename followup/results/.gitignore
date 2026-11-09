@@ -1,0 +1,6 @@
+# Large intermediates written by the pipeline (see ../README.md); regenerate with scripts/run_all.sh
+*.pt
+*.npy
+mimo_cache_*.jsonl
+sim_general_*.json
+

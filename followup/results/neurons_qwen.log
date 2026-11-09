@@ -1,0 +1,86 @@
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:06,  1.51s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.76s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.83s/it]Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.67s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.23s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.45s/it]
+/home/ubuntu/clean-tests/results/T1/t1_neurons.py:116: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  res[name] = {"S": float(S), "A": A, "G": G, "mean": allA}
+[account_role/A4471/f0] denom=24.31 agg8=[73, 81, 667, 689, 693, 775, 776, 777] sum_atp=0.235 (75s)
+[account_role/A4471/f1] denom=30.19 agg8=[73, 81, 693, 726, 743, 775, 776, 777] sum_atp=0.292 (141s)
+[account_role/B8820/f0] denom=23.44 agg8=[73, 81, 667, 689, 693, 775, 776, 777] sum_atp=0.240 (208s)
+[account_role/B8820/f1] denom=29.50 agg8=[73, 81, 693, 726, 743, 775, 776, 777] sum_atp=0.310 (281s)
+[account_role/C1093/f0] denom=24.69 agg8=[73, 81, 667, 689, 693, 775, 776, 777] sum_atp=0.248 (362s)
+[account_role/C1093/f1] denom=30.88 agg8=[73, 81, 693, 726, 743, 775, 776, 777] sum_atp=0.300 (439s)
+[account_role/D5567/f0] denom=24.31 agg8=[73, 81, 667, 689, 693, 775, 776, 777] sum_atp=0.256 (509s)
+[account_role/D5567/f1] denom=29.94 agg8=[73, 81, 693, 726, 743, 775, 776, 777] sum_atp=0.275 (581s)
+[safety_mode/A4471/f0] denom=16.94 agg8=[78, 680, 695, 721, 724, 770, 771, 772] sum_atp=0.324 (631s)
+[safety_mode/A4471/f1] denom=5.50 agg8=[75, 78, 86, 680, 721, 724, 770, 772] sum_atp=0.294 (689s)
+[safety_mode/B8820/f0] denom=15.88 agg8=[78, 680, 695, 721, 724, 770, 771, 772] sum_atp=0.319 (755s)
+[safety_mode/B8820/f1] denom=5.50 agg8=[74, 75, 78, 721, 724, 764, 770, 772] sum_atp=0.425 (819s)
+[safety_mode/C1093/f0] denom=16.81 agg8=[78, 680, 695, 721, 724, 770, 771, 772] sum_atp=0.343 (877s)
+[safety_mode/C1093/f1] denom=5.62 agg8=[75, 78, 680, 721, 724, 736, 770, 772] sum_atp=0.434 (939s)
+[safety_mode/D5567/f0] denom=17.06 agg8=[78, 680, 695, 721, 724, 770, 771, 772] sum_atp=0.346 (1013s)
+[safety_mode/D5567/f1] denom=5.62 agg8=[67, 78, 680, 721, 724, 764, 770, 772] sum_atp=0.436 (1078s)
+[subscription_tier/A4471/f0] denom=7.38 agg8=[675, 678, 680, 690, 718, 764, 765, 766] sum_atp=0.410 (1137s)
+[subscription_tier/A4471/f1] denom=8.88 agg8=[76, 678, 680, 690, 718, 764, 765, 766] sum_atp=0.591 (1198s)
+[subscription_tier/B8820/f0] denom=7.38 agg8=[76, 675, 678, 680, 718, 764, 765, 766] sum_atp=0.479 (1268s)
+[subscription_tier/B8820/f1] denom=8.88 agg8=[76, 678, 680, 690, 718, 764, 765, 766] sum_atp=0.586 (1330s)
+[subscription_tier/C1093/f0] denom=7.38 agg8=[675, 678, 680, 690, 718, 764, 765, 766] sum_atp=0.449 (1393s)
+[subscription_tier/C1093/f1] denom=8.88 agg8=[76, 678, 680, 690, 718, 764, 765, 766] sum_atp=0.569 (1458s)
+[subscription_tier/D5567/f0] denom=7.44 agg8=[675, 678, 680, 690, 718, 764, 765, 766] sum_atp=0.396 (1523s)
+[subscription_tier/D5567/f1] denom=9.00 agg8=[678, 680, 690, 715, 718, 764, 765, 766] sum_atp=0.533 (1587s)
+linearity: [{'scn': 'account_role', 'oid': 'A4471', 'fi': 0, 'all_neurons_agg8_actual': 0.3162, 'atp_sum': 0.2354}, {'scn': 'account_role', 'oid': 'A4471', 'fi': 1, 'all_neurons_agg8_actual': 0.3872, 'atp_sum': 0.292}, {'scn': 'account_role', 'oid': 'B8820', 'fi': 0, 'all_neurons_agg8_actual': 0.3307, 'atp_sum': 0.2396}, {'scn': 'account_role', 'oid': 'B8820', 'fi': 1, 'all_neurons_agg8_actual': 0.4025, 'atp_sum': 0.3096}, {'scn': 'account_role', 'oid': 'C1093', 'fi': 0, 'all_neurons_agg8_actual': 0.3367, 'atp_sum': 0.2481}, {'scn': 'account_role', 'oid': 'C1093', 'fi': 1, 'all_neurons_agg8_actual': 0.3968, 'atp_sum': 0.3001}, {'scn': 'account_role', 'oid': 'D5567', 'fi': 0, 'all_neurons_agg8_actual': 0.3059, 'atp_sum': 0.256}, {'scn': 'account_role', 'oid': 'D5567', 'fi': 1, 'all_neurons_agg8_actual': 0.38, 'atp_sum': 0.2749}, {'scn': 'safety_mode', 'oid': 'A4471', 'fi': 0, 'all_neurons_agg8_actual': 0.4797, 'atp_sum': 0.3237}, {'scn': 'safety_mode', 'oid': 'A4471', 'fi': 1, 'all_neurons_agg8_actual': 0.2955, 'atp_sum': 0.2936}, {'scn': 'safety_mode', 'oid': 'B8820', 'fi': 0, 'all_neurons_agg8_actual': 0.4724, 'atp_sum': 0.3192}, {'scn': 'safety_mode', 'oid': 'B8820', 'fi': 1, 'all_neurons_agg8_actual': 0.3409, 'atp_sum': 0.4252}, {'scn': 'safety_mode', 'oid': 'C1093', 'fi': 0, 'all_neurons_agg8_actual': 0.4833, 'atp_sum': 0.3433}, {'scn': 'safety_mode', 'oid': 'C1093', 'fi': 1, 'all_neurons_agg8_actual': 0.2889, 'atp_sum': 0.4344}, {'scn': 'safety_mode', 'oid': 'D5567', 'fi': 0, 'all_neurons_agg8_actual': 0.5055, 'atp_sum': 0.3459}, {'scn': 'safety_mode', 'oid': 'D5567', 'fi': 1, 'all_neurons_agg8_actual': 0.2889, 'atp_sum': 0.4365}, {'scn': 'subscription_tier', 'oid': 'A4471', 'fi': 0, 'all_neurons_agg8_actual': 0.6271, 'atp_sum': 0.4095}, {'scn': 'subscription_tier', 'oid': 'A4471', 'fi': 1, 'all_neurons_agg8_actual': 0.6479, 'atp_sum': 0.5909}, {'scn': 'subscription_tier', 'oid': 'B8820', 'fi': 0, 'all_neurons_agg8_actual': 0.6271, 'atp_sum': 0.4791}, {'scn': 'subscription_tier', 'oid': 'B8820', 'fi': 1, 'all_neurons_agg8_actual': 0.6338, 'atp_sum': 0.5858}, {'scn': 'subscription_tier', 'oid': 'C1093', 'fi': 0, 'all_neurons_agg8_actual': 0.6271, 'atp_sum': 0.4491}, {'scn': 'subscription_tier', 'oid': 'C1093', 'fi': 1, 'all_neurons_agg8_actual': 0.6338, 'atp_sum': 0.5688}, {'scn': 'subscription_tier', 'oid': 'D5567', 'fi': 0, 'all_neurons_agg8_actual': 0.6723, 'atp_sum': 0.3964}, {'scn': 'subscription_tier', 'oid': 'D5567', 'fi': 1, 'all_neurons_agg8_actual': 0.625, 'atp_sum': 0.5334}]
+agg8 suff k=1: top=+0.032 (held +0.045) rand=-0.003 (1641s)
+agg8 suff k=3: top=+0.082 (held +0.090) rand=-0.002 (1683s)
+agg8 suff k=10: top=+0.160 (held +0.171) rand=-0.002 (1726s)
+agg8 suff k=30: top=+0.252 (held +0.257) rand=-0.005 (1774s)
+agg8 suff k=100: top=+0.387 (held +0.398) rand=-0.007 (1827s)
+agg8 suff k=300: top=+0.545 (held +0.559) rand=-0.010 (1866s)
+agg8 nec k=1: top=+0.031 (held +0.026) rand=+0.005 (1905s)
+agg8 nec k=3: top=+0.063 (held +0.062) rand=+0.003 (1945s)
+agg8 nec k=10: top=+0.101 (held +0.099) rand=+0.005 (1987s)
+agg8 nec k=30: top=+0.194 (held +0.194) rand=+0.003 (2035s)
+agg8 nec k=100: top=+0.293 (held +0.293) rand=+0.004 (2091s)
+agg8 nec k=300: top=+0.428 (held +0.435) rand=+0.002 (2131s)
+agg8 zero k=1: top=-0.007 (held -0.020) rand=+0.005 (2171s)
+agg8 zero k=3: top=+0.023 (held +0.016) rand=+0.006 (2213s)
+agg8 zero k=10: top=+0.073 (held +0.072) rand=+0.005 (2256s)
+agg8 zero k=30: top=+0.131 (held +0.134) rand=+0.004 (2306s)
+agg8 zero k=100: top=+0.253 (held +0.253) rand=+0.003 (2358s)
+agg8 zero k=300: top=+0.428 (held +0.443) rand=+0.007 (2397s)
+agg8 mean k=1: top=-0.002 (held -0.008) rand=+0.007 (2435s)
+agg8 mean k=3: top=+0.022 (held +0.020) rand=+0.006 (2476s)
+agg8 mean k=10: top=+0.073 (held +0.074) rand=+0.003 (2518s)
+agg8 mean k=30: top=+0.136 (held +0.142) rand=+0.004 (2565s)
+agg8 mean k=100: top=+0.240 (held +0.242) rand=+0.005 (2618s)
+agg8 mean k=300: top=+0.408 (held +0.424) rand=+0.003 (2656s)
+agg8 suff ALL neurons: +0.463
+agg8 nec ALL neurons: +0.362
+agg1 suff k=1: top=-0.003 (held -0.006) rand=-0.004 (2709s)
+agg1 suff k=3: top=+0.006 (held +0.015) rand=-0.003 (2750s)
+agg1 suff k=10: top=+0.027 (held +0.030) rand=-0.005 (2792s)
+agg1 suff k=30: top=+0.047 (held +0.046) rand=-0.006 (2839s)
+agg1 suff k=100: top=+0.081 (held +0.089) rand=-0.007 (2890s)
+agg1 suff k=300: top=+0.128 (held +0.137) rand=-0.006 (2929s)
+agg1 nec k=1: top=+0.001 (held -0.009) rand=+0.001 (2967s)
+agg1 nec k=3: top=+0.007 (held +0.004) rand=+0.001 (2994s)
+agg1 nec k=10: top=+0.021 (held +0.019) rand=+0.001 (3028s)
+agg1 nec k=30: top=+0.044 (held +0.044) rand=+0.001 (3064s)
+agg1 nec k=100: top=+0.059 (held +0.053) rand=+0.003 (3102s)
+agg1 nec k=300: top=+0.095 (held +0.089) rand=-0.000 (3127s)
+agg1 zero k=1: top=-0.001 (held -0.005) rand=+0.001 (3156s)
+agg1 zero k=3: top=+0.008 (held -0.002) rand=+0.002 (3187s)
+agg1 zero k=10: top=+0.015 (held +0.008) rand=+0.002 (3219s)
+agg1 zero k=30: top=+0.025 (held +0.023) rand=+0.003 (3254s)
+agg1 zero k=100: top=+0.056 (held +0.049) rand=+0.004 (3291s)
+agg1 zero k=300: top=+0.092 (held +0.088) rand=+0.001 (3320s)
+agg1 mean k=1: top=+0.001 (held -0.006) rand=+0.001 (3350s)
+agg1 mean k=3: top=+0.008 (held +0.000) rand=+0.002 (3380s)
+agg1 mean k=10: top=+0.015 (held +0.010) rand=+0.002 (3410s)
+agg1 mean k=30: top=+0.023 (held +0.018) rand=+0.004 (3442s)
+agg1 mean k=100: top=+0.052 (held +0.046) rand=+0.002 (3481s)
+agg1 mean k=300: top=+0.089 (held +0.083) rand=+0.000 (3508s)
+agg1 suff ALL neurons: +0.110
+agg1 nec ALL neurons: +0.082
+in-sample per-instance top-1 suff: +0.045
+in-sample per-instance top-10 suff: +0.186
+in-sample per-instance top-100 suff: +0.497
+in-sample per-instance top-1000 suff: +0.971
+T1_NEURONS_DONE 3546.3032715320587

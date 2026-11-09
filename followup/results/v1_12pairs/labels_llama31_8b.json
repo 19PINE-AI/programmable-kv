@@ -1,0 +1,813 @@
+[
+ {
+  "label": "Refusal/declining to comply (verb 'refuse/decline')",
+  "positive_pole": "Tokens at or near the word 'refuse/refusal/declined' and its inflections, especially when a subject (person, 'they', 'he', 'she', 'Edward', 'government') declines to comply with a demand, request, or obligation; also 'opt out', 'didn't want to perform'.",
+  "negative_pole": "Proper nouns, citations, years (e.g., '2003', '2006', '1530'), author names, medical/academic terms (Hemminki, Hematology, anemia), URLs, and other formal/technical tokens — i.e., the contrast pole is bibliographic/technical proper-noun context, not a semantic opposite.",
+  "jobs": "one_job",
+  "confidence": 0.85,
+  "simulation_guide": "Predict strong positive activation (up to +10) on tokens forming or immediately adjacent to 'refuse', 'refusal', 'refused', 'refusals', 'declined', 'didn't want to', 'opt out', especially when the sentence describes someone refusing a demand, service, or obligation. Moderate positives (+4 to +7) occur on the subject pronoun/name right before or after such a refusal verb. Predict strong negative activation on tokens inside citations, author names, years, medical/academic jargon, and URLs. Near zero on ordinary prose with no refusal semantics and no bibliographic/technical content.",
+  "layer": 25,
+  "idx": 11382,
+  "rank": 0,
+  "max": 21.375,
+  "min": -1.4609375,
+  "examples_pos": [
+   " with students, are research based, and can be adapted for use at any grade level.\\nPractice Saying No\\nACTIVITY: Role Playing Drug« Ref»usal\\nOne principle of effective",
+   " several of these scenes, students may ask to take over the role of bad guy. No problem. Let students play both sides in the temptation«/ref»usal struggle. If a student",
+   " encounter in real life. Before they feel overwhelmed, however, it is important for you as bad guy to back off. Even acknowledge that their« ref»usals worked.\\n3.",
+   " virgins remained in prayer after the rest of the congregation had dispersed. Sebastian asked the virgins to embrace Arianism. When« they» refused, he had them stripped",
+   " remain punitive.\\n- Amnesty International considered 12 imprisoned conscientious objectors to be prisoners of conscience. Most were serving sentences of 197 days« for» refusing to perform alternative civilian service"
+  ],
+  "examples_neg": [
+   " births in Finland”, by R. Klemetti, M. Gissler, M. Niinimäki, and E.« Hem»minki. Human Reproduction",
+   " gives abundant evidence that it was a designation of severest reproach and condemnation long before Münster. The Augsburg Confession of «153»0 condemns the \"An",
+   "this is not a proof that they were previously unknown—that in his Nomocanon the twelfth-century patriarch GABRIEL II IBN« T»URAYK knew only the",
+   " to countries around the world – particularly to Latin America. Efforts towards a hemisphere-wide Free Trade Area of the Americas fell apart in November «200»3.\\nSince then, the",
+   " their reception centre across the border in Beitbridge since its opening in May «200»6.\\nIn March human rights"
+  ]
+ },
+ {
+  "label": "Sentence-final / clause-final function-word boundary detector",
+  "positive_pole": "Strong positive on short function words or word-final suffixes at the end of a phrase, list item, or clause (e.g., 'way', 'fluid', 'ly', 'age', 'ized', 'to', 'like', ',', '8', 'links', 'oil', 'ers', 'events', 'renal', 'failure', 'belongings', 'pounding', 'restrictions') — i.e., tokens that close a syntactic unit, often in enumerations, headings, or parenthetical lists.",
+  "negative_pole": "Strong negative on function words or suffixes that are NOT clause-final — mid-sentence continuations, style-guide examples, capitalization rules, and grammatical meta-discussion where the token is followed by more of the same phrase ('and', 'budget', ',', 'ed', 'able', 'host', 'ional', 'Anti', 'Benton', 'Tips', 'voters', 'oin', 'μαι'). Essentially the same token class but in non-boundary, continuing positions.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.65,
+  "simulation_guide": "Predict high positive when the marked token is a short function word, punctuation, or inflectional suffix that terminates a phrase, list item, heading, or clause — especially in enumerations, glossaries, medical/legal lists, and before a newline or period. Predict strong negative when the same kind of token (function word, suffix, comma, hyphenated element) appears mid-clause or in style/grammar meta-discussion where the phrase continues afterward. Near zero for content words (nouns, verbs, adjectives) regardless of position, and for function words in ordinary flowing prose that are neither clearly clause-final nor clearly continuing. The neuron essentially encodes 'phrase/segment boundary' vs 'phrase continuation' on low-content tokens.",
+  "layer": 12,
+  "idx": 6946,
+  "rank": 1,
+  "max": 1.0390625,
+  "min": -0.234375,
+  "examples_pos": [
+   " Etc.\\nb. Symbols that make a statement. Polish triangles and circles.\\nc. Can pictures lie? Yes. In more than one« way». False in relation to some",
+   " something down or cause it to stop\\nLosing of strength; becoming weaker.\\nIrritating tissue with a great deal of some type of« fluid»\\nHead Pressing in Dogs",
+   " mistakes, and display confirmation messages throughout the process when major steps have been completed. When displaying errors, make sure they’re clear and positioned relevant«ly». Grouping errors together will",
+   " conversation but not communicating), hand wringing, excessive touching/sweeping with fingertips, wall walking, non-language repetitive auditory sounds, banging,« pounding», tongue sucking, tongue play",
+   " detailed information about each parameter\\nDepending on the command and operating system you can also meet the following sections:\\n- environmental variables\\n- bugs and« restrictions»\\n- config files\\nTo"
+  ],
+  "examples_neg": [
+   ", apparently suggested by in front. Yet again, there is the use of too and so as intensives, as in You are, too« and» You are, so. Yet",
+   " city as part of a proper name: New York City, Kansas City.\\nLowercase city when used as an adjective or noun: the city« budget»",
+   " writing about the constitution of other countries or states, capitalize constitution only if the name of the country or state comes before it: the Norwegian Constitution«,» the country's constitution, the",
+   "s, plītiês (\"to force, impose\"), Ancient Greek πέλας (pélas, \"near\"), πίλνα«μαι» (pílnamai",
+   " set apart from the common people and are to be distinguished with virtues and high standards, we are to be set apart-set apart from the world«,» or holy to God-and we"
+  ]
+ },
+ {
+  "label": "Institutional/civic nouns vs. punctuation in explanatory prose",
+  "positive_pole": "Content nouns denoting civic bodies, institutions, kinship groups, or concrete objects (councils, cabinets, family, committee, belt, man, holders) — often at ends of clauses in formal/historical/institutional text",
+  "negative_pole": "Punctuation marks (commas, dashes, parentheses) and function words in explanatory/definitional prose, especially in lists, glossaries, and parenthetical asides",
+  "jobs": "two_related_jobs",
+  "confidence": 0.45,
+  "simulation_guide": "Strong positive: the token is a concrete or institutional noun (civic body, kinship term, physical object, committee) appearing in formal historical/legal/institutional prose, often clause-final. Strong negative: the token is punctuation (comma, dash, parenthesis) or a connective in explanatory, definitional, or list-like text (glossaries, parenthetical citations, enumerations). Near zero: ordinary function words, verbs, or content words in neutral narrative text without institutional framing. The neuron appears to separate 'substantive institutional noun' from 'punctuation/connector in expository scaffolding'.",
+  "layer": 12,
+  "idx": 13337,
+  "rank": 2,
+  "max": 1.6796875,
+  "min": -0.1953125,
+  "examples_pos": [
+   ", but overhearing this scandalous conversation, declares he will never have her. Affronted, Juan replies that either he gives her to« him» or he will take her away",
+   " Union Flag. Schools etc., should fly the Flag displaying their proper Arms. Municipal Buildings should fly a banner of the Arms of the particular Corporate« body». The issue of a Royal",
+   " His stebrothers didn’t receive him warmly. He asked them to allow him to stay on his father’s land, but they said« no».\\nWith help of the local",
+   " dishwasher detergent and other cleaning supplies in their original containers and out of reach.\\n___ When children are present, install safety latches on cabinets and« drawers» within a child's reach.\\n",
+   " and representation of the Jews national, religious, economic, and social interests vis-a-vis the authorities. The party did well in elections for town« councils» and county and regional assemblies."
+  ],
+  "examples_neg": [
+   "canvas, canvass Sometimes confused or misspelled. A canvas is \"a heavy, closely woven, coarse cloth used for tents, sails«,» bags, oil paintings and other",
+   " state.\\nReservoir levels are higher than they were in 2002 – the driest year since Coloradans started keeping track of moisture« –» but the state is entering ",
+   " disdain.\\ncontent, contents These words have a subtle difference in meaning. Use content to write about the topic or subject of a book, letter«,» article, advertisement, speech,",
+   " in Iraq. (I interviewed Mohammed for a piece I wrote for Muftah about the deterioration of Iraqi women’s rights since the invasion,« which» you can read here.)\\nIf",
+   " promises made by Castro about the restoration of democracy at the beginning of his government after the flight of dictator Fulgencio Batista on January« »1st, 1959"
+  ]
+ },
+ {
+  "label": "Wiki-table/structured-data formatting vs prose function words",
+  "positive_pole": "Tokens inside wiki-style tables, structured data rows, numeric fields, or technical/academic register with dense specification (table pipes, numbers, units, citations, technical terms)",
+  "negative_pole": "Function words (the, and, U, -, e, ,) in flowing expository prose, especially mid-sentence connectives and articles in narrative/argumentative text",
+  "jobs": "two_related_jobs",
+  "confidence": 0.55,
+  "simulation_guide": "Strong positive: token sits in a structured/tabular/numeric context (wiki tables, data rows, measurements, citations) or dense technical specification. Strong negative: token is a common function word (the, and, comma, hyphen) inside smooth expository prose, especially when it links clauses in narrative or argument. Near zero: ordinary prose content words, or function words in technical/table text where the surrounding format already dominates. Essentially the neuron tracks 'structured/technical data formatting' vs 'prose connective filler', likely driven by context rather than the token itself.",
+  "layer": 15,
+  "idx": 1993,
+  "rank": 3,
+  "max": 0.99609375,
+  "min": -1.25,
+  "examples_pos": [
+   "LHS 248||Red dwarf|\\n|#29||Tau Ceti||HD 10700||Yellow dwarf||Cetus||11.«88»|\\n|#30||GJ",
+   " achieved, and conventional approaches, which compare the SST derived from drifting or moored buoys, generally produce results with a scatter of ±«0».5 to 0.",
+   "vet promotion to major after the battle. Of the 46 Marines aboard the USS Cumberland, 14 died. Another 107 sailors were killed« aboard» the sloop on March ",
+   " above the above the molasses together with the baffler inside the tanker ensure that the molasses and aqueous urea are completely mixed before« the» tanker arrives at its destination.",
+   " fall on the inverse banana curve (figure taken from Ref. #3).\\nIn contrast, metals such as copper are very robust; however,« they» do typically not resist large forces"
+  ],
+  "examples_neg": [
+   " described his vision of building City 2.0, enabled by a Sustainable IT Ecosystem.\\nSo you started out by addressing energy use in« the» data center?\\nThat’s right",
+   " water column and were not directed toward protecting organisms in sediment. Concentrations of contaminants in sediment may be several orders of magnitude higher than in« the» overlying water; however,",
+   " new formulations,” he says, and many of the newer formulations offer better broad-spectrum protections against both UVB, the burning rays, and« U»VA, the cancer-causing",
+   " economic and cultural expansion into the Middle East but argue that domestic factors in India and China will limit their ability to play the role now held by« the» United States. Others maintain that",
+   " to buy or sell. We thus see that in the Revelation the anti-christian power called also 'the false prophet' will work with« the» political head, and with Satan"
+  ]
+ },
+ {
+  "label": "Sentence-boundary / clause-initial function-word detector",
+  "positive_pole": "Strong positive activation on function words (articles, auxiliaries, conjunctions, pronouns, prepositions) that begin a new clause or sentence after a period, newline, or clause break — i.e., 'reset' positions where the model must re-establish context (e.g., 'ence' in penitence after a period, 'greatest', 'one', 'introduces', 'and', 'be', 'have', 'still', 'these', 'in', 'with', 'also', 'subject').",
+  "negative_pole": "Strong negative activation on sentence-final punctuation and clause-final tokens (periods, commas, newlines) and on mid-sentence function words that close or continue a clause ('do', 'just', 'sure', 'for', 'there', 'from', 'and' in clause-final position) — i.e., tokens that terminate or continue a clause rather than open one.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.55,
+  "simulation_guide": "Predict POSITIVE activation (up to +10) when the marked token is a function word (article, auxiliary, conjunction, pronoun, preposition) that opens a new clause or sentence, especially right after a period, newline, or strong clause break. Predict NEGATIVE activation (down to -10) when the token is punctuation (period, comma, newline) that ends a clause/sentence, or a function word that closes/continues a clause mid-sentence. Content words (nouns, verbs, adjectives) in mid-sentence positions give near-zero activation. The effect is strongest at clause boundaries and decays toward zero for tokens deep inside a clause.",
+  "layer": 16,
+  "idx": 4977,
+  "rank": 4,
+  "max": 0.9375,
+  "min": -1.3359375,
+  "examples_pos": [
+   " penitence (Psa. 32:1-7; 51:1-4). We also should evidence similar penit«ence» (Prov. 28:",
+   "0.\\n- Development of open-source tools for receiving, archiving and accessing data in digital repositories.\\nIt is not the technology that poses the« greatest» challenge to digital preservation, Anderson",
+   " has been completed, give constructive feedback to the person. As a guideline, tell your son or daughter five great things about the job for every« one» criticism. If after some time",
+   " can continue in the event of a local catastrophe. Although this model eliminates the single-point-of-failure problem inherent in shared-storage arrays, it« introduces» other challenges, particularly in a",
+   " they adopt an internationalist outlook on the world they are, in my view, no longer part of the culture of poverty although they may still« be» desperately poor. (Lewis "
+  ],
+  "examples_neg": [
+   " People who travel abroad know the familiar problem with unsafe drinking water. At home, we scarcely give it a thought. Usually, we are right«.» But the sources of our drinking",
+   " that require treatment by your health care provider.\\nPrevention depends on the cause of the acidosis. Normally, people with healthy kidneys and lungs« do» not experience significant acidosis.\\n",
+   " most breeds of dogs, all of the permanent teeth should be present by about eight months of age.\\nAre the Adult Teeth Coming in Normally?\\n«Just» as you should begin an at",
+   " feels generally weak\\nIn most cases, the outlook is very good. If your torn meniscus has been repaired surgically or partially removed«,» you probably will be able to",
+   "WD and explain what is being done to determine if the disease is in Florida, and if it is not, what we are doing to make« sure» it never gets here.\\nWhat"
+  ]
+ },
+ {
+  "label": "Mid-word subword continuation vs. word-initial tokens",
+  "positive_pole": "Strongly positive on tokens that are mid-word subword continuations (e.g. 'ic', 'urn', 'oval', 'iral', 'ry', 'IKE', 'bull', 'oxygen' split, '5' in '2.5°'), i.e. the token is a suffix/continuation piece of a longer word, often in technical/formal/encyclopedic text with numbers, units, or long Latinate words",
+  "negative_pole": "Strongly negative on tokens that are complete common words or word-final pieces in casual/instructional/child-oriented text ('it', 'rope', 'moved', 'much', 'smuggling', 'jurors', 'Georgia', 'of', 'choking'), especially at word boundaries in lists, questions, and everyday prose",
+  "jobs": "one_job",
+  "confidence": 0.7,
+  "simulation_guide": "Predict activation from the token's position within its word: if the token is a subword continuation (starts mid-word, e.g. 'ic', 'urn', 'iral', 'oval', 'ry', 'bull', 'IKE', 'oxygen' after '1'), predict strong positive (often +8 to +10), especially in formal/technical/encyclopedic text with numbers, units, or long words. If the token is a complete short common word or word-final piece in casual, instructional, list-like, or child-oriented text, predict strong negative (often -7 to -10). For ordinary complete words in neutral prose, predict near zero (slightly negative, around the mean -0.02). The effect is largely tokenization/orthographic rather than semantic, so check whether the token begins mid-word first, then modulate by register.",
+  "layer": 12,
+  "idx": 20,
+  "rank": 5,
+  "max": 0.2421875,
+  "min": -1.46875,
+  "examples_pos": [
+   " be infected during surveillance activity were bred at the family farm, and their milk and dairy products were prepared and eaten without adherence to proper hygien«ic» standards.\\nOur data show that",
+   "7° to 10° C (45° to 50° F)\\nCantaloupe: 2.5° to «5»° C (36° to",
+   " harvesting. Ubhauli is celebrated during the spring season on Baishakh Purnima. In the autumn season on Mangsir P«urn»ima, Udhauli is",
+   " shoulder toward the object), rather than clockwise (as Buddhists do).\\n- Bönpos use the yungdrung (g.yung« dr»ung, swastika)",
+   "land.\\nOf critical importance to the wetland system are the \"high marsh\" areas that are only occasionally flooded by extreme high tides or« storm» surges. This habitat is"
+  ],
+  "examples_neg": [
+   " unfortunately incredibly common. In a recent survey, 97 percent of teens say that texting and driving is dangerous but 43 percent admit to doing« it». And it isn't just",
+   " goes by, you will build up a bank of short activities (eg a song, a chant, a nursery rhyme, games such as I« spy») that the children are familiar",
+   "ash\\n- Cool Sites for Kids - http://www.ala.org/alsc/children_links.html\\n- Internet Search Engines for Kids« -» http://www.ivyjoy",
+   " has moved the cards, turn back around and turn over the 7th card from your left. That number is the number of cards he« moved»! If it is the Jack",
+   " a sense of well-being.\\nExamples of Cardio Exercises\\nExamples of cardio exercise include basketball, biking, brisk walking, dancing, jogging, jumping« rope», rowing, running,"
+  ]
+ },
+ {
+  "label": "Word-boundary/whitespace tokenization artifact detector",
+  "positive_pole": "Strong positive activation on tokens that are mid-word fragments or unusual subword splits (e.g., 'rin' in chloropicrin, 'Al' in Alvaro, 'ine' in iodine, 'Bro' in Brodersdorf, 'plum' in plumulosus, 'G' in PRG, 'F' in Fynboh) — i.e., tokens that begin or end a word in a way that requires splitting, often at hyphens, capitalization boundaries, or rare/technical words.",
+  "negative_pole": "Strong negative activation on common function words and ordinary word-initial tokens in fluent prose (e.g., 'and', 'the', 'or', 'to', 'A', 'Use', 'Papers', 'program', 'chol') — especially when they start a normal word or appear in list/heading contexts.",
+  "jobs": "one_job",
+  "confidence": 0.65,
+  "simulation_guide": "Predict strong positive activation when the measured token is a subword fragment that splits a word unusually (mid-word continuation like 'rin', 'ine', 'plum', 'Bro', or a single letter from an acronym/abbreviation like 'G', 'F', 'R'). Predict strong negative activation when the token is a common word or word-initial piece in ordinary fluent text (especially 'and', 'the', 'or', 'to', 'A', 'Use'). Activation is near zero for ordinary word tokens in neutral prose that don't fit either pattern. The neuron appears to track tokenization/word-boundary structure rather than semantic content.",
+  "layer": 19,
+  "idx": 11138,
+  "rank": 6,
+  "max": 1.6953125,
+  "min": -2.46875,
+  "examples_pos": [
+   " gladiolus\\npropagules) growing between the rows. The other image above shows the ability\\nof Midas and chloropic«rin» to kill these weed corm",
+   "varo succeeds in stabbing him. Fearing his end near, Alfonso asks for spiritual comfort. To accede to his desire,« Al»varo knocks at the her",
+   " of the relay host. A proxy is a dedicated piece of SW which handles all the relay stuff. But there are some benefits of the proxy« which» nat doesn't have:\\n1",
+   " dye to peptidoglycan. Ethanol is then used to dissolve lipids in outer membrane of Gram-negative bacteria, allowing iod«ine» dye complex to leave cells (",
+   " the underemployment rate.\\nLABOUR FORCE UNDERUTILISATION RATE\\nThe labour force underutilisation rate combines the unemployment rate and the under«employment» rate into a single figure that"
+  ],
+  "examples_neg": [
+   "'s Books, Papers & Thoughts:\\nAnd here's this page duplicated in Adobe.pdf:\\nOver 4 Decades of Fitzpatrick's Books,« Papers» & Thoughts:http://www.",
+   " future complete his analysis, which we’ll revisit soon.<|eot_id|>Submitted by Dyske • December 12, 2002\\nWhat does “«and» of” add to this phrase",
+   " water can be applied at rates sufficient to supply a crop’s water needs without risk of surface or ground water contamination.\\nThe Virginia Water Reclamation« and» Reuse Regulations require that irrigation",
+   ", a patient should not be released from hospital.\\nPULSOLOGY AND SPHYGMOLOGY: Muslim physicians were pioneers in pulsology« and» sphygmology. In",
+   " The United States will work for a just and secure peace; just, because it fulfills the aspirations of peoples and nations for freedom and progress«;» secure, because it removes the"
+  ]
+ },
+ {
+  "label": "Year digits in citations/bibliographic dates",
+  "positive_pole": "The token is a 3-4 digit year (or year fragment) in a citation, reference list, or biographical date context — e.g. '181', '200', '199', '194' as parts of years like 1813, 2006, 1995, 1948, often preceded by author names, parentheses, or date markers.",
+  "negative_pole": "Ordinary prose tokens, especially mid-word fragments, function words, and non-numeric text in general narrative/technical writing — the contrast pole fires on typical non-year tokens.",
+  "jobs": "one_job",
+  "confidence": 0.85,
+  "simulation_guide": "Check whether the current token is a digit sequence (or leading digit fragment) that forms part of a year in a bibliographic or date context (citations, references, birth/death dates, parenthetical years). If yes, activation is strongly positive, scaling with how clearly it reads as a year (full 4-digit year or its leading 3 digits in a citation-like context). If the token is ordinary prose, a word fragment, or a function word, activation is near zero or negative. Non-year numbers (page numbers, volumes) should be near zero unless they look like years.",
+  "layer": 19,
+  "idx": 2048,
+  "rank": 7,
+  "max": 2.421875,
+  "min": -3.21875,
+  "examples_pos": [
+   " Upper Ossory (1745–1818) The Hon. Richard FitzPatrick (24 January 1748 – 25 April «181»3) The Lady",
+   " Science Pub, Hershey, PA.\\nIrlbeck, S., Kays, E., Jones, D., & Sims, R «200»6, 'The Phoenix Rising",
+   " it has even got into a leading editorial in the Chicago Tribune, the worlds greatest newspaper.103<|eot_id|>Ray Frank, 1861 - «194»8\\nRay Frank Litman",
+   ".ccr.2004.05.032. PMID 15261142.\\n- Reang P, Gupta M, Kohli K («200»6). \"Biological Response",
+   " may be applied, and I think Ruben et al. «199»9\\ndid not confront this"
+  ],
+  "examples_neg": [
+   "space) exists not DIRECTLY via scalar resonances but because of individual vector spin and orbital resonances between two similar Spinning, Scalar Standing« Wave» Resonances.\\nRemember,",
+   " strengthen coordination, and support the MOHS and other health providers to implement activities related to the Cholera Preparedness and Response Operation Plan («CP»ROP), in order to bring",
+   " Joel b. Samuel from Krakau (1668); Mhrr Pinchas\\n(after 1700); M«h»rr Salomo (before ",
+   " coaches. Before Title IX, only one in 10 did.\\n\"We're going to have daughters coming up who never see a female coach,\"« And»regg said of the trend",
+   "11 May 2010.\\n- \"Börne, Karl Ludwig\". Jewish Encyclopedia. Retrieved 11 May 2010.\\n- \"«Bo»erne Postmasters\". Jim Wheat"
+  ]
+ },
+ {
+  "label": "Sentence-boundary punctuation vs. mid-sentence content words",
+  "positive_pole": "Strong positive activation on sentence-final or clause-final punctuation tokens (commas, periods, closing quotes/parens) and on short function/continuation tokens at phrase boundaries — i.e., tokens that close a clause and predict a new clause/sentence to follow.",
+  "negative_pole": "Strong negative activation on ordinary content words (nouns, adjectives, verbs) mid-sentence, especially at the end of a noun phrase or predicate where the sentence continues with more content — i.e., tokens that are 'in the middle' of an unfolding statement.",
+  "jobs": "one_job",
+  "confidence": 0.75,
+  "simulation_guide": "Predict high positive activation when the measured token is punctuation (comma, period, closing quote/paren) or a short boundary marker that ends a clause and is followed by a new clause or sentence. Predict strong negative activation when the token is a content word (noun/verb/adjective) in the middle of a flowing sentence, especially at the end of a phrase that is followed by more content. Near zero for ordinary mid-sentence function words or content words that don't sit at a clause boundary. Essentially the neuron marks clause/sentence boundaries (positive) versus mid-sentence continuation (negative).",
+  "layer": 12,
+  "idx": 824,
+  "rank": 8,
+  "max": 1.0703125,
+  "min": -0.302734375,
+  "examples_pos": [
+   " (also unknown). One headed west for Europe and became speakers of Indo-European (all the languages of modern Europe save for Basque, Hungarian«,» and Finnish) while others headed",
+   " Version of 1611, but are now seldom attached to the canonical books. Besides the above there are a few others, as the III«.,» IV., and V. M",
+   " Blood flow through specific brain structures constitutes a measure of activity in that structure.\\nThe researchers found that the first group -- compared to the non-trained« group» -- showed greater activity",
+   ". Herpes simplex is related to the viruses for infectious mononucvleosis (Epstein-Barr Virus) and for chicken po«x» and shingles (varic",
+   " and animals (and God depicted as a human), thereby reviving the Greek and Roman sense for imagistic art lost during the days of barbar«ism».\\nMuslims avoided such icon"
+  ],
+  "examples_neg": [
+   " much flow it would need. An aquarium pump is enough to keep the flow going.\\nOne air pump (optional). The system can aerate« itself» but it can produce more if",
+   " as features are added to it as needed by would-be daemons.\\nUnix started with this philosophy. Most internet servers are started up by inet«d»",
+   " 2. Bathing your toddler\\n- 3. Your diet and healthy teeth and gums\\n- 4. Best baby car seat« guide»\\n- 5. Toy",
+   " next place, a sign must have a real physical connection with the thing it signifies so as to be affected by that thing. A weather-co«ck», which is a sign of",
+   " and even guitar picks. In Japan, according to the 1999 Jay April documentary Red Turtle Rising, they were seen as a sign of« longevity», and thus stuffed and hung"
+  ]
+ },
+ {
+  "label": "Acronym/abbreviation expansion and definition context detector",
+  "positive_pole": "Text defining or expanding acronyms/abbreviations (X = The Correct Exposure, CREWS stands for, TEBC (telecommunications...), glossary/lexicon entries, phonetic spellings, list of abbreviations with meanings), often at the token right after an acronym or inside its expansion",
+  "negative_pole": "Parenthetical year/date citations and bibliographic references (author (1883-1960), (2008), (1995), birth-death dates of persons), i.e. numeric years in parentheses — the contrast to acronym definitions",
+  "jobs": "two_related_jobs",
+  "confidence": 0.75,
+  "simulation_guide": "Positive activation fires on tokens inside or immediately after an acronym/abbreviation definition, glossary entry, or expansion (e.g. 'X (The Correct Exposure)', 'CREWS stands for', 'TEBC (telecommunications...)', phonetic respellings), especially right after the acronym or at the start of its expansion. Negative activation fires on tokens inside parenthetical years/dates in citations or biographical entries (author (1883-1960), (2008)). Ordinary prose, general narrative, and non-definitional text yields near-zero activation. The neuron essentially marks 'abbreviation-definition' context vs 'year-in-citation' context.",
+  "layer": 19,
+  "idx": 3042,
+  "rank": 9,
+  "max": 3.53125,
+  "min": -3.96875,
+  "examples_pos": [
+   ", blocks, walls, driveways, sidewalks and so on.\\ncemetery Commonly misspelled. Memory aid: Almost every other letter« is» an e.\\ncenter around Il",
+   " (telecommunications bonding backbone)\\n- GE (ground equalizer)\\n- Supplementary bonding network (found in computer rooms)\\n- TEBC (tele«communications» equipment bonding conductor)\\n- U",
+   ", you will want to combine these three factors into JUST the correct way. Now, if you replace TCE with TCEV (The« Correct» Exposure Value), you understand what",
+   " your cock-on-the-table style medium format camera wit a digital back.\\nLet us imagine a value called TCE. This TCE (The« Correct» Exposure) does not exist,",
+   ",\\nThere gently never own.\\nThey keep their slaves in ignorance,\\nThey’re never taught to read,\\nFor knowledge and old slavery\\nHave never« yet» agreed.\\nThey breed and sell"
+  ],
+  "examples_neg": [
+   "ators seem to believe that although scientific theories cannot save themselves, they can save others.\\nEric Temple Bell; (1883-«196»0); The Search for Truth",
+   " in the Court and among the people, that he was encouraged to try something more ambitious.\\nÉlie Catherine Fréron (1719 –« »10 March 1776)",
+   " corps of the US army, it was designed by Erich Mendelsohn («188»7-1953), the",
+   " you missed it\\nHere's a visual look at the eight most delicious, disgusting meals in the country.<|eot_id|>E. Cobham Brewer «181»01897. Dictionary of Phrase",
+   "compare Old Irish adellaim 'I seek', diellaim 'I yield', Umbrian pelsatu 'to overcome, conquer',« Latin» pellere (\"to drive"
+  ]
+ },
+ {
+  "label": "Copula/linking-verb in definitional or classificatory clauses",
+  "positive_pole": "Copular verbs (is/are/was/were/be/been/being), 'as', 'to', 'not', and other linking/relational function words in definitional, classificatory, or contrastive-assertion contexts (X is/are treated as Y, X is not Z)",
+  "negative_pole": "Same copular/linking tokens but in negation, refutation, or contrastive-correction contexts (X is not identical to Y, is nothing but, is only, would not be, disproved the hypothesis that X would...)",
+  "jobs": "two_related_jobs",
+  "confidence": 0.65,
+  "simulation_guide": "The token itself is often a copula (is/are/was/were/be/been), 'as', 'to', 'not', or a short function word linking a subject to a predicate/classification. Positive activation fires when the surrounding clause asserts or defines a classification, equivalence, or standard treatment (X is/are treated as Y, X is considered Z, X is not unique). Negative activation fires on the same token types when the clause negates, refutes, or contrasts a classification (X is not seen as identical, is nothing but a lie, is only a phenomenon, disproved the hypothesis). Otherwise, on ordinary prose with these tokens in neutral or non-classificatory contexts, activation is near zero (mean ~-0.01, std ~0.05).",
+  "layer": 16,
+  "idx": 1651,
+  "rank": 10,
+  "max": 1.40625,
+  "min": -1.921875,
+  "examples_pos": [
+   " stamps must be used on all fourth-class matter beginning January 1, 1913, and that such matter bearing ordinary postage stamps will be« treated» as 'Held for postage",
+   " countries -- especially India, China, Japan and South Korea -- have also increased their Middle East presence. The U.S. shouldn't view this« as» a threat but rather an opportunity",
+   "omime or a puppet show.\\nThey also needed to understand more about how these impulsive, quick-fire characteristics, which might sometimes be seen« as» disruptive, could be harn",
+   "22) of the journal Science.\\n\"This process is fundamental to the expression of all genes, whether they are normally expressed genes or genes that contribute« to» disease -- all these use the",
+   " would have been presented with a request to save a file on a drive letter that is knew nothing about, and it would have responded with a« standard» error message, such as '"
+  ],
+  "examples_neg": [
+   " a different crime than in the past. For instance, human trafficking is often referred to as modern-day slavery. However, trafficking is not seen« as» identical to slavery, since it",
+   ".\\n''If you were to measure the blood pressure and cholesterol in a poor person based on the Framingham Score it may tell you their risk« is» 10 per cent but in",
+   " of course, formally fallacious. … If I were to advance such an argument, I should certainly be thought foolish, yet it would not« be» fundamentally different from the arguments upon",
+   " the public to be properly educated about what is going on. There are far too many places citing ‘scientific’ reasons as to why global warming« is» nothing but a lie. And",
+   " sex-trafficking. Before closing, I want to address the fact that many people, particularly citizens of wealthy Western nations, argue that trafficking« is» only a phenomenon in impoverished and"
+  ]
+ },
+ {
+  "label": "Function-word/preposition after clause boundary in prescriptive text",
+  "positive_pole": "Strong positive on function words (from, to, of, without, not, against, in, up, the, could, cease) appearing at clause/phrase boundaries in prescriptive, cautionary, or contrastive prose — often after a comma or period, introducing a prepositional phrase or negation that qualifies a preceding assertion",
+  "negative_pole": "Content words (nouns, verbs, adjectives: are, win, required, kids, toward, determination, following, into, on, about, learned, can, for, ahead) at similar clause boundaries — the pole contrast is function-word vs. content-word at a syntactic juncture",
+  "jobs": "two_related_jobs",
+  "confidence": 0.65,
+  "simulation_guide": "1) Check the token: if it's a short function word (preposition, negation, article, modal auxiliary, or copula-like connective) appearing right after a comma, period, or clause boundary in formal/prescriptive prose, expect strong positive activation. 2) If it's a content word (noun, main verb, adjective) at a similar juncture, expect negative activation. 3) Mid-sentence function words in ordinary flowing text without a boundary marker give near-zero or mildly positive values. 4) The neuron seems to fire on the token itself at a syntactic juncture, not on the following context.",
+  "layer": 16,
+  "idx": 6837,
+  "rank": 11,
+  "max": 1.84375,
+  "min": -1.2265625,
+  "examples_pos": [
+   "One might also be surprised by the length of time needed to implement healthcare changes that have been proven to save lives; and, conversely,« the» number of therapies which are commonly",
+   " Excel) that will reveal any issues or problems so timely corrective action can be taken.\\nStage #5- Completing:\\n1. Mistake«:» The project manager attempts to complete",
+   " #2)\\n- Identifying the risks to the completion of the project, and creating a risk response plan if necessary\\n2. Mistake«:» The project manager fails to keep",
+   " advance Miller and his results as absolute proof that life could have formed spontaneously from non-living matter. When we assess Miller's experiment critically,« without» the bias and subjectivity of",
+   " them struggle. Gradually, let them see that their arguments are beginning to reach you, and at some point, make the decision to give« up» drugs. Students will feel the"
+  ],
+  "examples_neg": [
+   ": This process injects the MySubsystem.HP.DLL into MyProcess.exe\\nRun MyProcess.exe to see that\\nRandomNumbers which« are» both even and odd are getting",
+   ", which resulted in a 43 to 72 vote, with 14 abstaining.\\nCampaign director Dave Allison called the defeat \"a clear« win» by short-term economic interest over",
+   "HMW) DNA be extracted?\\nHigh affinity for glass - buffer solution must contain Tris and EDTA as it binds magnesium ions which are« required» for DNAse, preventing DNA",
+   " your standard Showtime expletives. But I still don’t feel satisfied. I’m not satisfied because I think what this has taught my« kids» is that swearing in Ms.",
+   "iding Syria’s opposition means becoming a participant in that conflict.\\nParadoxically, aiding the resistance could drive some Syrians who desire a negotiated solution« toward» the government. The Financial Times"
+  ]
+ },
+ {
+  "label": "Sentence-boundary punctuation vs. mid-word/mid-phrase continuation",
+  "positive_pole": "Strong positive on sentence-final or list-item-final punctuation (period, comma, semicolon, hyphen, newline) that closes a clause/sentence, especially at structural boundaries in lists, tables, and enumerations",
+  "negative_pole": "Strong negative on tokens that are mid-word fragments or mid-phrase continuations (word-internal pieces like 'Hash', 'plunge', 'stovers', 'com', 'es', 'occurring') — i.e., tokens that are NOT a clean boundary but rather a continuation inside a word or tight phrase",
+  "jobs": "two_related_jobs",
+  "confidence": 0.7,
+  "simulation_guide": "The neuron fires strongly positive when the measured token is a punctuation mark (., ,, ;, -, newline) that terminates a sentence, list item, table row, or clause — especially when the preceding context is a complete declarative unit. It fires strongly negative when the token is a sub-word fragment or a word that continues a compound/phrase mid-stream (e.g., 'Hash' in 'point1 Hash', 'stovers', 'com' in 'compliance', 'es' in 'grasses'), suggesting the network is tracking word-boundary/segmentation state. Near zero on ordinary mid-sentence content words (nouns, verbs) that are neither boundary punctuation nor word-internal fragments. Essentially a boundary/segmentation detector: +10 at clean structural boundaries, -10 at mid-word/mid-token continuations.",
+  "layer": 13,
+  "idx": 5663,
+  "rank": 12,
+  "max": 1.015625,
+  "min": -1.25,
+  "examples_pos": [
+   " and then medialward. Its roof is formed by the fibers of the corpus callosum passing to the temporal and occipital lobes«.» On its medial wall is a",
+   " system resources. Therefore, there is a need for a simpler method of testing the Java platform, that does not require recompilation of code«,» that does not require the app",
+   "ansford, W.D. and Dolphia\\nLilium canadense L.\\nCanada lily, Canadian lily, Wild yellow« l»ily\\nUSDA Symbol:",
+   " air.\\n- Water (1 gallon per person per day for 3 days)\\n- Food that does not need electricity for storage or preparation\\n«-» Manual can opener (if kit",
+   " in eating more fruits and vegetables. In fact, they were 3.5 times as likely to eat fruits and vegetables five times per day«.\\n»Other studies have shown that gardening"
+  ],
+  "examples_neg": [
+   "10:6; 14:7) it always refers to a past, completed event--an immediate work of God, not a still«-»occurring process of evolution.",
+   " industry, says Rajiv Malik, the president of Mylan. But volumes are huge.\\nCan treatment expand further? Despite the subsidies and the« plunge» in prices, less than half",
+   " parts of the first three areas. That is, intelligence and cryptology are \"service\" functions for the primary areas--military operations,« weapons» technology, and diplomatic activities.",
+   " 000 tonnes of cane tops and 270 000 tonnes of trash each year (380 000 tonnes of dry matter) and the factories« produce» about 476 000 tonnes",
+   " available land and recognition of the part which the milking goat rather than the cow could play. The opportunity to exploit the production of tropical grass«es» and legumes is facilitated by"
+  ]
+ },
+ {
+  "label": "Function-word boundary / continuation vs. name-splitting mid-token",
+  "positive_pole": "Common function words (and, or, the, to, be, will, from, in, more, even, ,) at clause boundaries in fluent expository prose — i.e., ordinary grammatical connective tokens mid-sentence",
+  "negative_pole": "Sub-word fragments inside proper names/URLs/identifiers (B«led»soe, Mun«sterman, Alo«is», N'«k»isi, «994»), plus some mid-token splits in dates/numbers (Wed, growing, slice, part, Questions) — i.e., tokens that are continuations of a larger lexical unit rather than standalone words",
+  "jobs": "two_related_jobs",
+  "confidence": 0.65,
+  "simulation_guide": "Score high (+5 to +10) when the measured token is a standalone high-frequency function word (and, or, the, to, be, will, from, in, more, even, comma) appearing in grammatical position within fluent prose. Score strongly negative (-7 to -10) when the token is a sub-word piece splitting a proper name, URL, or identifier (e.g., mid-name fragments like 'led', 'is', 'k', '994', 'Wed' inside a timestamp). Near zero for ordinary content words (nouns, verbs, adjectives) in normal context, and for function words in unusual/fragmented contexts. The neuron essentially flags 'is this token a real standalone word boundary' positively vs. 'is this a mid-lexical-unit fragment' negatively.",
+  "layer": 20,
+  "idx": 8650,
+  "rank": 13,
+  "max": 1.6875,
+  "min": -2.640625,
+  "examples_pos": [
+   " 05 2012 <http://www.studymode.com/essays/The-Struggle-For-Power-In-The-«994»323.html>.\\n\"The Struggle",
+   " time she tries to read;\\n- She might see the letters o.k., but not be able to sound out words -- that is, not« be» able to connect the letters to",
+   " save money on construction and heat. Often used to store grain or fertilizer domes are known for their durability and energy efficiency. The domes« will» also use geothermal heating and",
+   " would come. Indeed, reaction was already under way as part of a major shift in Reformation studies from systematic theology to history of ideas and« from» confessional history to social history",
+   "ial See noncontroversial.\\nconversate Not a word. Replace with converse. Better still, simplify. Replace with speak, talk« or» even chat.\\nconvince,"
+  ],
+  "examples_neg": [
+   " The longer it goes, the harder it is to break,” Bledsoe said.\\nThe outlook is worst for Eastern Colorado, where B«led»soe grew up and his",
+   "64% done, estimate finish Wed Sep 13 21:27:55 2000 94.53% done, estimate finish« Wed» Sep 13 21:",
+   " assessment for the proposed project site during the growing season or use a previous assessment that is not more than three years old and was conducted during the« growing» season.\\n4) If any",
+   " two weeks.” Confusion is often avoided by using the prefix semi- meaning “twice each” (semiweekly; semimonthly«;» semiannual) or by using",
+   "). However, SuCAST has been only hypothetically related to fauna (e.g., Wagner, 1946; Inouye et al«.,» 1991; Gass"
+  ]
+ },
+ {
+  "label": "Year/date tokens in historical narrative sentences",
+  "positive_pole": "Digits of a year (or comma after year) in 'In 19xx' / 'By 1492' style historical chronology sentences",
+  "negative_pole": "Year-like digits or dates appearing in parenthetical/parenthesized or non-'In-year' contexts (e.g., '(1775–77)', '(A.D. 200)', '1816-1818', '1530/31'), plus some non-date tokens in similar historical prose",
+  "jobs": "two_related_jobs",
+  "confidence": 0.75,
+  "simulation_guide": "Strong positive: the token is a digit (or trailing comma) forming a year in a sentence-initial 'In/By/After <year>' chronology construction, especially in historical/biographical prose. Near zero: ordinary words, years in other syntactic frames, or dates not preceded by 'In/By'. Negative: year digits appearing inside parentheses, ranges, or slash-formatted dates (e.g., '(1775–77)', '1816-1818'), and occasionally other tokens in historical text where the chronology cue is absent or the date is embedded rather than sentence-initial.",
+  "layer": 12,
+  "idx": 648,
+  "rank": 14,
+  "max": 0.330078125,
+  "min": -1.7578125,
+  "examples_pos": [
+   " the Patent Office in June 1908, and reached more than 1,000 models by the end of that summer. In 192«6», Congress decided to dispense",
+   " SOHO in December 1995, he was part of the science operation team at NASA Goddard Space Flight Center. In 199«9», he joined the European Space",
+   " Revolutionary France and became enthralled with the Republican movement. He fell in love with a French woman, Annette Vallon, who in« »1792 gave birth to their",
+   " 1823, Wordsworth mended relations with Coleridge. The two were fully reconciled by 182«8», when they toured the Rh",
+   "1951 from the University of California, Los Angeles, with Hans Reichenbach and Rudolf Carnap as his supervisors. In 196«5», after a long residence at"
+  ],
+  "examples_neg": [
+   " the beginning of the war. By this time Mary was working as a hospital matron. Matthew and Tom Nolan were at the battles of Palo« Alto» and Resaca de la Pal",
+   " the region and province. It stands on the banks of the River Bystrzyca. In the 12th century it was a fortified« settlement» on the trade route leading to",
+   " all corners of Poland and beyond. The Jews traded in almost all the wares bought and sold on these occasions. In 1530/«31» Jewish merchants transported through the ausp",
+   ". There was considerable controversy over both points in North Africa; over the former from Tertullian's time on (A.D. «200») and over the latter in",
+   " 1923, his interest turned to\\nHe was first-assistant of the Central Laboratory of Industries at Helsinki during 1916-191«7», and chemist in the"
+  ]
+ },
+ {
+  "label": "Acronym-initial / parenthetical-initial-letter detector",
+  "positive_pole": "The token is the first letter(s) of an acronym or parenthetical abbreviation (e.g., 'R' in '(RAFT)', '200' in year '2000', 'A' in 'Arianon', 'NP' in 'NPRA'), i.e., the start of a capitalized/abbreviated token that begins an acronym expansion or citation year.",
+  "negative_pole": "Ordinary function words and mid-sentence connective tokens ('&', 'that', 'then', 'from', 'are', 'do', 'no', 'of', 'for', 'the', 'difference', punctuation like '|' or '.') in running prose — i.e., generic low-information tokens in fluent text.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.65,
+  "simulation_guide": "Score strongly positive (roughly +5 to +10) when the measured token is the first character(s) of an acronym or its parenthetical opening — e.g., the letter right after '(' that starts an abbreviation like (RAFT), (RO), (NPR3), or the leading digits of a citation year (2000, 1999, 1865). Score strongly negative (roughly -7 to -10) on common function words, conjunctions, prepositions, and generic punctuation appearing in ordinary fluent prose. Near zero for most other content words, mid-acronym letters, and typical text where neither pattern applies. The effect is largely driven by the token's own surface form (initial letter/digit of an abbreviation) plus the immediately preceding '(' or citation context.",
+  "layer": 21,
+  "idx": 8813,
+  "rank": 15,
+  "max": 3.46875,
+  "min": -2.046875,
+  "examples_pos": [
+   "An Overview of the Methodological Approach of Action Research, Rory O’Brien, Faculty of Information Studies, University of Toronto\\nResource Area For Teaching« (»RAFT) Sacramento is a new",
+   "di, Arodites. [A'rod, Aro'di,« A»ro'dites]\\nSon of",
+   "pub. com/pages/callmain.htm\\nCicada and Cricket\\nP.O. Box 7434\\nRed Oak, IA «515»91-0433\\nT",
+   ".\\n- Rao AV, Agarwal S. Role of antioxidant lycopene in cancer and heart disease. J Am Coll Nutr «200»0;19:563-",
+   ", Bloomsbury, ISBN 0-7475-7683-1\\n- G. Gnoli. \"ēr, �«�»r mazdēsn\"."
+  ],
+  "examples_neg": [
+   " a robot.\\n“They didn’t actually know they could build it themselves,” said Santanna Lea, program director at the Ed Endres Boys« &» Girls Club.\\nShe conceded she",
+   " our freshwater resources.\\nThe 7th annual Water is Life art contest invites Minnesota’s 9-12 grade students to create art and videos« that» represent issues facing our freshwater resources",
+   " 25 x 4m belt transect. No measurements are taken. If lobster abundance is counted by a fish diver, the data are« then» reported to the habitat diver.",
+   " got excited and shouted out seemed to be more \"cognitively engaged and as a result learn more\".\\n\"Perhaps those children also benefit« from» receiving additional feedback and attention from",
+   "Achieving a uniform distribution of silver is difficult to achieve and essential for accurate test data (results). This method utilizes Ilford Multigrade« IV» RC Deluxe MGD.1"
+  ]
+ },
+ {
+  "label": "Future/pending event vs. retrospective cross-reference ('later/hereafter')",
+  "positive_pole": "Tokens introducing a future, pending, or imminent event/action — 'invoke', 'death', 'next day', 'proclaim', 'elect', 'January 1', 'mount', 'on or before', 'print', 'brought', 'dusk', 'cooled', 'button', 'cast', 'dies', 'passes', 'state', 'comes' — often in narrative, instruction, or command contexts where something is about to happen or is scheduled/required.",
+  "negative_pole": "Retrospective/forward cross-reference markers in academic or expository prose: 'later', 'hereafter', 'below', 'respectively', 'the end', 'soon', plus sentence-final punctuation after such references ('.', ',', '7', 'Aramaic') — i.e., 'as we shall see later/hereafter', 'discussed below', 'revisit soon', referring the reader to other parts of the text rather than to an imminent event.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.75,
+  "simulation_guide": "Positive: when the marked token (or its context) introduces a future/pending event, deadline, scheduled action, or command — especially in narrative or instructional text ('will die the next day', 'on or before August 20', 'click the start button', 'cast it into the pit') — activation rises strongly. Negative: when the token is a cross-reference to later/other parts of a document ('later', 'hereafter', 'below', 'respectively', 'the end', 'soon') or punctuation immediately following such a reference, activation goes strongly negative. Near zero: ordinary past-tense narration, generic nouns/verbs with no future or cross-reference flavor, and typical prose where neither 'imminent event' nor 'see-later' framing is present. The neuron essentially contrasts 'about to happen / must happen' (positive) against 'to be discussed later elsewhere in the text' (negative).",
+  "layer": 11,
+  "idx": 8654,
+  "rank": 16,
+  "max": 1.1640625,
+  "min": -0.97265625,
+  "examples_pos": [
+   ".” Brahma said, “Well, there is only one person on earth who can do that, and that is Ganapati. You« invoke» him, he can take down",
+   " that, upon Hindenburg's death, the offices of president and chancellor would be combined. Hindenburg's last wish was that, upon his« death», the monarchy be restored.",
+   " chamber door, which the commander's statue does. The two friends faint at the sight of this vision, who reveals that Juan will die the« next» day, having one last chance",
+   " being afraid, were thrilled, and established a simple code to communicate with the spirits.\\nOne early message read: “Dear friends, you must« proclaim» the",
+   " ten councillors of the aljama, among whom were members of both feuding factions, and the adelantats from the previous year would« elect» the amin[*] and"
+  ],
+  "examples_neg": [
+   " xxviii (1899), 216 ff.]\\nattributed to ghosts by quite diverse peoples is one which, as we shall see« later», they possess in common with",
+   " lived only until the age of six. In 1896, Klara gave birth to Adolf's sister, Paula, who would outlive« him».\\nHitler was a poor",
+   " idea of what people were expected to do or believe in response to the saving action of God—and more importantly, as I will suggest at the« end», of the narrative contexts in",
+   " this follows from Fig. 8 and Eq. (6a). It is important in remote sensing of thermal radiation from space, as discussed« later»..\\nThe polarized emissivities",
+   "1830). The difficulty of the inquiry is much increased by the fact of the conquests having been made, as will be seen hereafter«,» by the united arms of three"
+  ]
+ },
+ {
+  "label": "Concessive/contrastive discourse connective (but, however, despite, although)",
+  "positive_pole": "Tokens that are contrastive discourse markers (but, however, despite, although, though) or punctuation/words immediately following a clause boundary introducing concession/contrast, especially after a newline or period",
+  "negative_pole": "Ordinary content words (nouns, verbs, adjectives) mid-sentence in neutral declarative prose, especially function/content words not at a clause boundary; the negative pole is essentially the absence of contrastive connective context",
+  "jobs": "one_job",
+  "confidence": 0.85,
+  "simulation_guide": "Score high (+5 to +10) when the token is itself a contrastive connective (but, however, despite, although, though) or a comma/word right after a sentence boundary that introduces a concession or counter-expectation clause. Score moderately positive for tokens at clause boundaries after 'although/while/if' clauses or after newline+period where a contrast is being set up. Score near zero for ordinary mid-sentence content words in neutral declarative text. Score negative for generic content words (nouns, verbs, adjectives) in the middle of a sentence with no contrastive framing, especially in descriptive/expository prose.",
+  "layer": 14,
+  "idx": 6974,
+  "rank": 17,
+  "max": 1.1875,
+  "min": -2.328125,
+  "examples_pos": [
+   ", but provides no proof to substantiate its claims.\\nJanuary 2004 – China and South Korea each adopt regulations that would ban reproductive cloning« but» would permit human embryo cloning for",
+   " Server in per server mode. In this case, if you have 50 licenses, the 51st authenticated user will be denied access («though» anonymous users can still access services",
+   " serious threat to press freedom by imposing a blanket ban on microphones and cameras in the courtroom.\\nDefamation of the president is prohibited; however«,» no one was charged with the",
+   " class join in at once. I pretend to be a drug user, and start off with a statement like,\\nWhy shouldn't I take drugs«?» My life sucks anyway.\\n(",
+   "Since the meltdowns, operations at all the nation’s 54 nuclear reactors have been gradually suspended. Public concern has kept the plants offline« despite» increasingly strident warnings from officials"
+  ],
+  "examples_neg": [
+   " and forks. This might irritate you or make you feel embarrassed in front of guests. You may find that they eat more often because they« forget» having eaten or that they forget",
+   " stomach which rejects and expels the vile substance. Although not impossible, a person or animal would have to have a strong stomach or no sense« of» taste for a dose of the",
+   " the skin and in the mouth, or overactive gag reflex. Tactility can be hyposensitive, meaning the brain doesn’t even« acknowledge» that something has touched the body",
+   " defense minister of the UAE.\\nWhile Tanzania has strict rules on game Hunting, Maasai who have worked at the lodge say guests are never« told» of the limits and hunt as",
+   " more recently Atlanta, Ga., meanwhile, have become hot political topics this year as drought spread throughout much of the West and South.\\nThe compact« would» prohibit those diversions without approval"
+  ]
+ },
+ {
+  "label": "Word-final suffix/morpheme boundary detector (positive) vs. word-internal continuation (negative)",
+  "positive_pole": "Strong positive at tokens that are the END of a word or morpheme — especially suffixes, plural/verb endings, and the last subword of a word (e.g., 'se' in Matisse, 'ies' in sympathies, 'um' in ad libitum, 'ate' in serrate, 'ets' in comets, 'ing' in scolding, 'uy' in Dupuy, 'us' in plumulosus appears on BOTH poles though). Also fires on punctuation/word-final tokens like commas, closing parens, and numbers ending a word.",
+  "negative_pole": "Strong negative at tokens that are word-INTERNAL continuations or the final subword of a word that is followed by more word material — e.g., 'us' in plumulosus, '0' in 1.0%, '1' in 2011, '54' in 1941-54, '55' in 55C, 'time' in holding time, 'weeks' in 7 weeks, 'Luther' (a full word but mid-sentence continuation). Negative seems to mark 'this token continues/extends a word or number rather than terminating it'.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.55,
+  "simulation_guide": "Predict POSITIVE when the measured token is the final subword of a word/morpheme (suffixes like -ing, -ies, -um, -ate, -ets, -us, -uy) or a word-final punctuation/number token. Predict NEGATIVE when the token is a word-internal continuation (middle subword of a longer word, digits continuing a number, or a word that is part of an ongoing phrase). Near zero for ordinary mid-word tokens or common words in neutral positions. The neuron appears to track subword-boundary/word-finality rather than semantic content.",
+  "layer": 12,
+  "idx": 4570,
+  "rank": 18,
+  "max": 0.6328125,
+  "min": -0.8359375,
+  "examples_pos": [
+   " Three Musicians of 1921...what leaps out at you are certain similarities—the use of black for example. But Picasso unlike Matis«se» is not a traveler. Picasso",
+   " owner of the cemetery property, which is now utilized for recreation\\n(park, playground, sports field). Adjacent properties are commercial\\nor« industrial». The cemetery boundaries have not",
+   " The T-64B1 carries only 37 shells and has 2,000 7.62 mm rounds, against 1,«250» for the T-64B",
+   " with Mahomat Perpir and Ali Perpir, and both had fallen out with even the same agnate, Ubaydal Murçi«,» perhaps their cousin. Abrahim",
+   " Departures from standard conditions included the absence of sediment and a test temperature of 20°C for L. plumulosus, rather than «25»°C as dictated in this standard"
+  ],
+  "examples_neg": [
+   " 2%. (2) Similar figures for the United States are 1% petroleum, 17% natural gas, 51% coal«,» 9% renewable, and",
+   "_tree example\\n- sequential_tree_example.cpp: The CPP file to be used in your console project.\\n- sequential_tree_example_explanation.rtf«:» An RTF",
+   " upon Melanchthon. Melanchthon had broken down and was supposed to be dying, when his joy at the long-delayed visit of« Luther» brought him to his feet again",
+   ")) showed a similar but slightly different relative sensitivity to ammonia with A. abdita > R. abronius = L. plumulos«us» > E. estuarius",
+   "\\n- 2008-2009: One semi-finalist, two commended\\n- 2007-2008: One finalist«,» three commended<|eot_id|>THE TRADE"
+  ]
+ },
+ {
+  "label": "Capital-letter word-initial / mid-word boundary detector",
+  "positive_pole": "Strong positive at tokens that begin or continue capitalized words, abbreviations, or mid-word fragments of capitalized/technical words (e.g., 'world' in 'world's', 'TUnnel', 'St' in 'RepliStor', 'Tod' in 'Todlerus', 'os' in 'Yoska', '19' in '19th', 'Interactive', 'LTPD', 'LUT', 'LIREC'), i.e., tokens whose preceding context contains an uppercase letter or is mid-word in a capitalized/technical term.",
+  "negative_pole": "Strong negative at tokens that are digits or punctuation inside citation-like year/parenthesis contexts (e.g., '199' in '(1998)', '200' in '(2000)', '-' in '(1726-1798)', '(' before a year, ')' after a year), i.e., bibliographic year/date tokens and their surrounding punctuation.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.65,
+  "simulation_guide": "Predict strong positive when the token is a subword piece that is mid-word in a capitalized or technical word, or immediately follows an uppercase letter or is part of an acronym/abbreviation (e.g., 'St', 'TUn', 'os', '19' in '19th'). Predict strong negative when the token is a digit sequence or punctuation that is part of a parenthesized year/date citation like (1998) or (1726-1798). Near zero for ordinary lowercase words in normal prose, and for digits/years not in citation-style parentheses. The neuron seems to key on case/word-boundary structure and citation formatting rather than semantics.",
+  "layer": 19,
+  "idx": 14119,
+  "rank": 19,
+  "max": 2.65625,
+  "min": -3.234375,
+  "examples_pos": [
+   " their efficiency and life-span.\\nAccording to Connor, hydro power supplies 87 percent of the world's renewable energy and 16 percent of the« world»'s power but is limited by",
+   ". Garden City, NY: Doubleday, 1976. Zitelmann, Rainier. Hitler: The Policies of Seduction«.» London: London House, ",
+   ". (Image: ©European XFEL)\\nTunnel construction began in July 2010 with the tunnel boring machine TULA (TUn«nel» for LAser), which concluded",
+   " eds., Fl. Reipubl. Popularis Sin. 7: 490-504.\\n(Authors: Fu Liguo (�«�»立",
+   " PWM control hardware LUT receives the stage index and PWM signals as inputs and outputs the eight PWM driver signals.\\nTable 4: PWM control« hardware» LUT.\\nFigure 18"
+  ],
+  "examples_neg": [
+   ". PMID 8662889.\\n- Liang, Q; Mohan R R, Chen L, Wilson S E (Jul. «199»8). \"Signaling by",
+   "hermann B, Seeff LB, et al. Pathogenesis, natural history, treatment and prevention of hepatitis C. AnnIntern Med «200»0;132:296-",
+   " St. Ann's Episcopal Church in the Bronx borough of New York City.\\nMorris's half-brother, Lewis Morris (1726«-»1798), was a signer",
+   " flash drive that will work no matter what drive letter is assigned to your drive on any Windows computer.\\nLori Kaufman is a freelance technical« writer» who likes to write geeky",
+   " architects and urban planners. The brothers Leonid Aleksandrovich Vesnin (b Nizhny Novgorod, 10 Dec« »1880; d Moscow,"
+  ]
+ },
+ {
+  "label": "Clause-initial connective/subject after narrative sentence boundary",
+  "positive_pole": "Strong positive on clause-initial function words (who, will, its, to, the, for, what, while, although, only, is) and sentence-initial subjects (Pope, Northern, republicans) — i.e., tokens that begin a new clause/sentence continuing a narrative or expository passage, especially after a period or comma introducing a contrastive/continuing clause.",
+  "negative_pole": "Strong negative on tokens that are the continuation of a proper-noun/agent phrase mid-clause, especially enemy/agent nouns (British, Germans, army, armies, attackers, ex-, them, ad) — i.e., mid-phrase agent tokens in war/conflict narratives, the contrast to clause-initial connectives.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.55,
+  "simulation_guide": "Predict high positive when the marked token opens a new clause or sentence (after '.', ',', or a dash) and is a connective (but, while, although, what, who, will, to, its, the, for, only) or a sentence-initial subject noun. Predict strong negative when the token is a mid-phrase agent/enemy noun (British, Germans, army, attackers) or a suffix of a proper noun continuing a subject phrase. Near zero for ordinary mid-sentence content words, function words inside phrases, or tokens in non-narrative text. The effect is largely positional (clause-initial vs. mid-phrase) modulated by narrative/military-agent content.",
+  "layer": 14,
+  "idx": 10471,
+  "rank": 20,
+  "max": 0.78125,
+  "min": -2.296875,
+  "examples_pos": [
+   " gender wage gap of 19.1 percent for 2012. Women’s median weekly earnings in 2012 were $691, a« marginal» decline compared to 2011",
+   ", some people lose their jobs, become unemployed and contribute to a rising unemployment rate. But while this is happening, there might well be others« who» remain working but have their hours",
+   "ail densities in Kansas, but prolonged drought and reduced vegetation have caused significant declines in recent years. Counties such as Reno, Pratt, and Stafford« will» likely have the best opportunities in",
+   " traits. Leaders of Mexican fisheries and scientists\\nare banding together to figure out whether the diablos\\nrojos (red devils«)» will come back, and how",
+   " the factors that determined the creation of the Brigade, the causes of their defeat, and« its» consequences for Cuba and the rest"
+  ],
+  "examples_neg": [
+   "adocia in the archiepiscopal throne of Alexandria. Athanasius decided to go into hiding, while his new antagonist reveled« in» orgies and committed heinous",
+   " New York City, a forerunner of the modern New York Guard.\\nAfter the Battle of Long Island in August 1776, the« British» seized New York City and his",
+   " were not only refused a proper burial but were trampled under the horses’ hooves and were left for the birds. The Kufan« army» looted the belongings of Hus",
+   ". About 1,600 Jews fought in various partisan units; approximately 170 of them were killed.\\nAfter the uprising was suppressed, the« Germans» took over the authority for Jewish",
+   ". The Marylanders fought a delaying action which enabled the bulk of Washington’s army to get away. Four or five hundred of them charged a« British» strong point, losing more than"
+  ]
+ },
+ {
+  "label": "Function-word token after clause/sentence boundary in expository text",
+  "positive_pole": "Function words (the, a, of, and, to, =, &, ,) at start of a new clause/sentence/line in formal expository or technical text, especially after a period/newline/heading",
+  "negative_pole": "Content words (nouns, names, technical terms) at clause starts, and function words mid-sentence in dense technical prose",
+  "jobs": "one_job",
+  "confidence": 0.45,
+  "simulation_guide": "The neuron fires strongly POSITIVE on short function words (the, a, of, and, to, punctuation like = , &) that begin a new clause, sentence, or list item in formal expository/technical text, especially right after a period, newline, or heading. It is strongly NEGATIVE on content words (nouns, proper names, technical terms like 'poverty', 'tamarins', 'comparator') in similar structural positions, or on function words embedded mid-sentence in dense technical passages. On ordinary prose mid-sentence, activation is near zero. The signal is largely about the token's grammatical class interacting with a boundary/structural position, not the topic.",
+  "layer": 20,
+  "idx": 2873,
+  "rank": 21,
+  "max": 1.359375,
+  "min": -2.25,
+  "examples_pos": [
+   ", childlike Sometimes confused or misused adjectives for describing behavior typical of children. Use childish to describe unfavorable qualities like immature and silly.« Use» childlike to describe favorable qualities",
+   ".\\nb. “the art world” does the conferring. Makes something a “candidate for appreciation.”\\n1. what are the boundaries of« the» art world?\\n2. HOW",
+   " enhance diverse wildlife populations and associated habitats while providing for public enjoyment of the State’s wildlife resources through hunting and other wildlife-dependent recreation.\\nGoals of« the» W",
+   " overloaded versions provided in C++.\\n/* memchr example */\\nint main ()\\nchar * pch;\\nchar str = \"Example string\";\\npch« =» (char*) memchr (",
+   " small dollop of paint onto the paper plate. Paint a picture of a pumpkin on the rock. Let dry for a few hours.\\nUsing« a» paint pen or permanent marker,"
+  ],
+  "examples_neg": [
+   "ant, that which the sign expresses, the result which it produces in its capacity as sign. [...]\\nb - [...] Now any sign,« of» whatever kind, mediates between",
+   " Watershed Training Work Group, and others.\\nIncluded courses focus on protecting or restoring watersheds (or aquifers), cover important tools used« in» watershed protection, or address one",
+   " and Ali Perpir, and both had fallen out with even the same agnate, Ubaydal Murçi, perhaps their cousin.« Ab»rahim had also made Azmet",
+   " values for a hazardous mobility factor values for nearly all hazardous substances of interest can be found in SCDM. If a value is needed for« a» hazardous substance not found in S",
+   "- Two 8-bit PWMs implemented in UDBs (the same PWMs used to control the power device drivers). The output of« the» comparator triggers the kill input to"
+  ]
+ },
+ {
+  "label": "Sentence-initial function word after clause boundary (But, He, The, It, I'm, and, to, of, 's, was, had, for, very, free, emerged, triumph, problems)",
+  "positive_pole": "Strong positive on common function words / short grammatical tokens at the start of a new clause or sentence (But, He, The, It, I'm, and, to, of, 's, was, had, for, very, free, emerged, triumph, problems) — i.e., high-frequency short tokens following a period, newline, or clause break, especially in narrative/historical prose.",
+  "negative_pole": "Strong negative on content-heavy tokens, especially longer/rarer words, technical terms, and morphological suffixes mid-word (attempted, ittorio, ance, ks, ments, smooth, achieve, trying, uproar) — i.e., low-frequency content words and word-internal fragments, often in technical/legal/academic contexts.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.55,
+  "simulation_guide": "Predict strong positive (roughly +5 to +10) when the marked token is a short, high-frequency function word or pronoun appearing at the start of a new sentence/clause (after '.', '\\n', or a clause break) in narrative prose. Predict strong negative (roughly -5 to -10) when the token is a longer, lower-frequency content word, a technical term, or a word-internal suffix fragment, especially in technical/academic/legal text. Near zero for mid-sentence common words not at a boundary, or for content words in ordinary narrative flow. The neuron appears to encode a 'new-clause function word vs. content word' contrast rather than specific semantics.",
+  "layer": 13,
+  "idx": 13019,
+  "rank": 22,
+  "max": 1.3125,
+  "min": -0.8203125,
+  "examples_pos": [
+   " go to Sarai, the capital of the “Golden Horde” on three occasions. And every time he was not sure he would return.« But» he never lost heart, for",
+   " chlorine began to be used experimentally to combat water-borne diseases such as cholera and typhoid. It quickly gained wide acceptance due« to» its low cost and high efficiency",
+   " (105 ft.) bronze statue of Helios standing at the entrance of the harbor. While the famous statue served as a reminder of the city«'s» fortitude during the siege and",
+   " eight hundred thousand people a year. When, in 1920, William Gorgas, the man who cleansed the Panama Canal Zone« of» malaria, fell mortally ill",
+   " made available to the public, and they still read just fine for me.\\nI suspect that there are several factors involved here.\\n1. I«'m» certain there's a difference in"
+  ],
+  "examples_neg": [
+   ". Software patents attempt to offer protection to a company for particular computer programs. One common example is the Amazon One-Click Shopping Patent. Amazon« attempted» to patent their one-click shopping",
+   " defeat alone was not the sole cause, but rather the breaking point for an accumulation of failures, as perceived by the Italian Prime Minister, V«itt»orio Emanuele Orlando.",
+   " have already been invested in the Alberta tar sands, where it takes an oil price of $65 to 85 per barrel to recuperate costs«.» As recently as 2009",
+   " demonstrates insertion and the use of child_iterators and descendant iterators. It also demonstrates the difference between the three types of associative tree containers, by« attempting» to insert duplicate nodes.\\n-",
+   " was the Seljuks. In time they established themselves in Asia Minor along with other groups of Turks.\\nFollowing the defeat of the Selju«ks» by the Mongols in "
+  ]
+ },
+ {
+  "label": "Structural/list-continuation markers vs. prose connectives",
+  "positive_pole": "Tokens at structural boundaries in enumerations, lists, headings, table-of-contents entries, citation lists, and itemized content — often punctuation (closing parens, commas, periods), list-item separators, or short words closing a list element.",
+  "negative_pole": "Function words and connectives inside flowing narrative/argumentative prose (such, as, is, to, a, ., house, machine, waters) — ordinary sentence-internal continuations of running text.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.55,
+  "simulation_guide": "Positive: fire strongly when the token sits at a boundary in a list-like or enumerative structure — end of a parenthesized item, a comma/period separating list elements, a heading/TOC line break, a citation year, or a short word closing an enumerated entry. Negative: fire strongly on common function words (such, as, is, to, a, of) and ordinary nouns when they occur mid-sentence in flowing prose, especially after a comma or in a clause continuation. Near zero: ordinary prose tokens that aren't list boundaries, and list tokens that don't mark a structural edge. The neuron seems to encode 'structural/list-continuation context' vs. 'narrative-prose context' rather than the token identity itself, so predict from the surrounding formatting and syntactic role.",
+  "confidence_note": "moderate",
+  "layer": 12,
+  "idx": 4628,
+  "rank": 23,
+  "max": 1.25,
+  "min": -0.30078125,
+  "examples_pos": [
+   " April - 22 December 1947)\\n- The IG Farben Trial (27 August 1947 - 30 July 1948«)\\n»- The Hostages Trial (",
+   " Class C Ohio Pennsylvania League (O-P). Despite the jumble of teams and inconsistent scheduling, Youngstown had a strong team and was ruled« league» champion. By 1906",
+   " Although self-pollination naturally occurs in some plants, other types like Poppy (Papaver) or members of the Daisy (Com«posit»ae) family will not self",
+   " assessing the effects of contaminants associated with sediment, (Long et al. 1991(96) MacDonald et al. 1996 («97») Ingersoll et al",
+   " production per hectare intensive grazing at high stocking rates is required in order to give a high percentage utilisation. In this case rotational grazing is« superior». In practice compromises become necessary"
+  ],
+  "examples_neg": [
+   ", it is clear that globalization does not, in fact, make everyone’s grass greener. However, particularly the main benefiters of globalization« such» as the Western nations, many",
+   " pp. 66-68; Kappler, op. cit., p. 137; Osage Indian Archives, Memorandum, p«.» 1; Osage Indian",
+   " the world's largest oil producer, and that while the country was not likely to become a net exporter of oil, the North American continent as« a» whole could be by around ",
+   " attempting to resolve a complex problem such as that posed by UFO reports, one is very much in the \"gray area\" of scientific research that« is» not well defined: the facts",
+   " protected areas in Tanzania have no Government-supported infrastructures. Take Ngorongoro District for instance. There is no Government hospital in Ngor«ong»oro. It may take a"
+  ]
+ },
+ {
+  "label": "Function-word/whitespace token boundary detector",
+  "positive_pole": "Strong positive on short function words, punctuation, whitespace, and word-boundary tokens (the, an, to, and, commas, spaces, digits mid-number, subword splits) — i.e., tokens that are low-information glue/structural tokens, often at clause boundaries or mid-sentence transitions",
+  "negative_pole": "Also fires on similar boundary/function tokens but in a distinct context: after sentence-final punctuation, at document/section boundaries (post <|eot_id|>, after periods), and on tokens that begin a new sentence/section or complete a proper noun/word (e.g., 'and' after a period, 'und' in 'Arundel', 'learned' after a period) — i.e., sentence-initial or document-structural positions",
+  "jobs": "two_related_jobs",
+  "confidence": 0.55,
+  "simulation_guide": "The neuron is largely a positional/structural token-type detector, not semantic. Positive: fire strongly on short function words, punctuation, spaces, and subword fragments appearing mid-sentence (continuation context). Negative: fire strongly on similar tokens but at sentence/section starts (right after '.', '\\n', or <|eot_id|>) or when completing a word/name. Near zero on content words (nouns, verbs, adjectives) in ordinary mid-sentence positions. Both poles track token-boundary/structural features; the sign encodes whether the token continues a sentence (positive) or opens a new one (negative).",
+  "layer": 14,
+  "idx": 7651,
+  "rank": 24,
+  "max": 0.396484375,
+  "min": -1.109375,
+  "examples_pos": [
+   ". This different kind of atmosphere shape the way in which both women think and view not only the world but most importantly their role as women in« the» world.\\nIn interviewing these women",
+   " it may have resulted from a “mass dispersal” event. In such« an» event, millions of tiny spiders",
+   " bows (breaching the water), speed swims and more. As we consistently work with them on these activities they will become more fit and well«-develop»ed increasing their potential for success",
+   " those in turn were sometimes divided yet again, until the seemingly magical figure of 100 was reached in 1911. (For a time«,» the number of counties was actually",
+   "\\n- Voluntary Partnership Agreements\\n- Guidelines for independent monitoring\\nCountries with VPAs\\n- Ghana ( latest press release, September «200»8 / Ghana VPA,"
+  ],
+  "examples_neg": [
+   ". Mencken enjoyed Gilbert's barbs at bureaucrats and politicians.<|eot_id|>August 10, 2010\\nAfter ten years of spirited debate« and» extensive compromise, it was on",
+   " between 2006 and 2008.\\nThe data were gathered through collaboration with the Maryland State Department of Education and participating schools in Anne Ar«und»el, Baltimore, Carroll,",
+   " the garage door is open to avoid carbon monoxide. When the car is warm, turn it off and close the garage. Put blankets over« the» hood and radiator. This holds",
+   " http://www.10downingstreet.gov.uk, consulted 12 June 2006.\\nColin Dobson, 12 June «200»6]\\n9 May 191",
+   "07, 1997\\n95Trip End Dec 25, 1998\\nShow trip route\\nLookout Mountain District Ranger Charlie Spear«man» is our leader as we hike"
+  ]
+ },
+ {
+  "label": "Sentence-boundary/newline punctuation and function-word continuation",
+  "positive_pole": "Strong positive on tokens at or immediately after clause/sentence boundaries: newlines, periods, commas, closing parens, and low-information function words (the, it, that, with, like, ranging) that begin a new clause or sentence in expository prose",
+  "negative_pole": "Negative on tokens that are mid-word fragments or hyphenated continuations (-in, -be, re-, inc-, dis-charges, Gold(III), P-seudospins) and on tokens continuing a technical/compound construction, i.e. sub-word pieces and mid-phrase technical continuations",
+  "jobs": "two_related_jobs",
+  "confidence": 0.55,
+  "simulation_guide": "Predict strong positive (+5 to +10) when the measured token is a newline, sentence-final punctuation, or a low-content function word (the, it, that, with, who, like) opening a new clause/sentence in formal expository text. Predict negative (-4 to -10) when the token is a sub-word fragment, hyphen continuation, or mid-technical-term piece (e.g. '-in', 're-', 'P' before 'seudospins'). Near zero for ordinary content words mid-sentence and for function words in casual/short contexts. The effect is largely positional/formatting-driven rather than semantic.",
+  "layer": 13,
+  "idx": 4511,
+  "rank": 25,
+  "max": 0.8359375,
+  "min": -1.859375,
+  "examples_pos": [
+   " tube of the allantois; but, with the growth and flexure of the tail-end of the embryo, the body-stalk,« with» its contained allantoic tube",
+   " habits for a taste of Skippy.\\nRitchie, who admits to being a committed roo eater, says his findings should not deter« people» from kangaroo steaks and",
+   "oietin used in these experiments did not elevate red blood cell counts. Such a treatment has obvious benefits for a wide range of health problems« ranging» from Alzheimer's to obesity,",
+   " of slightly iconic signs\\n(c) by evoking feelings relating to unity, difference, bridging, inner and outer divisions, and the like«\\n»(d) any or all of",
+   "'s funny when we look at it with our eyes you see smog, pollution, this horrible environmental travesty. How might they have seen« it» in 1866?\\nTeachers"
+  ],
+  "examples_neg": [
+   ".\\nVenus is covered by dense atmosphere of sulfuric acid and carbon dioxide that hide its surface from view. The microwave radar, however,« will» penetrate the cloud cover to produce",
+   " are too short or hairy to be used in garments, but can be processed to make rugs and for industrial uses such as oil spill remediation«.\\n»The Alpaca Fiber Cooperative",
+   " the detection of biological impacts of methane leaks or seepages in large complicated areas. The techniques employed do not require before-and-after imagery because« they» use the spatial patterns of plant",
+   " a six fold gain of energy, in a worst case scenario) are accurate. At this point, I am not going to doubt him.« He» is the expert, and there",
+   "15 that are seen more frequently in individuals with autism (those without the specific chromosomal duplication which led researchers to this region in the first place«)» than in those without autism."
+  ]
+ },
+ {
+  "label": "Punctuation/short-token boundary detector (sentence/clause end)",
+  "positive_pole": "Strongly positive on punctuation tokens (periods, commas, closing quotes/parens, semicolons, hyphens) and short function tokens that mark clause/sentence boundaries, especially at ends of enumerated or parenthetical items.",
+  "negative_pole": "Strongly negative on mid-word subword continuations (e.g., 'yla', 'us', '6', 'ita') and on tokens that continue a name/term mid-fragment, i.e., non-boundary continuations of words.",
+  "jobs": "two_related_jobs",
+  "confidence": 0.72,
+  "simulation_guide": "Predict high positive activation when the measured token is punctuation or a short boundary marker (., ,, ;, \", ), -, or a newline-adjacent token) that closes a clause, list item, or parenthetical. Predict strong negative when the token is a subword continuation piece (letters/numbers continuing a word like 'microph|yla', '197|6', 'dytisc|us') that is not a boundary. Near zero for ordinary mid-word content tokens (nouns, verbs, adjectives) that neither end nor continue a word. The effect is largely token-identity/position driven rather than semantic.",
+  "layer": 12,
+  "idx": 11180,
+  "rank": 26,
+  "max": 1.09375,
+  "min": -0.53125,
+  "examples_pos": [
+   ".T. are:\\n1. The SWORD, for which several Hebrew words are used: a. baraq, often translated 'lightning«;'» it is 'glittering",
+   " confidence in the purpose of God despite the conditions in which he is found. Here the mind of Christ will give us a love for the gospel« and» cause us to rejoice when it",
+   " radical of presentation).\\nWeek IX Break\\n1. Institutional theory\\na. Dickie; a work of art is\\n1. an artifact«\\n»2. some aspects of which",
+   "jico, (Méjico, 1836,) tom. I. cap. 12) The first of these writers probably« allows» too little, as the latter",
+   " more important: (1) a stratum of white fibers covering the superficial aspect of the molecular layer (plexus of Exner); («2») the band of Bechter"
+  ],
+  "examples_neg": [
+   " species (Hylocharis leucotis) and 7 plant species (Fuchsia thymifolia, F. microph«yla», Salvia amariss",
+   "phase of Meiosis\\n6) Identify the process shown by the arrowhead\\nA) Gap junction formation\\nC) Desmosome formation«\\n»D) Spindle apparatus formation",
+   " Wide Differential 20Mbyte/s\\nFND: Fast Narrow Differential 10Mbyte/s\\nFN: Fast Narrow 10Mbyte«/s»\\nSE: Single Ended ",
+   " L’Ouerture\\nd. John Knox\\n2. On what Caribbean Island was the “ “ Proclamation?\\nc. Dominican Republic«\\n»d. Puerto Rico\\n3",
+   "locharis leucotis) y 7 especies de plantas (Fuchsia thymifolia, F. microph«yla», Salvia amariss"
+  ]
+ },
+ {
+  "label": "Word-boundary/continuation token detector (mid-word vs. word-start)",
+  "positive_pole": "Strong positive on tokens that are mid-word continuations or word-internal fragments (e.g., 'tree' in 'tree topology' after 'the', 'SS' in 'DSSS', 'strip' in 'striping', 'or' in 'Explorateur', 'is' in 'leucotis', 'REL' in 'RELAP5', 'v' in 'vial', 'gong' in 'gong's', 'two' in 'two digits', 'boiling' in 'boiling-water', 'sex' in 'sex-trafficking', 'added', 'measurements', 'males', 'theme', 'true', '19', ')') — i.e., tokens that complete or continue a larger lexical unit, often at morpheme/word-internal boundaries or at the end of a hyphenated/compound segment.",
+  "negative_pole": "Strong negative on tokens that begin a new word or are word-initial fragments after a boundary (e.g., 'J' in 'Játiva', 'T' in 'Tiger', 'read' after 'to', 'sand', 'reluctance', 'permanent', 'Nebraska', 'ant' in 'diarrhea-predominant', 'ail' in 'quail', '.' after 'taken', 'sequential' in 'sequential_tree', 'to' in 'inserted to offset', 'Class' in 'CMyClass', 'again', '_sys' in 'httpd_sys_content_t') — tokens that start a fresh lexical item or are word-initial pieces.",
+  "jobs": "one_job",
+  "confidence": 0.65,
+  "simulation_guide": "Predict positive activation when the measured token is a continuation/word-internal fragment or completes a compound/multi-token lexical unit (mid-word pieces like 'SS', 'strip', 'or', 'is', 'REL', 'v', or the final segment of a hyphenated/technical term). Predict negative activation when the token starts a new word or is a word-initial fragment following a clear boundary (e.g., 'J', 'T', 'ant', 'ail', 'Class', '_sys', or a standalone word like 'read', 'sand', 'again'). Near zero for ordinary mid-sentence words that are neither clearly word-internal continuations nor word-initial fragments, and for common function words in neutral positions. The effect is strongest for unusual/technical tokens and weaker for frequent ordinary words.",
+  "layer": 12,
+  "idx": 9505,
+  "rank": 27,
+  "max": 1.1328125,
+  "min": -0.9453125,
+  "examples_pos": [
+   " part of the PON, say the trunk of the tree. For the rest\\nof this article, we will focus our attention on the« tree» topology; however, most\\n",
+   ". Essentially, the m sequence can be determined when 2n b of m sequence transmission is received and decoded.1\\nIn traditional D«SS»S communications systems, the SS",
+   " striping, RAID-0 is the only performance-enhancing form of RAID that we'll be talking about in this article. The premise behind« strip»ing is simple. Data being",
+   "icity, unpredictability, and nonreplicability, and can only be deciphered with great difficulty.\\nThere are many methods available for generating« true» random numbers. Traditional random-number",
+   "ateur? (a triple cream, assertive flavor...yes, it will work)\\nThat is how I have come to make l'Expl«or»ateur puff pastry; a product"
+  ],
+  "examples_neg": [
+   ". The sub-qadi[*] of Játiva decided to spend his retirement in the Maghrib, while his son stayed behind in« J»átiva and succeeded him in",
+   "s. This screenshot from the Workgroup Manager application in Tiger Server gives you an idea of what's possible.\\nWorkgroup Manager ACL panel («T»iger Server only)\\nRemember,",
+   " on.\\nSetting an ACE like \"staff allow read\" will allow \"staff,\" \"managers,\" and \"executives\" all to« read». Setting an ACE like \"",
+   " seagrass area for example, despite the fact that seagrass may provide 50 percent cover, the underlying substrate is 100 percent« sand» so this is what is recorded",
+   " teeth and use a tooth pole along with a toothed rotor to produce step angles near one degree.\\nFigure 3: Rotation control of variable« reluctance» stepping motor.\\nPermanent magnet stepping"
+  ]
+ },
+ {
+  "label": "Common function-word/continuation tokens after clause boundaries",
+  "positive_pole": "Frequent short function words (prepositions, auxiliaries, commas, common verbs/adjectives) appearing mid-sentence as predictable continuations, especially after a comma or clause boundary where the next token is highly predictable",
+  "negative_pole": "Same class of tokens but in contexts where they are less predictable or carry content weight (e.g., 'percent', 'value-added', 'vaginally', 'DDTis', 'surcharge') — i.e., function-word-like tokens that are actually part of a specific technical term or rare continuation",
+  "jobs": "one_job",
+  "confidence": 0.45,
+  "simulation_guide": "The neuron fires strongly positive on very common, low-information tokens (prepositions like 'in', 'for', auxiliaries like 'can', 'will', 'help', commas, generic adjectives like 'easy', 'great', 'hard') when they appear as predictable continuations in fluent prose, especially right after a comma or clause boundary. It goes negative when a similar-looking token is actually part of a specific/technical term or an unexpected continuation (e.g., 'percent' in a list, 'value-added', 'vaginally', 'surcharge', 'DDTis'). Tokens that are common function words in highly predictable positions get the largest positive values; the same tokens in surprising or technical contexts get negative values. Near zero for content words, rare words, or function words in unremarkable positions.",
+  "layer": 14,
+  "idx": 10884,
+  "rank": 28,
+  "max": 2.53125,
+  "min": -1.9453125,
+  "examples_pos": [
+   " for oxygen. You'll know the fish are in trouble when they're at the surface, gulping for air. If you suspect conditions are« right» for oxygen depletion, Hig",
+   " are also spread onto agricultural land and discharge inevitably runs off into waterways. The collection and transport of untreated poultry manure could be a highly« effective» way of spreading the virus.",
+   " the shot of Sergeant Corbett is not to be regretted, save that it gave too honorable a form of death to one who had earned« all» that there is of disgraceful",
+   " \"for the benefit and repose of that morería, which today... is on the road to destruction.\"\\nWhile official intervention prevented the« growth» of widespread violence within morer",
+   " pens is also nasty. Especially pens with unknown chemicals may etch the CDs, it is just like burning, but this time« controlled» by the chemicals.\\nIn case"
+  ],
+  "examples_neg": [
+   " women administered the higher, more frequent dose.\\n\"If you give more oxytocin to overweight and obese patients they may be more likely to delivery« vag»inally, which is what we",
+   " operating characteristics of my car; I trust the experts on the techniques. So must it be in educational evaluation.\\nThe problems with the use of« value»-added assessments, even for teachers",
+   " addition, they were ensuring that he was supervised almost constantly so he could not engage in any type of sensory play. His short-term memory was« growing»; he was able to speak",
+   " the front compared with children wearing lap belts in the rear seat is 25 percent (front), 5 percent (back) and 70« percent»\\nIronically, 36",
+   " Lakes National Wildlife Refuge was created and Florida Power and Light Company began a long term management monitoring program. In 2007, due to an« increase» in the distribution and number of"
+  ]
+ },
+ {
+  "label": "Reported speech / attribution verbs and their complements",
+  "positive_pole": "Verbs of saying, thinking, believing, claiming, calling, plus their quote/complement markers ('that', opening quotes, 'is', 'are', 'was', 'seems', 'as') introducing reported statements or beliefs",
+  "negative_pole": "Verbs of disbelief, ridicule, dismissal, condemnation, absurdity — mocking/rejecting reported claims (laughed, ridiculed, disbelief, absurd, shudder, appalled, inapplicable, false hope)",
+  "jobs": "two_related_jobs",
+  "confidence": 0.75,
+  "simulation_guide": "Strongly positive at tokens that introduce or mark reported speech/thought: attribution verbs (say, think, believe, claim, call, seem, describe), their complementizers ('that', 'is/are/was' as copula before a claim), and quote marks opening a quotation. Strongly negative at tokens expressing rejection, ridicule, or dismissal of a claim (laugh, ridicule, disbelief, absurd, shudder, appalled, 'inapplicable', 'false hope'). Near zero on ordinary prose without attribution framing, or on these verbs used in non-reporting senses. The effect is largely driven by the preceding context (a reporting frame) rather than the token alone, though the token itself often is the attribution verb or its quote/complement marker.",
+  "layer": 15,
+  "idx": 4768,
+  "rank": 29,
+  "max": 0.73828125,
+  "min": -2.171875,
+  "examples_pos": [
+   ", Jonathan Rose writes illuminatingly about the way that the first Labour MPs for example read Dickens, Carlyle, Ruskin and others and« thought» about them in their own way",
+   " graphically discussed shooting my daughter in the head and raping her in the back of a truck. They also used homophobic language throughout the recording—«“»outing” a student they presumed",
+   " been thoroughly discredited by scholars—Baigent has even admitted to forging his sources. The last two authors, Picknett and Prince,« believe» that the ancient pyramids of",
+   " same one everywhere.\\n- Don't fall for phishing scams in your email. Keep a skeptical eye.\\n- Ignore tweets or Facebook messages that say« \"»You've won a new iPad",
+   " relations with Nazis afterward, according to an orchestra statement, the French news agency AFP reported.\\nTheir report is due in March.\\nWalser has« called» for forming a committee of inquiry"
+  ],
+  "examples_neg": [
+   ".\\nAt first, the Cambodian farmers who are approached by CEDAC about trying SRI had trouble believing what they were hearing. Some« even» ridiculed the farmers who tried",
+   " 14, but Alice said she snorted in« disbelief» and thought he looked more like",
+   " tribe. When Hezekiah proclaimed a solemn passover and sent invitations to the cities of Israel as well as to Judah, though many« laughed» the messengers to scorn,",
+   " not counted in the government census and minority rights need not exist, due to residents who share a common identity of \"French.\" Many French sh«udder» at the word \"multicultural",
+   " pecuniary compensation. From this resolution I have in no instance departed; and being still under the impressions which produced it, I must decline« as» inapplicable to myself any"
+  ]
+ }
+]

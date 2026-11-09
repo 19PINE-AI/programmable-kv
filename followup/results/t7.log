@@ -1,0 +1,25 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.27it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.24it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.09it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.47it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.35it/s]
+captured [4.31, 5.88, 4.31, 6.12, 4.25, 5.88, 4.31, 5.88, 3.84, 2.09, 3.78, 2.31, 3.94, 2.28, 3.88, 2.19, 1.97, 3.59, 2.25, 3.72, 2.16, 3.72, 2.0, 3.69]
+attr sign split: {10: {'abs_attr_from_negative_activation': 0.3627127700546694, 'n_negative_side': 3, 'n_positive_side': 6}, 30: {'abs_attr_from_negative_activation': 0.37348808059402366, 'n_negative_side': 10, 'n_positive_side': 16}, 100: {'abs_attr_from_negative_activation': 0.4429299732918483, 'n_negative_side': 44, 'n_positive_side': 49}, 300: {'abs_attr_from_negative_activation': 0.4629721498107743, 'n_negative_side': 132, 'n_positive_side': 144}, 1000: {'abs_attr_from_negative_activation': 0.4886536161526374, 'n_negative_side': 458, 'n_positive_side': 462}}
+k=10 pos: top=+0.031 (mass 18.0) rand=+0.005 (mass 4.2)
+k=10 neg: top=-0.001 (mass 7.7) rand=+0.003 (mass 2.1)
+k=10 both: top=+0.019 (mass 25.7) rand=+0.005 (mass 5.9)
+k=30 pos: top=+0.079 (mass 29.7) rand=+0.002 (mass 10.1)
+k=30 neg: top=-0.002 (mass 14.2) rand=+0.003 (mass 6.7)
+k=30 both: top=+0.081 (mass 43.9) rand=+0.007 (mass 15.0)
+k=100 pos: top=+0.102 (mass 78.0) rand=+0.011 (mass 28.4)
+k=100 neg: top=+0.056 (mass 57.9) rand=+0.003 (mass 24.4)
+k=100 both: top=+0.168 (mass 135.9) rand=-0.003 (mass 50.2)
+k=300 pos: top=+0.126 (mass 188.0) rand=-0.001 (mass 79.4)
+k=300 neg: top=+0.077 (mass 160.3) rand=-0.004 (mass 81.7)
+k=300 both: top=+0.312 (mass 348.2) rand=-0.024 (mass 161.8)
+ALL neurons pos: +0.697
+ALL neurons neg: +0.554
+ALL neurons both: +0.917
+santa neg_side_8: lost=+0.010 rand=+0.005
+santa pos_side_20: lost=+0.067 rand=+0.005
+santa neg_side_20: lost=-0.000 rand=+0.001
+santa pos_side_8: lost=+0.065 rand=+0.004
+santa top_abs_8: lost=+0.019 rand=+0.004
+santa top_abs_20: lost=+0.080 rand=+0.003
+T7_DONE

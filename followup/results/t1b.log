@@ -1,0 +1,387 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:04,  1.44s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:03<00:03,  1.71s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:04<00:01,  1.64s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:05<00:00,  1.12s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:05<00:00,  1.30s/it]
+aggregators found (7s)
+SAE trained; top feats [3006, 660, 6263, 9849, 13828] AUC [1.0, 1.0, 0.056, 0.167, 0.833] (24s)
+[account_role/A4471/f0] pos: joint_nec=+0.819 sum_single_nec=+0.815 joint_suff=+0.938 sum_single_suff=+1.585 (97s)
+[account_role/A4471/f0] whead: joint_nec=+0.221 sum_single_nec=-0.048 joint_suff=+0.509 sum_single_suff=+1.095 (182s)
+[account_role/A4471/f0] neuron: joint_nec=+0.165 sum_single_nec=-0.144 joint_suff=+0.374 sum_single_suff=+0.251 (315s)
+[account_role/A4471/f0] sae: joint_nec=+0.241 sum_single_nec=-0.002 joint_suff=+0.516 sum_single_suff=+0.393 (430s)
+[account_role/A4471/f0] rhead: joint_nec=+0.488 sum_single_nec=+0.450 joint_suff=+0.747 sum_single_suff=+0.997 (503s)
+[account_role/A4471/f1] pos: joint_nec=+0.820 sum_single_nec=+0.583 joint_suff=+0.975 sum_single_suff=+1.492 (562s)
+[account_role/A4471/f1] whead: joint_nec=+0.226 sum_single_nec=+0.019 joint_suff=+0.427 sum_single_suff=+0.837 (640s)
+[account_role/A4471/f1] neuron: joint_nec=+0.031 sum_single_nec=-0.218 joint_suff=+0.227 sum_single_suff=+0.054 (759s)
+[account_role/A4471/f1] sae: joint_nec=+0.226 sum_single_nec=-0.035 joint_suff=+0.533 sum_single_suff=+0.328 (872s)
+[account_role/A4471/f1] rhead: joint_nec=+0.448 sum_single_nec=+0.418 joint_suff=+0.603 sum_single_suff=+0.706 (946s)
+[account_role/B8820/f0] pos: joint_nec=+0.807 sum_single_nec=+0.665 joint_suff=+0.922 sum_single_suff=+1.452 (1025s)
+[account_role/B8820/f0] whead: joint_nec=+0.237 sum_single_nec=+0.105 joint_suff=+0.518 sum_single_suff=+1.048 (1105s)
+[account_role/B8820/f0] neuron: joint_nec=+0.164 sum_single_nec=+0.181 joint_suff=+0.373 sum_single_suff=+0.507 (1231s)
+[account_role/B8820/f0] sae: joint_nec=+0.260 sum_single_nec=+0.199 joint_suff=+0.524 sum_single_suff=+0.660 (1348s)
+[account_role/B8820/f0] rhead: joint_nec=+0.482 sum_single_nec=+0.558 joint_suff=+0.741 sum_single_suff=+0.951 (1418s)
+[account_role/B8820/f1] pos: joint_nec=+0.818 sum_single_nec=+0.550 joint_suff=+0.988 sum_single_suff=+1.479 (1495s)
+[account_role/B8820/f1] whead: joint_nec=+0.262 sum_single_nec=+0.135 joint_suff=+0.442 sum_single_suff=+0.875 (1578s)
+[account_role/B8820/f1] neuron: joint_nec=+0.037 sum_single_nec=-0.076 joint_suff=+0.205 sum_single_suff=+0.097 (1697s)
+[account_role/B8820/f1] sae: joint_nec=+0.254 sum_single_nec=+0.043 joint_suff=+0.568 sum_single_suff=+0.342 (1807s)
+[account_role/B8820/f1] rhead: joint_nec=+0.451 sum_single_nec=+0.491 joint_suff=+0.613 sum_single_suff=+0.776 (1876s)
+[account_role/C1093/f0] pos: joint_nec=+0.782 sum_single_nec=+0.635 joint_suff=+0.916 sum_single_suff=+1.441 (1950s)
+[account_role/C1093/f0] whead: joint_nec=+0.252 sum_single_nec=+0.138 joint_suff=+0.498 sum_single_suff=+1.021 (2020s)
+[account_role/C1093/f0] neuron: joint_nec=+0.165 sum_single_nec=+0.131 joint_suff=+0.385 sum_single_suff=+0.194 (2129s)
+[account_role/C1093/f0] sae: joint_nec=+0.240 sum_single_nec=+0.270 joint_suff=+0.535 sum_single_suff=+0.335 (2243s)
+[account_role/C1093/f0] rhead: joint_nec=+0.491 sum_single_nec=+0.581 joint_suff=+0.720 sum_single_suff=+0.901 (2314s)
+[account_role/C1093/f1] pos: joint_nec=+0.773 sum_single_nec=+0.409 joint_suff=+0.958 sum_single_suff=+1.525 (2387s)
+[account_role/C1093/f1] whead: joint_nec=+0.259 sum_single_nec=+0.099 joint_suff=+0.446 sum_single_suff=+0.957 (2458s)
+[account_role/C1093/f1] neuron: joint_nec=+0.022 sum_single_nec=-0.181 joint_suff=+0.220 sum_single_suff=+0.356 (2554s)
+[account_role/C1093/f1] sae: joint_nec=+0.224 sum_single_nec=+0.005 joint_suff=+0.559 sum_single_suff=+0.538 (2643s)
+[account_role/C1093/f1] rhead: joint_nec=+0.441 sum_single_nec=+0.468 joint_suff=+0.602 sum_single_suff=+0.794 (2703s)
+[account_role/D5567/f0] pos: joint_nec=+0.836 sum_single_nec=+0.583 joint_suff=+0.945 sum_single_suff=+1.384 (2752s)
+[account_role/D5567/f0] whead: joint_nec=+0.233 sum_single_nec=-0.044 joint_suff=+0.521 sum_single_suff=+1.048 (2816s)
+[account_role/D5567/f0] neuron: joint_nec=+0.145 sum_single_nec=-0.370 joint_suff=+0.395 sum_single_suff=+0.263 (2910s)
+[account_role/D5567/f0] sae: joint_nec=+0.243 sum_single_nec=-0.257 joint_suff=+0.531 sum_single_suff=+0.390 (2994s)
+[account_role/D5567/f0] rhead: joint_nec=+0.478 sum_single_nec=+0.474 joint_suff=+0.748 sum_single_suff=+0.931 (3050s)
+[account_role/D5567/f1] pos: joint_nec=+0.814 sum_single_nec=+0.463 joint_suff=+0.987 sum_single_suff=+1.589 (3089s)
+[account_role/D5567/f1] whead: joint_nec=+0.232 sum_single_nec=+0.097 joint_suff=+0.450 sum_single_suff=+0.988 (3160s)
+[account_role/D5567/f1] neuron: joint_nec=+0.030 sum_single_nec=-0.026 joint_suff=+0.216 sum_single_suff=+0.441 (3262s)
+[account_role/D5567/f1] sae: joint_nec=+0.240 sum_single_nec=+0.080 joint_suff=+0.533 sum_single_suff=+0.585 (3351s)
+[account_role/D5567/f1] rhead: joint_nec=+0.438 sum_single_nec=+0.483 joint_suff=+0.595 sum_single_suff=+0.820 (3415s)
+[safety_mode/A4471/f0] pos: joint_nec=+0.771 sum_single_nec=+0.676 joint_suff=+0.927 sum_single_suff=+1.184 (3467s)
+[safety_mode/A4471/f0] whead: joint_nec=+0.242 sum_single_nec=+0.325 joint_suff=+0.342 sum_single_suff=+0.565 (3531s)
+[safety_mode/A4471/f0] neuron: joint_nec=+0.220 sum_single_nec=+0.011 joint_suff=+0.250 sum_single_suff=+0.407 (3631s)
+[safety_mode/A4471/f0] sae: joint_nec=+0.303 sum_single_nec=+0.235 joint_suff=+0.337 sum_single_suff=+0.346 (3722s)
+[safety_mode/A4471/f0] rhead: joint_nec=+0.423 sum_single_nec=+0.459 joint_suff=+0.560 sum_single_suff=+0.627 (3784s)
+[safety_mode/A4471/f1] pos: joint_nec=+0.782 sum_single_nec=+1.044 joint_suff=+0.848 sum_single_suff=+1.070 (3832s)
+[safety_mode/A4471/f1] whead: joint_nec=+0.330 sum_single_nec=+0.540 joint_suff=+0.380 sum_single_suff=+0.856 (3897s)
+[safety_mode/A4471/f1] neuron: joint_nec=+0.268 sum_single_nec=+0.267 joint_suff=+0.328 sum_single_suff=+0.943 (3994s)
+[safety_mode/A4471/f1] sae: joint_nec=+0.318 sum_single_nec=+0.310 joint_suff=+0.355 sum_single_suff=+0.592 (4077s)
+[safety_mode/A4471/f1] rhead: joint_nec=+0.418 sum_single_nec=+0.519 joint_suff=+0.483 sum_single_suff=+0.626 (4134s)
+[safety_mode/B8820/f0] pos: joint_nec=+0.856 sum_single_nec=+0.523 joint_suff=+0.975 sum_single_suff=+1.261 (4166s)
+[safety_mode/B8820/f0] whead: joint_nec=+0.276 sum_single_nec=+0.414 joint_suff=+0.347 sum_single_suff=+0.463 (4241s)
+[safety_mode/B8820/f0] neuron: joint_nec=+0.239 sum_single_nec=+0.150 joint_suff=+0.230 sum_single_suff=+0.113 (4341s)
+[safety_mode/B8820/f0] sae: joint_nec=+0.269 sum_single_nec=+0.354 joint_suff=+0.224 sum_single_suff=+0.111 (4447s)
+[safety_mode/B8820/f0] rhead: joint_nec=+0.434 sum_single_nec=+0.427 joint_suff=+0.576 sum_single_suff=+0.615 (4508s)
+[safety_mode/B8820/f1] pos: joint_nec=+0.753 sum_single_nec=+0.801 joint_suff=+0.846 sum_single_suff=+0.910 (4563s)
+[safety_mode/B8820/f1] whead: joint_nec=+0.386 sum_single_nec=+0.669 joint_suff=+0.374 sum_single_suff=+0.632 (4635s)
+[safety_mode/B8820/f1] neuron: joint_nec=+0.262 sum_single_nec=+0.762 joint_suff=+0.297 sum_single_suff=+0.468 (4750s)
+[safety_mode/B8820/f1] sae: joint_nec=+0.332 sum_single_nec=+0.564 joint_suff=+0.305 sum_single_suff=+0.314 (4884s)
+[safety_mode/B8820/f1] rhead: joint_nec=+0.459 sum_single_nec=+0.612 joint_suff=+0.520 sum_single_suff=+0.563 (4974s)
+[safety_mode/C1093/f0] pos: joint_nec=+0.825 sum_single_nec=+0.909 joint_suff=+0.973 sum_single_suff=+1.106 (5082s)
+[safety_mode/C1093/f0] whead: joint_nec=+0.271 sum_single_nec=+0.347 joint_suff=+0.365 sum_single_suff=+0.565 (5176s)
+[safety_mode/C1093/f0] neuron: joint_nec=+0.215 sum_single_nec=+0.005 joint_suff=+0.231 sum_single_suff=+0.210 (5318s)
+[safety_mode/C1093/f0] sae: joint_nec=+0.311 sum_single_nec=+0.322 joint_suff=+0.289 sum_single_suff=+0.171 (5450s)
+[safety_mode/C1093/f0] rhead: joint_nec=+0.443 sum_single_nec=+0.396 joint_suff=+0.568 sum_single_suff=+0.655 (5550s)
+[safety_mode/C1093/f1] pos: joint_nec=+0.850 sum_single_nec=+0.855 joint_suff=+0.941 sum_single_suff=+1.057 (5678s)
+[safety_mode/C1093/f1] whead: joint_nec=+0.369 sum_single_nec=+0.396 joint_suff=+0.397 sum_single_suff=+0.815 (5787s)
+[safety_mode/C1093/f1] neuron: joint_nec=+0.287 sum_single_nec=-0.152 joint_suff=+0.315 sum_single_suff=+0.396 (5961s)
+[safety_mode/C1093/f1] sae: joint_nec=+0.333 sum_single_nec=-0.015 joint_suff=+0.332 sum_single_suff=+0.222 (6111s)
+[safety_mode/C1093/f1] rhead: joint_nec=+0.456 sum_single_nec=+0.439 joint_suff=+0.522 sum_single_suff=+0.638 (6213s)
+[safety_mode/D5567/f0] pos: joint_nec=+0.849 sum_single_nec=+0.668 joint_suff=+0.957 sum_single_suff=+1.331 (6335s)
+[safety_mode/D5567/f0] whead: joint_nec=+0.278 sum_single_nec=+0.463 joint_suff=+0.363 sum_single_suff=+0.581 (6441s)
+[safety_mode/D5567/f0] neuron: joint_nec=+0.235 sum_single_nec=+0.298 joint_suff=+0.230 sum_single_suff=+0.253 (6601s)
+[safety_mode/D5567/f0] sae: joint_nec=+0.316 sum_single_nec=+0.476 joint_suff=+0.318 sum_single_suff=+0.349 (6744s)
+[safety_mode/D5567/f0] rhead: joint_nec=+0.438 sum_single_nec=+0.507 joint_suff=+0.579 sum_single_suff=+0.633 (6852s)
+[safety_mode/D5567/f1] pos: joint_nec=+0.800 sum_single_nec=+0.749 joint_suff=+0.892 sum_single_suff=+1.207 (6970s)
+[safety_mode/D5567/f1] whead: joint_nec=+0.352 sum_single_nec=+0.450 joint_suff=+0.385 sum_single_suff=+0.728 (7085s)
+[safety_mode/D5567/f1] neuron: joint_nec=+0.220 sum_single_nec=+0.113 joint_suff=+0.314 sum_single_suff=+0.555 (7256s)
+[safety_mode/D5567/f1] sae: joint_nec=+0.295 sum_single_nec=+0.231 joint_suff=+0.330 sum_single_suff=+0.357 (7405s)
+[safety_mode/D5567/f1] rhead: joint_nec=+0.414 sum_single_nec=+0.492 joint_suff=+0.518 sum_single_suff=+0.579 (7508s)
+[subscription_tier/A4471/f0] pos: joint_nec=+0.803 sum_single_nec=+0.853 joint_suff=+0.708 sum_single_suff=+0.549 (7628s)
+[subscription_tier/A4471/f0] whead: joint_nec=-0.011 sum_single_nec=-0.014 joint_suff=+0.066 sum_single_suff=+0.232 (7732s)
+[subscription_tier/A4471/f0] neuron: joint_nec=+0.248 sum_single_nec=+0.377 joint_suff=+0.343 sum_single_suff=+0.431 (7898s)
+[subscription_tier/A4471/f0] sae: joint_nec=+0.345 sum_single_nec=+0.477 joint_suff=+0.423 sum_single_suff=+0.205 (8050s)
+[subscription_tier/A4471/f0] rhead: joint_nec=+0.580 sum_single_nec=+0.694 joint_suff=+0.543 sum_single_suff=+0.568 (8152s)
+[subscription_tier/A4471/f1] pos: joint_nec=+0.954 sum_single_nec=+0.890 joint_suff=+0.835 sum_single_suff=+0.837 (8266s)
+[subscription_tier/A4471/f1] whead: joint_nec=+0.313 sum_single_nec=+0.177 joint_suff=+0.167 sum_single_suff=+0.315 (8364s)
+[subscription_tier/A4471/f1] neuron: joint_nec=+0.132 sum_single_nec=+0.113 joint_suff=+0.200 sum_single_suff=+0.109 (8520s)
+[subscription_tier/A4471/f1] sae: joint_nec=+0.374 sum_single_nec=+0.169 joint_suff=+0.343 sum_single_suff=+0.177 (8684s)
+[subscription_tier/A4471/f1] rhead: joint_nec=+0.524 sum_single_nec=+0.473 joint_suff=+0.398 sum_single_suff=+0.440 (8791s)
+[subscription_tier/B8820/f0] pos: joint_nec=+0.932 sum_single_nec=+1.115 joint_suff=+0.800 sum_single_suff=+0.684 (8928s)
+[subscription_tier/B8820/f0] whead: joint_nec=+0.144 sum_single_nec=-0.018 joint_suff=+0.165 sum_single_suff=+0.348 (9042s)
+[subscription_tier/B8820/f0] neuron: joint_nec=+0.279 sum_single_nec=-0.130 joint_suff=+0.378 sum_single_suff=+0.431 (9214s)
+[subscription_tier/B8820/f0] sae: joint_nec=+0.329 sum_single_nec=+0.174 joint_suff=+0.383 sum_single_suff=+0.248 (9367s)
+[subscription_tier/B8820/f0] rhead: joint_nec=+0.638 sum_single_nec=+0.603 joint_suff=+0.601 sum_single_suff=+0.607 (9467s)
+[subscription_tier/B8820/f1] pos: joint_nec=+0.932 sum_single_nec=+0.976 joint_suff=+0.744 sum_single_suff=+0.687 (9588s)
+[subscription_tier/B8820/f1] whead: joint_nec=+0.317 sum_single_nec=+0.224 joint_suff=+0.193 sum_single_suff=+0.412 (9691s)
+[subscription_tier/B8820/f1] neuron: joint_nec=+0.155 sum_single_nec=+0.111 joint_suff=+0.216 sum_single_suff=+0.360 (9852s)
+[subscription_tier/B8820/f1] sae: joint_nec=+0.397 sum_single_nec=+0.321 joint_suff=+0.371 sum_single_suff=+0.398 (9993s)
+[subscription_tier/B8820/f1] rhead: joint_nec=+0.532 sum_single_nec=+0.508 joint_suff=+0.434 sum_single_suff=+0.513 (10083s)
+[subscription_tier/C1093/f0] pos: joint_nec=+0.910 sum_single_nec=+0.821 joint_suff=+0.822 sum_single_suff=+0.753 (10205s)
+[subscription_tier/C1093/f0] whead: joint_nec=+0.089 sum_single_nec=-0.080 joint_suff=+0.145 sum_single_suff=+0.427 (10306s)
+[subscription_tier/C1093/f0] neuron: joint_nec=+0.270 sum_single_nec=-0.130 joint_suff=+0.341 sum_single_suff=+0.467 (10471s)
+[subscription_tier/C1093/f0] sae: joint_nec=+0.340 sum_single_nec=+0.162 joint_suff=+0.410 sum_single_suff=+0.313 (10619s)
+[subscription_tier/C1093/f0] rhead: joint_nec=+0.646 sum_single_nec=+0.625 joint_suff=+0.587 sum_single_suff=+0.721 (10719s)
+[subscription_tier/C1093/f1] pos: joint_nec=+0.980 sum_single_nec=+1.223 joint_suff=+0.832 sum_single_suff=+0.723 (10838s)
+[subscription_tier/C1093/f1] whead: joint_nec=+0.337 sum_single_nec=+0.348 joint_suff=+0.183 sum_single_suff=+0.300 (10940s)
+[subscription_tier/C1093/f1] neuron: joint_nec=+0.153 sum_single_nec=+0.377 joint_suff=+0.204 sum_single_suff=+0.193 (11105s)
+[subscription_tier/C1093/f1] sae: joint_nec=+0.414 sum_single_nec=+0.456 joint_suff=+0.357 sum_single_suff=+0.317 (11245s)
+[subscription_tier/C1093/f1] rhead: joint_nec=+0.543 sum_single_nec=+0.580 joint_suff=+0.428 sum_single_suff=+0.486 (11337s)
+[subscription_tier/D5567/f0] pos: joint_nec=+0.727 sum_single_nec=+0.693 joint_suff=+0.673 sum_single_suff=+0.873 (11455s)
+[subscription_tier/D5567/f0] whead: joint_nec=+0.044 sum_single_nec=+0.122 joint_suff=+0.099 sum_single_suff=+0.444 (11553s)
+[subscription_tier/D5567/f0] neuron: joint_nec=+0.255 sum_single_nec=+0.543 joint_suff=+0.319 sum_single_suff=+0.766 (11750s)
+[subscription_tier/D5567/f0] sae: joint_nec=+0.337 sum_single_nec=+0.591 joint_suff=+0.420 sum_single_suff=+0.490 (11923s)
+[subscription_tier/D5567/f0] rhead: joint_nec=+0.581 sum_single_nec=+0.659 joint_suff=+0.545 sum_single_suff=+0.656 (12037s)
+[subscription_tier/D5567/f1] pos: joint_nec=+0.902 sum_single_nec=+0.846 joint_suff=+0.729 sum_single_suff=+0.697 (12186s)
+[subscription_tier/D5567/f1] whead: joint_nec=+0.308 sum_single_nec=+0.222 joint_suff=+0.182 sum_single_suff=+0.313 (12304s)
+[subscription_tier/D5567/f1] neuron: joint_nec=+0.152 sum_single_nec=+0.310 joint_suff=+0.219 sum_single_suff=+0.260 (12489s)
+[subscription_tier/D5567/f1] sae: joint_nec=+0.383 sum_single_nec=+0.470 joint_suff=+0.350 sum_single_suff=+0.329 (12647s)
+[subscription_tier/D5567/f1] rhead: joint_nec=+0.513 sum_single_nec=+0.519 joint_suff=+0.399 sum_single_suff=+0.429 (12755s)
+{
+ "pos": {
+  "curve": {
+   "patch": {
+    "1": 0.9523,
+    "2": 0.9223,
+    "3": 0.8731,
+    "4": 0.8158,
+    "5": 0.7691,
+    "6": 0.7228,
+    "8": 0.5947,
+    "10": 0.511,
+    "12": 0.3962,
+    "14": 0.2821,
+    "16": 0.1627
+   }
+  },
+  "single": {
+   "suff_mean": 0.0699898853586784,
+   "suff_max": 0.6734637999382493,
+   "nec_mean": 0.047773967737701095,
+   "nec_max": 0.6822267205227499,
+   "n": 384,
+   "n_high_suff_low_nec(suff>0.3,nec<0.1)": 0,
+   "median_suff_over_nec_for_suff>0.05": 1.7935852348627377,
+   "corr_suff_nec": 0.8774913505420093
+  },
+  "additivity": {
+   "sum_single_nec": 0.7643834838032175,
+   "joint_nec": 0.8373319192394965,
+   "sum_single_suff": 1.1198381657388543,
+   "joint_suff": 0.8804289157553814
+  },
+  "compensation": {
+   "n": 169,
+   "mean_ratio": 0.2271013732471571,
+   "median_ratio": 0.20261793916378004,
+   "pooled_ratio": 0.3391835531486967,
+   "self_after_over_before": 0.0
+  }
+ },
+ "whead": {
+  "curve": {
+   "patch": {
+    "1": 0.9911,
+    "2": 0.9705,
+    "3": 0.953,
+    "4": 0.9375,
+    "5": 0.9196,
+    "6": 0.8981,
+    "8": 0.8661,
+    "10": 0.8333,
+    "12": 0.7965,
+    "14": 0.7637,
+    "15": 0.7514
+   },
+   "mean": {
+    "1": 0.9968,
+    "2": 0.9881,
+    "3": 0.9835,
+    "4": 0.9668,
+    "5": 0.9544,
+    "6": 0.9411,
+    "8": 0.899,
+    "10": 0.8695,
+    "12": 0.8403,
+    "14": 0.8032,
+    "15": 0.7876
+   }
+  },
+  "single": {
+   "suff_mean": 0.04406929992266967,
+   "suff_max": 0.3534407073789566,
+   "nec_mean": 0.014124392136292145,
+   "nec_max": 0.1960915475021675,
+   "n": 360,
+   "n_high_suff_low_nec(suff>0.3,nec<0.1)": 8,
+   "median_suff_over_nec_for_suff>0.05": 3.695904719845715,
+   "corr_suff_nec": 0.41781453252654643
+  },
+  "additivity": {
+   "sum_single_nec": 0.21186588204438217,
+   "joint_nec": 0.24857847685522402,
+   "sum_single_suff": 0.6610394988400451,
+   "joint_suff": 0.3318227660753276
+  },
+  "compensation": {
+   "n": 97,
+   "mean_ratio": -0.42980617101331836,
+   "median_ratio": 0.03334723233495682,
+   "pooled_ratio": 1.2658086311461012,
+   "self_after_over_before": 0.0
+  }
+ },
+ "neuron": {
+  "curve": {
+   "patch": {
+    "1": 0.9974,
+    "2": 0.9916,
+    "3": 0.9846,
+    "4": 0.9784,
+    "5": 0.9725,
+    "6": 0.9665,
+    "8": 0.9537,
+    "10": 0.9422,
+    "12": 0.9264,
+    "14": 0.9165,
+    "16": 0.9049,
+    "20": 0.8794,
+    "25": 0.8468,
+    "30": 0.8188
+   },
+   "mean": {
+    "1": 0.9942,
+    "2": 0.9888,
+    "3": 0.9814,
+    "4": 0.9738,
+    "5": 0.9646,
+    "6": 0.9573,
+    "8": 0.9381,
+    "10": 0.9312,
+    "12": 0.9116,
+    "14": 0.9009,
+    "16": 0.89,
+    "20": 0.8648,
+    "25": 0.8292,
+    "30": 0.8088
+   }
+  },
+  "single": {
+   "suff_mean": 0.011841532611091438,
+   "suff_max": 0.08230688150763694,
+   "nec_mean": 0.003224694734610504,
+   "nec_max": 0.07134947804403868,
+   "n": 720,
+   "n_high_suff_low_nec(suff>0.3,nec<0.1)": 0,
+   "median_suff_over_nec_for_suff>0.05": 2.6185100494609523,
+   "corr_suff_nec": 0.36803684681741294
+  },
+  "additivity": {
+   "sum_single_nec": 0.09674084203831512,
+   "joint_nec": 0.1812044575039148,
+   "sum_single_suff": 0.35524597833274313,
+   "joint_suff": 0.28379702607211665
+  },
+  "compensation": {
+   "n": 43,
+   "mean_ratio": -0.01357449151123555,
+   "median_ratio": -0.019769343678383917,
+   "pooled_ratio": 0.006588589222474388,
+   "self_after_over_before": 0.0
+  }
+ },
+ "sae": {
+  "curve": {
+   "patch": {
+    "1": 0.9903,
+    "2": 0.9827,
+    "3": 0.9751,
+    "4": 0.9667,
+    "5": 0.9583,
+    "6": 0.9455,
+    "8": 0.9328,
+    "10": 0.9096,
+    "12": 0.893,
+    "14": 0.871,
+    "16": 0.8514,
+    "20": 0.8044,
+    "25": 0.7517,
+    "30": 0.6949
+   },
+   "mean": {
+    "1": 0.9754,
+    "2": 0.9587,
+    "3": 0.9468,
+    "4": 0.9207,
+    "5": 0.888,
+    "6": 0.8699,
+    "8": 0.8268,
+    "10": 0.8067,
+    "12": 0.7579,
+    "14": 0.6969,
+    "16": 0.6645,
+    "20": 0.6003,
+    "25": 0.5154,
+    "30": 0.4356
+   }
+  },
+  "single": {
+   "suff_mean": 0.01181918351845767,
+   "suff_max": 0.22355430470895105,
+   "nec_mean": 0.007779500653291581,
+   "nec_max": 0.21316697400688356,
+   "n": 720,
+   "n_high_suff_low_nec(suff>0.3,nec<0.1)": 0,
+   "median_suff_over_nec_for_suff>0.05": 1.352192907315402,
+   "corr_suff_nec": 0.7544038069821181
+  },
+  "additivity": {
+   "sum_single_nec": 0.23338501959874747,
+   "joint_nec": 0.3051186112043216,
+   "sum_single_suff": 0.35457550555373013,
+   "joint_suff": 0.4102158196202537
+  },
+  "compensation": {
+   "n": 114,
+   "mean_ratio": 0.06294414700738236,
+   "median_ratio": 0.1194624984147179,
+   "pooled_ratio": 0.18184379320185043,
+   "self_after_over_before": 0.11551911450010284
+  }
+ },
+ "rhead": {
+  "curve": {
+   "patch": {
+    "1": 0.9615,
+    "2": 0.9116,
+    "3": 0.8717,
+    "4": 0.8376,
+    "5": 0.7988,
+    "6": 0.753,
+    "8": 0.6618,
+    "10": 0.5866,
+    "12": 0.51
+   },
+   "mean": {
+    "1": 0.9748,
+    "2": 0.9388,
+    "3": 0.9194,
+    "4": 0.8699,
+    "5": 0.8456,
+    "6": 0.822,
+    "8": 0.7572,
+    "10": 0.6658,
+    "12": 0.5764
+   }
+  },
+  "single": {
+   "suff_mean": 0.05635710977985983,
+   "suff_max": 0.22353383779205063,
+   "nec_mean": 0.04317866087975277,
+   "nec_max": 0.31553141832081855,
+   "n": 288,
+   "n_high_suff_low_nec(suff>0.3,nec<0.1)": 0,
+   "median_suff_over_nec_for_suff>0.05": 1.3535655215017335,
+   "corr_suff_nec": 0.8627214658243323
+  },
+  "additivity": {
+   "sum_single_nec": 0.5181439305570333,
+   "joint_nec": 0.4899698629673848,
+   "sum_single_suff": 0.676285317358318,
+   "joint_suff": 0.5679389261918548
+  },
+  "compensation": {
+   "n": 184,
+   "mean_ratio": -0.054644254058435496,
+   "median_ratio": -0.021037568625108506,
+   "pooled_ratio": -0.04338699621580383,
+   "self_after_over_before": 0.0,
+   "pool_all_heads_ge_layer_pooled_ratio": 0.17018559067147906
+  }
+ }
+}
+T1B_DONE 12754.822523117065

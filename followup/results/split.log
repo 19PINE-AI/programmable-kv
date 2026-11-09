@@ -1,0 +1,30 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:02<00:06,  2.28s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:03<00:03,  1.76s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:05<00:01,  1.63s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:05<00:00,  1.14s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:05<00:00,  1.39s/it]
+/home/ubuntu/clean-tests/results/T1/t1_split.py:60: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  acts[w]["S"] = float(S)
+account_role A4471 1.947 0.861 {'attn': 0.9710144927536232, 'mlp': 0.6956521739130435}
+account_role A4471 1.539 0.287 {'attn': 0.9361702127659575, 'mlp': 0.3829787234042553}
+account_role B8820 1.964 0.829 {'attn': 0.9710144927536232, 'mlp': 0.6811594202898551}
+account_role B8820 1.548 0.307 {'attn': 0.9387755102040817, 'mlp': 0.41836734693877553}
+account_role C1093 2.023 0.966 {'attn': 0.8970588235294118, 'mlp': 0.6617647058823529}
+account_role C1093 1.628 0.361 {'attn': 0.9893617021276596, 'mlp': 0.425531914893617}
+account_role D5567 2.054 0.899 {'attn': 0.9565217391304348, 'mlp': 0.6521739130434783}
+account_role D5567 1.552 0.328 {'attn': 0.9574468085106383, 'mlp': 0.43617021276595747}
+safety_mode A4471 1.438 0.537 {'attn': 0.9024390243902439, 'mlp': 0.4959349593495935}
+safety_mode A4471 1.587 0.677 {'attn': 0.9701492537313433, 'mlp': 0.34328358208955223}
+safety_mode B8820 1.211 0.422 {'attn': 0.8842975206611571, 'mlp': 0.45454545454545453}
+safety_mode B8820 1.284 0.651 {'attn': 0.8648648648648649, 'mlp': 0.40540540540540543}
+safety_mode C1093 1.309 0.502 {'attn': 0.9206349206349206, 'mlp': 0.4603174603174603}
+safety_mode C1093 1.507 0.573 {'attn': 0.9452054794520548, 'mlp': 0.3424657534246575}
+safety_mode D5567 1.351 0.513 {'attn': 0.8870967741935484, 'mlp': 0.5}
+safety_mode D5567 1.381 0.581 {'attn': 0.8285714285714286, 'mlp': 0.42857142857142855}
+subscription_tier A4471 1.635 0.403 {'attn': 0.873015873015873, 'mlp': 0.1746031746031746}
+subscription_tier A4471 1.334 0.213 {'attn': 0.7652173913043478, 'mlp': 0.20869565217391303}
+subscription_tier B8820 1.659 0.356 {'attn': 0.9027777777777778, 'mlp': 0.2222222222222222}
+subscription_tier B8820 1.242 0.191 {'attn': 0.773109243697479, 'mlp': 0.17647058823529413}
+subscription_tier C1093 1.485 0.174 {'attn': 0.7971014492753623, 'mlp': 0.2318840579710145}
+subscription_tier C1093 1.126 0.114 {'attn': 0.7478991596638656, 'mlp': 0.15966386554621848}
+subscription_tier D5567 1.425 0.394 {'attn': 0.78125, 'mlp': 0.203125}
+subscription_tier D5567 1.198 0.006 {'attn': 0.8050847457627118, 'mlp': 0.15254237288135594}
+{'atp_attn_share_of_attn_plus_mlp': 0.7806889095182047, 'atp_attn_mean': 1.5177823439668527, 'atp_mlp_mean': 0.46435622816562666, 'patch_all_attn_mean': 0.8860866120321836, 'patch_all_mlp_mean': 0.38806372451950333, 'repo_circ_components_attn_share_T14': 0.599} 
+T1_SPLIT_DONE
