@@ -136,7 +136,7 @@ Qwen3-8B). Patching the top $30$ neurons recovers $0.30$ of the decision and the
 random neurons recover $\approx0$. Negative activations matter in aggregate (zeroing every negative
 activation at the note positions removes $0.55$ of the decision, every positive one $0.70$), but the eight
 most important negative-side neurons remove only $0.011$. An LLM labeller gives $96$ of the top $100$
-neurons a coherent one- or two-part label. Yet these labels fail \emph{Gao's simulation--substitution test}:
+neurons a coherent one- or two-part label. Yet these labels fail \emph{Gao's simulation--substitution test} \citep{gao2026notclean}:
 replacing a neuron's real activations with ones an LLM predicts from its label should preserve its effect
 if the label explains it. Simulated activations of the top $30$ recover $0.03$ of the decision, against $0.30$
 for the real ones. A neuron label can read cleanly without explaining what the neuron does.

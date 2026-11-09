@@ -437,8 +437,10 @@ FineWeb-Edu, blind to our task. It calls $26$ ``one job'' and $70$ ``two related
 read as clean. Legibility does not single them out: $100$ layer-matched random neurons score the same ($10$
 and $90$). Apart from the top neuron (L25.11382, labelled ``refusal / declining to comply''), the labels
 describe generic clause-boundary, continuation and connective detectors that say nothing about the
-conclusion. We then apply \emph{Gao's simulation--substitution test}, the substitution form of simulation-based
-explanation scoring \citep{bills2023explain}. The same LLM predicts each neuron's per-token activation from
+conclusion. We then apply \emph{Gao's simulation--substitution test} \citep{gao2026notclean}, the substitution form of
+simulation-based explanation scoring \citep{bills2023explain}: an explanation counts only if simulated
+activations can stand in for the real ones without degrading the model. Gao states the criterion
+qualitatively; the quantitative readout below (fraction of mean-ablation damage avoided) is ours. The same LLM predicts each neuron's per-token activation from
 its label alone (an integer in $[-10,10]$, mapped to activation units by a per-neuron linear fit). We then
 replace the real activations with the simulated ones and measure how much of the mean-ablation damage this
 avoids. The labels fail (\Cref{fig:neurons}f). The median correlation between simulated and real
