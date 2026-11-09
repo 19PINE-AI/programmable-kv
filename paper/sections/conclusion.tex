@@ -7,7 +7,10 @@ downstream aggregator tokens, so the decision only reads those notes back. This 
 is---not a write-once byproduct of prefill, but a structured record of intermediate conclusions that we can
 read, amend, and rearrange. Two capabilities follow from the one mechanism: \emph{editing} the notes (a late,
 salient erratum in place of recomputation) and \emph{composing} them (repositioning and splicing a
-precompiled skill in $O(L)$ time).
+precompiled skill in $O(L)$ time). The mechanism also says where to intervene. The write is spread over many
+attention heads and tens of thousands of MLP neurons, whose labels read cleanly but do not predict what the
+neurons do. The result, by contrast, sits on a few cached positions that a dozen heads read additively. The
+cache, not the weights, is the natural place to edit.
 
 The question this opens is larger than either operation. If prefill routinely deposits reusable conclusions
 into the cache, then much of what a model has worked out mid-context is already written down somewhere we can

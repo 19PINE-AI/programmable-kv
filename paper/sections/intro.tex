@@ -79,8 +79,9 @@ by four causal probes (locality patching, suffix concentration, linear probing, 
 further controls (content/conclusion dissociation, layer-timing, specificity, note-injection;
 \Cref{app:deepmech}), replicated across \emph{four model families} (Qwen3, Llama-3.1, Gemma-2, Mistral),
 resolved to a \emph{component-level circuit}---named read/write heads, a causal conclusion direction, an SAE
-feature, attention-vs-MLP, and causal scrubbing (\Cref{app:circuit})---and connected to the delimiter-token
-aggregation seen in interpretability.
+feature, attention-vs-MLP, and causal scrubbing (\Cref{app:circuit})---and down to individual MLP neurons,
+where the write is diffuse and neuron labels that read cleanly fail to predict what the neurons do
+(\Cref{app:neurons}); the account connects to the delimiter-token aggregation seen in interpretability.
 \item \textbf{An editing capability} (\Cref{sec:editable}): naive KV editing fails; the erratum /
 \texttt{field+erratum} fix matches the hoist-to-end oracle without prompt surgery; an analysis of when
 the ${\sim}1\%$-compute in-place edit suffices (it requires reasoning and is strongly

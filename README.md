@@ -23,6 +23,9 @@ and written it onto downstream aggregator/delimiter tokens; at decode the decisi
 reads those *notes*, not the field. We establish this causally (the field's own KV
 drives **under 1%** of the decision), resolve it to a **component-level circuit**
 ("distributed write, concentrated read"), and replicate it across four model families.
+Down at the neuron level, attention writes the notes, the MLP share is spread over tens of
+thousands of neurons whose clean-sounding labels fail to predict them, and a dozen late heads
+read the notes back additively ([`followup/`](followup/)).
 
 That reframing — the KV cache as a *notebook of memoized conclusions* — makes the cache
 a first-class object you can **program**:
@@ -53,7 +56,8 @@ editable notes rather than relying on the mechanism arising for free.
 | [`esys/`](esys/) | Main experiment system: deep-mechanism controls, the component circuit, the editing frontier, composable transplant, weight-editing comparison, and online serving (see [`esys/README.md`](esys/README.md)) |
 | [`editkv/`](editkv/) | Core editable-KV module (`EditableContext`: in-place edit + erratum, with a per-edit diagnostic) — see [`editkv/README.md`](editkv/README.md) |
 | [`mem/`](mem/) | User-memory application (E1–E5, LoCoMo external validity, cross-referential test) — see [`mem/README.md`](mem/README.md) |
-| [`results/`](results/) | Result records (JSON) — the source of every number in the paper and on the site; see [`results/README.md`](results/README.md) for the filename→experiment legend |
+| [`followup/`](followup/) | Neuron-level follow-up (Nov 2026): who writes the note, joint vs. single ablation, activation sign, LLM neuron labels and Gao's simulation–substitution test — scripts, records, and a paper-number → command map |
+| [`results/`](results/) | Result records (JSON) — the source of every number in the paper and on the site (the neuron-level appendix reads from [`followup/results/`](followup/results/)); see [`results/README.md`](results/README.md) for the filename→experiment legend |
 | [`figures/`](figures/), [`plots/`](plots/) | Generated figures: standalone paper-style renders (`figures/`) and legacy exploratory plots from the early Qwen-1.5B/7B runs (`plots/`) |
 | [`docs/`](docs/) | Background notes: gentle intro + the mechanistic account |
 | `requirements.txt`, [`LICENSE`](LICENSE) | Python dependencies; Apache-2.0 license |
@@ -77,6 +81,7 @@ cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
 # the figures (run with the repo root as cwd)
 python paper/figs/make_figures.py
 python paper/figs/make_circuit_figure.py
+python paper/figs/make_neuron_figure.py      # neuron-level figure, from followup/results
 python paper/figs/make_appendix_figures.py
 python paper/figs/make_horizon_figure.py
 python mem/make_figs.py            # user-memory (E1–E5, LoCoMo) figures

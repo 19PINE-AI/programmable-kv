@@ -11,7 +11,11 @@ caches are open: the unit of edit/transplant there becomes a compressed block ra
 have analyzed but not implemented. The \fieldsel{}@$K$ surgical edit is unreliable (model- and
 domain-dependent stickiness) and we present it as such, not as a default. Finally, while several studies use
 synthetic policies for controlled measurement, we mitigate this with the real \(\tau^2\)-bench retail policy
-and real images; broader real-workload evaluation remains future work. More broadly, our operations exploit
+and real images; broader real-workload evaluation remains future work. The neuron-level analysis
+(\Cref{app:neurons}) is narrower than the rest of the mechanism study: it covers one model in depth
+(Llama-3.1-8B, with Qwen3-8B replicating only attribution and patching), its finding that single-neuron
+ablations undercount the joint effect is borderline at $95\%$, and its labels and simulations come from a
+single LLM (MiMo-v2.6-pro). More broadly, our operations exploit
 a mechanism that arises \emph{for free} in today's models; the direction this work points to is a KV cache
 \emph{programmable} by design---models trained to expose composable, editable notes---which we leave to
 future work.

@@ -1,0 +1,79 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:01<00:04,  1.59s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:02<00:02,  1.46s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:04<00:01,  1.45s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:04<00:00,  1.01s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:04<00:00,  1.18s/it]
+/home/ubuntu/clean-tests/.venv/lib/python3.11/site-packages/transformers/utils/generic.py:1014: UserWarning: `output_attentions=True` is not supported with `attn_implementation` other than ['eager', 'eager_paged', 'flex_attention']. Please use `model.set_attn_implementation('eager')` to enable capturing attention outputs.
+  warnings.warn(
+`sdpa` attention does not support `output_attentions=True` or `head_mask`. Please set your attention to `eager` if you want any of these features.
+  [account_role/A4471] L=776 field_only=0.000 full_down=1.00 suffix@0.1=0.854 suffix@0.3=0.905 top_pos_region=decision
+  [account_role/B8820] L=776 field_only=-0.012 full_down=1.00 suffix@0.1=0.853 suffix@0.3=0.89 top_pos_region=decision
+  [account_role/C1093] L=776 field_only=0.012 full_down=1.00 suffix@0.1=0.846 suffix@0.3=0.889 top_pos_region=decision
+  [account_role/D5567] L=776 field_only=0.000 full_down=1.00 suffix@0.1=0.832 suffix@0.3=0.882 top_pos_region=decision
+  [safety_mode/A4471] L=775 field_only=-0.069 full_down=1.00 suffix@0.1=0.784 suffix@0.3=0.863 top_pos_region=decision
+  [safety_mode/B8820] L=775 field_only=-0.031 full_down=1.00 suffix@0.1=0.776 suffix@0.3=0.857 top_pos_region=decision
+  [safety_mode/C1093] L=775 field_only=-0.049 full_down=1.00 suffix@0.1=0.786 suffix@0.3=0.883 top_pos_region=decision
+  [safety_mode/D5567] L=775 field_only=-0.037 full_down=1.00 suffix@0.1=0.794 suffix@0.3=0.869 top_pos_region=decision
+  [subscription_tier/A4471] L=772 field_only=-0.042 full_down=1.00 suffix@0.1=0.592 suffix@0.3=0.634 top_pos_region=decision
+  [subscription_tier/B8820] L=772 field_only=0.000 full_down=1.00 suffix@0.1=0.608 suffix@0.3=0.635 top_pos_region=decision
+  [subscription_tier/C1093] L=772 field_only=-0.042 full_down=1.00 suffix@0.1=0.563 suffix@0.3=0.606 top_pos_region=decision
+  [subscription_tier/D5567] L=772 field_only=0.014 full_down=1.00 suffix@0.1=0.562 suffix@0.3=0.616 top_pos_region=decision
+
+==== D1 CAUSAL PATCHING SUMMARY ====
+n=12 instances
+FIELD-ONLY recovery (= in_place): -0.021 CI(-0.04, -0.012)  (small => why in_place fails)
+FULL-DOWNSTREAM recovery (sanity): 1.0 CI(1.0, 1.0)
+REGION mean single-pos recovery: {'field': -0.024, 'field->gate': 0.003, 'gate->convo': 0.003, 'convo->decision': 0.005, 'decision': 0.023}
+strongest single-site region counts: {'decision': 12}
+LAYER-band recovery: {'early': 0.003, 'mid': 0.064, 'late': 0.037}
+CUMULATIVE SUFFIX recovery (patch last fraction of downstream -> recovery):
+   suffix 0.02: 0.56 CI(0.514, 0.601)
+   suffix 0.05: 0.67 CI(0.63, 0.713)
+   suffix  0.1: 0.74 CI(0.694, 0.77)
+   suffix  0.2: 0.78 CI(0.74, 0.814)
+   suffix  0.3: 0.79 CI(0.749, 0.826)
+   suffix  0.5: 0.81 CI(0.785, 0.843)
+   suffix  0.7: 0.83 CI(0.799, 0.848)
+   suffix  0.9: 0.84 CI(0.824, 0.85)
+   suffix  1.0: 1.00 CI(1.0, 1.0)
+CUMULATIVE PREFIX recovery (patch first fraction of downstream -> recovery):
+   prefix 0.02: -0.01 CI(-0.028, -0.004)
+   prefix 0.05: -0.02 CI(-0.043, -0.007)
+   prefix  0.1: 0.18 CI(0.167, 0.19)
+   prefix  0.2: 0.19 CI(0.174, 0.212)
+   prefix  0.3: 0.20 CI(0.185, 0.219)
+   prefix  0.5: 0.20 CI(0.176, 0.219)
+   prefix  0.7: 0.23 CI(0.2, 0.256)
+   prefix  0.9: 0.31 CI(0.288, 0.333)
+   prefix  1.0: 1.00 CI(1.0, 1.0)
+LOCALITY top-k (non-additive ranking; weak by construction):
+   top-  1 pos -> 0.50 CI(0.45, 0.528)
+   top-  2 pos -> 0.58 CI(0.528, 0.603)
+   top-  4 pos -> 0.66 CI(0.594, 0.708)
+   top-  8 pos -> 0.73 CI(0.665, 0.775)
+   top- 16 pos -> 0.80 CI(0.732, 0.839)
+   top- 32 pos -> 0.82 CI(0.752, 0.864)
+   top- 64 pos -> 0.88 CI(0.782, 0.922)
+   top-128 pos -> 0.91 CI(0.866, 0.939)
+D1_CAUSAL_PATCH_DONE
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.37it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.54it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.56it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  2.24it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.91it/s]
+/home/ubuntu/clean-tests/.venv/lib/python3.11/site-packages/transformers/utils/generic.py:1014: UserWarning: `output_attentions=True` is not supported with `attn_implementation` other than ['eager', 'eager_paged', 'flex_attention']. Please use `model.set_attn_implementation('eager')` to enable capturing attention outputs.
+  warnings.warn(
+`sdpa` attention does not support `output_attentions=True` or `head_mask`. Please set your attention to `eager` if you want any of these features.
+  [account_role/A4471] top@8=0.873 rand@8=0.008 top@16=0.937 rand@16=0.137
+  [account_role/B8820] top@8=0.859 rand@8=0.002 top@16=0.926 rand@16=0.13
+  [account_role/C1093] top@8=0.87 rand@8=0.015 top@16=0.895 rand@16=0.02
+  [account_role/D5567] top@8=0.82 rand@8=0.017 top@16=0.839 rand@16=0.027
+  [safety_mode/A4471] top@8=0.824 rand@8=-0.016 top@16=0.863 rand@16=0.106
+  [safety_mode/B8820] top@8=0.776 rand@8=0.0 top@16=0.878 rand@16=0.049
+  [safety_mode/C1093] top@8=0.825 rand@8=0.115 top@16=0.864 rand@16=0.014
+  [safety_mode/D5567] top@8=0.813 rand@8=-0.004 top@16=0.869 rand@16=0.013
+  [subscription_tier/A4471] top@8=0.479 rand@8=0.02 top@16=0.634 rand@16=0.02
+
+==== EXP4 SPECIFICITY (top-k vs random-k downstream, matched count) ====
+n=9 instances
+   k |       top-k recovery |    random-k recovery | gap
+   1 |   0.556 CI(0.495, 0.592) |   0.003 CI(-0.004, 0.009) | +0.553
+   2 |   0.643 CI(0.571, 0.679) |   0.002 CI(-0.005, 0.007) | +0.641
+   4 |   0.731 CI(0.646, 0.791) |   0.003 CI(-0.002, 0.009) | +0.728
+   8 |   0.793 CI(0.708, 0.839) |   0.017 CI(-0.006, 0.047) | +0.776
+  16 |   0.856 CI(0.802, 0.886) |   0.057 CI(0.03, 0.083) | +0.799
+  32 |   0.875 CI(0.807, 0.909) |   0.056 CI(0.028, 0.113) | +0.819
+  64 |   0.900 CI(0.842, 0.932) |   0.066 CI(0.048, 0.089) | +0.834
+MECHD_SPECIFICITY_DONE

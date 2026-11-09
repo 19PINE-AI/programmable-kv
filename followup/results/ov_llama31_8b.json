@@ -1,0 +1,738 @@
+{
+ "read_heads": [
+  "25.14",
+  "26.13",
+  "31.1",
+  "26.3",
+  "27.4",
+  "27.7",
+  "30.30",
+  "26.31",
+  "27.6",
+  "30.24",
+  "30.26",
+  "25.13"
+ ],
+ "results": {
+  "25.14": {
+   "top30": {
+    "n": 29,
+    "top": {
+     "ov_gain_mean": 0.05021414905786514,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0015635992167517543,
+      "safety_mode": 0.004640401341021061,
+      "subscription_tier": 0.004665081389248371
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.009900245815515518,
+      "safety_mode": 0.029993219301104546,
+      "subscription_tier": 0.03199046105146408
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.06233929097652435,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002218727022409439,
+      "safety_mode": 0.005209245253354311,
+      "subscription_tier": 0.007636565249413252
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011761008761823177,
+      "safety_mode": 0.029516397044062614,
+      "subscription_tier": 0.042367979884147644
+     }
+    }
+   },
+   "top300": {
+    "n": 295,
+    "top": {
+     "ov_gain_mean": 0.05273249372839928,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0018586966907605529,
+      "safety_mode": 0.00425998168066144,
+      "subscription_tier": 0.005871096160262823
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01149407122284174,
+      "safety_mode": 0.02686353027820587,
+      "subscription_tier": 0.038081251084804535
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.06083117425441742,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0022220786195248365,
+      "safety_mode": 0.005054107401520014,
+      "subscription_tier": 0.006993476767092943
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011993798427283764,
+      "safety_mode": 0.028333745896816254,
+      "subscription_tier": 0.04030986875295639
+     }
+    }
+   }
+  },
+  "26.13": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.04660097509622574,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0014242097968235612,
+      "safety_mode": 0.001439886400476098,
+      "subscription_tier": 0.0012586144730448723
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.009881129488348961,
+      "safety_mode": 0.010431824252009392,
+      "subscription_tier": 0.009349900297820568
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.057371191680431366,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002118207747116685,
+      "safety_mode": 0.001662334892898798,
+      "subscription_tier": 0.0015843186993151903
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.012166179716587067,
+      "safety_mode": 0.009699439629912376,
+      "subscription_tier": 0.009165520779788494
+     }
+    }
+   },
+   "top300": {
+    "n": 297,
+    "top": {
+     "ov_gain_mean": 0.04845038056373596,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0016357784625142813,
+      "safety_mode": 0.0014780353521928191,
+      "subscription_tier": 0.0013004358625039458
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011015051044523716,
+      "safety_mode": 0.010272354818880558,
+      "subscription_tier": 0.009266095235943794
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.055198103189468384,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0020719103049486876,
+      "safety_mode": 0.0016282446449622512,
+      "subscription_tier": 0.0013896607561036944
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.012279882095754147,
+      "safety_mode": 0.00998777337372303,
+      "subscription_tier": 0.008749810978770256
+     }
+    }
+   }
+  },
+  "31.1": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.14048242568969727,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.007470322772860527,
+      "safety_mode": 0.010654154233634472,
+      "subscription_tier": 0.014716965146362782
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.015877971425652504,
+      "safety_mode": 0.019941871985793114,
+      "subscription_tier": 0.027680259197950363
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.09669052064418793,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.004565852228552103,
+      "safety_mode": 0.005079189315438271,
+      "subscription_tier": 0.00555349700152874
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01546549703925848,
+      "safety_mode": 0.017840653657913208,
+      "subscription_tier": 0.019688664004206657
+     }
+    }
+   },
+   "top300": {
+    "n": 300,
+    "top": {
+     "ov_gain_mean": 0.10798029601573944,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.005079868249595165,
+      "safety_mode": 0.0064506432972848415,
+      "subscription_tier": 0.006850667297840118
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01529511995613575,
+      "safety_mode": 0.018716592341661453,
+      "subscription_tier": 0.019664155319333076
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.09584251791238785,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.004248939920216799,
+      "safety_mode": 0.005480581894516945,
+      "subscription_tier": 0.005230237264186144
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.014471643604338169,
+      "safety_mode": 0.019360579550266266,
+      "subscription_tier": 0.018854714930057526
+     }
+    }
+   }
+  },
+  "26.3": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.07536396384239197,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0021800107788294554,
+      "safety_mode": 0.002918129088357091,
+      "subscription_tier": 0.0030663541983813047
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.009689787402749062,
+      "safety_mode": 0.009959202259778976,
+      "subscription_tier": 0.013088450767099857
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.05559714138507843,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0018988538067787886,
+      "safety_mode": 0.0015523923793807626,
+      "subscription_tier": 0.0019008207600563765
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011099343188107014,
+      "safety_mode": 0.009383637458086014,
+      "subscription_tier": 0.011902948841452599
+     }
+    }
+   },
+   "top300": {
+    "n": 297,
+    "top": {
+     "ov_gain_mean": 0.0570015050470829,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0018872407963499427,
+      "safety_mode": 0.0016373194521293044,
+      "subscription_tier": 0.0018118467414751649
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01111024059355259,
+      "safety_mode": 0.00930027849972248,
+      "subscription_tier": 0.010963037610054016
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.0533553883433342,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0018089900258928537,
+      "safety_mode": 0.001571490429341793,
+      "subscription_tier": 0.0018393632490187883
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011085710488259792,
+      "safety_mode": 0.010005607269704342,
+      "subscription_tier": 0.01191483810544014
+     }
+    }
+   }
+  },
+  "27.4": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.058987315744161606,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0015383175341412425,
+      "safety_mode": 0.0016486071981489658,
+      "subscription_tier": 0.0018149291863664985
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.008852307684719563,
+      "safety_mode": 0.009184399619698524,
+      "subscription_tier": 0.010555410757660866
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.06825842708349228,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002353701740503311,
+      "safety_mode": 0.0018408067990094423,
+      "subscription_tier": 0.001975659281015396
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011332322843372822,
+      "safety_mode": 0.009022856131196022,
+      "subscription_tier": 0.00990571454167366
+     }
+    }
+   },
+   "top300": {
+    "n": 297,
+    "top": {
+     "ov_gain_mean": 0.06068234145641327,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0019584866240620613,
+      "safety_mode": 0.0015973851550370455,
+      "subscription_tier": 0.0017641218146309257
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.010546008124947548,
+      "safety_mode": 0.008866667747497559,
+      "subscription_tier": 0.009961837902665138
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.06994862854480743,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0023537396918982267,
+      "safety_mode": 0.0018771395552903414,
+      "subscription_tier": 0.002040842082351446
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.010972949676215649,
+      "safety_mode": 0.009084386751055717,
+      "subscription_tier": 0.01006744522601366
+     }
+    }
+   }
+  },
+  "27.7": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.06415107846260071,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0018724470864981413,
+      "safety_mode": 0.002075349912047386,
+      "subscription_tier": 0.0027326554991304874
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.009956642054021358,
+      "safety_mode": 0.010683352127671242,
+      "subscription_tier": 0.014924950897693634
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.08055772632360458,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002468251157552004,
+      "safety_mode": 0.0032637433614581823,
+      "subscription_tier": 0.0027812120970338583
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.010058174841105938,
+      "safety_mode": 0.01324751041829586,
+      "subscription_tier": 0.012310395948588848
+     }
+    }
+   },
+   "top300": {
+    "n": 297,
+    "top": {
+     "ov_gain_mean": 0.06582991778850555,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002427496248856187,
+      "safety_mode": 0.002264841692522168,
+      "subscription_tier": 0.0025295380037277937
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01215212419629097,
+      "safety_mode": 0.011633943766355515,
+      "subscription_tier": 0.013354290276765823
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.07570300251245499,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002621549181640148,
+      "safety_mode": 0.0027493152301758528,
+      "subscription_tier": 0.0028782205190509558
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011245387606322765,
+      "safety_mode": 0.012296291999518871,
+      "subscription_tier": 0.01314595527946949
+     }
+    }
+   }
+  },
+  "30.30": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.09455940127372742,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.008731601759791374,
+      "safety_mode": 0.0018441787688061595,
+      "subscription_tier": 0.002867718692868948
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.030477376654744148,
+      "safety_mode": 0.0065797423012554646,
+      "subscription_tier": 0.010584574192762375
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.11606969684362411,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.008145797997713089,
+      "safety_mode": 0.003467785194516182,
+      "subscription_tier": 0.002795052481815219
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.023436840623617172,
+      "safety_mode": 0.010353141464293003,
+      "subscription_tier": 0.008178393356502056
+     }
+    }
+   },
+   "top300": {
+    "n": 300,
+    "top": {
+     "ov_gain_mean": 0.09553446620702744,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0067013041116297245,
+      "safety_mode": 0.002594608813524246,
+      "subscription_tier": 0.0022431514225900173
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.02266942709684372,
+      "safety_mode": 0.009192622266709805,
+      "subscription_tier": 0.008105427958071232
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.10999173671007156,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.00714985653758049,
+      "safety_mode": 0.002997118281200528,
+      "subscription_tier": 0.0026983146090060472
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.021211203187704086,
+      "safety_mode": 0.009293319657444954,
+      "subscription_tier": 0.008518610149621964
+     }
+    }
+   }
+  },
+  "26.31": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.05312865227460861,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0020274759735912085,
+      "safety_mode": 0.0013972617452964187,
+      "subscription_tier": 0.0015516076236963272
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.012216024100780487,
+      "safety_mode": 0.008585024625062943,
+      "subscription_tier": 0.010085505433380604
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.06046530604362488,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.003523193998262286,
+      "safety_mode": 0.0016229345928877592,
+      "subscription_tier": 0.001679350738413632
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.019122576341032982,
+      "safety_mode": 0.009176735766232014,
+      "subscription_tier": 0.0095058623701334
+     }
+    }
+   },
+   "top300": {
+    "n": 297,
+    "top": {
+     "ov_gain_mean": 0.05600115284323692,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002796988235786557,
+      "safety_mode": 0.0014320601476356387,
+      "subscription_tier": 0.0015617881435900927
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.016354866325855255,
+      "safety_mode": 0.008808094076812267,
+      "subscription_tier": 0.00963333435356617
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.06141479313373566,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.003280926961451769,
+      "safety_mode": 0.0017276651924476027,
+      "subscription_tier": 0.0017751151463016868
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.0174286887049675,
+      "safety_mode": 0.009533122181892395,
+      "subscription_tier": 0.010054267011582851
+     }
+    }
+   }
+  },
+  "27.6": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.06338107585906982,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0022141442168504,
+      "safety_mode": 0.0013650563778355718,
+      "subscription_tier": 0.0015111613320186734
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011184554547071457,
+      "safety_mode": 0.007250005379319191,
+      "subscription_tier": 0.008495654910802841
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.07537862658500671,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002352920128032565,
+      "safety_mode": 0.0021096467971801758,
+      "subscription_tier": 0.0021655703894793987
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01053328812122345,
+      "safety_mode": 0.009269729256629944,
+      "subscription_tier": 0.009850993752479553
+     }
+    }
+   },
+   "top300": {
+    "n": 297,
+    "top": {
+     "ov_gain_mean": 0.06521467864513397,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002383718267083168,
+      "safety_mode": 0.0018676503095775843,
+      "subscription_tier": 0.001959809334948659
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.011890585534274578,
+      "safety_mode": 0.009654495865106583,
+      "subscription_tier": 0.010459973476827145
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.07642631232738495,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002666734391823411,
+      "safety_mode": 0.002218636218458414,
+      "subscription_tier": 0.002144447062164545
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01145972777158022,
+      "safety_mode": 0.009822008199989796,
+      "subscription_tier": 0.009734059683978558
+     }
+    }
+   }
+  },
+  "30.24": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.12028735876083374,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.003503386862576008,
+      "safety_mode": 0.003582933684810996,
+      "subscription_tier": 0.004173446912318468
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.00907630193978548,
+      "safety_mode": 0.01268848218023777,
+      "subscription_tier": 0.012657235376536846
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.08853906393051147,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0025271703489124775,
+      "safety_mode": 0.0030980687588453293,
+      "subscription_tier": 0.00305815483443439
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.009277435019612312,
+      "safety_mode": 0.011853836476802826,
+      "subscription_tier": 0.012026880867779255
+     }
+    }
+   },
+   "top300": {
+    "n": 300,
+    "top": {
+     "ov_gain_mean": 0.09277532249689102,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0027275264728814363,
+      "safety_mode": 0.0033225961960852146,
+      "subscription_tier": 0.0034710343461483717
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.009482541121542454,
+      "safety_mode": 0.01266230084002018,
+      "subscription_tier": 0.01303157676011324
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.08805464953184128,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002713550580665469,
+      "safety_mode": 0.003049038117751479,
+      "subscription_tier": 0.003088537137955427
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.010077396407723427,
+      "safety_mode": 0.01171937771141529,
+      "subscription_tier": 0.012146499939262867
+     }
+    }
+   }
+  },
+  "30.26": {
+   "top30": {
+    "n": 30,
+    "top": {
+     "ov_gain_mean": 0.13234570622444153,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002745394129306078,
+      "safety_mode": 0.008467449806630611,
+      "subscription_tier": 0.010016622953116894
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.007890683598816395,
+      "safety_mode": 0.01761728525161743,
+      "subscription_tier": 0.01902666501700878
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.10462350398302078,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0028439080342650414,
+      "safety_mode": 0.0031741783022880554,
+      "subscription_tier": 0.0033704745583236217
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.008944157510995865,
+      "safety_mode": 0.010315671563148499,
+      "subscription_tier": 0.011229351162910461
+     }
+    }
+   },
+   "top300": {
+    "n": 300,
+    "top": {
+     "ov_gain_mean": 0.10745757073163986,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.003235342912375927,
+      "safety_mode": 0.004120368044823408,
+      "subscription_tier": 0.004634560085833073
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.010057060047984123,
+      "safety_mode": 0.01188487745821476,
+      "subscription_tier": 0.013576693832874298
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.10371793806552887,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0031877304427325726,
+      "safety_mode": 0.003157756058499217,
+      "subscription_tier": 0.0033792343456298113
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01005616132169962,
+      "safety_mode": 0.010277524590492249,
+      "subscription_tier": 0.011279460974037647
+     }
+    }
+   }
+  },
+  "25.13": {
+   "top30": {
+    "n": 29,
+    "top": {
+     "ov_gain_mean": 0.048058897256851196,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002406149171292782,
+      "safety_mode": 0.0018765806453302503,
+      "subscription_tier": 0.001592659973539412
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.017081748694181442,
+      "safety_mode": 0.013278991915285587,
+      "subscription_tier": 0.01112489216029644
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.05919940397143364,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.0030794432386755943,
+      "safety_mode": 0.0019520348869264126,
+      "subscription_tier": 0.001630365033634007
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01702406071126461,
+      "safety_mode": 0.011678425595164299,
+      "subscription_tier": 0.009356572292745113
+     }
+    }
+   },
+   "top300": {
+    "n": 295,
+    "top": {
+     "ov_gain_mean": 0.05030370131134987,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002565741306170821,
+      "safety_mode": 0.0017445519333705306,
+      "subscription_tier": 0.001364494557492435
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01683514378964901,
+      "safety_mode": 0.011626578867435455,
+      "subscription_tier": 0.009272940456867218
+     }
+    },
+    "rand_layer_matched": {
+     "ov_gain_mean": 0.05846346542239189,
+     "abs_logitdiff_per_unit_mean": {
+      "account_role": 0.002922395011410117,
+      "safety_mode": 0.001943719806149602,
+      "subscription_tier": 0.0016035513253882527
+     },
+     "abs_cos_to_logitdir_mean": {
+      "account_role": 0.01656324230134487,
+      "safety_mode": 0.011334414593875408,
+      "subscription_tier": 0.00959431380033493
+     }
+    }
+   }
+  }
+ }
+}
